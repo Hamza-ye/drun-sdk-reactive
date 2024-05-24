@@ -4,8 +4,8 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(
-    tableName: 'userVillageLocation', apiResourceName: 'userVillageLocations')
-class UserVillageLocation extends IdentifiableEntity {
+    tableName: 'dUserOrganisationUnit', apiResourceName: 'userVillageLocations')
+class DUserOrganisationUnit extends IdentifiableEntity {
   @Column()
   final String orgUnit;
 
@@ -15,7 +15,7 @@ class UserVillageLocation extends IdentifiableEntity {
   @ManyToOne(joinColumnName: 'user', table: User)
   dynamic user;
 
-  UserVillageLocation(
+  DUserOrganisationUnit(
       {required String id,
       required String name,
       required this.orgUnit,
@@ -24,8 +24,8 @@ class UserVillageLocation extends IdentifiableEntity {
       required bool dirty})
       : super(id: id, name: name, dirty: dirty);
 
-  factory UserVillageLocation.fromJson(Map<String, dynamic> json) {
-    return UserVillageLocation(
+  factory DUserOrganisationUnit.fromJson(Map<String, dynamic> json) {
+    return DUserOrganisationUnit(
         id: json['id'],
         name: json['id'],
         orgUnit: json['orgUnit'],

@@ -1,11 +1,16 @@
 library d2_remote;
 
 import 'package:d2_remote/core/database/database_manager.dart';
+import 'package:d2_remote/modules/auth/user/models/auth-token.model.dart';
+import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
 import 'package:d2_remote/modules/auth/user/queries/user_team.query.dart';
 import 'package:d2_remote/modules/auth/user/user.module.dart';
 import 'package:d2_remote/modules/data/aggregate/aggregate.module.dart';
 import 'package:d2_remote/modules/data/tracker/tracked_entity_instance.module.dart';
-import 'package:d2_remote/modules/data_run/auth/user/d_user.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/d_user.module.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/queries/d_user.query.dart';
+import 'package:d2_remote/modules/data_run/auth/user/queries/d_user_organisation_unit.query.dart';
 import 'package:d2_remote/modules/file_resource/file_resource.module.dart';
 import 'package:d2_remote/modules/activity_management/activity/activity.module.dart';
 import 'package:d2_remote/modules/metadata/dashboard/dashboard.module.dart';
@@ -25,9 +30,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DRun {
-  static Future<void> initialize({String? databaseName,
-    bool? inMemory,
-    DatabaseFactory? databaseFactory}) async {
+  static Future<void> initialize(
+      {String? databaseName,
+      bool? inMemory,
+      DatabaseFactory? databaseFactory}) async {
     final newDatabaseName = databaseName ?? await DRun.getDatabaseName();
     if (newDatabaseName != null) {
       DatabaseManager(
@@ -56,8 +62,8 @@ class DRun {
 
   static Future<bool> isAuthenticated(
       {Future<SharedPreferences>? sharedPreferenceInstance,
-        bool? inMemory,
-        DatabaseFactory? databaseFactory}) async {
+      bool? inMemory,
+      DatabaseFactory? databaseFactory}) async {
     WidgetsFlutterBinding.ensureInitialized();
     final databaseName = await DRun.getDatabaseName(
         sharedPreferenceInstance: sharedPreferenceInstance);
@@ -80,29 +86,31 @@ class DRun {
       {Future<SharedPreferences>? sharedPreferenceInstance}) async {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences prefs =
-    await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
+        await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
     return prefs.getString('databaseName');
   }
 
-  static Future<bool> setDatabaseName({required String databaseName,
-    Future<SharedPreferences>? sharedPreferenceInstance}) async {
+  static Future<bool> setDatabaseName(
+      {required String databaseName,
+      Future<SharedPreferences>? sharedPreferenceInstance}) async {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences prefs =
-    await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
+        await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
     return prefs.setString('databaseName', databaseName);
   }
 
-  static Future<LoginResponseStatus> logIn({required String username,
-    required String password,
-    required String url,
-    Future<SharedPreferences>? sharedPreferenceInstance,
-    bool? inMemory,
-    DatabaseFactory? databaseFactory,
-    Dio? dioTestClient}) async {
+  static Future<LoginResponseStatus> logIn(
+      {required String username,
+      required String password,
+      required String url,
+      Future<SharedPreferences>? sharedPreferenceInstance,
+      bool? inMemory,
+      DatabaseFactory? databaseFactory,
+      Dio? dioTestClient}) async {
     WidgetsFlutterBinding.ensureInitialized();
     HttpResponse userResponse = await HttpClient.get(
-        // 'me.json?fields=id,name,lastName,login,created,lastUpdated,birthday,gender,displayName,jobTitle,surname,employer,email,firstName,phoneNumber,nationality,userCredentials[code,id,name,lastLogin,displayName,username,userRoles[id,name,code]],organisationUnits[id,code,name],teams[id,code,name],dataViewOrganisationUnits[id,code,name],userGroups[id,name],authorities,programs,dataSets',
-        'me.json?fields=id,name,lastName,langKey,login,created,lastUpdated,birthday,gender,displayName,jobTitle,surname,employer,email,firstName,phoneNumber,nationality,code,lastLogin,username,userRoles[id,name,code],organisationUnits[id,code,name],teams[id,name],dataViewOrganisationUnits[id,code,name],userGroups[id,name],authorities,programs,dataSets',
+        // 'me.json?fields=id,name,lastName,langKey,login,created,lastUpdated,birthday,gender,displayName,jobTitle,surname,employer,email,firstName,phoneNumber,nationality,code,lastLogin,username,userRoles[id,name,code],organisationUnits[id,code,name],teams[id,name],dataViewOrganisationUnits[id,code,name],userGroups[id,name],authorities,programs,dataSets',
+        'authenticate',
         baseUrl: url,
         username: username,
         password: password,
@@ -116,9 +124,7 @@ class DRun {
       return LoginResponseStatus.SERVER_ERROR;
     }
 
-    final uri = Uri
-        .parse(url)
-        .host;
+    final uri = Uri.parse(url).host;
     final String databaseName = '${username}_$uri';
 
     await DRun.initialize(
@@ -129,9 +135,9 @@ class DRun {
     await DRun.setDatabaseName(
         databaseName: databaseName,
         sharedPreferenceInstance:
-        sharedPreferenceInstance ?? SharedPreferences.getInstance());
+            sharedPreferenceInstance ?? SharedPreferences.getInstance());
 
-    UserQuery userQuery = UserQuery();
+    DUserQuery userQuery = DUserQuery();
 
     Map<String, dynamic> userData = userResponse.body;
     userData['password'] = password;
@@ -141,10 +147,10 @@ class DRun {
     userData['authTye'] = 'basic';
     userData['dirty'] = true;
 
-    final user = User.fromApi(userData);
+    final user = DUser.fromApi(userData);
     await userQuery.setData(user).save();
 
-    await UserOrganisationUnitQuery().setData(user.organisationUnits).save();
+    await DUserOrganisationUnitQuery().setData(user.organisationUnits).save();
 
     await UserTeamQuery().setData(user.teams).save();
 
@@ -155,7 +161,7 @@ class DRun {
     WidgetsFlutterBinding.ensureInitialized();
     bool logOutSuccess = false;
     try {
-      User? currentUser = await DRun.userModule.user.getOne();
+      DUser? currentUser = await DRun.userModule.user.getOne();
 
       currentUser?.isLoggedIn = false;
       currentUser?.dirty = true;
@@ -167,16 +173,15 @@ class DRun {
     return logOutSuccess;
   }
 
-  static Future<LoginResponseStatus> setToken({required String instanceUrl,
-    required Map<String, dynamic> userObject,
-    required Map<String, dynamic> tokenObject,
-    Future<SharedPreferences>? sharedPreferenceInstance,
-    bool? inMemory,
-    DatabaseFactory? databaseFactory,
-    Dio? dioTestClient}) async {
-    final uri = Uri
-        .parse(instanceUrl)
-        .host;
+  static Future<LoginResponseStatus> setToken(
+      {required String instanceUrl,
+      required Map<String, dynamic> userObject,
+      required Map<String, dynamic> tokenObject,
+      Future<SharedPreferences>? sharedPreferenceInstance,
+      bool? inMemory,
+      DatabaseFactory? databaseFactory,
+      Dio? dioTestClient}) async {
+    final uri = Uri.parse(instanceUrl).host;
     final String databaseName = '$uri';
     await DRun.initialize(
         databaseName: databaseName,
@@ -186,14 +191,13 @@ class DRun {
     await DRun.setDatabaseName(
         databaseName: databaseName,
         sharedPreferenceInstance:
-        sharedPreferenceInstance ?? SharedPreferences.getInstance());
+            sharedPreferenceInstance ?? SharedPreferences.getInstance());
 
     AuthToken token = AuthToken.fromJson(tokenObject);
 
     List<dynamic> authorities = [];
 
     userObject['userRoles'].forEach((role) {
-
       List<dynamic> authoritiesToAdd = role["authorities"].map((auth) {
         return auth as String;
       }).toList();
@@ -211,10 +215,10 @@ class DRun {
     userObject['authType'] = "token";
     userObject['authorities'] = authorities;
 
-    final user = User.fromApi(userObject);
-    await UserQuery().setData(user).save();
+    final user = DUser.fromApi(userObject);
+    await DUserQuery().setData(user).save();
 
-    await UserOrganisationUnitQuery().setData(user.organisationUnits).save();
+    await DUserOrganisationUnitQuery().setData(user.organisationUnits).save();
 
     await UserTeamQuery().setData(user.teams).save();
 
@@ -230,10 +234,10 @@ class DRun {
     return queryResult;
   }
 
-  static UserModule userModule = UserModule();
+  static DUserModule userModule = DUserModule();
 
   static OrganisationUnitModule organisationUnitModule =
-  OrganisationUnitModule();
+      OrganisationUnitModule();
 
   static DataElementModule dataElementModule = DataElementModule();
 
@@ -252,7 +256,7 @@ class DRun {
   static DashboardModule dashboardModule = DashboardModule();
 
   static TrackedEntityInstanceModule trackerModule =
-  TrackedEntityInstanceModule();
+      TrackedEntityInstanceModule();
 
   static AggregateModule aggregateModule = AggregateModule();
 

@@ -1,29 +1,29 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/data_run/auth/user/d_user.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'dUserAuthority', apiResourceName: 'userAuthorities')
-class DUserAuthority extends IdentifiableEntity {
+@Entity(tableName: 'dUserTeam', apiResourceName: 'userTeams')
+class DUserTeam extends IdentifiableEntity {
   @Column()
-  final String authority;
+  final String team;
 
   @ManyToOne(joinColumnName: 'user', table: DUser)
   dynamic user;
 
-  DUserAuthority(
+  DUserTeam(
       {required String id,
       required String name,
-      required this.authority,
+      required this.team,
       required this.user,
       required bool dirty})
       : super(id: id, name: name, dirty: dirty);
 
-  factory DUserAuthority.fromJson(Map<String, dynamic> json) {
-    return DUserAuthority(
+  factory DUserTeam.fromJson(Map<String, dynamic> json) {
+    return DUserTeam(
         id: json['id'],
         name: json['id'],
-        authority: json['authority'],
+        team: json['team'],
         user: json['user'],
         dirty: json['dirty']);
   }
@@ -32,7 +32,7 @@ class DUserAuthority extends IdentifiableEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
-    data['authority'] = this.authority;
+    data['team'] = this.team;
     data['user'] = this.user;
     data['dirty'] = this.dirty;
     return data;

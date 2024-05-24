@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/activity_management/activity/entities/activity.entity.dart';
 import 'package:d2_remote/modules/activity_management/team/entities/team.entity.dart';
-import 'package:d2_remote/modules/data_run/village_location/entities/village_location.entity.dart';
+import 'package:d2_remote/modules/data_run/village_location/entities/d_organisation_unit.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
@@ -15,7 +15,7 @@ class Assignment extends IdentifiableEntity {
   @ManyToOne(table: Team, joinColumnName: 'team')
   dynamic team;
 
-  @ManyToOne(table: VillageLocation, joinColumnName: 'organisationUnit')
+  @ManyToOne(table: DOrganisationUnit, joinColumnName: 'organisationUnit')
   dynamic organisationUnit;
 
   @Column(nullable: true)

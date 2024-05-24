@@ -4,7 +4,7 @@ import 'package:d2_remote/modules/auth/user/entities/user_authority.entity.dart'
 import 'package:d2_remote/modules/auth/user/entities/user_organisation_unit.entity.dart';
 import 'package:d2_remote/modules/auth/user/entities/user_role.entity.dart';
 import 'package:d2_remote/modules/auth/user/entities/user_team.entity.dart';
-import 'package:d2_remote/modules/data_run/auth/user/d_user.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:reflectable/reflectable.dart';
 import 'package:sqflite/sqflite.dart';

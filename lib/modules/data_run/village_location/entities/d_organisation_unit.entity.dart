@@ -4,8 +4,8 @@ import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'villageLocation', apiResourceName: 'village-locations')
-class VillageLocation extends IdentifiableEntity {
+@Entity(tableName: 'dOrganisationUnit', apiResourceName: 'village-locations')
+class DOrganisationUnit extends IdentifiableEntity {
   @Column(nullable: false)
   String subdistrictName;
 
@@ -24,7 +24,7 @@ class VillageLocation extends IdentifiableEntity {
   @Column(nullable: false)
   String level;
 
-  VillageLocation(
+  DOrganisationUnit(
       {required String id,
       required this.subdistrictName,
       this.villageName,
@@ -37,8 +37,8 @@ class VillageLocation extends IdentifiableEntity {
       required dirty})
       : super(id: id, name: name, code: code, dirty: dirty);
 
-  factory VillageLocation.fromJson(Map<String, dynamic> json) {
-    return VillageLocation(
+  factory DOrganisationUnit.fromJson(Map<String, dynamic> json) {
+    return DOrganisationUnit(
         id: json['uid'],
         code: json['code'],
         name: json['name'],

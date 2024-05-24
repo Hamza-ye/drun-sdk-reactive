@@ -1,8 +1,8 @@
 import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
-import 'package:d2_remote/modules/data_run/village_location/entities/user_village_location.entity.dart';
-import 'package:d2_remote/modules/data_run/village_location/entities/village_location.entity.dart';
-import 'package:d2_remote/modules/data_run/village_location/queries/user_village_location.query.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user_organisation_unit.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/queries/d_user_organisation_unit.query.dart';
+import 'package:d2_remote/modules/data_run/village_location/entities/d_organisation_unit.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
@@ -12,12 +12,12 @@ import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
-class VillageLocationQuery extends BaseQuery<UserVillageLocation> {
-  VillageLocationQuery({Database? database}) : super(database: database);
+class DOrganisationUnitQuery extends BaseQuery<DUserOrganisationUnit> {
+  DOrganisationUnitQuery({Database? database}) : super(database: database);
 
-  Future<List<UserVillageLocation>>? getUserVillageLocations() async {
-    final List<UserVillageLocation> userOrgUnits =
-        await VillageLocationQuery().get();
+  Future<List<DUserOrganisationUnit>>? getUserVillageLocations() async {
+    final List<DUserOrganisationUnit> userOrgUnits =
+        await DOrganisationUnitQuery().get();
 
     final userOrgUnitIds =
         userOrgUnits.map((orgUnit) => orgUnit.orgUnit).toList();
@@ -26,7 +26,7 @@ class VillageLocationQuery extends BaseQuery<UserVillageLocation> {
   }
 
   @override
-  Future<List<UserVillageLocation>?> download(
+  Future<List<DUserOrganisationUnit>?> download(
       Function(RequestProgress, bool) callback,
       {Dio? dioTestClient}) async {
     callback(
@@ -37,8 +37,8 @@ class VillageLocationQuery extends BaseQuery<UserVillageLocation> {
             percentage: 0),
         false);
 
-    final List<UserVillageLocation> userOrgUnits =
-        await UserVillageLocationQuery().get();
+    final List<DUserOrganisationUnit> userOrgUnits =
+        await DUserOrganisationUnitQuery().get();
 
     callback(
         RequestProgress(
@@ -79,7 +79,7 @@ class VillageLocationQuery extends BaseQuery<UserVillageLocation> {
 
     this.data = data.map((dataItem) {
       dataItem['dirty'] = false;
-      return VillageLocation.fromJson(dataItem);
+      return DOrganisationUnit.fromJson(dataItem);
     }).toList();
 
     callback(

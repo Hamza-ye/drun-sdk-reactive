@@ -3,10 +3,7 @@ import 'package:d2_remote/modules/auth/user/entities/user_authority.entity.dart'
 import 'package:d2_remote/modules/auth/user/entities/user_organisation_unit.entity.dart';
 import 'package:d2_remote/modules/auth/user/entities/user_role.entity.dart';
 import 'package:d2_remote/modules/auth/user/entities/user_team.entity.dart';
-import 'package:d2_remote/modules/data_run/auth/user/d_user_authority.entity.dart';
-import 'package:d2_remote/modules/data_run/auth/user/d_user_role.entity.dart';
-import 'package:d2_remote/modules/data_run/auth/user/d_user_team.entity.dart';
-import 'package:d2_remote/modules/data_run/village_location/entities/user_village_location.entity.dart';
+import 'package:d2_remote/modules/metadata/organisation_unit/entities/organisation_unit.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
@@ -60,17 +57,17 @@ class DUser extends IdentifiableEntity {
   @Column(nullable: true)
   final String? teiSearchOrganisationUnits;
 
-  @OneToMany(table: UserVillageLocation)
-  List<UserVillageLocation>? organisationUnits;
+  @OneToMany(table: OrganisationUnit)
+  List<OrganisationUnit>? organisationUnits;
 
   @OneToMany(table: UserTeam)
-  List<DUserTeam>? teams;
+  List<UserTeam>? teams;
 
   @OneToMany(table: UserAuthority)
-  List<DUserAuthority>? authorities;
+  List<UserAuthority>? authorities;
 
-  @OneToMany(table: DUserRole)
-  List<DUserRole>? roles;
+  @OneToMany(table: UserRole)
+  List<UserRole>? roles;
 
   @Column(nullable: true)
   final dynamic dataViewOrganisationUnits;
@@ -147,7 +144,7 @@ class DUser extends IdentifiableEntity {
         organisationUnits: jsonData['organisationUnits'],
         teams: jsonData['teams'],
         authorities: (jsonData['authorities'] as List<dynamic>?)
-            ?.map((authority) => DUserAuthority(
+            ?.map((authority) => UserAuthority(
                   id: '${jsonData['id']}_$authority',
                   name: '${jsonData['id']}_$authority',
                   authority: authority,
@@ -211,7 +208,7 @@ class DUser extends IdentifiableEntity {
                 .toList() ??
             [],
         authorities: (jsonData['authorities'] as List<dynamic>?)
-            ?.map((authority) => DUserAuthority(
+            ?.map((authority) => UserAuthority(
                   id: '${jsonData['id']}_$authority',
                   name: '${jsonData['id']}_$authority',
                   authority: authority,
