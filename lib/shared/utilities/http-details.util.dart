@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:d2_remote/modules/auth/user/entities/user.entity.dart';
-import 'package:d2_remote/modules/auth/user/queries/user.query.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/queries/d_user.query.dart';
 import 'package:sqflite/sqflite.dart';
 
 class HttpDetails {
@@ -11,7 +11,7 @@ class HttpDetails {
   String? password;
   String? token;
   String? tokenType;
-  User? user;
+  DUser? user;
   HttpDetails({
     this.username,
     this.password,
@@ -28,7 +28,10 @@ class HttpDetails {
       return this;
     }
 
-    final User? user = await UserQuery(database: database).getOne();
+    // Data-run
+    // final User? user = await UserQuery(database: database).getOne();
+    final DUser? user = await DUserQuery(database: database).getOne();
+
     this.username = user?.username;
     this.password = user?.password;
     this.baseUrl = user?.baseUrl;

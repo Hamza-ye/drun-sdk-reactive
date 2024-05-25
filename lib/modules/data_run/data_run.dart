@@ -3,21 +3,20 @@ library d2_remote;
 import 'package:d2_remote/core/database/database_manager.dart';
 import 'package:d2_remote/modules/auth/user/models/auth-token.model.dart';
 import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
-import 'package:d2_remote/modules/auth/user/queries/user_team.query.dart';
-import 'package:d2_remote/modules/auth/user/user.module.dart';
 import 'package:d2_remote/modules/data/aggregate/aggregate.module.dart';
 import 'package:d2_remote/modules/data/tracker/tracked_entity_instance.module.dart';
 import 'package:d2_remote/modules/data_run/auth/user/d_user.module.dart';
 import 'package:d2_remote/modules/data_run/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/data_run/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/modules/data_run/auth/user/queries/d_user_organisation_unit.query.dart';
+import 'package:d2_remote/modules/data_run/auth/user/queries/d_user_team.query.dart';
+import 'package:d2_remote/modules/data_run/village_location/d_organisation_unit.module.dart';
 import 'package:d2_remote/modules/file_resource/file_resource.module.dart';
 import 'package:d2_remote/modules/activity_management/activity/activity.module.dart';
 import 'package:d2_remote/modules/metadata/dashboard/dashboard.module.dart';
 import 'package:d2_remote/modules/metadata/data_element/data_element.module.dart';
 import 'package:d2_remote/modules/metadata/dataset/data_set.module.dart';
 import 'package:d2_remote/modules/metadata/option_set/option.module.dart';
-import 'package:d2_remote/modules/metadata/organisation_unit/organisation_unit.module.dart';
 import 'package:d2_remote/modules/metadata/program/program.module.dart';
 import 'package:d2_remote/modules/activity_management/project/project.module.dart';
 import 'package:d2_remote/modules/notification/notification.module.dart';
@@ -42,8 +41,8 @@ class DRun {
           databaseFactory: databaseFactory);
 
       await DatabaseManager.instance.database;
-      await UserModule.createTables();
-      await OrganisationUnitModule.createTables();
+      await DUserModule.createTables();
+      await DOrganisationUnitModule.createTables();
       await DataElementModule.createTables();
       await DataSetModule.createTables();
       await ProgramModule.createTables();
@@ -108,21 +107,27 @@ class DRun {
       DatabaseFactory? databaseFactory,
       Dio? dioTestClient}) async {
     WidgetsFlutterBinding.ensureInitialized();
-    HttpResponse userResponse = await HttpClient.get(
-        // 'me.json?fields=id,name,lastName,langKey,login,created,lastUpdated,birthday,gender,displayName,jobTitle,surname,employer,email,firstName,phoneNumber,nationality,code,lastLogin,username,userRoles[id,name,code],organisationUnits[id,code,name],teams[id,name],dataViewOrganisationUnits[id,code,name],userGroups[id,name],authorities,programs,dataSets',
-        'authenticate',
+
+    // Data-Run
+    HttpResponse tokenResponse = await HttpClient.get('authenticate',
         baseUrl: url,
         username: username,
         password: password,
         dioTestClient: dioTestClient);
 
-    if (userResponse.statusCode == 401) {
+    if (tokenResponse.statusCode == 401) {
       return LoginResponseStatus.WRONG_CREDENTIALS;
     }
 
-    if (userResponse.statusCode == 500) {
+    if (tokenResponse.statusCode == 500) {
       return LoginResponseStatus.SERVER_ERROR;
     }
+
+    HttpResponse userResponse = await HttpClient.get('account',
+        baseUrl: url,
+        username: username,
+        password: password,
+        dioTestClient: dioTestClient);
 
     final uri = Uri.parse(url).host;
     final String databaseName = '${username}_$uri';
@@ -146,13 +151,15 @@ class DRun {
     userData['baseUrl'] = url;
     userData['authTye'] = 'basic';
     userData['dirty'] = true;
+    // Data-Run
+    userData['token'] = tokenResponse.body['id_token'];
 
     final user = DUser.fromApi(userData);
     await userQuery.setData(user).save();
 
-    await DUserOrganisationUnitQuery().setData(user.organisationUnits).save();
+    // await DUserOrganisationUnitQuery().setData(user.organisationUnits).save();
 
-    await UserTeamQuery().setData(user.teams).save();
+    // await DUserTeamQuery().setData(user.teams).save();
 
     return LoginResponseStatus.ONLINE_LOGIN_SUCCESS;
   }
@@ -197,13 +204,13 @@ class DRun {
 
     List<dynamic> authorities = [];
 
-    userObject['userRoles'].forEach((role) {
-      List<dynamic> authoritiesToAdd = role["authorities"].map((auth) {
-        return auth as String;
-      }).toList();
-
-      authorities.addAll(authoritiesToAdd);
-    });
+    // userObject['userRoles'].forEach((role) {
+    //   List<dynamic> authoritiesToAdd = role["authorities"].map((auth) {
+    //     return auth as String;
+    //   }).toList();
+    //
+    //   authorities.addAll(authoritiesToAdd);
+    // });
 
     userObject['token'] = token.accessToken;
     userObject['tokenType'] = token.tokenType;
@@ -220,7 +227,7 @@ class DRun {
 
     await DUserOrganisationUnitQuery().setData(user.organisationUnits).save();
 
-    await UserTeamQuery().setData(user.teams).save();
+    await DUserTeamQuery().setData(user.teams).save();
 
     return LoginResponseStatus.ONLINE_LOGIN_SUCCESS;
   }
@@ -236,8 +243,8 @@ class DRun {
 
   static DUserModule userModule = DUserModule();
 
-  static OrganisationUnitModule organisationUnitModule =
-      OrganisationUnitModule();
+  static DOrganisationUnitModule organisationUnitModule =
+      DOrganisationUnitModule();
 
   static DataElementModule dataElementModule = DataElementModule();
 

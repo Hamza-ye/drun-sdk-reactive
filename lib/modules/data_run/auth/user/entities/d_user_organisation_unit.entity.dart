@@ -1,5 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/auth/user/entities/user.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
@@ -12,7 +12,7 @@ class DUserOrganisationUnit extends IdentifiableEntity {
   @Column()
   final String type;
 
-  @ManyToOne(joinColumnName: 'user', table: User)
+  @ManyToOne(joinColumnName: 'user', table: DUser)
   dynamic user;
 
   DUserOrganisationUnit(

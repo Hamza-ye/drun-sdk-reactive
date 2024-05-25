@@ -1,20 +1,16 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/auth/user/entities/user_authority.entity.dart';
 import 'package:d2_remote/modules/auth/user/entities/user_organisation_unit.entity.dart';
-import 'package:d2_remote/modules/auth/user/entities/user_role.entity.dart';
 import 'package:d2_remote/modules/auth/user/entities/user_team.entity.dart';
-import 'package:d2_remote/modules/metadata/organisation_unit/entities/organisation_unit.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user_authority.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user_organisation_unit.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user_team.entity.dart';
+import 'package:d2_remote/modules/data_run/village_location/entities/d_organisation_unit.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'dUser', apiResourceName: 'account')
 class DUser extends IdentifiableEntity {
   @Column(nullable: true)
-  final String? username;
-
-  @Column(nullable: true)
-  final String? password;
-
   @Column()
   final String firstName;
 
@@ -22,16 +18,10 @@ class DUser extends IdentifiableEntity {
   final String? surname;
 
   @Column(nullable: true)
-  final String? email;
+  final String? username;
 
   @Column(nullable: true)
-  final String? langKey;
-
-  @Column(nullable: true)
-  bool? activated;
-
-  @Column(nullable: true)
-  final String? imageUrl;
+  final String? password;
 
   @Column(nullable: true)
   final String? phoneNumber;
@@ -54,60 +44,53 @@ class DUser extends IdentifiableEntity {
   @Column()
   final String baseUrl;
 
-  @Column(nullable: true)
-  final String? teiSearchOrganisationUnits;
+  @OneToMany(table: DOrganisationUnit)
+  List<DOrganisationUnit>? organisationUnits;
 
-  @OneToMany(table: OrganisationUnit)
-  List<OrganisationUnit>? organisationUnits;
+  @OneToMany(table: DUserTeam)
+  List<DUserTeam>? teams;
 
-  @OneToMany(table: UserTeam)
-  List<UserTeam>? teams;
-
-  @OneToMany(table: UserAuthority)
-  List<UserAuthority>? authorities;
-
-  @OneToMany(table: UserRole)
-  List<UserRole>? roles;
-
-  @Column(nullable: true)
-  final dynamic dataViewOrganisationUnits;
-
-  @Column(nullable: true)
-  final String? programs;
-
-  @Column(nullable: true)
-  final String? dataSets;
+  @OneToMany(table: DUserAuthority)
+  List<DUserAuthority>? authorities;
 
   @Column()
   bool isLoggedIn;
 
+  // NMC
+  @Column(nullable: true)
+  final String? email;
+
+  @Column(nullable: true)
+  final String? langKey;
+
+  @Column(nullable: true)
+  bool? activated;
+
+  @Column(nullable: true)
+  final String? imageUrl;
+
   DUser(
       {required String id,
-      this.username,
-      this.password,
-      required this.firstName,
-      required this.surname,
       required String name,
       required this.baseUrl,
-      String? shortName,
-      String? displayName,
-      String? code,
-      String? created,
-      String? lastUpdated,
-      this.teiSearchOrganisationUnits,
-      this.organisationUnits,
-      this.teams,
-      this.authorities,
-      this.roles,
-      this.dataViewOrganisationUnits,
-      this.programs,
-      this.dataSets,
+      this.username,
+      this.password,
+      this.phoneNumber,
       this.token,
       this.tokenType,
       this.refreshToken,
       this.tokenExpiry,
       this.authType,
-      this.phoneNumber,
+      String? shortName,
+      String? displayName,
+      String? code,
+      String? created,
+      String? lastUpdated,
+      required this.firstName,
+      required this.surname,
+      this.organisationUnits,
+      this.teams,
+      this.authorities,
       required this.isLoggedIn,
       // NMC
       this.email,
@@ -136,32 +119,19 @@ class DUser extends IdentifiableEntity {
         authType: jsonData['authType'],
         name: jsonData['name'],
         phoneNumber: jsonData['phoneNumber'],
-        baseUrl: jsonData['baseUrl'] ?? '',
+        baseUrl: jsonData['baseUrl'],
         created: jsonData['created'],
         lastUpdated: jsonData['lastUpdated'],
-        teiSearchOrganisationUnits:
-            jsonData['teiSearchOrganisationUnits'].toString(),
         organisationUnits: jsonData['organisationUnits'],
         teams: jsonData['teams'],
-        authorities: (jsonData['authorities'] as List<dynamic>?)
-            ?.map((authority) => UserAuthority(
-                  id: '${jsonData['id']}_$authority',
-                  name: '${jsonData['id']}_$authority',
-                  authority: authority,
-                  user: jsonData['uid'],
-                  dirty: jsonData['dirty'] ?? false,
-                ))
+        authorities: (jsonData['authorities'] ?? [])
+            .map<DUserAuthority>((authority) => DUserAuthority(
+                id: authority['id'],
+                name: authority['name'],
+                authority: authority['authority'],
+                user: authority['user'],
+                dirty: authority['dirty'] ?? false))
             .toList(),
-        roles: (jsonData['roles'] ?? [])
-            .map<UserRole>((role) => UserRole(
-                id: role['id'],
-                name: role['name'],
-                user: role['user'],
-                dirty: role['dirty'] ?? false))
-            .toList(),
-        dataViewOrganisationUnits: jsonData['dataViewOrganisationUnits'],
-        programs: jsonData['programs'].toString(),
-        dataSets: jsonData['datasets'].toString(),
         isLoggedIn: jsonData['isLoggedIn'],
         email: jsonData['email'],
         activated: jsonData['activated'],
@@ -172,12 +142,12 @@ class DUser extends IdentifiableEntity {
 
   factory DUser.fromApi(Map<String, dynamic> jsonData) {
     return DUser(
-        id: jsonData['id'],
+        id: jsonData['id'].toString(),
         username: jsonData['username'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
-        surname: jsonData['surname'],
-        name: jsonData['name'],
+        surname: jsonData['lastName'],
+        name: jsonData['name'] ?? jsonData['username'],
         phoneNumber: jsonData['phoneNumber'],
         baseUrl: jsonData['baseUrl'],
         created: jsonData['created'],
@@ -187,10 +157,8 @@ class DUser extends IdentifiableEntity {
         refreshToken: jsonData['refreshToken'],
         tokenExpiry: jsonData['tokenExpiry'],
         authType: jsonData['authType'],
-        teiSearchOrganisationUnits:
-            jsonData['teiSearchOrganisationUnits'].toString(),
         organisationUnits: jsonData['organisationUnits']
-            .map<UserOrganisationUnit>((orgUnit) => UserOrganisationUnit(
+            ?.map<UserOrganisationUnit>((orgUnit) => DUserOrganisationUnit(
                 id: '${jsonData['id']}_${orgUnit['id']}',
                 name: '${jsonData['id']}_${orgUnit['id']}',
                 orgUnit: orgUnit['id'],
@@ -207,29 +175,18 @@ class DUser extends IdentifiableEntity {
                     dirty: jsonData['dirty'] ?? false))
                 .toList() ??
             [],
-        authorities: (jsonData['authorities'] as List<dynamic>?)
-            ?.map((authority) => UserAuthority(
-                  id: '${jsonData['id']}_$authority',
-                  name: '${jsonData['id']}_$authority',
-                  authority: authority,
-                  user: jsonData['uid'],
-                  dirty: jsonData['dirty'] ?? false,
-                ))
+        authorities: (jsonData['authorities'] ?? [])
+            .map<DUserAuthority>((authority) => DUserAuthority(
+                id: '${jsonData['id']}_$authority',
+                name: '${jsonData['id']}_$authority',
+                authority: authority,
+                user: jsonData['id'].toString(),
+                dirty: jsonData['dirty'] ?? false))
             .toList(),
-        roles: (jsonData['userRoles'] ?? [])
-            .map<UserRole>((role) => UserRole(
-                id: '${jsonData['id']}_${role['id']}',
-                name: role['name'],
-                user: jsonData['id'],
-                dirty: jsonData['dirty'] ?? true))
-            .toList(),
-        dataViewOrganisationUnits: jsonData['dataViewOrganisationUnits'],
-        programs: jsonData['programs'] != null
-            ? jsonData['programs'].toString()
-            : null,
-        dataSets: jsonData['datasets'] != null
-            ? jsonData['datasets'].toString()
-            : null,
+        email: jsonData['email'],
+        activated: jsonData['activated'],
+        imageUrl: jsonData['imageUrl'],
+        langKey: jsonData['langKey'],
         isLoggedIn: jsonData['isLoggedIn'],
         dirty: jsonData['dirty'] ?? false);
   }
@@ -252,16 +209,17 @@ class DUser extends IdentifiableEntity {
     data['phoneNumber'] = this.phoneNumber;
     data['tokenExpiry'] = this.tokenExpiry;
     data['authType'] = this.authType;
-    data['teiSearchOrganisationUnits'] = this.teiSearchOrganisationUnits;
     data['organisationUnits'] = this.organisationUnits;
     data['teams'] = this.teams;
-    data['authorities'] =
-        this.authorities?.map((authority) => authority.authority).toList();
-    data['roles'] = this.roles;
-    data['dataViewOrganisationUnits'] = this.dataViewOrganisationUnits;
-    data['programs'] = this.programs;
+    data['authorities'] = this.authorities;
     data['isLoggedIn'] = this.isLoggedIn;
     data['baseUrl'] = this.baseUrl;
+
+    data['email'] = this.email;
+    data['activated'] = this.activated;
+    data['imageUrl'] = this.imageUrl;
+    data['langKey'] = this.langKey;
+
     data['dirty'] = this.dirty;
 
     return data;

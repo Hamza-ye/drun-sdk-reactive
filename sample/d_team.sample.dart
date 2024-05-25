@@ -1,0 +1,40 @@
+final List<dynamic> sampleTeams = [
+  {
+    "createdBy": "admin",
+    "createdDate": "2024-05-23T00:07:23.572034Z",
+    "lastModifiedBy": "admin",
+    "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
+    "id": 1247,
+    "uid": "ug4klg4o8lU",
+    "name": "نشوان عبد عبدالله احمد",
+    "code": "139",
+    "description": "خالدعبدالله حسن صالح البريهي",
+    "mobile": "774324383",
+    "workers": null,
+    "mobility": null,
+    "activity": {"id": 16},
+    "operationRoom": {"id": 9},
+    "warehouse": {"id": 194},
+    "userInfo": {"id": 1},
+    "assignments": null
+  },
+  {
+    "createdBy": "admin",
+    "createdDate": "2024-05-23T00:07:23.572034Z",
+    "lastModifiedBy": "admin",
+    "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
+    "id": 1109,
+    "uid": "m7txPtUWXWm",
+    "name": "خالد عبدالله عبده المقطري",
+    "code": "1",
+    "description": "جميل ثابت حسن الجرباني",
+    "mobile": "770862733",
+    "workers": null,
+    "mobility": null,
+    "activity": {"id": 16},
+    "operationRoom": {"id": 1},
+    "warehouse": {"id": 188},
+    "userInfo": {"id": 1},
+    "assignments": null
+  }
+];
