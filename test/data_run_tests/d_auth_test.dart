@@ -10,8 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../../sample/d_current_user.sample.dart';
-import '../../sample/d_auth-token.sample.dart';
+import '../../sample/data_run_samples/d_current_user.sample.dart';
+import '../../sample/data_run_samples/d_auth-token.sample.dart';
 import '../auth_test.reflectable.dart';
 
 void main() async {

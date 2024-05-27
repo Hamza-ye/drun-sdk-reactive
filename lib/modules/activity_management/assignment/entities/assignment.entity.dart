@@ -39,6 +39,21 @@ class Assignment extends IdentifiableEntity {
   @Column(type: ColumnType.TEXT, nullable: true)
   String? warehouse;
 
+  @Column(type: ColumnType.TEXT, nullable: true)
+  String? gov;
+
+  @Column(type: ColumnType.TEXT, nullable: true)
+  String? district;
+
+  @Column(type: ColumnType.TEXT, nullable: true)
+  String? subdistrict;
+
+  @Column(type: ColumnType.TEXT, nullable: true)
+  String? village;
+
+  @Column(type: ColumnType.TEXT, nullable: true)
+  String? subvillage;
+
   Assignment(
       {required String id,
       String? created,
@@ -54,6 +69,11 @@ class Assignment extends IdentifiableEntity {
       this.startPeriod,
       this.period,
       this.periodType,
+      this.gov,
+      this.district,
+      this.subdistrict,
+      this.village,
+      this.subvillage,
       required dirty})
       : super(
             id: id,
@@ -67,7 +87,7 @@ class Assignment extends IdentifiableEntity {
     final team = json['team'] is String ? json['team'] : json['team']['uid'];
     return Assignment(
         id: json['uid'],
-        name: json['name'],
+        name: json['name'] ?? '',
         created: json['createdDate'],
         code: json['code'],
         activity: json['activity']['uid'],
@@ -79,6 +99,11 @@ class Assignment extends IdentifiableEntity {
         startPeriod: json['startPeriod'],
         period: json['period'],
         periodType: json['periodType'],
+        gov: json['gov'],
+        district: json['district'],
+        subdistrict: json['subdistrict'],
+        village: json['village'],
+        subvillage: json['subvillage'],
         dirty: json['dirty']);
   }
 
@@ -98,6 +123,11 @@ class Assignment extends IdentifiableEntity {
     data['startPeriod'] = this.startPeriod;
     data['period'] = this.period;
     data['periodType'] = this.periodType;
+    data['gov'] = this.gov;
+    data['district'] = this.district;
+    data['subdistrict'] = this.subdistrict;
+    data['village'] = this.village;
+    data['subvillage'] = this.subvillage;
     data['dirty'] = this.dirty;
     return data;
   }
