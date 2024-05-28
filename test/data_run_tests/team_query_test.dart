@@ -81,18 +81,9 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  // dioAdapter.onGet(
-  //   'http://localhost:8080/api/warehouseTransactions?paging=false&eagerload=true',
-  //       (server) => server.reply(200, dSampleWarehouseTransactions),
-  // );
-  // final warehouseTransactionQuery = WarehouseTransactionQuery(database: db);
-  // await teamQuery.download((progress, complete) {
-  //   print(progress.message);
-  // }, dioTestClient: dio);
-
   List<DTeam> teams = await DRun.teamModule.team.get();
 
-  test('should store all incoming warehouseTransactions metadata', () {
-    expect(teams.length, 3);
+  test('should store all incoming teams metadata', () {
+    expect(teams.length, 1);
   });
 }

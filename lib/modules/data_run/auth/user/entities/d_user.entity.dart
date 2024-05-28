@@ -97,17 +97,20 @@ class DUser extends IdentifiableEntity {
       this.activated,
       this.imageUrl,
       this.langKey,
+      String? uid,
       required bool dirty})
       : super(
             id: id,
             name: name,
             dirty: dirty,
             created: created,
+            uid: uid,
             lastUpdated: lastUpdated);
 
   factory DUser.fromJson(Map<String, dynamic> jsonData) {
     return DUser(
-        id: jsonData['id'],
+        id: jsonData['id'].toString(),
+        uid: jsonData['uid'],
         username: jsonData['login'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
@@ -143,11 +146,12 @@ class DUser extends IdentifiableEntity {
   factory DUser.fromApi(Map<String, dynamic> jsonData) {
     return DUser(
         id: jsonData['id'].toString(),
+        uid: jsonData['uid'],
         username: jsonData['username'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
         surname: jsonData['lastName'],
-        name: jsonData['name'] ?? jsonData['username'],
+        name: jsonData['name'] ?? jsonData['login'],
         phoneNumber: jsonData['phoneNumber'],
         baseUrl: jsonData['baseUrl'],
         created: jsonData['created'],
@@ -159,18 +163,20 @@ class DUser extends IdentifiableEntity {
         authType: jsonData['authType'],
         organisationUnits: jsonData['organisationUnits']
             ?.map<UserOrganisationUnit>((orgUnit) => DUserOrganisationUnit(
-                id: '${jsonData['id']}_${orgUnit['id']}',
-                name: '${jsonData['id']}_${orgUnit['id']}',
-                orgUnit: orgUnit['id'],
+                id: '${jsonData['id']}_${orgUnit['uid']}',
+                name: '${jsonData['id']}_${orgUnit['uid']}',
+                orgUnit: orgUnit['uid'],
+                uid: orgUnit['uid'],
                 user: jsonData['id'],
                 type: 'DATA_VIEW',
                 dirty: jsonData['dirty'] ?? false))
             .toList(),
         teams: jsonData['teams']
                 ?.map<UserTeam>((team) => UserTeam(
-                    id: '${jsonData['id']}_${team['id']}',
-                    name: '${jsonData['id']}_${team['id']}',
-                    team: team['id'],
+                    id: '${jsonData['id']}_${team['uid']}',
+                    name: '${jsonData['id']}_${team['uid']}',
+                    team: team['uid'],
+                    uid: team['uid'],
                     user: jsonData['id'],
                     dirty: jsonData['dirty'] ?? false))
                 .toList() ??
@@ -195,6 +201,7 @@ class DUser extends IdentifiableEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
 
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['name'] = this.name;
     data['firstName'] = this.firstName;
     data['surname'] = this.surname;

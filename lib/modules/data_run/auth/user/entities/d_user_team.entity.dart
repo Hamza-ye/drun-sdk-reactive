@@ -14,15 +14,17 @@ class DUserTeam extends IdentifiableEntity {
   DUserTeam(
       {required String id,
       required String name,
+      String? uid,
       required this.team,
       required this.user,
       required bool dirty})
-      : super(id: id, name: name, dirty: dirty);
+      : super(id: id, name: name, uid: uid, dirty: dirty);
 
   factory DUserTeam.fromJson(Map<String, dynamic> json) {
     return DUserTeam(
         id: json['id'],
         name: json['id'],
+        uid: json['uid'],
         team: json['team'],
         user: json['user'],
         dirty: json['dirty']);
@@ -31,6 +33,7 @@ class DUserTeam extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['name'] = this.name;
     data['team'] = this.team;
     data['user'] = this.user;

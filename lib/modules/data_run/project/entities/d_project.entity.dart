@@ -1,14 +1,14 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/activity_management/activity/entities/activity.entity.dart';
+import 'package:d2_remote/modules/data_run/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'project', apiResourceName: 'projects')
-class Project extends IdentifiableEntity {
-  @OneToMany(table: Activity)
-  List<Activity>? activities;
+@Entity(tableName: 'dProject', apiResourceName: 'projects')
+class DProject extends IdentifiableEntity {
+  @OneToMany(table: DActivity)
+  List<DActivity>? activities;
 
-  Project(
+  DProject(
       {required String id,
       String? created,
       String? lastUpdated,
@@ -16,6 +16,7 @@ class Project extends IdentifiableEntity {
       required String? shortName,
       String? code,
       String? displayName,
+      String? uid,
       this.activities,
       required dirty})
       : super(
@@ -26,19 +27,24 @@ class Project extends IdentifiableEntity {
             code: code,
             created: created,
             lastUpdated: lastUpdated,
+            uid: uid,
             dirty: dirty);
 
-  factory Project.fromJson(Map<String, dynamic> json) {
-    return Project(
-        id: json['uid'],
+  factory DProject.fromJson(Map<String, dynamic> json) {
+    return DProject(
+        id: json['id'].toString(),
+        uid: json['uid'],
         name: json['name'],
         created: json['created'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
         activities: List<dynamic>.from(json['activities'] ?? [])
-            .map((activity) => Activity.fromJson(
-                {...activity, 'project': json['uid'], 'dirty': false}))
+            .map((activity) => DActivity.fromJson({
+                  ...activity,
+                  'project': json['id'].toString(),
+                  'dirty': false
+                }))
             .toList(),
         dirty: json['dirty']);
   }
@@ -46,7 +52,8 @@ class Project extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastUpdated'] = this.lastUpdated;
-    data['uid'] = this.id;
+    data['uid'] = this.uid;
+    data['id'] = this.id;
     data['created'] = this.created;
     data['name'] = this.name;
     data['shortName'] = this.shortName;

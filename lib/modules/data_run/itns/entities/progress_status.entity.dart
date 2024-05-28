@@ -6,12 +6,17 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 @Entity(tableName: 'progressStatus', apiResourceName: 'progress-statuses')
 class ProgressStatus extends IdentifiableEntity {
   ProgressStatus(
-      {required String id, required String name, String? code, required dirty})
-      : super(id: id, name: name, code: code, dirty: dirty);
+      {required String id,
+      required String name,
+      String? code,
+      String? uid,
+      required dirty})
+      : super(id: id, name: name, code: code, uid: uid, dirty: dirty);
 
   factory ProgressStatus.fromJson(Map<String, dynamic> json) {
     return ProgressStatus(
-        id: json['uid'],
+        id: json['id'].toString(),
+        uid: json['uid'],
         code: json['code'],
         name: json['name'],
         dirty: json['dirty']);
@@ -19,7 +24,8 @@ class ProgressStatus extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'uid': id,
+      'id': id,
+      'uid': uid,
       'code': code,
       'name': name,
       'dirty': dirty,

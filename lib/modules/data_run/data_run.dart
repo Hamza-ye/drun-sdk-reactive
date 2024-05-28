@@ -5,23 +5,25 @@ import 'package:d2_remote/modules/auth/user/models/auth-token.model.dart';
 import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
 import 'package:d2_remote/modules/data/aggregate/aggregate.module.dart';
 import 'package:d2_remote/modules/data/tracker/tracked_entity_instance.module.dart';
+import 'package:d2_remote/modules/data_run/activity/d_activity.module.dart';
+import 'package:d2_remote/modules/data_run/assignment/d_assignment.module.dart';
 import 'package:d2_remote/modules/data_run/auth/user/d_user.module.dart';
 import 'package:d2_remote/modules/data_run/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/data_run/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/modules/data_run/auth/user/queries/d_user_organisation_unit.query.dart';
 import 'package:d2_remote/modules/data_run/auth/user/queries/d_user_team.query.dart';
+import 'package:d2_remote/modules/data_run/itns/itns.module.dart';
+import 'package:d2_remote/modules/data_run/project/d_project.module.dart';
+import 'package:d2_remote/modules/data_run/teams/d_team.module.dart';
 import 'package:d2_remote/modules/data_run/village_location/d_organisation_unit.module.dart';
+import 'package:d2_remote/modules/data_run/warehouse/warehouse.module.dart';
 import 'package:d2_remote/modules/file_resource/file_resource.module.dart';
-import 'package:d2_remote/modules/activity_management/activity/activity.module.dart';
 import 'package:d2_remote/modules/metadata/dashboard/dashboard.module.dart';
 import 'package:d2_remote/modules/metadata/data_element/data_element.module.dart';
 import 'package:d2_remote/modules/metadata/dataset/data_set.module.dart';
 import 'package:d2_remote/modules/metadata/option_set/option.module.dart';
 import 'package:d2_remote/modules/metadata/program/program.module.dart';
-import 'package:d2_remote/modules/activity_management/project/project.module.dart';
 import 'package:d2_remote/modules/notification/notification.module.dart';
-import 'package:d2_remote/modules/activity_management/assignment/assignment.module.dart';
-import 'package:d2_remote/modules/activity_management/team/team.module.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,14 +44,16 @@ class DRun {
 
       await DatabaseManager.instance.database;
       await DUserModule.createTables();
+      await WarehouseModule.createTables();
       await DOrganisationUnitModule.createTables();
       await DataElementModule.createTables();
       await DataSetModule.createTables();
       await ProgramModule.createTables();
-      await ProjectModule.createTables();
-      await ActivityModule.createTables();
-      await TeamModule.createTables();
-      await AssignmentModule.createTables();
+      await DProjectModule.createTables();
+      await DActivityModule.createTables();
+      await DTeamModule.createTables();
+      await DAssignmentModule.createTables();
+      await ItnsVillageModule.createTables();
       await DashboardModule.createTables();
       await TrackedEntityInstanceModule.createTables();
       await AggregateModule.createTables();
@@ -243,6 +247,8 @@ class DRun {
 
   static DUserModule userModule = DUserModule();
 
+  static WarehouseModule warehouseModule = WarehouseModule();
+
   static DOrganisationUnitModule organisationUnitModule =
       DOrganisationUnitModule();
 
@@ -250,13 +256,15 @@ class DRun {
 
   static DataSetModule dataSetModule = DataSetModule();
 
-  static ProjectModule projectModule = ProjectModule();
+  static DProjectModule projectModule = DProjectModule();
 
-  static ActivityModule activityModule = ActivityModule();
+  static DActivityModule activityModule = DActivityModule();
 
-  static AssignmentModule assignmentModule = AssignmentModule();
+  static DAssignmentModule assignmentModule = DAssignmentModule();
 
-  static TeamModule teamModule = TeamModule();
+  static DTeamModule teamModule = DTeamModule();
+
+  static ItnsVillageModule itnsVillageModule = ItnsVillageModule();
 
   static ProgramModule programModule = ProgramModule();
 

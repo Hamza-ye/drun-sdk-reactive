@@ -27,29 +27,31 @@ class Warehouse extends IdentifiableEntity {
       {required String id,
       required String name,
       String? code,
+      String? uid,
       this.gpsCoordinate,
       this.supervisor,
       this.supervisorMobile,
       required this.activity,
       required dirty})
-      : super(id: id, name: name, code: code, dirty: false) {
-  }
+      : super(id: id, name: name, code: code, uid: uid, dirty: false) {}
 
   factory Warehouse.fromJson(Map<String, dynamic> json) {
     return Warehouse(
-        id: json['uid'],
+        id: json['id'].toString(),
+        uid: json['uid'].toString(),
         gpsCoordinate: json['gpsCoordinate'],
         supervisor: json['supervisor'],
         code: json['code'],
         supervisorMobile: json['supervisorMobile'],
-        activity: json['activity']['uid'],
+        activity: json['activity'],
         name: json['name'],
         dirty: json['dirty']);
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'uid': id,
+      'id': id,
+      'uid': uid,
       'name': name,
       'description': description,
       'gpsCoordinate': gpsCoordinate,

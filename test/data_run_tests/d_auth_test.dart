@@ -1,18 +1,17 @@
-import 'package:d2_remote/modules/data_run/data_run.dart';
+import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
 import 'package:d2_remote/modules/data_run/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/data_run/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
+import 'package:d2_remote/modules/data_run/data_run.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../../sample/data_run_samples/d_current_user.sample.dart';
 import '../../sample/data_run_samples/d_auth-token.sample.dart';
-import '../auth_test.reflectable.dart';
+import '../../sample/data_run_samples/d_current_user.sample.dart';
+import 'd_auth_test.reflectable.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +60,7 @@ void main() async {
 
   dioAdapter.onGet(
     'http://localhost:8080/api/authenticate',
-        (server) => server.reply(200, dCorrectSampleAuthToken),
+    (server) => server.reply(200, dCorrectSampleAuthToken),
   );
 
   dioAdapter.onGet(
@@ -76,8 +75,7 @@ void main() async {
       databaseFactory: databaseFactoryFfi,
       dioTestClient: dio);
 
-  final user =
-      await DRun.userModule.user.withAuthorities().getOne();
+  final user = await DRun.userModule.user.withAuthorities().getOne();
 
   test('should successfully authenticate user on online login', () {
     expect(onlineLogIn, LoginResponseStatus.ONLINE_LOGIN_SUCCESS);

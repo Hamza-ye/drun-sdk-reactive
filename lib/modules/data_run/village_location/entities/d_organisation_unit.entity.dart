@@ -34,12 +34,14 @@ class DOrganisationUnit extends IdentifiableEntity {
       required this.level,
       required String name,
       String? code,
+      String? uid,
       required dirty})
-      : super(id: id, name: name, code: code, dirty: dirty);
+      : super(id: id, name: name, code: code, uid: uid, dirty: dirty);
 
   factory DOrganisationUnit.fromJson(Map<String, dynamic> json) {
     return DOrganisationUnit(
-        id: json['uid'],
+        id: json['id'].toString(),
+        uid: json['uid'],
         code: json['code'],
         name: json['name'],
         subdistrictName: json['subdistrictName'],
@@ -53,7 +55,8 @@ class DOrganisationUnit extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'uid': id,
+      'id': id,
+      'uid': uid,
       'code': code,
       'subdistrictName': subdistrictName,
       'villageName': villageName,

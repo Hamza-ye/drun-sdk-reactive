@@ -1,4 +1,4 @@
-final List<dynamic> sampleWarehouseItems = [
+final Map<String, dynamic> dSampleWarehouseItems = {"warehouseItems":[
   {
     "createdBy": "admin",
     "createdDate": "2024-05-23T00:07:17.322305Z",
@@ -21,4 +21,4 @@ final List<dynamic> sampleWarehouseItems = [
     "code": null,
     "description": null
   }
-];
+]};

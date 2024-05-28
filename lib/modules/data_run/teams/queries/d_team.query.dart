@@ -1,57 +1,77 @@
-import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
-import 'package:d2_remote/modules/data_run/auth/user/entities/d_user_organisation_unit.entity.dart';
-import 'package:d2_remote/modules/data_run/auth/user/queries/d_user_organisation_unit.query.dart';
-import 'package:d2_remote/modules/data_run/village_location/entities/d_organisation_unit.entity.dart';
+import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/utilities/repository.dart';
+import 'package:d2_remote/modules/data_run/assignment/entities/d_assignment.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/entities/d_user_team.entity.dart';
+import 'package:d2_remote/modules/data_run/auth/user/queries/d_user_team.query.dart';
+import 'package:d2_remote/modules/data_run/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
-import 'package:d2_remote/shared/utilities/query_filter.util.dart';
 import 'package:dio/dio.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
-class DOrganisationUnitQuery extends BaseQuery<DUserOrganisationUnit> {
-  DOrganisationUnitQuery({Database? database}) : super(database: database);
+class DTeamQuery extends BaseQuery<DTeam> {
+  DTeamQuery({Database? database}) : super(database: database);
 
-  Future<List<DUserOrganisationUnit>>? getUserVillageLocations() async {
-    final List<DUserOrganisationUnit> userOrgUnits =
-        await DOrganisationUnitQuery().get();
+  DTeamQuery withAssignments() {
+    final assignment = Repository<DAssignment>();
+    final Column? relationColumn = assignment.columns.firstWhere((column) =>
+        column.relation?.referencedEntity?.tableName == this.tableName);
 
-    final userOrgUnitIds =
-        userOrgUnits.map((orgUnit) => orgUnit.orgUnit).toList();
+    if (relationColumn != null) {
+      ColumnRelation relation = ColumnRelation(
+          referencedColumn: relationColumn.relation?.attributeName,
+          attributeName: 'assignments',
+          primaryKey: this.primaryKey?.name,
+          relationType: RelationType.OneToMany,
+          referencedEntity: Entity.getEntityDefinition(
+              AnnotationReflectable.reflectType(DAssignment) as ClassMirror),
+          referencedEntityColumns: Entity.getEntityColumns(
+              AnnotationReflectable.reflectType(DAssignment) as ClassMirror,
+              false));
+      this.relations.add(relation);
+    }
 
-    return this.byIds(userOrgUnitIds).get();
+    return this;
+  }
+
+  Future<List<DTeam>>? getUserTeams() async {
+    final List<DUserTeam> userTeams = await DUserTeamQuery().get();
+
+    final userTeamIds = userTeams.map((userTeam) => userTeam.team).toList();
+
+    return this.byIds(userTeamIds).get();
   }
 
   @override
-  Future<List<DUserOrganisationUnit>?> download(
-      Function(RequestProgress, bool) callback,
+  Future<List<DTeam>?> download(Function(RequestProgress, bool) callback,
       {Dio? dioTestClient}) async {
     callback(
         RequestProgress(
             resourceName: this.apiResourceName as String,
-            message: 'Fetching user assigned organisation units....',
+            message: 'Fetching user assigned Teams....',
             status: '',
             percentage: 0),
         false);
 
-    final List<DUserOrganisationUnit> userOrgUnits =
-        await DUserOrganisationUnitQuery().get();
+    final List<DUserTeam> userTeams = await DUserTeamQuery().get();
 
     callback(
         RequestProgress(
             resourceName: this.apiResourceName as String,
-            message:
-                '${userOrgUnits.length} user assigned organisation units found!',
+            message: '${userTeams.length} user assigned Teams found!',
             status: '',
             percentage: 25),
         false);
 
-    this.ilike(
-        attribute: 'path',
-        value: userOrgUnits.map((orgUnit) => orgUnit.orgUnit).toList());
+    this.whereIn(
+        attribute: 'id',
+        values: userTeams.map((userTeam) => userTeam.team).toList(),
+        merge: false);
+
     callback(
         RequestProgress(
             resourceName: this.apiResourceName as String,
@@ -79,7 +99,7 @@ class DOrganisationUnitQuery extends BaseQuery<DUserOrganisationUnit> {
 
     this.data = data.map((dataItem) {
       dataItem['dirty'] = false;
-      return DOrganisationUnit.fromJson(dataItem);
+      return DTeam.fromJson(dataItem);
     }).toList();
 
     callback(
@@ -103,13 +123,5 @@ class DOrganisationUnitQuery extends BaseQuery<DUserOrganisationUnit> {
         true);
 
     return this.data;
-  }
-
-  @override
-  Future<String> dhisUrl() {
-    final apiFilter =
-        QueryFilter.getApiFilters(this.repository.columns, this.filters);
-    return Future.value(
-        'organisationUnits.json${apiFilter != null ? '?$apiFilter&' : '?'}fields=id,dirty,lastUpdated,created,name,displayName,shortName,code,level,path,externalAccess,openingDate,geometry,parent,ancestors[id,name,displayName,level,path,openingDate],closedDate,programs&userOnly=true&paging=false');
   }
 }

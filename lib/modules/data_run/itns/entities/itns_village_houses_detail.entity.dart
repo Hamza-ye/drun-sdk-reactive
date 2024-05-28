@@ -47,6 +47,7 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
 
   ItnsVillageHousesDetail(
       {required String id,
+      String? uid,
       required this.deleted,
       required this.couponid,
       required this.hname,
@@ -70,15 +71,17 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
             name: name,
             code: code,
             created: created,
+            uid: uid,
             lastUpdated: lastUpdated,
             dirty: dirty);
 
   factory ItnsVillageHousesDetail.fromJson(Map<String, dynamic> json) {
     final itnsVillage = json['itnsVillage'] is String
         ? json['itnsVillage']
-        : json['itnsVillage']['uid'];
+        : json['itnsVillage']['id'].toString();
     return ItnsVillageHousesDetail(
-        id: json['uid'],
+        id: json['id'].toString(),
+        uid: json['uid'],
         itnsVillage: itnsVillage,
         deleted: json['deleted'],
         // houseUuid: json['houseUuid'],
@@ -102,6 +105,7 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'uid': uid,
       'deleted': deleted,
       // 'houseUuid': houseUuid,
       'couponid': couponid,

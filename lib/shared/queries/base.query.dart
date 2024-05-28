@@ -3,6 +3,7 @@
 ///
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
+import 'package:d2_remote/modules/data_run/shared/utilities/data-run-url-generator.util.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/utilities/dhis-url-generator.util.dart';
@@ -270,8 +271,9 @@ class BaseQuery<T extends BaseEntity> {
   }
 
   Future<List<T>> _fetchOnline({Dio? dioTestClient}) async {
-    final dhisUrl = await this.dhisUrl();
-    final response = await HttpClient.get(dhisUrl,
+    // final dhisUrl = await this.dhisUrl();
+    final dataRunUrl = await this.dataRunUrl();
+    final response = await HttpClient.get(dataRunUrl,
         database: this.database, dioTestClient: dioTestClient);
 
     List data = response.body[this.apiResourceName]?.toList();
@@ -335,5 +337,10 @@ class BaseQuery<T extends BaseEntity> {
 
   Future<String> dhisUrl() {
     return Future.value(DhisUrlGenerator.generate(this.query));
+  }
+
+  // Data Run
+  Future<String> dataRunUrl() {
+    return Future.value(DataRunUrlGenerator.generate(this.query));
   }
 }

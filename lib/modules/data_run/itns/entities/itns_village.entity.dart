@@ -3,14 +3,14 @@ import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/activity_management/activity/entities/activity.entity.dart';
-import 'package:d2_remote/modules/activity_management/assignment/entities/assignment.entity.dart';
-import 'package:d2_remote/modules/activity_management/team/entities/team.entity.dart';
+import 'package:d2_remote/modules/data_run/assignment/entities/d_assignment.entity.dart';
 import 'package:d2_remote/modules/data_run/itns/entities/itns_village_houses_detail.entity.dart';
 import 'package:d2_remote/modules/data_run/itns/entities/progress_status.entity.dart';
+import 'package:d2_remote/modules/data_run/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'itnsVillage', apiResourceName: 'itns-villages')
+@Entity(tableName: 'itnsVillage', apiResourceName: 'itnsVillages')
 class ItnsVillage extends IdentifiableEntity {
   @Column(nullable: false)
   bool deleted;
@@ -73,10 +73,10 @@ class ItnsVillage extends IdentifiableEntity {
   int? otherTeamNo;
 
   // Relations
-  @ManyToOne(table: Team, joinColumnName: 'team')
+  @ManyToOne(table: DTeam, joinColumnName: 'team')
   dynamic team;
 
-  @ManyToOne(table: Assignment, joinColumnName: 'assignment')
+  @ManyToOne(table: DAssignment, joinColumnName: 'assignment')
   dynamic assignment;
 
   @ManyToOne(table: ProgressStatus, joinColumnName: 'progressStatus')
@@ -119,6 +119,7 @@ class ItnsVillage extends IdentifiableEntity {
       String? lastUpdated,
       required String name,
       String? code,
+      String? uid,
       required dirty})
       : super(
             id: id,
@@ -126,11 +127,13 @@ class ItnsVillage extends IdentifiableEntity {
             code: code,
             created: created,
             lastUpdated: lastUpdated,
+            uid: uid,
             dirty: dirty);
 
   factory ItnsVillage.fromJson(Map<String, dynamic> json) {
     return ItnsVillage(
-        id: json['uid'],
+        id: json['id'].toString(),
+        uid: json['uid'],
         deleted: json['deleted'],
         workDayDate: json['workDayDate'],
         surveytype: json['surveytype'],
@@ -159,20 +162,21 @@ class ItnsVillage extends IdentifiableEntity {
             .map<ItnsVillageHousesDetail>((houseDetail) =>
                 ItnsVillageHousesDetail.fromJson({
                   ...houseDetail,
-                  'itnsVillage': json['uid'],
+                  'itnsVillage': json['id'].toString(),
                   'dirty': false
                 }))
             .toList(),
-        team: json['team']['uid'],
-        assignment: json['assignment']['uid'],
-        progressStatus: json['progressStatus']['uid'],
-        activity: json['activity']['uid'],
+        team: json['team']['id'].toString(),
+        assignment: json['assignment']['id'].toString(),
+        progressStatus: json['progressStatus']['id'].toString(),
+        activity: json['activity']['id'].toString(),
         dirty: json['dirty']);
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'uid': id,
+      'id': id,
+      'uid': uid,
       'createdDate': created,
       'lastModifiedDate': lastUpdated,
       'deleted': deleted,
