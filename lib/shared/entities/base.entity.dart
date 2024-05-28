@@ -4,7 +4,9 @@ import 'package:d2_remote/shared/utilities/dhis_uid_generator.util.dart';
 // @AnnotationReflectable
 class BaseEntity {
   @PrimaryColumn()
-  late String? id;
+  late String? uid;
+
+  int? id;
 
   @Column()
   bool dirty;
@@ -15,8 +17,8 @@ class BaseEntity {
   @Column(nullable: true)
   String? created;
 
-  BaseEntity({this.id, required this.dirty, this.created, this.lastUpdated}) {
-    this.id = this.id ?? DhisUidGenerator.generate();
+  BaseEntity({this.uid, this.id, required this.dirty, this.created, this.lastUpdated}) {
+    this.uid = this.uid ?? DhisUidGenerator.generate();
     this.created =
         this.created ?? DateTime.now().toIso8601String().split('.')[0];
     this.lastUpdated = this.lastUpdated ?? this.created;

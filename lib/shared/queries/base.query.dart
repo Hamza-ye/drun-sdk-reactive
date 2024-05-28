@@ -3,7 +3,7 @@
 ///
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
-import 'package:d2_remote/modules/data_run/shared/utilities/data-run-url-generator.util.dart';
+import 'package:d2_remote/modules/shared/utilities/data-run-url-generator.util.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/utilities/dhis-url-generator.util.dart';
@@ -29,7 +29,7 @@ class BaseQuery<T extends BaseEntity> {
   String? tableName;
   String? apiResourceName;
   String? singularResourceName;
-  String? id;
+  String? uid;
   List<QueryFilter>? filters = [];
   Map<String, SortOrder> sortOrder = {};
   List<ColumnRelation> relations = [];
@@ -57,15 +57,15 @@ class BaseQuery<T extends BaseEntity> {
     return this;
   }
 
-  byId(String id) {
-    this.id = id;
+  byId(String uid) {
+    this.uid = uid;
     this.filters = null;
     return this;
   }
 
-  byIds(List<String> ids) {
-    this.id = null;
-    return this.whereIn(attribute: 'id', values: ids, merge: false);
+  byIds(List<String> uids) {
+    this.uid = null;
+    return this.whereIn(attribute: 'uid', values: uids, merge: false);
   }
 
   whereIn(
@@ -184,10 +184,10 @@ class BaseQuery<T extends BaseEntity> {
 
   QueryModel get query {
     List<QueryFilter>? filters = this.filters;
-    if (this.id != null) {
+    if (this.uid != null) {
       filters = [
         QueryFilter(
-            attribute: 'id', condition: QueryCondition.Equal, value: this.id)
+            attribute: 'uid', condition: QueryCondition.Equal, value: this.uid)
       ];
     }
 
@@ -206,9 +206,9 @@ class BaseQuery<T extends BaseEntity> {
       return this._fetchOnline(dioTestClient: dioTestClient);
     }
 
-    if (this.id != null) {
+    if (this.uid != null) {
       return this.repository.find(
-          id: this.id,
+          uid: this.uid,
           fields: this.fields as List<String>,
           database: this.database,
           relations: this.relations) as Future<List<T>>;
@@ -249,10 +249,10 @@ class BaseQuery<T extends BaseEntity> {
   }
 
   Future delete() {
-    if (this.id != null) {
+    if (this.uid != null) {
       return this
           .repository
-          .deleteById(id: this.id as String, database: this.database);
+          .deleteById(uid: this.uid as String, database: this.database);
     }
 
     return this.repository.deleteAll();

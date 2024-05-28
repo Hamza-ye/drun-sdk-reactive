@@ -15,11 +15,9 @@ class IdentifiableEntity extends BaseEntity {
   @Column(nullable: true)
   final String? code;
 
-  @Column(nullable: true)
-  final String? uid;
-
   IdentifiableEntity({
-    String? id,
+    String? uid,
+    int? id,
     required bool dirty,
     this.name,
     this.displayName,
@@ -27,6 +25,5 @@ class IdentifiableEntity extends BaseEntity {
     String? lastUpdated,
     String? created,
     this.code,
-    this.uid,
-  }) : super(id: id, dirty: dirty, created: created, lastUpdated: lastUpdated);
+  }) : super(id: id, uid: uid, dirty: dirty, created: created, lastUpdated: lastUpdated);
 }

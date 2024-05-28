@@ -29,14 +29,14 @@ abstract class BaseRepository<T extends BaseEntity> {
   Future<int> count({Database database});
 
   Future<List<T>> find(
-      {String? id,
+      {String? uid,
       List<QueryFilter>? filters,
       List<String>? fields,
       Map<String, SortOrder>? sortOrder,
       Database? database});
 
   Future<T?> findById(
-      {required String id, List<String>? fields, Database? database});
+      {required String uid, List<String>? fields, Database? database});
 
   Future<List<T>> findAll(
       {List<QueryFilter> filters,
@@ -59,7 +59,7 @@ abstract class BaseRepository<T extends BaseEntity> {
   Future<int> saveOne(
       {required T entity, Database database, required MergeMode mergeMode});
 
-  Future<int> deleteById({required String id, Database database});
+  Future<int> deleteById({required String uid, Database database});
 
   Future<int> deleteByIds({required List<String> ids, Database database});
 
@@ -92,7 +92,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
 
   @override
   Future<List<T>> find(
-      {String? id,
+      {String? uid,
       List<QueryFilter>? filters,
       List<String>? fields,
       Map<String, SortOrder>? sortOrder,
@@ -100,9 +100,9 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
       List<ColumnRelation>? relations}) async {
     final Database db = database != null ? database : await this.database;
 
-    if (id != null) {
+    if (uid != null) {
       final queryResult = await db.query(this.entity.tableName,
-          where: 'id = ?', whereArgs: [id], columns: fields);
+          where: 'uid = ?', whereArgs: [uid], columns: fields);
 
       final relationResults = await this.findRelations(
           database: db,
@@ -142,8 +142,9 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
       final dataResults = (await db.query(this.entity.tableName,
           orderBy: orderParameters, columns: fields));
 
-      final List<String> dataIds =
-          dataResults.map((dataResult) => dataResult['id'].toString()).toList();
+      final List<String> dataIds = dataResults
+          .map((dataResult) => dataResult['uid'].toString())
+          .toList();
 
       final relationData = await this.findRelationByParent(
           relations: relations as List<ColumnRelation>,
@@ -158,7 +159,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
           final availableRelationData = (relationDataItem['data'] ?? [])
               .where((relationItem) =>
                   relationItem[relationDataItem['referencedColumn']] ==
-                  queryResult['id'])
+                  queryResult['uid'])
               .toList();
           resultMap[relationDataItem['relation']] = availableRelationData;
         });
@@ -269,7 +270,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
         where: whereParameters, orderBy: orderParameters, columns: fields));
 
     final List<String> dataIds =
-        dataResults.map((dataResult) => dataResult['id'].toString()).toList();
+        dataResults.map((dataResult) => dataResult['uid'].toString()).toList();
 
     final relationData = relations != null
         ? await this.findRelationByParent(
@@ -286,7 +287,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
         final availableRelationData = (relationDataItem['data'] ?? [])
             .where((relationItem) =>
                 relationItem[relationDataItem['referencedColumn']] ==
-                resultMap['id'])
+                resultMap['uid'])
             .toList();
 
         resultMap[relationDataItem['relation']] = availableRelationData;
@@ -297,13 +298,13 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
 
   @override
   Future<T?> findById(
-      {required String id,
+      {required String uid,
       List<String>? fields,
       Database? database,
       List<ColumnRelation>? relations}) async {
     final Database db = database != null ? database : await this.database;
 
-    var results = await this.find(id: id, fields: fields, database: db);
+    var results = await this.find(uid: uid, fields: fields, database: db);
 
     return results.length > 0 ? results[0] : null;
   }
@@ -368,8 +369,8 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
 
     var result = await db.query(
         columnRelation.referencedEntity?.tableName as String,
-        where: 'id = ?',
-        whereArgs: [data['id']]);
+        where: 'uid = ?',
+        whereArgs: [data['uid']]);
 
     dynamic saveDataResponse;
     if (result.length == 0) {
@@ -396,8 +397,8 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
           saveDataResponse = await db.update(
             columnRelation.referencedEntity?.tableName as String,
             data,
-            where: "id = ?",
-            whereArgs: [data['id']],
+            where: "uid = ?",
+            whereArgs: [data['uid']],
           );
         }
       } else {
@@ -448,16 +449,16 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
     final Database db = database != null ? database : await this.database;
 
     await db.delete(this.entity.tableName,
-        where: 'id IN (?)', whereArgs: [ids.join(',')]);
+        where: 'uid IN (?)', whereArgs: [ids.join(',')]);
 
     return 1;
   }
 
   @override
-  Future<int> deleteById({required String id, Database? database}) async {
+  Future<int> deleteById({required String uid, Database? database}) async {
     final Database db = database != null ? database : await this.database;
 
-    await db.delete(this.entity.tableName, where: 'id = ?', whereArgs: [id]);
+    await db.delete(this.entity.tableName, where: 'uid = ?', whereArgs: [uid]);
 
     return 1;
   }
@@ -507,7 +508,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
       SaveOptions? saveOptions}) async {
     final Database db = database != null ? database : await this.database;
 
-    var result = await this.findById(id: entity.id as String, database: db);
+    var result = await this.findById(uid: entity.uid as String, database: db);
 
     if (result != null) {
       final currentLastUpdatedDate =
@@ -583,8 +584,8 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
     final saveDataResponse = await db.update(
       this.entity.tableName,
       data,
-      where: "id = ?",
-      whereArgs: [data['id']],
+      where: "uid = ?",
+      whereArgs: [data['uid']],
     );
 
     if (this.oneToManyColumns.isEmpty) {

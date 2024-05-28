@@ -14,7 +14,7 @@ abstract class UidsHelper {
   /// @param objects A collection of objects with uid.
   /// @return A [List] with the uids of the given objects.
   static List<String> getUidsList([Iterable<BaseEntity> objects = const []]) {
-    return objects.map((e) => e.id!).toList();
+    return objects.map((e) => e.uid!).toList();
   }
 
   /// Return the uid of the object if the object is not null. If it is null, return null.
@@ -22,6 +22,6 @@ abstract class UidsHelper {
   /// @param o A object with uid.
   /// @return The uid of the object.
   static String? getUidOrNull(BaseEntity? o) {
-    return o?.id;
+    return o?.uid;
   }
 }

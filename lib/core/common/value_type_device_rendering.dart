@@ -16,7 +16,8 @@ class ValueTypeDeviceRendering extends IdentifiableEntity {
   int? decimalPoints;
 
   ValueTypeDeviceRendering(
-      {String? id,
+      {int? id,
+      String? uid,
       String? name,
       this.objectTable,
       this.deviceType,
@@ -26,7 +27,7 @@ class ValueTypeDeviceRendering extends IdentifiableEntity {
       this.step,
       this.decimalPoints,
       required bool dirty})
-      : super(id: id, name: name, dirty: dirty);
+      : super(uid: uid, id: id, name: name, dirty: dirty);
 
   factory ValueTypeDeviceRendering.fromJson(Map<String, dynamic> json) {
     return ValueTypeDeviceRendering(
