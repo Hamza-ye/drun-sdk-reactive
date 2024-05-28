@@ -1,19 +1,17 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/modules/itns/entities/itns_village.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(
     tableName: 'itnsVillageHousesDetail',
-    apiResourceName: 'itns-village-houses-details')
+    apiResourceName: 'itnsVillageHousesDetails')
 class ItnsVillageHousesDetail extends IdentifiableEntity {
   @Column(nullable: false)
   bool deleted;
 
   @Column(nullable: false)
-  int couponid;
-
-  @Column(nullable: false)
-  String hname;
+  int couponId;
 
   @Column(nullable: false)
   int male;
@@ -39,18 +37,17 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
   @Column(nullable: false)
   int itns;
 
-  @Column(nullable: false)
-  String comment;
+  @Column(nullable: true)
+  String? comment;
 
-  @Column(type: ColumnType.TEXT, nullable: false)
-  String itnsVillage;
+  @ManyToOne(table: ItnsVillage, joinColumnName: 'itnsVillage')
+  dynamic itnsVillage;
 
   ItnsVillageHousesDetail(
       {required String uid,
       int? id,
       required this.deleted,
-      required this.couponid,
-      required this.hname,
+      required this.couponId,
       required this.male,
       required this.female,
       required this.pregnant,
@@ -59,7 +56,7 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
       required this.femaleChild,
       required this.displaced,
       required this.itns,
-      required this.comment,
+      this.comment,
       required this.itnsVillage,
       String? created,
       String? lastUpdated,
@@ -76,17 +73,14 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
             dirty: dirty);
 
   factory ItnsVillageHousesDetail.fromJson(Map<String, dynamic> json) {
-    final itnsVillage = json['itnsVillage'] is String
-        ? json['itnsVillage']
-        : json['itnsVillage']['id'];
     return ItnsVillageHousesDetail(
         id: json['id'],
         uid: json['uid'],
-        itnsVillage: itnsVillage,
+        itnsVillage: json['itnsVillage'],
         deleted: json['deleted'],
         // houseUuid: json['houseUuid'],
-        couponid: json['couponid'],
-        hname: json['hname'],
+        couponId: json['couponId'],
+        name: json['name'],
         male: json['male'],
         female: json['female'],
         pregnant: json['pregnant'],
@@ -96,7 +90,7 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
         displaced: json['displaced'],
         itns: json['itns'],
         comment: json['comment'],
-        code: json['code'] ?? json['couponid'],
+        code: json['code'] ?? json['couponId'].toString(),
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         dirty: json['dirty']);
@@ -108,8 +102,8 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
       'uid': uid,
       'deleted': deleted,
       // 'houseUuid': houseUuid,
-      'couponid': couponid,
-      'hname': hname,
+      'couponId': couponId,
+      'name': name,
       'male': male,
       'female': female,
       'pregnant': pregnant,
@@ -119,8 +113,7 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
       'displaced': displaced,
       'itns': itns,
       'comment': comment,
-      'name': name,
-      'code': code ?? couponid,
+      'code': code ?? couponId,
       'createdDate': created,
       'lastModifiedDate': lastUpdated,
       'dirty': dirty,

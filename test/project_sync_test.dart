@@ -10,8 +10,8 @@ import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../../sample/data_run_samples/d_current_user.sample.dart';
-import '../../sample/data_run_samples/d_project.sample.dart';
+import '../sample/data_run_samples/d_current_user.sample.dart';
+import '../sample/data_run_samples/d_project.sample.dart';
 import 'project_sync_test.reflectable.dart';
 
 void main() async {

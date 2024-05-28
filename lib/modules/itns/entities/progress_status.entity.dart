@@ -3,7 +3,7 @@ import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'progressStatus', apiResourceName: 'progress-statuses')
+@Entity(tableName: 'progressStatus', apiResourceName: 'progressStatuses')
 class ProgressStatus extends IdentifiableEntity {
   ProgressStatus(
       {required String uid,

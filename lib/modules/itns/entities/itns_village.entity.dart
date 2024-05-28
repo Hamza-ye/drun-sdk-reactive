@@ -90,7 +90,7 @@ class ItnsVillage extends IdentifiableEntity {
 
   ItnsVillage(
       {required String uid,
-        int? id,
+      int? id,
       required this.deleted,
       this.workDayDate,
       this.surveytype,
@@ -118,9 +118,8 @@ class ItnsVillage extends IdentifiableEntity {
       this.houseDetails,
       String? created,
       String? lastUpdated,
-      required String name,
+      String? name,
       String? code,
-
       required dirty})
       : super(
             id: id,
@@ -155,7 +154,7 @@ class ItnsVillage extends IdentifiableEntity {
         otherVillageName: json['otherVillageName'],
         otherVillageCode: json['otherVillageCode'],
         otherTeamNo: json['otherTeamNo'],
-        name: json['name'],
+        name: json['name'] ?? '',
         code: json['code'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
@@ -163,7 +162,7 @@ class ItnsVillage extends IdentifiableEntity {
             .map<ItnsVillageHousesDetail>((houseDetail) =>
                 ItnsVillageHousesDetail.fromJson({
                   ...houseDetail,
-                  'itnsVillage': json['id'],
+                  'itnsVillage': json['uid'],
                   'dirty': false
                 }))
             .toList(),

@@ -16,14 +16,14 @@ import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../../sample/data_run_samples/d_activity.sample.dart';
-import '../../sample/data_run_samples/d_assignment.sample.dart';
-import '../../sample/data_run_samples/d_current_user.sample.dart';
-import '../../sample/data_run_samples/d_itns_village.sample.dart';
-import '../../sample/data_run_samples/d_progress_status.sample.dart';
-import '../../sample/data_run_samples/d_project.sample.dart';
-import '../../sample/data_run_samples/d_team.sample.dart';
-import '../../sample/data_run_samples/d_warehouse.sample.dart';
+import '../sample/data_run_samples/d_activity.sample.dart';
+import '../sample/data_run_samples/d_assignment.sample.dart';
+import '../sample/data_run_samples/d_current_user.sample.dart';
+import '../sample/data_run_samples/d_itns_village.sample.dart';
+import '../sample/data_run_samples/d_progress_status.sample.dart';
+import '../sample/data_run_samples/d_project.sample.dart';
+import '../sample/data_run_samples/d_team.sample.dart';
+import '../sample/data_run_samples/d_warehouse.sample.dart';
 import 'team_query_test.reflectable.dart';
 
 void main() async {
@@ -118,6 +118,6 @@ void main() async {
       await DRun.itnsVillageModule.itnsVillage.get();
 
   test('should store all incoming itnsVillages metadata', () {
-    expect(itnsVillages.length, 15);
+    expect(itnsVillages.length, 19);
   });
 }

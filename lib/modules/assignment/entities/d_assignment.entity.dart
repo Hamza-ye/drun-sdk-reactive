@@ -6,7 +6,7 @@ import 'package:d2_remote/modules/warehouse/entities/warehouse.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'dAssignment', apiResourceName: 'assignments')
+@Entity(tableName: 'assignment', apiResourceName: 'assignments')
 class DAssignment extends IdentifiableEntity {
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
@@ -23,7 +23,7 @@ class DAssignment extends IdentifiableEntity {
   @Column(nullable: true)
   String? startDate;
 
-  @Column(type: ColumnType.TEXT)
+  @Column(type: ColumnType.TEXT, nullable: true)
   String? status;
 
   @Column(type: ColumnType.TEXT, nullable: true)
@@ -90,12 +90,12 @@ class DAssignment extends IdentifiableEntity {
     return DAssignment(
         id: json['id'],
         uid: json['uid'],
-        name: json['name'],
+        name: json['name'] ?? '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
         created: json['createdDate'],
         code: json['code'],
-        activity: json['activity']['id'],
-        organisationUnit: json['organisationUnit']['id'],
-        team: json['team']['id'],
+        activity: json['activity'],
+        organisationUnit: json['organisationUnit'],
+        team: json['team'],
         warehouse: json['warehouse'],
         startDate: json['startDate'],
         status: json['status'],
@@ -113,6 +113,7 @@ class DAssignment extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;

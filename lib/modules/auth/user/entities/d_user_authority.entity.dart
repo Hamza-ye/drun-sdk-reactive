@@ -3,7 +3,7 @@ import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'dUserAuthority', apiResourceName: 'userAuthorities')
+@Entity(tableName: 'userAuthority', apiResourceName: 'userAuthorities')
 class DUserAuthority extends IdentifiableEntity {
   @Column()
   final String authority;

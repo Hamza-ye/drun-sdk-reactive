@@ -100,6 +100,6 @@ void main() async {
   List<DAssignment> assignments = await DRun.assignmentModule.assignment.get();
 
   test('should store all incoming assignments metadata', () {
-    expect(assignments.length, 15);
+    expect(assignments.length, 18);
   });
 }

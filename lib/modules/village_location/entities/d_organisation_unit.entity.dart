@@ -4,7 +4,7 @@ import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'dOrganisationUnit', apiResourceName: 'village-locations')
+@Entity(tableName: 'organisationUnit', apiResourceName: 'villageLocations')
 class DOrganisationUnit extends IdentifiableEntity {
   @Column(nullable: false)
   String subdistrictName;

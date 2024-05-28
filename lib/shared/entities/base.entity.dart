@@ -6,6 +6,7 @@ class BaseEntity {
   @PrimaryColumn()
   late String? uid;
 
+  @Column()
   int? id;
 
   @Column()
@@ -17,7 +18,12 @@ class BaseEntity {
   @Column(nullable: true)
   String? created;
 
-  BaseEntity({this.uid, this.id, required this.dirty, this.created, this.lastUpdated}) {
+  BaseEntity(
+      {this.uid,
+      this.id,
+      required this.dirty,
+      this.created,
+      this.lastUpdated}) {
     this.uid = this.uid ?? DhisUidGenerator.generate();
     this.created =
         this.created ?? DateTime.now().toIso8601String().split('.')[0];

@@ -1,4 +1,9 @@
 final Map<String, dynamic> dSampleAssignments = {
+  "paging": false,
+  "page": 0,
+  "pageCount": 1,
+  "total": 18,
+  "pageSize": 18,
   "assignments": [
     {
       "createdBy": "admin",
@@ -24,66 +29,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7400957004,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 107058,
-        "uid": "L8QHASYvp9b",
-        "code": "180121",
-        "mappingStatus": 0,
-        "districtCode": 1801,
-        "villageUid": null,
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "دير السيد",
-        "subvillageName": null,
-        "name": null,
-        "urbanRuralId": null,
-        "urbanRural": null,
-        "settlement": null,
-        "pop2004": null,
-        "pop2022": null,
-        "longitude": 42.9566075135,
-        "latitude": 15.7400957004,
-        "ppcCodeGis": "180121",
-        "level": "SUBDISTRICT"
+        "id": 107058
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -110,66 +65,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7569026145,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51667,
-        "uid": "LzZDzEnBnre",
-        "code": "18012110304",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "MGIzNzNmNDUyMGU0MDhkN2JkO",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "الساكت",
-        "name": "الساكت",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 401.0,
-        "pop2022": 682.0,
-        "longitude": 42.9298764718,
-        "latitude": 15.7569026145,
-        "ppcCodeGis": "18012110304",
-        "level": "SUBVILLAGE"
+        "id": 51667
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -196,66 +101,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.75256069,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51668,
-        "uid": "pMP2ocRIchH",
-        "code": "18012110305",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "NzZhN2Y5ZjJlMDViNjQzNjNkZ",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "السقايف",
-        "name": "السقايف",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 54.0,
-        "pop2022": 92.0,
-        "longitude": 42.9398475136,
-        "latitude": 15.75256069,
-        "ppcCodeGis": "18012110305",
-        "level": "SUBVILLAGE"
+        "id": 51668
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -282,66 +137,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7726677733,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51670,
-        "uid": "lavfzJko0o0",
-        "code": "18012110307",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "YTMyOTA5NThjNWNlZGI4ZjlhM",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "بيوت فارس",
-        "name": "بيوت فارس",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 434.0,
-        "pop2022": 738.0,
-        "longitude": 42.9107751232,
-        "latitude": 15.7726677733,
-        "ppcCodeGis": "18012110307",
-        "level": "SUBVILLAGE"
+        "id": 51670
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -368,66 +173,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7723316206,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51671,
-        "uid": "U715eVD39Z4",
-        "code": "18012110308",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "ZTBiNjRkYzIzNWU2YWZjYjQzM",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "محل ميرين",
-        "name": "محل ميرين",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 209.0,
-        "pop2022": 355.0,
-        "longitude": 42.951442239,
-        "latitude": 15.7723316206,
-        "ppcCodeGis": "18012110308",
-        "level": "SUBVILLAGE"
+        "id": 51671
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -454,66 +209,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7590093086,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51672,
-        "uid": "Vjt2cNtwg4L",
-        "code": "18012110309",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "NGJkYjUzM2EzNzllNGEwY2U0M",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "المشارفه",
-        "name": "المشارفه",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 251.0,
-        "pop2022": 427.0,
-        "longitude": 42.9433746183,
-        "latitude": 15.7590093086,
-        "ppcCodeGis": "18012110309",
-        "level": "SUBVILLAGE"
+        "id": 51672
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -540,66 +245,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7738711187,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51676,
-        "uid": "h0QHMHVmSDy",
-        "code": "18012110313",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "MmE1NTQwOGJiNTE1ZTgwZDU0M",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "بيت بكيري",
-        "name": "بيت بكيري",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 26.0,
-        "pop2022": 44.0,
-        "longitude": 42.9431875406,
-        "latitude": 15.7738711187,
-        "ppcCodeGis": "18012110313",
-        "level": "SUBVILLAGE"
+        "id": 51676
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -626,66 +281,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7969625162,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51677,
-        "uid": "yaE63E0dZYa",
-        "code": "18012110314",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "N2ZjOWQ5ODg5YmRiODQ2MjY4Z",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "بيوت العكامه",
-        "name": "بيوت العكامه",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 35.0,
-        "pop2022": 59.0,
-        "longitude": 42.9542929556,
-        "latitude": 15.7969625162,
-        "ppcCodeGis": "18012110314",
-        "level": "SUBVILLAGE"
+        "id": 51677
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -712,66 +317,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7656774802,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51678,
-        "uid": "whnN3VYyQVs",
-        "code": "18012110315",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "YWQ4NzY1ZThlZTkzMWE1MmU4N",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "ماطور احمد الشامي",
-        "name": "ماطور احمد الشامي",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 34.0,
-        "pop2022": 58.0,
-        "longitude": 42.9780827951,
-        "latitude": 15.7656774802,
-        "ppcCodeGis": "18012110315",
-        "level": "SUBVILLAGE"
+        "id": 51678
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -798,66 +353,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7726407815,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51679,
-        "uid": "fAsDzv8c87h",
-        "code": "18012110316",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "ZWMyODlmZjk3NzhkMzQ0NTZhZ",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "الكدف",
-        "name": "الكدف",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 153.0,
-        "pop2022": 260.0,
-        "longitude": 42.9145543459,
-        "latitude": 15.7726407815,
-        "ppcCodeGis": "18012110316",
-        "level": "SUBVILLAGE"
+        "id": 51679
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -884,66 +389,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7768163968,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51680,
-        "uid": "D9X6QzU20s1",
-        "code": "18012110317",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "OTlmMzQwMzdjYzRjN2YzNDlkM",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "سليت",
-        "name": "سليت",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 164.0,
-        "pop2022": 279.0,
-        "longitude": 42.8996568738,
-        "latitude": 15.7768163968,
-        "ppcCodeGis": "18012110317",
-        "level": "SUBVILLAGE"
+        "id": 51680
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -970,66 +425,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7805260712,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51681,
-        "uid": "o3d8Ylvg3Bf",
-        "code": "18012110318",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "NDFiMjZhZDc2ZDg3NWQzMTU1N",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "بيت حنش",
-        "name": "بيت حنش",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 61.0,
-        "pop2022": 104.0,
-        "longitude": 42.9408249441,
-        "latitude": 15.7805260712,
-        "ppcCodeGis": "18012110318",
-        "level": "SUBVILLAGE"
+        "id": 51681
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -1056,66 +461,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7829545285,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51682,
-        "uid": "hVts4R5apZG",
-        "code": "18012110319",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "ZGU5M2NkMzk1ODcyOTJhNjIwO",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "الدرويشيه",
-        "name": "الدرويشيه",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 139.0,
-        "pop2022": 236.0,
-        "longitude": 42.9463339161,
-        "latitude": 15.7829545285,
-        "ppcCodeGis": "18012110319",
-        "level": "SUBVILLAGE"
+        "id": 51682
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -1142,66 +497,16 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7846716768,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51683,
-        "uid": "SvL95eu5RLs",
-        "code": "18012110320",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "YzExNmE3ZjQ4YTFmOTU4ZjUzO",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "العوامره",
-        "name": "العوامره",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 0.0,
-        "pop2022": 0.0,
-        "longitude": 42.9530819346,
-        "latitude": 15.7846716768,
-        "ppcCodeGis": "18012110320",
-        "level": "SUBVILLAGE"
+        "id": 51683
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
       }
     },
     {
@@ -1228,66 +533,124 @@ final Map<String, dynamic> dSampleAssignments = {
       "latitude": 15.7721974145,
       "startDate": null,
       "activity": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:06:27.312804Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
-        "id": 16,
-        "uid": "oAne601mA8n",
-        "code": "202403",
-        "name": "2024 ITNs distribution Phase 2 and 3",
-        "startDate": "2024-03-18T00:00:00Z",
-        "endDate": null,
-        "active": true
+        "id": 16
       },
       "organisationUnit": {
-        "id": 51684,
-        "uid": "jetXMps8xLs",
-        "code": "18012110321",
-        "mappingStatus": 1,
-        "districtCode": 1801,
-        "villageUid": "Y2ViNjg1N2QyMmY3NTQ1MWMzY",
-        "subdistrictName": "الزهره ربع الوادي",
-        "villageName": "القنمة",
-        "subvillageName": "مزرعه معصار",
-        "name": "مزرعه معصار",
-        "urbanRuralId": 2,
-        "urbanRural": "Rural",
-        "settlement": "SUB-VILLAGE",
-        "pop2004": 15.0,
-        "pop2022": 25.0,
-        "longitude": 42.9776636183,
-        "latitude": 15.7721974145,
-        "ppcCodeGis": "18012110321",
-        "level": "SUBVILLAGE"
+        "id": 51684
       },
       "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "name": "خالد عبدالله عبده المقطري",
-        "code": "1",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
+        "id": 1109
       },
       "warehouse": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:07.022275Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:07.022275Z",
-        "id": 188,
-        "uid": "kdQGJ0Q366r",
-        "name": "المجمع الحكومي 1",
-        "description": "Phase 2",
-        "gpsCoordinate": null,
-        "supervisor": "جميل ثابت حسن الجرباني",
-        "code": "21813",
-        "supervisorMobile": "771782999"
+        "id": 188
+      }
+    },
+    {
+      "createdBy": "admin",
+      "createdDate": "2024-05-23T00:07:33.670285Z",
+      "lastModifiedBy": "admin",
+      "lastModifiedDate": "2024-05-23T00:07:33.670285Z",
+      "id": 44456,
+      "uid": "XqjNpdMS5vs",
+      "phaseNo": 2,
+      "code": "18012110322",
+      "districtCode": 1801,
+      "gov": "Al Hudaydah",
+      "district": "Az Zuhrah",
+      "subdistrict": "الزهره ربع الوادي",
+      "village": "القنمة",
+      "subvillage": "بيت الشميرى",
+      "name": "بيت الشميرى",
+      "dayId": 6,
+      "population": 158.0,
+      "itnsPlanned": 90,
+      "targetType": 1,
+      "longitude": 42.9622438329,
+      "latitude": 15.7680236293,
+      "startDate": null,
+      "activity": {
+        "id": 16
+      },
+      "organisationUnit": {
+        "id": 51685
+      },
+      "team": {
+        "id": 1109
+      },
+      "warehouse": {
+        "id": 188
+      }
+    },
+    {
+      "createdBy": "admin",
+      "createdDate": "2024-05-23T00:07:33.670285Z",
+      "lastModifiedBy": "admin",
+      "lastModifiedDate": "2024-05-23T00:07:33.670285Z",
+      "id": 44457,
+      "uid": "xCqOTe6YRJx",
+      "phaseNo": 2,
+      "code": "18012110323",
+      "districtCode": 1801,
+      "gov": "Al Hudaydah",
+      "district": "Az Zuhrah",
+      "subdistrict": "الزهره ربع الوادي",
+      "village": "القنمة",
+      "subvillage": "العريش",
+      "name": "العريش",
+      "dayId": 5,
+      "population": 191.0,
+      "itnsPlanned": 109,
+      "targetType": 1,
+      "longitude": 42.9508200134,
+      "latitude": 15.7599559614,
+      "startDate": null,
+      "activity": {
+        "id": 16
+      },
+      "organisationUnit": {
+        "id": 51686
+      },
+      "team": {
+        "id": 1109
+      },
+      "warehouse": {
+        "id": 188
+      }
+    },
+    {
+      "createdBy": "admin",
+      "createdDate": "2024-05-23T00:07:33.670285Z",
+      "lastModifiedBy": "admin",
+      "lastModifiedDate": "2024-05-23T00:07:33.670285Z",
+      "id": 44458,
+      "uid": "o8T0QpXmB7m",
+      "phaseNo": 2,
+      "code": "18012110324",
+      "districtCode": 1801,
+      "gov": "Al Hudaydah",
+      "district": "Az Zuhrah",
+      "subdistrict": "الزهره ربع الوادي",
+      "village": "القنمة",
+      "subvillage": "المخير",
+      "name": "المخير",
+      "dayId": 6,
+      "population": 173.0,
+      "itnsPlanned": 99,
+      "targetType": 1,
+      "longitude": 42.9702429803,
+      "latitude": 15.7621257544,
+      "startDate": null,
+      "activity": {
+        "id": 16
+      },
+      "organisationUnit": {
+        "id": 51687
+      },
+      "team": {
+        "id": 1109
+      },
+      "warehouse": {
+        "id": 188
       }
     }
   ]

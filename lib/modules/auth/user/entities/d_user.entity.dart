@@ -3,7 +3,7 @@ import 'package:d2_remote/modules/auth/user/entities/d_user_authority.entity.dar
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'dUser', apiResourceName: 'account')
+@Entity(tableName: 'user', apiResourceName: 'account')
 class DUser extends IdentifiableEntity {
   @Column(nullable: true)
   @Column()
@@ -132,7 +132,7 @@ class DUser extends IdentifiableEntity {
   factory DUser.fromApi(Map<String, dynamic> jsonData) {
     return DUser(
         id: jsonData['id'],
-        uid: jsonData['uid'] ?? jsonData['id'],
+        uid: jsonData['uid'] ?? jsonData['id'].toString(),
         username: jsonData['username'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
@@ -151,7 +151,7 @@ class DUser extends IdentifiableEntity {
             .map<DUserAuthority>((authority) => DUserAuthority(
                 uid: '${jsonData['id']}_$authority',
                 name: '${jsonData['id']}_$authority',
-                // id: '${jsonData['id']}_$authority',
+                id: jsonData['id'] ?? 0,
                 authority: authority,
                 user: jsonData['id'].toString(),
                 dirty: jsonData['dirty'] ?? false))
