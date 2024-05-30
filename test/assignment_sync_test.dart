@@ -38,31 +38,6 @@ void main() async {
   final dio = Dio(BaseOptions());
   final dioAdapter = DioAdapter(dio: dio);
 
-  dioAdapter.onGet(
-    'http://localhost:8080/api/activities?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleActivities),
-  );
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/projects?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleProjects),
-  );
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/warehouses?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleWarehouses),
-  );
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/teams?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleTeams),
-  );
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/assignments?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleAssignments),
-  );
-
   dUserData['password'] = 'district';
   dUserData['isLoggedIn'] = true;
   dUserData['login'] = 'admin';
@@ -72,26 +47,47 @@ void main() async {
   final user = DUser.fromApi(dUserData);
   await userQuery.setData(user).save();
 
+
+  dioAdapter.onGet(
+    'http://localhost:8080/api/projects?paging=false&eagerload=true',
+        (server) => server.reply(200, dSampleProjects),
+  );
   DProjectQuery projectQuery = DProjectQuery(database: db);
   await projectQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
+  dioAdapter.onGet(
+    'http://localhost:8080/api/activities?paging=false&eagerload=true',
+        (server) => server.reply(200, dSampleActivities),
+  );
   final activityQuery = DActivityQuery(database: db);
   await activityQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
+  dioAdapter.onGet(
+    'http://localhost:8080/api/warehouses?paging=false&eagerload=true',
+        (server) => server.reply(200, dSampleWarehouses),
+  );
   final warehouseQuery = WarehouseQuery(database: db);
   await warehouseQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
+  dioAdapter.onGet(
+    'http://localhost:8080/api/teams?paging=false&eagerload=true',
+        (server) => server.reply(200, dSampleTeams),
+  );
   final teamQuery = DTeamQuery(database: db);
   await teamQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
+  dioAdapter.onGet(
+    'http://localhost:8080/api/assignments?paging=false&eagerload=true',
+        (server) => server.reply(200, dSampleAssignments),
+  );
   final assignmentQuery = DAssignmentQuery(database: db);
   await assignmentQuery.download((progress, complete) {
     print(progress.message);

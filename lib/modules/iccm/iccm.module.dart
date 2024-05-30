@@ -4,9 +4,9 @@ import 'package:d2_remote/modules/iccm/queries/patient_info.query.dart';
 
 class IccmModule {
   static createTables() async {
+    await PatientInfoQuery().createTable();
     await ChvRegisterQuery().createTable();
     await ChvSessionQuery().createTable();
-    await PatientInfoQuery().createTable();
   }
 
   ChvRegisterQuery get chvRegister => ChvRegisterQuery();

@@ -1,11 +1,18 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/modules/assignment/entities/d_assignment.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'patientInfo', apiResourceName: 'patientInfo')
 class PatientInfo extends IdentifiableEntity {
+  @Column(nullable: true)
   int? age;
+
+  @Column(nullable: true)
   String? gender;
+
+  @ManyToOne(table: DAssignment, joinColumnName: 'location')
+  dynamic location;
 
   PatientInfo(
       {required String uid,
@@ -17,6 +24,7 @@ class PatientInfo extends IdentifiableEntity {
       String? displayName,
       this.age,
       this.gender,
+      this.location,
       required dirty})
       : super(
             id: id,
@@ -37,6 +45,7 @@ class PatientInfo extends IdentifiableEntity {
         lastUpdated: json['lastModifiedDate'],
         code: json['code'],
         age: json['age'],
+        location: json['location'],
         gender: json['gender'],
         dirty: json['dirty']);
   }
@@ -52,6 +61,7 @@ class PatientInfo extends IdentifiableEntity {
     data['code'] = this.code;
     data['age'] = this.age;
     data['gender'] = this.gender;
+    data['location'] = this.location;
     data['dirty'] = this.dirty;
     return data;
   }

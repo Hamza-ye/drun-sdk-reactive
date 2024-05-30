@@ -6,8 +6,8 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 @AnnotationReflectable
 @Entity(tableName: 'chvRegister', apiResourceName: 'chvRegisters')
 class ChvRegister extends IdentifiableEntity {
-  @ManyToOne(table: PatientInfo, joinColumnName: 'patientInfo')
-  dynamic patientInfo;
+  @ManyToOne(table: PatientInfo, joinColumnName: 'patient')
+  dynamic patient;
 
   @ManyToOne(table: DTeam, joinColumnName: 'team')
   dynamic team;
@@ -56,7 +56,7 @@ class ChvRegister extends IdentifiableEntity {
       this.comment,
       this.startEntryTime,
       this.team,
-      this.patientInfo,
+      this.patient,
       required dirty})
       : super(
             id: id,
@@ -71,7 +71,7 @@ class ChvRegister extends IdentifiableEntity {
     return ChvRegister(
         id: json['id'],
         uid: json['uid'],
-        name: json['name'],
+        name: json['name'] ?? '',
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         visitDate: json['visitDate'],
@@ -83,7 +83,7 @@ class ChvRegister extends IdentifiableEntity {
         comment: json['comment'],
         startEntryTime: json['startEntryTime'],
         team: json['team'],
-        patientInfo: json['patientInfo'],
+        patient: json['patient'],
         code: json['code'],
         dirty: json['dirty']);
   }
@@ -106,7 +106,7 @@ class ChvRegister extends IdentifiableEntity {
     data['comment'] = this.comment;
     data['startEntryTime'] = this.startEntryTime;
     data['team'] = this.team;
-    data['patientInfo'] = this.patientInfo;
+    data['patient'] = this.patient;
     data['dirty'] = this.dirty;
     return data;
   }
