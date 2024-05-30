@@ -92,6 +92,7 @@ class DAssignment extends IdentifiableEntity {
         uid: json['uid'],
         name: json['name'] ?? '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
         created: json['createdDate'],
+        lastUpdated: json['lastModifiedDate'],
         code: json['code'],
         activity: json['activity'],
         organisationUnit: json['organisationUnit'],
@@ -115,6 +116,8 @@ class DAssignment extends IdentifiableEntity {
     data['id'] = this.id;
     data['uid'] = this.uid;
     data['name'] = this.name;
+    data['createdDate'] = this.created;
+    data['lastModifiedDate'] = this.lastUpdated;
     data['shortName'] = this.shortName;
     data['code'] = this.code;
     data['displayName'] = this.displayName;

@@ -65,7 +65,8 @@ class DActivity extends IdentifiableEntity {
         uid: json['uid'],
         id: json['id'],
         name: json['name'],
-        created: json['created'],
+        created: json['createdDate'],
+        lastUpdated: json['lastModifiedDate'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
@@ -94,7 +95,8 @@ class DActivity extends IdentifiableEntity {
     data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
     data['uid'] = this.uid;
-    data['created'] = this.created;
+    data['createdDate'] = this.created;
+    data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;

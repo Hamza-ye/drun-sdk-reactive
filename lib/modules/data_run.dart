@@ -8,6 +8,7 @@ import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/models/auth-token.model.dart';
 import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
+import 'package:d2_remote/modules/iccm/iccm.module.dart';
 import 'package:d2_remote/modules/itns/itns.module.dart';
 import 'package:d2_remote/modules/project/d_project.module.dart';
 import 'package:d2_remote/modules/teams/d_team.module.dart';
@@ -40,6 +41,7 @@ class DRun {
       await DTeamModule.createTables();
       await DAssignmentModule.createTables();
       await ItnsVillageModule.createTables();
+      await IccmModule.createTables();
     }
   }
 
@@ -237,4 +239,6 @@ class DRun {
   static DTeamModule teamModule = DTeamModule();
 
   static ItnsVillageModule itnsVillageModule = ItnsVillageModule();
+
+  static IccmModule iccmModule = IccmModule();
 }

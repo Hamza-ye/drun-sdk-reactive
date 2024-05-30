@@ -47,7 +47,8 @@ class DTeam extends IdentifiableEntity {
         id: json['id'],
         uid: json['uid'],
         name: json['name'],
-        created: json['created'],
+        created: json['createdDate'],
+        lastUpdated: json['lastModifiedDate'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
@@ -78,7 +79,8 @@ class DTeam extends IdentifiableEntity {
     data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
     data['uid'] = this.uid;
-    data['created'] = this.created;
+    data['createdDate'] = this.created;
+    data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;

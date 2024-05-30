@@ -175,8 +175,8 @@ class DUser extends IdentifiableEntity {
     data['username'] = this.username;
     data['password'] = this.password;
     data['phoneNumber'] = this.phoneNumber;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['createdDate'] = this.created;
+    data['lastModifiedDate'] = this.lastUpdated;
     data['token'] = this.token;
     data['tokenType'] = this.tokenType;
     data['refreshToken'] = this.refreshToken;

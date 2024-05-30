@@ -1,49 +1,43 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'project', apiResourceName: 'projects')
-class DProject extends IdentifiableEntity {
-  @OneToMany(table: DActivity)
-  List<DActivity>? activities;
+@Entity(tableName: 'patientInfo', apiResourceName: 'patientInfo')
+class PatientInfo extends IdentifiableEntity {
+  int? age;
+  String? gender;
 
-  DProject(
+  PatientInfo(
       {required String uid,
       int? id,
       String? created,
       String? lastUpdated,
       required String? name,
-      required String? shortName,
       String? code,
       String? displayName,
-      this.activities,
+      this.age,
+      this.gender,
       required dirty})
       : super(
             id: id,
             uid: uid,
             name: name,
-            shortName: shortName,
             displayName: displayName,
             code: code,
             created: created,
             lastUpdated: lastUpdated,
             dirty: dirty);
 
-  factory DProject.fromJson(Map<String, dynamic> json) {
-    return DProject(
+  factory PatientInfo.fromJson(Map<String, dynamic> json) {
+    return PatientInfo(
         id: json['id'],
         uid: json['uid'],
         name: json['name'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
-        shortName: json['shortName'],
         code: json['code'],
-        displayName: json['displayName'],
-        activities: List<dynamic>.from(json['activities'] ?? [])
-            .map((activity) => DActivity.fromJson(
-                {...activity, 'project': json['id'], 'dirty': false}))
-            .toList(),
+        age: json['age'],
+        gender: json['gender'],
         dirty: json['dirty']);
   }
 
@@ -55,10 +49,9 @@ class DProject extends IdentifiableEntity {
     data['createdDate'] = this.created;
     data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;
-    data['shortName'] = this.shortName;
     data['code'] = this.code;
-    data['displayName'] = this.displayName;
-    data['activities'] = this.activities;
+    data['age'] = this.age;
+    data['gender'] = this.gender;
     data['dirty'] = this.dirty;
     return data;
   }
