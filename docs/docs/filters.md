@@ -8,7 +8,7 @@ Repositories expose the list of available filters prefixed by the keyword "by". 
 Several filters can be appended to the same query in any order. Filters are joined globally using the operator "AND". This means that a query like
 
 ```java
-D2Remote.eventModule().events()
+DRun.eventModule().events()
     .byOrganisationUnitUid().eq("DiszpKrYNg8")
     .byEventDate().after(Date("2019-05-05"))
     ...

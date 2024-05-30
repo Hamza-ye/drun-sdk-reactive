@@ -1,35 +1,35 @@
 // import 'package:d2_remote/core/d2_remote_configuration.dart';
 // import 'package:d2_remote/d2_remote.dart';
 //
-// class D2RemoteManager {
-//   D2Remote? d2Remote;
+// class DRunManager {
+//   DRun? dRun;
 //
-//   static final D2RemoteManager _instance = D2RemoteManager._internal();
+//   static final DRunManager _instance = DRunManager._internal();
 //
 //   // using a factory is important
 //   // because it promises to return _an_ object of this type
 //   // but it doesn't promise to make a new one.
-//   factory D2RemoteManager() {
+//   factory DRunManager() {
 //     return _instance;
 //   }
 //
 //   // This named constructor is the "real" constructor
 //   // It'll be called exactly once, by the static property assignment above
 //   // it's also private, so it can only be called in this class
-//   D2RemoteManager._internal() {
+//   DRunManager._internal() {
 //     // initialization logic
 //   }
 //
-//   D2Remote? getD2Remote() {
-//     if (d2Remote == null) throw Exception("D2Remote is not instantiated yet");
-//     return d2Remote;
+//   DRun? getDRun() {
+//     if (dRun == null) throw Exception("DRun is not instantiated yet");
+//     return dRun;
 //   }
 //
 //   bool isD2Instantiated() {
-//     return d2Remote != null;
+//     return dRun != null;
 //   }
 //
-//   Future<D2Remote> instantiateD2Remote(D2RemoteConfiguration d2Config) {
-//     return D2Remote.logIn(username: username, password: password, url: url)
+//   Future<DRun> instantiateDRun(DRunConfiguration d2Config) {
+//     return DRun.logIn(username: username, password: password, url: url)
 //   }
 // }

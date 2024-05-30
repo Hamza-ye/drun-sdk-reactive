@@ -19,7 +19,7 @@ void main() async {
   // initializeReflectable();
   // sqfliteFfiInit();
 
-  // await D2Remote.initialize(databaseFactory: databaseFactoryFfi);
+  // await DRun.initialize(databaseFactory: databaseFactoryFfi);
 
   // var databaseFactory = databaseFactoryFfi;
 

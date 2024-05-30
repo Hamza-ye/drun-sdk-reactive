@@ -2,7 +2,7 @@
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:sqflite/sqlite_api.dart';
 //
-// class D2RemoteConfiguration {
+// class DRunConfiguration {
 //   final String userName;
 //   final String password;
 //   final String url;
@@ -11,7 +11,7 @@
 //   final DatabaseFactory? databaseFactory;
 //   final Dio? dioTestClient;
 //
-//   const D2RemoteConfiguration(
+//   const DRunConfiguration(
 //       {required this.userName,
 //       required this.password,
 //       required this.url,

@@ -5,7 +5,7 @@ slug: /getting-started
 
 :::caution
 
-D2Remote is inspired by DHIS2 Android SDK. Some of the functionalities may not yet be available as the SDK.
+DRun is inspired by DHIS2 Android SDK. Some of the functionalities may not yet be available as the SDK.
 
 :::
 ## Installation
@@ -36,16 +36,16 @@ flutter packages pub run build_runner build --delete-conflicting-outputs
 
 ```
 
-## D2Remote initialization
+## DRun initialization
 
 <!--TODO-->
 
 <!--DHIS2-SECTION-ID:initialization-->
 
-In order to start using the SDK, the first step is to initialize to a D2Remote instance as follows:
+In order to start using the SDK, the first step is to initialize to a DRun instance as follows:
 
 ```dart
-D2RemoteInstance d2Remote = D2Remote.initialize(
+DRunInstance dRun = DRun.initialize(
         instance: "https://play.dhis2.org/2.36.10"
     );
 ```
