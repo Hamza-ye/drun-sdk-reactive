@@ -47,7 +47,6 @@ class DTeamQuery extends BaseQuery<DTeam> {
             percentage: 0),
         false);
 
-
     final dhisUrl = await this.dataRunUrl();
 
     final response = await HttpClient.get(dhisUrl,

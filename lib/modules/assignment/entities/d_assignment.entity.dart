@@ -55,7 +55,7 @@ class DAssignment extends IdentifiableEntity {
 
   DAssignment(
       {required String uid,
-        int? id,
+      int? id,
       String? created,
       String? lastUpdated,
       String? name,
@@ -74,7 +74,6 @@ class DAssignment extends IdentifiableEntity {
       this.subdistrict,
       this.village,
       this.subvillage,
-
       required dirty})
       : super(
             id: id,
@@ -90,7 +89,8 @@ class DAssignment extends IdentifiableEntity {
     return DAssignment(
         id: json['id'],
         uid: json['uid'],
-        name: json['name'] ?? '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
+        name: json['name'] ??
+            '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         code: json['code'],
