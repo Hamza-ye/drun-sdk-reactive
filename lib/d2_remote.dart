@@ -252,36 +252,36 @@ class D2Remote {
     return queryResult;
   }
 
-  // static OrganisationUnitModule organisationUnitModule =
-  // OrganisationUnitModule();
-  //
-  // static DataElementModule dataElementModule = DataElementModule();
-  //
-  // static DataSetModule dataSetModule = DataSetModule();
-  //
-  // static ProjectModule projectModule = ProjectModule();
-  //
-  // static ActivityModule activityModule = ActivityModule();
-  //
-  // static AssignmentModule assignmentModule = AssignmentModule();
-  //
-  // static TeamModule teamModule = TeamModule();
-  //
-  // static ProgramModule programModule = ProgramModule();
-  //
-  // static DashboardModule dashboardModule = DashboardModule();
-  //
-  // static TrackedEntityInstanceModule trackerModule =
-  // TrackedEntityInstanceModule();
-  //
-  // static AggregateModule aggregateModule = AggregateModule();
-  //
-  // static NotificationModule notificationModule = NotificationModule();
-  //
-  // static OptionModule optionModule = OptionModule();
-  //
-  // static FileResourceModule fileResourceModule = FileResourceModule();
-  //
+  static OrganisationUnitModule organisationUnitModule =
+  OrganisationUnitModule();
+
+  static DataElementModule dataElementModule = DataElementModule();
+
+  static DataSetModule dataSetModule = DataSetModule();
+
+  static ProjectModule projectModule = ProjectModule();
+
+  static ActivityModule activityModule = ActivityModule();
+
+  static AssignmentModule assignmentModule = AssignmentModule();
+
+  static TeamModule teamModule = TeamModule();
+
+  static ProgramModule programModule = ProgramModule();
+
+  static DashboardModule dashboardModule = DashboardModule();
+
+  static TrackedEntityInstanceModule trackerModule =
+  TrackedEntityInstanceModule();
+
+  static AggregateModule aggregateModule = AggregateModule();
+
+  static NotificationModule notificationModule = NotificationModule();
+
+  static OptionModule optionModule = OptionModule();
+
+  static FileResourceModule fileResourceModule = FileResourceModule();
+
 
   /////// Data Run
   static DUserModule userModule = DUserModule();
