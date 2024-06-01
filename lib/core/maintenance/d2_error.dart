@@ -1,8 +1,7 @@
+import 'package:d2_remote/core/common/exception/exception.dart';
 import 'package:d2_remote/core/maintenance/d2_error_code.dart';
 import 'package:d2_remote/core/maintenance/d2_error_component.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../common/exception/exception.dart';
 
 part 'd2_error.freezed.dart';
 

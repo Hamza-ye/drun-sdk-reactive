@@ -29,14 +29,14 @@ abstract class BaseRepository<T extends BaseEntity> {
   Future<int> count({Database database});
 
   Future<List<T>> find(
-      {String? uid,
+      {String? id,
       List<QueryFilter>? filters,
       List<String>? fields,
       Map<String, SortOrder>? sortOrder,
       Database? database});
 
   Future<T?> findById(
-      {required String uid, List<String>? fields, Database? database});
+      {required String id, List<String>? fields, Database? database});
 
   Future<List<T>> findAll(
       {List<QueryFilter> filters,
@@ -59,7 +59,7 @@ abstract class BaseRepository<T extends BaseEntity> {
   Future<int> saveOne(
       {required T entity, Database database, required MergeMode mergeMode});
 
-  Future<int> deleteById({required String uid, Database database});
+  Future<int> deleteById({required String id, Database database});
 
   Future<int> deleteByIds({required List<String> ids, Database database});
 
@@ -92,7 +92,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
 
   @override
   Future<List<T>> find(
-      {String? uid,
+      {String? id,
       List<QueryFilter>? filters,
       List<String>? fields,
       Map<String, SortOrder>? sortOrder,
@@ -100,9 +100,9 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
       List<ColumnRelation>? relations}) async {
     final Database db = database != null ? database : await this.database;
 
-    if (uid != null) {
+    if (id != null) {
       final queryResult = await db.query(this.entity.tableName,
-          where: 'uid = ?', whereArgs: [uid], columns: fields);
+          where: 'uid = ?', whereArgs: [id], columns: fields);
 
       final relationResults = await this.findRelations(
           database: db,
@@ -298,13 +298,13 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
 
   @override
   Future<T?> findById(
-      {required String uid,
+      {required String id,
       List<String>? fields,
       Database? database,
       List<ColumnRelation>? relations}) async {
     final Database db = database != null ? database : await this.database;
 
-    var results = await this.find(uid: uid, fields: fields, database: db);
+    var results = await this.find(id: id, fields: fields, database: db);
 
     return results.length > 0 ? results[0] : null;
   }
@@ -455,10 +455,10 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
   }
 
   @override
-  Future<int> deleteById({required String uid, Database? database}) async {
+  Future<int> deleteById({required String id, Database? database}) async {
     final Database db = database != null ? database : await this.database;
 
-    await db.delete(this.entity.tableName, where: 'uid = ?', whereArgs: [uid]);
+    await db.delete(this.entity.tableName, where: 'uid = ?', whereArgs: [id]);
 
     return 1;
   }
@@ -508,7 +508,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
       SaveOptions? saveOptions}) async {
     final Database db = database != null ? database : await this.database;
 
-    var result = await this.findById(uid: entity.uid as String, database: db);
+    var result = await this.findById(id: entity.uid as String, database: db);
 
     if (result != null) {
       final currentLastUpdatedDate =

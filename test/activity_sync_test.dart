@@ -1,6 +1,6 @@
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/data_run.dart';
+import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/activity/queries/d_activity.query.dart';
 import 'package:d2_remote/modules/project/queries/d_project.query.dart';
@@ -24,7 +24,7 @@ void main() async {
 
   var databaseFactory = databaseFactoryFfi;
 
-  await DRun.initialize(
+  await D2Remote.initialize(
       databaseFactory: databaseFactoryFfi, databaseName: 'flutter_test');
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -61,7 +61,7 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DActivity> activities = await DRun.activityModule.activity.get();
+  List<DActivity> activities = await D2Remote.activityModuleD.activity.get();
 
   test('should store all incoming activities metadata', () {
     expect(activities.length, 3);

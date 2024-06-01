@@ -7,12 +7,12 @@ Repositories offer a builder syntax with compile-time validation to access the r
 
 ```java
 // Generic syntax
-dRun.<module>.<repository>
+D2Remote.<module>.<repository>
     .[ filter | orderBy | nested fields ]
     .<action>;
 
 // An example for events
-dRun.eventModule().events()
+D2Remote.eventModule().events()
     .byOrganisationUnitUid().eq("DiszpKrYNg8")
     .byEventDate().after(Date("2019-05-05"))
     .orderByEventDate(DESC)

@@ -1,7 +1,7 @@
 import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/data_run.dart';
+import 'package:d2_remote/d2_remote.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,7 +19,7 @@ void main() async {
   // initializeReflectable();
   // sqfliteFfiInit();
 
-  // await DRun.initialize(databaseFactory: databaseFactoryFfi);
+  // await D2Remote.initialize(databaseFactory: databaseFactoryFfi);
 
   // var databaseFactory = databaseFactoryFfi;
 
@@ -32,7 +32,7 @@ void main() async {
 
   var databaseFactory = databaseFactoryFfi;
 
-  await DRun.initialize(
+  await D2Remote.initialize(
       databaseFactory: databaseFactoryFfi, databaseName: 'flutter_test');
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -48,7 +48,7 @@ void main() async {
     expect(userResponse, null);
   });
 
-  final isAuthenticated = await DRun.isAuthenticated(
+  final isAuthenticated = await D2Remote.isAuthenticated(
       sharedPreferenceInstance: SharedPreferences.getInstance());
 
   test('should not be authenticated if database is not set', () {
@@ -68,14 +68,14 @@ void main() async {
     (server) => server.reply(200, dUserData),
   );
 
-  final onlineLogIn = await DRun.logIn(
+  final onlineLogIn = await D2Remote.logIn(
       username: 'admin',
       password: 'district',
       url: 'http://localhost:8080',
       databaseFactory: databaseFactoryFfi,
       dioTestClient: dio);
 
-  final user = await DRun.userModule.user.withAuthorities().getOne();
+  final user = await D2Remote.userModule.user.withAuthorities().getOne();
 
   test('should successfully authenticate user on online login', () {
     expect(onlineLogIn, LoginResponseStatus.ONLINE_LOGIN_SUCCESS);
@@ -85,9 +85,9 @@ void main() async {
     expect(user?.authorities?.length, 2);
   });
 
-  final logOutResponse = await DRun.logOut();
+  final logOutResponse = await D2Remote.logOut();
 
-  final isAuthenticatedAfterLogout = await DRun.isAuthenticated(
+  final isAuthenticatedAfterLogout = await D2Remote.isAuthenticated(
       sharedPreferenceInstance: SharedPreferences.getInstance());
 
   test('should successfully log out user', () {

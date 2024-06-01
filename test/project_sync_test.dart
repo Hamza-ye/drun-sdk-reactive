@@ -1,6 +1,6 @@
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/data_run.dart';
+import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/project/entities/d_project.entity.dart';
 import 'package:d2_remote/modules/project/queries/d_project.query.dart';
 import 'package:dio/dio.dart';
@@ -22,7 +22,7 @@ void main() async {
 
   var databaseFactory = databaseFactoryFfi;
 
-  await DRun.initialize(
+  await D2Remote.initialize(
       databaseFactory: databaseFactoryFfi, databaseName: 'flutter_test');
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -48,7 +48,7 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DProject> projects = await DRun.projectModule.project.get();
+  List<DProject> projects = await D2Remote.projectModuleD.project.get();
 
   test('should store all incoming projects metadata', () {
     expect(projects.length, 2);

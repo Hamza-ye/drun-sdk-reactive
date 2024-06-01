@@ -1,6 +1,6 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: "DRun (DHIS2 Flutter SDK)",
+  title: "D2Remote (DHIS2 Flutter SDK)",
   url: "https://Hamza-ye.github.io",
   baseUrl: "/data-run-sdk/",
   onBrokenLinks: "throw",
@@ -10,9 +10,9 @@ module.exports = {
   projectName: "data-run-sdk",
   themeConfig: {
     navbar: {
-      title: "DRun (DHIS2 Flutter SDK)",
+      title: "D2Remote (DHIS2 Flutter SDK)",
       logo: {
-        alt: "DRun (DHIS2 Flutter SDK)",
+        alt: "D2Remote (DHIS2 Flutter SDK)",
         src: "img/logo.svg",
       },
       items: [

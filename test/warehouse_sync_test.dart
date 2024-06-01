@@ -1,7 +1,7 @@
 import 'package:d2_remote/modules/activity/queries/d_activity.query.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/data_run.dart';
+import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/project/queries/d_project.query.dart';
 import 'package:d2_remote/modules/warehouse/entities/warehouse.entity.dart';
 import 'package:d2_remote/modules/warehouse/queries/warehouse.query.dart';
@@ -26,7 +26,7 @@ void main() async {
 
   var databaseFactory = databaseFactoryFfi;
 
-  await DRun.initialize(
+  await D2Remote.initialize(
       databaseFactory: databaseFactoryFfi, databaseName: 'flutter_test');
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -70,7 +70,7 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<Warehouse> warehouses = await DRun.warehouseModule.warehouse.get();
+  List<Warehouse> warehouses = await D2Remote.warehouseModule.warehouse.get();
 
   test('should store all incoming warehouses metadata', () {
     expect(warehouses.length, 2);

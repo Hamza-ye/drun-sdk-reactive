@@ -3,7 +3,7 @@ import 'package:d2_remote/modules/assignment/entities/d_assignment.entity.dart';
 import 'package:d2_remote/modules/assignment/queries/d_assignment.query.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/data_run.dart';
+import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/project/queries/d_project.query.dart';
 import 'package:d2_remote/modules/teams/queries/d_team.query.dart';
 import 'package:d2_remote/modules/warehouse/queries/warehouse.query.dart';
@@ -33,7 +33,7 @@ void main() async {
 
   var databaseFactory = databaseFactoryFfi;
 
-  await DRun.initialize(
+  await D2Remote.initialize(
       databaseFactory: databaseFactoryFfi, databaseName: 'flutter_test');
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -104,7 +104,7 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<PatientInfo> patientInfo = await DRun.iccmModule.patientInfo.get();
+  List<PatientInfo> patientInfo = await D2Remote.iccmModule.patientInfo.get();
 
   test('should store all incoming patientInfo metadata', () {
     expect(patientInfo.length, 2);

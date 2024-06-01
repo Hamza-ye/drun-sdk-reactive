@@ -29,7 +29,7 @@ class BaseQuery<T extends BaseEntity> {
   String? tableName;
   String? apiResourceName;
   String? singularResourceName;
-  String? uid;
+  String? id;
   List<QueryFilter>? filters = [];
   Map<String, SortOrder> sortOrder = {};
   List<ColumnRelation> relations = [];
@@ -57,14 +57,14 @@ class BaseQuery<T extends BaseEntity> {
     return this;
   }
 
-  byId(String uid) {
-    this.uid = uid;
+  byId(String id) {
+    this.id = id;
     this.filters = null;
     return this;
   }
 
   byIds(List<String> uids) {
-    this.uid = null;
+    this.id = null;
     return this.whereIn(attribute: 'uid', values: uids, merge: false);
   }
 
@@ -184,10 +184,10 @@ class BaseQuery<T extends BaseEntity> {
 
   QueryModel get query {
     List<QueryFilter>? filters = this.filters;
-    if (this.uid != null) {
+    if (this.id != null) {
       filters = [
         QueryFilter(
-            attribute: 'uid', condition: QueryCondition.Equal, value: this.uid)
+            attribute: 'uid', condition: QueryCondition.Equal, value: this.id)
       ];
     }
 
@@ -206,9 +206,9 @@ class BaseQuery<T extends BaseEntity> {
       return this._fetchOnline(dioTestClient: dioTestClient);
     }
 
-    if (this.uid != null) {
+    if (this.id != null) {
       return this.repository.find(
-          uid: this.uid,
+          id: this.id,
           fields: this.fields as List<String>,
           database: this.database,
           relations: this.relations) as Future<List<T>>;
@@ -249,10 +249,10 @@ class BaseQuery<T extends BaseEntity> {
   }
 
   Future delete() {
-    if (this.uid != null) {
+    if (this.id != null) {
       return this
           .repository
-          .deleteById(uid: this.uid as String, database: this.database);
+          .deleteById(id: this.id as String, database: this.database);
     }
 
     return this.repository.deleteAll();

@@ -6,7 +6,7 @@ class BaseEntity {
   @PrimaryColumn()
   late String? uid;
 
-  @Column()
+  @Column(nullable: true)
   int? id;
 
   @Column()

@@ -1,7 +1,7 @@
 import 'package:d2_remote/modules/activity/queries/d_activity.query.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/data_run.dart';
+import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/project/queries/d_project.query.dart';
 import 'package:d2_remote/modules/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/modules/teams/queries/d_team.query.dart';
@@ -28,7 +28,7 @@ void main() async {
 
   var databaseFactory = databaseFactoryFfi;
 
-  await DRun.initialize(
+  await D2Remote.initialize(
       databaseFactory: databaseFactoryFfi, databaseName: 'flutter_test');
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -81,7 +81,7 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DTeam> teams = await DRun.teamModule.team.get();
+  List<DTeam> teams = await D2Remote.teamModuleD.team.get();
 
   test('should store all incoming teams metadata', () {
     expect(teams.length, 1);
