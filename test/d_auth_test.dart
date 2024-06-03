@@ -60,11 +60,6 @@ void main() async {
 
   dioAdapter.onGet(
     'http://localhost:8080/api/custom/authenticateBasic',
-    (server) => server.reply(200, dCorrectSampleAuthToken),
-  );
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/account',
     (server) => server.reply(200, dUserData),
   );
 

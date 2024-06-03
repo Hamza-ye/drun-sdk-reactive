@@ -124,25 +124,19 @@ class D2Remote {
     WidgetsFlutterBinding.ensureInitialized();
 
     // Data-Run
-    HttpResponse tokenResponse = await HttpClient.get('authenticateBasic',
+    HttpResponse userResponse = await HttpClient.get('authenticateBasic',
         baseUrl: url,
         username: username,
         password: password,
         dioTestClient: dioTestClient);
 
-    if (tokenResponse.statusCode == 401) {
+    if (userResponse.statusCode == 401) {
       return LoginResponseStatus.WRONG_CREDENTIALS;
     }
 
-    if (tokenResponse.statusCode == 500) {
+    if (userResponse.statusCode == 500) {
       return LoginResponseStatus.SERVER_ERROR;
     }
-
-    HttpResponse userResponse = await HttpClient.get('account',
-        baseUrl: url,
-        username: username,
-        password: password,
-        dioTestClient: dioTestClient);
 
     final uri = Uri.parse(url).host;
     final String databaseName = '${username}_$uri';
@@ -164,12 +158,11 @@ class D2Remote {
     userData['isLoggedIn'] = true;
     userData['username'] = username;
     userData['baseUrl'] = url;
-    // Data Run
+    // Data Run come from API
     // userData['authTye'] = 'basic';
-    userData['authTye'] = 'Bearer';
+    // userData['authTye'] = 'Bearer';
     userData['dirty'] = true;
     // Data-Run
-    userData['token'] = tokenResponse.body['id_token'];
 
     final user = DUser.fromApi(userData);
     await userQuery.setData(user).save();
