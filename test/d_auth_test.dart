@@ -59,16 +59,16 @@ void main() async {
   final dioAdapter = DioAdapter(dio: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/authenticate',
+    'http://localhost:8080/api/custom/authenticateBasic',
     (server) => server.reply(200, dCorrectSampleAuthToken),
   );
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/account',
+    'http://localhost:8080/api/custom/account',
     (server) => server.reply(200, dUserData),
   );
 
-  final onlineLogIn = await D2Remote.logIn(
+  final onlineLogIn = await D2Remote.logInDataRun(
       username: 'admin',
       password: 'district',
       url: 'http://localhost:8080',

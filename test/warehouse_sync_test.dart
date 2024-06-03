@@ -44,7 +44,7 @@ void main() async {
   await userQuery.setData(user).save();
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/projects?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
     (server) => server.reply(200, dSampleProjects),
   );
   DProjectQuery projectQuery = DProjectQuery(database: db);
@@ -53,7 +53,7 @@ void main() async {
   }, dioTestClient: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/activities?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
     (server) => server.reply(200, dSampleActivities),
   );
   final activityQuery = DActivityQuery(database: db);
@@ -62,7 +62,7 @@ void main() async {
   }, dioTestClient: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/warehouses?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
     (server) => server.reply(200, dSampleWarehouses),
   );
   final warehouseQuery = WarehouseQuery(database: db);

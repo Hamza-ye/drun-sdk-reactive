@@ -33,12 +33,12 @@ void main() async {
   final dioAdapter = DioAdapter(dio: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/activities?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
     (server) => server.reply(200, dSampleActivities),
   );
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/projects?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
     (server) => server.reply(200, dSampleProjects),
   );
 

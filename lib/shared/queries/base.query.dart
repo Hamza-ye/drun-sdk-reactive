@@ -3,7 +3,7 @@
 ///
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
-import 'package:d2_remote/modules/shared/utilities/data-run-url-generator.util.dart';
+import 'package:d2_remote/shared/utilities/data-run-url-generator.util.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/utilities/dhis-url-generator.util.dart';

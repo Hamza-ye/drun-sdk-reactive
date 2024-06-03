@@ -49,7 +49,7 @@ void main() async {
 
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/projects?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
         (server) => server.reply(200, dSampleProjects),
   );
   DProjectQuery projectQuery = DProjectQuery(database: db);
@@ -58,7 +58,7 @@ void main() async {
   }, dioTestClient: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/activities?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
         (server) => server.reply(200, dSampleActivities),
   );
   final activityQuery = DActivityQuery(database: db);
@@ -67,7 +67,7 @@ void main() async {
   }, dioTestClient: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/warehouses?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
         (server) => server.reply(200, dSampleWarehouses),
   );
   final warehouseQuery = WarehouseQuery(database: db);
@@ -76,7 +76,7 @@ void main() async {
   }, dioTestClient: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/teams?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/teams?paging=false&eagerload=true',
         (server) => server.reply(200, dSampleTeams),
   );
   final teamQuery = DTeamQuery(database: db);
@@ -85,7 +85,7 @@ void main() async {
   }, dioTestClient: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/assignments?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/assignments?paging=false&eagerload=true',
         (server) => server.reply(200, dSampleAssignments),
   );
   final assignmentQuery = DAssignmentQuery(database: db);

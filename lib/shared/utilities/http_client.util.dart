@@ -19,6 +19,9 @@ class HttpResponse {
 }
 
 class HttpClient {
+  // Data Run
+  static final String apiPath = '/api/custom/';
+
   findById() {}
 
   update() {}
@@ -60,7 +63,7 @@ class HttpClient {
 
     try {
       final Response<dynamic> response = await dioClient
-          .post('${httpDetails.baseUrl}/api/$resourceUrl', data: data);
+          .post('${httpDetails.baseUrl}$apiPath$resourceUrl', data: data);
 
       return HttpResponse(
           statusCode: response.statusCode ?? 500, body: response.data);
@@ -101,8 +104,8 @@ class HttpClient {
 
     try {
       final Response<dynamic> response = data == null
-          ? await dioClient.put('${httpDetails.baseUrl}/api/$resourceUrl')
-          : await dioClient.put('${httpDetails.baseUrl}/api/$resourceUrl',
+          ? await dioClient.put('${httpDetails.baseUrl}$apiPath$resourceUrl')
+          : await dioClient.put('${httpDetails.baseUrl}$apiPath$resourceUrl',
               data: data);
 
       return HttpResponse(
@@ -143,7 +146,7 @@ class HttpClient {
 
     try {
       final Response<dynamic> response =
-          await dioClient.get('${httpDetails.baseUrl}/api/$resourceUrl');
+          await dioClient.get('${httpDetails.baseUrl}$apiPath$resourceUrl');
 
       return HttpResponse(
           statusCode: response.statusCode ?? 500, body: response.data);
