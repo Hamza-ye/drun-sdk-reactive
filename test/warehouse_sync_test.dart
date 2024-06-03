@@ -1,10 +1,10 @@
-import 'package:d2_remote/modules/activity/queries/d_activity.query.dart';
+import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/d2_remote.dart';
-import 'package:d2_remote/modules/project/queries/d_project.query.dart';
-import 'package:d2_remote/modules/warehouse/entities/warehouse.entity.dart';
-import 'package:d2_remote/modules/warehouse/queries/warehouse.query.dart';
+import 'package:d2_remote/modules/metadatarun/project/queries/d_project.query.dart';
+import 'package:d2_remote/modules/metadatarun/warehouse/entities/warehouse.entity.dart';
+import 'package:d2_remote/modules/metadatarun/warehouse/queries/warehouse.query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
