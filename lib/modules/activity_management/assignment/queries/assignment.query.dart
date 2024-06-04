@@ -4,7 +4,7 @@ import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA, aut: false)
+// @Query(type: QueryType.METADATA, aut: false)
 class AssignmentQuery extends BaseQuery<Assignment> {
   String? team;
   String? activity;

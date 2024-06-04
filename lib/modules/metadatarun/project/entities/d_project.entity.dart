@@ -3,7 +3,7 @@ import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entit
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'project', apiResourceName: 'projects')
+@Entity(tableName: 'dProject', apiResourceName: 'projects')
 class DProject extends IdentifiableEntity {
   @OneToMany(table: DActivity)
   List<DActivity>? activities;

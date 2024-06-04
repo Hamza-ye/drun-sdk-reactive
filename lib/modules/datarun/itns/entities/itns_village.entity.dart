@@ -154,7 +154,7 @@ class ItnsVillage extends IdentifiableEntity {
         otherVillageName: json['otherVillageName'],
         otherVillageCode: json['otherVillageCode'],
         otherTeamNo: json['otherTeamNo'],
-        name: json['name'] ?? '',
+        name: json['name'],
         code: json['code'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],

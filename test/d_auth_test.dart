@@ -59,7 +59,7 @@ void main() async {
   final dioAdapter = DioAdapter(dio: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/authenticateBasic',
+    'http://localhost:8080/api/custom/me',
     (server) => server.reply(200, dUserData),
   );
 
@@ -71,6 +71,7 @@ void main() async {
       dioTestClient: dio);
 
   final user = await D2Remote.userModule.user.withAuthorities().getOne();
+  final user2 = await D2Remote.userModule.user.getOne();
 
   test('should successfully authenticate user on online login', () {
     expect(onlineLogIn, LoginResponseStatus.ONLINE_LOGIN_SUCCESS);

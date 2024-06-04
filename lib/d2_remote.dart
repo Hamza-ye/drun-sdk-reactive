@@ -124,7 +124,13 @@ class D2Remote {
     WidgetsFlutterBinding.ensureInitialized();
 
     // Data-Run
-    HttpResponse userResponse = await HttpClient.get('authenticateBasic',
+    // HttpResponse tokenResponse = await HttpClient.get('authenticate',
+    //     baseUrl: url,
+    //     username: username,
+    //     password: password,
+    //     dioTestClient: dioTestClient);
+
+    HttpResponse userResponse = await HttpClient.get('me',
         baseUrl: url,
         username: username,
         password: password,
@@ -158,17 +164,16 @@ class D2Remote {
     userData['isLoggedIn'] = true;
     userData['username'] = username;
     userData['baseUrl'] = url;
-    // Data Run come from API
-    // userData['authTye'] = 'basic';
-    // userData['authTye'] = 'Bearer';
+    userData['authTye'] = 'basic';
     userData['dirty'] = true;
-    // Data-Run
+    // // Data-Run
+    // userData['token'] = tokenResponse.body['id_token'];
 
     final user = DUser.fromApi(userData);
     await userQuery.setData(user).save();
 
-    // Data Run
     // await DUserOrganisationUnitQuery().setData(user.organisationUnits).save();
+
     // await DUserTeamQuery().setData(user.teams).save();
 
     return LoginResponseStatus.ONLINE_LOGIN_SUCCESS;

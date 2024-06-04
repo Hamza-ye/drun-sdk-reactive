@@ -4,7 +4,7 @@ import 'package:d2_remote/modules/activity_management/team/entities/team_group.e
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'team', apiResourceName: 'teams')
+@Entity(tableName: 'team', apiResourceName: 'old-teams')
 class Team extends IdentifiableEntity {
   @ManyToOne(table: Activity, joinColumnName: 'activity')
   dynamic activity;

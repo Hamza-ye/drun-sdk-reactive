@@ -7,7 +7,7 @@ import 'package:d2_remote/modules/metadata/organisation_unit/entities/organisati
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'assignment', apiResourceName: 'assignments')
+@Entity(tableName: 'assignment', apiResourceName: 'old-assignments')
 class Assignment extends IdentifiableEntity {
   @ManyToOne(table: Activity, joinColumnName: 'activity')
   dynamic activity;

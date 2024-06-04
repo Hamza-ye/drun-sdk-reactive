@@ -54,7 +54,7 @@ class ChvSession extends IdentifiableEntity {
     return ChvSession(
         id: json['id'],
         uid: json['uid'],
-        name: json['name'] ?? '',
+        name: json['name'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         subject: json['subject'],

@@ -53,59 +53,59 @@ void main() async {
   final user = DUser.fromApi(dUserData);
   await userQuery.setData(user).save();
 
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleProjects),
-  );
-  DProjectQuery projectQuery = DProjectQuery(database: db);
-  await projectQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleActivities),
-  );
-  final activityQuery = DActivityQuery(database: db);
-  await activityQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleWarehouses),
-  );
-  final warehouseQuery = WarehouseQuery(database: db);
-  await warehouseQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/teams?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleTeams),
-  );
-  final teamQuery = DTeamQuery(database: db);
-  await teamQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/assignments?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleAssignments),
-  );
-  final assignmentQuery = DAssignmentQuery(database: db);
-  await assignmentQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/patientInfo?paging=false&eagerload=true',
-        (server) => server.reply(200, dSamplePatientInfo),
-  );
-  final patientInfoQuery = PatientInfoQuery(database: db);
-  await patientInfoQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleProjects),
+  // );
+  // DProjectQuery projectQuery = DProjectQuery(database: db);
+  // await projectQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleActivities),
+  // );
+  // final activityQuery = DActivityQuery(database: db);
+  // await activityQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleWarehouses),
+  // );
+  // final warehouseQuery = WarehouseQuery(database: db);
+  // await warehouseQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/teams?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleTeams),
+  // );
+  // final teamQuery = DTeamQuery(database: db);
+  // await teamQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/assignments?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleAssignments),
+  // );
+  // final assignmentQuery = DAssignmentQuery(database: db);
+  // await assignmentQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/patientInfo?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSamplePatientInfo),
+  // );
+  // final patientInfoQuery = PatientInfoQuery(database: db);
+  // await patientInfoQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
 
   dioAdapter.onGet(
     'http://localhost:8080/api/custom/chvRegisters?paging=false&eagerload=true',

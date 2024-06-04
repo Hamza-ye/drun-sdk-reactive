@@ -3,20 +3,19 @@ import 'package:d2_remote/modules/auth/user/entities/d_user_authority.entity.dar
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'user', apiResourceName: 'account')
+@Entity(tableName: 'user', apiResourceName: 'users')
 class DUser extends IdentifiableEntity {
-  @Column(nullable: true)
-  @Column()
-  final String firstName;
-
-  @Column(nullable: true)
-  final String? surname;
-
   @Column(nullable: true)
   final String? username;
 
   @Column(nullable: true)
   final String? password;
+
+  @Column(nullable: true)
+  final String? firstName;
+
+  @Column(nullable: true)
+  final String? surname;
 
   @Column(nullable: true)
   final String? phoneNumber;
@@ -61,10 +60,10 @@ class DUser extends IdentifiableEntity {
   DUser(
       {required int id,
       String? uid,
-      required String name,
-      required this.baseUrl,
       this.username,
       this.password,
+      String? name,
+      required this.baseUrl,
       this.phoneNumber,
       this.token,
       this.tokenType,
@@ -76,8 +75,8 @@ class DUser extends IdentifiableEntity {
       String? code,
       String? created,
       String? lastUpdated,
-      required this.firstName,
-      required this.surname,
+      this.firstName,
+      this.surname,
       this.authorities,
       required this.isLoggedIn,
       // NMC
@@ -97,8 +96,8 @@ class DUser extends IdentifiableEntity {
   factory DUser.fromJson(Map<String, dynamic> jsonData) {
     return DUser(
         id: jsonData['id'],
-        uid: jsonData['uid'] ?? jsonData['id'],
-        username: jsonData['login'],
+        uid: jsonData['uid'],
+        username: jsonData['username'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
         surname: jsonData['lastName'],
@@ -132,12 +131,12 @@ class DUser extends IdentifiableEntity {
   factory DUser.fromApi(Map<String, dynamic> jsonData) {
     return DUser(
         id: jsonData['id'],
-        uid: jsonData['uid'] ?? jsonData['id'].toString(),
+        uid: jsonData['uid'],
         username: jsonData['username'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
         surname: jsonData['lastName'],
-        name: jsonData['name'] ?? jsonData['login'],
+        name: jsonData['username'],
         phoneNumber: jsonData['phoneNumber'],
         baseUrl: jsonData['baseUrl'],
         created: jsonData['created'],

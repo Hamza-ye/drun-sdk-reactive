@@ -71,7 +71,7 @@ class ChvRegister extends IdentifiableEntity {
     return ChvRegister(
         id: json['id'],
         uid: json['uid'],
-        name: json['name'] ?? '',
+        name: json['name'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         visitDate: json['visitDate'],

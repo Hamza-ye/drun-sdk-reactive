@@ -3,7 +3,7 @@ import 'package:d2_remote/shared/entities/base.entity.dart';
 
 @AnnotationReflectable
 class IdentifiableEntity extends BaseEntity {
-  @Column()
+  @Column(nullable: true)
   String? name;
 
   @Column(nullable: true)
