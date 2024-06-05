@@ -85,7 +85,11 @@ class DAssignment extends IdentifiableEntity {
             dirty: dirty);
 
   factory DAssignment.fromJson(Map<String, dynamic> json) {
-    // final team = json['team'] is String ? json['team'] : json['team']['id'].toString();
+    // final team = json['team'] is int ? json['team'] : json['team']['id'];
+    // final activity = json['activity'] is int ? json['activity'] : json['activity']['id'];
+    // // final organisationUnit = json['organisationUnit'] is int ? json['organisationUnit'] : json['organisationUnit']['id'];
+    // final warehouse = json['warehouse'] is int ? json['warehouse'] : json['warehouse']['id'];
+
     return DAssignment(
         id: json['id'],
         uid: json['uid'],
@@ -94,10 +98,10 @@ class DAssignment extends IdentifiableEntity {
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         code: json['code'],
-        activity: json['activity'],
+        activity: json['activity'], //activity,
         organisationUnit: json['organisationUnit'],
-        team: json['team'],
-        warehouse: json['warehouse'],
+        team: json['team'], //team,
+        warehouse: json['warehouse'], //warehouse,
         startDate: json['startDate'],
         status: json['status'],
         startPeriod: json['startPeriod'],

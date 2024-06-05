@@ -77,16 +77,16 @@ class DActivity extends IdentifiableEntity {
         assignments: (json['assignments'] ?? [])
             .map<DAssignment>((assignment) => DAssignment.fromJson({
                   ...assignment,
-                  'activity': json['id'].toString(),
+                  'activity': json['id'],
                   'dirty': false
                 }))
             .toList(),
         teams: (json['teams'] ?? [])
             .map<DTeam>((team) => DTeam.fromJson(
-                {...team, 'activity': json['id'].toString(), 'dirty': false}))
+                {...team, 'activity': json['id'], 'dirty': false}))
             .toList(),
         programs: json['programs'].toString(),
-        organisationUnits: json['organisationUnits'].toString(),
+        organisationUnits: json['organisationUnits'],
         dirty: json['dirty']);
   }
 

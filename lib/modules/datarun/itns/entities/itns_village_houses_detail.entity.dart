@@ -44,8 +44,8 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
   dynamic itnsVillage;
 
   ItnsVillageHousesDetail(
-      {required String uid,
-      int? id,
+      {int? id,
+      required String uid,
       required this.deleted,
       required this.couponId,
       required this.male,

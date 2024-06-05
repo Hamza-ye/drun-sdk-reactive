@@ -48,41 +48,41 @@ void main() async {
   await userQuery.setData(user).save();
 
 
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleProjects),
-  );
-  DProjectQuery projectQuery = DProjectQuery(database: db);
-  await projectQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleActivities),
-  );
-  final activityQuery = DActivityQuery(database: db);
-  await activityQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleWarehouses),
-  );
-  final warehouseQuery = WarehouseQuery(database: db);
-  await warehouseQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/teams?paging=false&eagerload=true',
-        (server) => server.reply(200, dSampleTeams),
-  );
-  final teamQuery = DTeamQuery(database: db);
-  await teamQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleProjects),
+  // );
+  // DProjectQuery projectQuery = DProjectQuery(database: db);
+  // await projectQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleActivities),
+  // );
+  // final activityQuery = DActivityQuery(database: db);
+  // await activityQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleWarehouses),
+  // );
+  // final warehouseQuery = WarehouseQuery(database: db);
+  // await warehouseQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/teams?paging=false&eagerload=true',
+  //       (server) => server.reply(200, dSampleTeams),
+  // );
+  // final teamQuery = DTeamQuery(database: db);
+  // await teamQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
 
   dioAdapter.onGet(
     'http://localhost:8080/api/custom/assignments?paging=false&eagerload=true',
@@ -95,6 +95,8 @@ void main() async {
 
   List<DAssignment> assignments = await D2Remote.assignmentModuleD.assignment.get();
 
+  List<dynamic> activities = await D2Remote.activityModuleD.activity.get();
+  List<dynamic> teams = await D2Remote.teamModuleD.team.get();
   test('should store all incoming assignments metadata', () {
     expect(assignments.length, 18);
   });

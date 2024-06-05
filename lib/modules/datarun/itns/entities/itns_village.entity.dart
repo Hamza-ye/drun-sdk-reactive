@@ -2,10 +2,10 @@ import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
-import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
-import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.entity.dart';
 import 'package:d2_remote/modules/datarun/itns/entities/itns_village_houses_detail.entity.dart';
 import 'package:d2_remote/modules/datarun/itns/entities/progress_status.entity.dart';
+import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
+import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
@@ -158,13 +158,37 @@ class ItnsVillage extends IdentifiableEntity {
         code: json['code'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
+        // houseDetails: (json['houseDetails'] ?? [])
+        //     .map<ItnsVillageHousesDetail>((houseDetail) =>
+        //         ItnsVillageHousesDetail.fromJson({
+        //           ...houseDetail,
+        //           'itnsVillage': json['id'],
+        //           'dirty': false
+        //         }))
+        //     .toList(),
         houseDetails: (json['houseDetails'] ?? [])
-            .map<ItnsVillageHousesDetail>((houseDetail) =>
-                ItnsVillageHousesDetail.fromJson({
-                  ...houseDetail,
-                  'itnsVillage': json['uid'],
-                  'dirty': false
-                }))
+            .map<ItnsVillageHousesDetail>(
+                (houseDetail) => ItnsVillageHousesDetail(
+                      id: houseDetail['id'],
+                      uid: houseDetail['uid'],
+                      deleted: houseDetail['deleted'],
+                      couponId: houseDetail['couponId'],
+                      male: houseDetail['male'],
+                      female: houseDetail['female'],
+                      pregnant: houseDetail['pregnant'],
+                      population: houseDetail['population'],
+                      maleChild: houseDetail['maleChild'],
+                      femaleChild: houseDetail['femaleChild'],
+                      displaced: houseDetail['displaced'],
+                      itns: houseDetail['itns'],
+                      comment: houseDetail['comment'],
+                      created: houseDetail['created'],
+                      lastUpdated: houseDetail['lastUpdated'],
+                      name: houseDetail['name'],
+                      code: houseDetail['code'],
+                      itnsVillage: json['id'],
+                      dirty: false,
+                    ))
             .toList(),
         team: json['team'],
         assignment: json['assignment'],

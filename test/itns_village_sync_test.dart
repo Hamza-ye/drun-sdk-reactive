@@ -4,7 +4,9 @@ import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/datarun/itns/entities/itns_village.entity.dart';
+import 'package:d2_remote/modules/datarun/itns/entities/itns_village_houses_detail.entity.dart';
 import 'package:d2_remote/modules/datarun/itns/queries/itns_village.query.dart';
+import 'package:d2_remote/modules/datarun/itns/queries/itns_village_houses_detail.query.dart';
 import 'package:d2_remote/modules/datarun/itns/queries/progress_status.query.dart';
 import 'package:d2_remote/modules/metadatarun/project/queries/d_project.query.dart';
 import 'package:d2_remote/modules/metadatarun/teams/queries/d_team.query.dart';
@@ -120,4 +122,22 @@ void main() async {
   test('should store all incoming itnsVillages metadata', () {
     expect(itnsVillages.length, 19);
   });
+
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/itnsVillageHousesDetails',
+  //       (server) => server.reply(200, dSampleItnsHousesDetails),
+  // );
+  // // final itnsVillageHousesDetailQuery = ItnsVillageHousesDetailQuery(database: db);
+  // // await itnsVillageHousesDetailQuery.download((progress, complete) {
+  // //   print(progress.message);
+  // // }, dioTestClient: dio);
+
+
+  // List<ItnsVillageHousesDetail> housesDetails =
+  // await D2Remote.itnsVillageModule.itnsVillageHousesDetail.get();
+  //
+  // test('should store all incoming itnsVillageHousesDetails metadata', () {
+  //   expect(housesDetails.length > 0, true);
+  // });
+
 }
