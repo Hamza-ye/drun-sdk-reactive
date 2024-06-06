@@ -17,7 +17,7 @@ class DActivity extends IdentifiableEntity {
   String? endDate;
 
   @Column(type: ColumnType.BOOLEAN)
-  bool inactive;
+  bool activated;
 
   @OneToMany(table: DAssignment)
   List<DAssignment>? assignments;
@@ -43,7 +43,7 @@ class DActivity extends IdentifiableEntity {
       String? displayName,
       this.startDate,
       this.endDate,
-      required this.inactive,
+      this.activated = true,
       this.assignments,
       this.teams,
       this.programs,
@@ -73,7 +73,7 @@ class DActivity extends IdentifiableEntity {
         startDate: json['startDate'],
         endDate: json['endDate'],
         project: json['project'],
-        inactive: json['inactive'] ?? false,
+        activated: json['activated'] ?? false,
         assignments: (json['assignments'] ?? [])
             .map<DAssignment>((assignment) => DAssignment.fromJson({
                   ...assignment,
@@ -107,7 +107,7 @@ class DActivity extends IdentifiableEntity {
     data['programs'] = this.programs;
     data['assignments'] = this.assignments;
     data['teams'] = this.teams;
-    data['inactive'] = this.inactive;
+    data['activated'] = this.activated;
     data['dirty'] = this.dirty;
     return data;
   }

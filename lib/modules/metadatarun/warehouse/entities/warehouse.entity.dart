@@ -8,6 +8,9 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 @AnnotationReflectable
 @Entity(tableName: 'warehouse', apiResourceName: 'warehouses')
 class Warehouse extends IdentifiableEntity {
+  @Column(type: ColumnType.BOOLEAN)
+  bool activated;
+
   @Column(nullable: true)
   String? description;
 
@@ -28,6 +31,7 @@ class Warehouse extends IdentifiableEntity {
       int? id,
       required String name,
       String? code,
+      this.activated = true,
       this.gpsCoordinate,
       this.supervisor,
       this.supervisorMobile,
@@ -39,11 +43,12 @@ class Warehouse extends IdentifiableEntity {
     return Warehouse(
         id: json['id'],
         uid: json['uid'],
+        activated: json['activated'] ?? true,
         gpsCoordinate: json['gpsCoordinate'],
         supervisor: json['supervisor'],
         code: json['code'],
         supervisorMobile: json['supervisorMobile'],
-        activity: json['activity'],
+        activity: json['activity'] ?? true,
         name: json['name'],
         dirty: json['dirty']);
   }
@@ -53,6 +58,7 @@ class Warehouse extends IdentifiableEntity {
       'id': id,
       'uid': uid,
       'name': name,
+      'activated': activated,
       'description': description,
       'gpsCoordinate': gpsCoordinate,
       'supervisor': supervisor,

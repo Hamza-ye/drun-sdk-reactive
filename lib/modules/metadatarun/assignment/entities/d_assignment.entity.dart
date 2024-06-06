@@ -20,6 +20,9 @@ class DAssignment extends IdentifiableEntity {
   @ManyToOne(table: Warehouse, joinColumnName: 'warehouse')
   dynamic warehouse;
 
+  @Column(type: ColumnType.BOOLEAN)
+  bool activated;
+
   @Column(nullable: true)
   String? startDate;
 
@@ -60,6 +63,7 @@ class DAssignment extends IdentifiableEntity {
       String? lastUpdated,
       String? name,
       String? code,
+      this.activated = true,
       this.warehouse,
       this.activity,
       this.organisationUnit,
@@ -95,13 +99,17 @@ class DAssignment extends IdentifiableEntity {
         uid: json['uid'],
         name: json['name'] ??
             '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
+        activated: json['activated'] ?? true,
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         code: json['code'],
-        activity: json['activity'], //activity,
+        activity: json['activity'],
+        //activity,
         organisationUnit: json['organisationUnit'],
-        team: json['team'], //team,
-        warehouse: json['warehouse'], //warehouse,
+        team: json['team'],
+        //team,
+        warehouse: json['warehouse'],
+        //warehouse,
         startDate: json['startDate'],
         status: json['status'],
         startPeriod: json['startPeriod'],
@@ -120,6 +128,7 @@ class DAssignment extends IdentifiableEntity {
     data['id'] = this.id;
     data['uid'] = this.uid;
     data['name'] = this.name;
+    data['activated'] = this.activated;
     data['createdDate'] = this.created;
     data['lastModifiedDate'] = this.lastUpdated;
     data['shortName'] = this.shortName;

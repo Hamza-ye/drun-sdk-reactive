@@ -9,7 +9,7 @@ class DTeam extends IdentifiableEntity {
   dynamic activity;
 
   @Column(type: ColumnType.BOOLEAN)
-  bool inactive;
+  bool activated;
 
   @Column(nullable: true)
   bool? synced;
@@ -28,7 +28,7 @@ class DTeam extends IdentifiableEntity {
       String? displayName,
       this.mobile,
       this.activity,
-      required this.inactive,
+      this.activated = true,
       this.synced,
       required dirty})
       : super(
@@ -54,7 +54,7 @@ class DTeam extends IdentifiableEntity {
         displayName: json['displayName'],
         activity: json['activity'],
         mobile: json['mobile'],
-        inactive: json['inactive'] ?? false,
+        activated: json['activated'] ?? false,
         synced: json['synced'],
         dirty: json['dirty']);
   }
@@ -69,7 +69,7 @@ class DTeam extends IdentifiableEntity {
         code: jsonData['code'],
         displayName: jsonData['displayName'],
         activity: jsonData['activity'],
-        inactive: jsonData['inactive'] ?? false,
+        activated: jsonData['activated'] ?? false,
         mobile: jsonData['mobile'],
         dirty: jsonData['dirty'] ?? false);
   }
@@ -86,7 +86,7 @@ class DTeam extends IdentifiableEntity {
     data['code'] = this.code;
     data['displayName'] = this.displayName;
     data['activity'] = this.activity;
-    data['inactive'] = this.inactive;
+    data['activated'] = this.activated;
     data['mobile'] = this.mobile;
     data['synced'] = this.synced;
     data['dirty'] = this.dirty;
