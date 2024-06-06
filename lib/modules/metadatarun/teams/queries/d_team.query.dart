@@ -14,6 +14,11 @@ import 'package:sqflite/sqflite.dart';
 class DTeamQuery extends BaseQuery<DTeam> {
   DTeamQuery({Database? database}) : super(database: database);
 
+  DTeamQuery activated() {
+    this.where(attribute: 'activated', value: true);
+    return this;
+  }
+
   DTeamQuery withAssignments() {
     final assignment = Repository<DAssignment>();
     final Column? relationColumn = assignment.columns.firstWhere((column) =>

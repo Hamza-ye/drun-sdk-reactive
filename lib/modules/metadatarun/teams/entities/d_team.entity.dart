@@ -54,7 +54,7 @@ class DTeam extends IdentifiableEntity {
         displayName: json['displayName'],
         activity: json['activity'],
         mobile: json['mobile'],
-        activated: json['activated'] ?? false,
+        activated: json['activated'] ?? true,
         synced: json['synced'],
         dirty: json['dirty']);
   }
@@ -69,7 +69,7 @@ class DTeam extends IdentifiableEntity {
         code: jsonData['code'],
         displayName: jsonData['displayName'],
         activity: jsonData['activity'],
-        activated: jsonData['activated'] ?? false,
+        activated: jsonData['activated'] ?? true,
         mobile: jsonData['mobile'],
         dirty: jsonData['dirty'] ?? false);
   }

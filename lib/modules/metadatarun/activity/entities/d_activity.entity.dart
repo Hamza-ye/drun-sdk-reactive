@@ -75,7 +75,7 @@ class DActivity extends IdentifiableEntity {
         project: json['project'] is String
             ? json['project']
             : json['project']['uid'],
-        activated: json['activated'] ?? false,
+        activated: json['activated'] ?? true,
         assignments: (json['assignments'] ?? [])
             .map<DAssignment>((assignment) => DAssignment.fromJson(
                 {...assignment, 'activity': json['uid'], 'dirty': false}))

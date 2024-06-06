@@ -6,24 +6,39 @@ import 'package:sqflite/sqflite.dart';
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
 class DAssignmentQuery extends BaseQuery<DAssignment> {
-  String? team;
   String? activity;
+  String? warehouse;
+  String? team;
   String? organisationUnit;
 
   DAssignmentQuery({Database? database}) : super(database: database);
 
-  DAssignmentQuery byTeam(String team) {
-    this.team = team;
-    return this.where(attribute: 'team', value: team);
+  DAssignmentQuery activated() {
+    this.where(attribute: 'activated', value: true);
+    return this;
   }
 
   DAssignmentQuery byActivity(String activity) {
     this.activity = activity;
-    return this.where(attribute: 'activity', value: activity);
+    this.where(attribute: 'activity', value: activity);
+    return this;
+  }
+
+  DAssignmentQuery byWarehouse(String warehouse) {
+    this.warehouse = warehouse;
+    this.where(attribute: 'warehouse', value: warehouse);
+    return this;
+  }
+
+  DAssignmentQuery byTeam(String team) {
+    this.team = team;
+    this.where(attribute: 'team', value: team);
+    return this;
   }
 
   DAssignmentQuery byOrgUnit(String organisationUnit) {
     this.organisationUnit = organisationUnit;
-    return this.where(attribute: 'organisationUnit', value: organisationUnit);
+    this.where(attribute: 'organisationUnit', value: organisationUnit);
+    return this;
   }
 }

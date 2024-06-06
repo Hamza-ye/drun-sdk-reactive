@@ -8,4 +8,16 @@ import 'package:sqflite/sqflite.dart';
 @Query(type: QueryType.METADATA)
 class WarehouseQuery extends BaseQuery<Warehouse> {
   WarehouseQuery({Database? database}) : super(database: database);
+  String? activity;
+
+  WarehouseQuery activated() {
+    this.where(attribute: 'activated', value: true);
+    return this;
+  }
+
+  WarehouseQuery byActivity(String activity) {
+    this.activity = activity;
+    this.where(attribute: 'activity', value: activity);
+    return this;
+  }
 }
