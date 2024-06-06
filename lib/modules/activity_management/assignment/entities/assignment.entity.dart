@@ -41,6 +41,7 @@ class Assignment extends IdentifiableEntity {
 
   Assignment(
       {required String id,
+      String? uid,
       String? created,
       String? lastUpdated,
       String? name,
@@ -56,7 +57,8 @@ class Assignment extends IdentifiableEntity {
       this.periodType,
       required dirty})
       : super(
-            uid: id,
+            id: id,
+            uid: uid,
             name: name,
             code: code,
             created: created,
@@ -64,14 +66,15 @@ class Assignment extends IdentifiableEntity {
             dirty: dirty);
 
   factory Assignment.fromJson(Map<String, dynamic> json) {
-    final team = json['team'] is String ? json['team'] : json['team']['uid'];
+    final team = json['team'] is String ? json['team'] : json['team']['id'];
     return Assignment(
-        id: json['uid'],
+        id: json['id'],
+        uid: json['uid'],
         name: json['name'],
         created: json['createdDate'],
         code: json['code'],
         activity: json['activity']['uid'],
-        organisationUnit: json['organisationUnit']['uid'],
+        organisationUnit: json['organisationUnit']['id'],
         team: team,
         warehouse: json['warehouse']['uid'],
         startDate: json['startDate'],
@@ -84,8 +87,8 @@ class Assignment extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['uid'] = this.id;
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;
@@ -93,7 +96,7 @@ class Assignment extends IdentifiableEntity {
     data['activity'] = this.activity;
     data['organisationUnit'] = this.organisationUnit;
     data['team'] = this.team;
-    data['warehouse'] = jsonEncode({'uid': this.warehouse});
+    data['warehouse'] = jsonEncode({'id': this.warehouse});
     data['startDate'] = this.startDate;
     data['status'] = this.status;
     data['startPeriod'] = this.startPeriod;

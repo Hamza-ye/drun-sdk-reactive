@@ -3,11 +3,11 @@ import 'package:d2_remote/shared/utilities/dhis_uid_generator.util.dart';
 
 // @AnnotationReflectable
 class BaseEntity {
-  @PrimaryColumn()
+  @Column(nullable: true)
   late String? uid;
 
-  @Column(nullable: true)
-  int? id;
+  @PrimaryColumn()
+  late String? id;
 
   @Column()
   bool dirty;
@@ -24,7 +24,11 @@ class BaseEntity {
       required this.dirty,
       this.created,
       this.lastUpdated}) {
+    this.id = this.id ?? DhisUidGenerator.generate();
+
+    /// Added for DataRun
     this.uid = this.uid ?? DhisUidGenerator.generate();
+
     this.created =
         this.created ?? DateTime.now().toIso8601String().split('.')[0];
     this.lastUpdated = this.lastUpdated ?? this.created;

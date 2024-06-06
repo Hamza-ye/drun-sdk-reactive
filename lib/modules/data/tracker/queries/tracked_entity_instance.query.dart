@@ -188,9 +188,9 @@ class TrackedEntityInstanceQuery extends BaseQuery<TrackedEntityInstance> {
           relations: this.relations) as Future<List<TrackedEntityInstance>>;
     }
 
-    if (this.uid != null) {
+    if (this.id != null) {
       return this.repository.find(
-          uid: this.uid,
+          id: this.id,
           fields: this.fields as List<String>,
           database: this.database,
           relations: this.relations) as Future<List<TrackedEntityInstance>>;

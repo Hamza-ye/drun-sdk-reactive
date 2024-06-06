@@ -15,8 +15,8 @@ class PatientInfo extends IdentifiableEntity {
   dynamic location;
 
   PatientInfo(
-      {required String uid,
-      int? id,
+      {String? id,
+      String? uid,
       String? created,
       String? lastUpdated,
       required String? name,
@@ -38,14 +38,16 @@ class PatientInfo extends IdentifiableEntity {
 
   factory PatientInfo.fromJson(Map<String, dynamic> json) {
     return PatientInfo(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         code: json['code'],
         age: json['age'],
-        location: json['location'],
+        location: json['location'] is String
+            ? json['location']
+            : json['location']['uid'],
         gender: json['gender'],
         dirty: json['dirty']);
   }
@@ -53,8 +55,8 @@ class PatientInfo extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastUpdated'] = this.lastUpdated;
-    data['uid'] = this.uid;
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['createdDate'] = this.created;
     data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;

@@ -27,8 +27,9 @@ class Warehouse extends IdentifiableEntity {
   dynamic activity;
 
   Warehouse(
-      {required String uid,
-      int? id,
+      {
+        required String id,
+        required String uid,
       required String name,
       String? code,
       this.activated = true,
@@ -41,14 +42,16 @@ class Warehouse extends IdentifiableEntity {
 
   factory Warehouse.fromJson(Map<String, dynamic> json) {
     return Warehouse(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
         activated: json['activated'] ?? true,
         gpsCoordinate: json['gpsCoordinate'],
         supervisor: json['supervisor'],
         code: json['code'],
         supervisorMobile: json['supervisorMobile'],
-        activity: json['activity'] ?? true,
+        activity: json['activity'] is String
+            ? json['activity']
+            : json['activity']['uid'],
         name: json['name'],
         dirty: json['dirty']);
   }

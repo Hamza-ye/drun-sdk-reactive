@@ -58,7 +58,7 @@ class DAssignment extends IdentifiableEntity {
 
   DAssignment(
       {required String uid,
-      int? id,
+      required String id,
       String? created,
       String? lastUpdated,
       String? name,
@@ -81,11 +81,11 @@ class DAssignment extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
+            uid: uid,
             name: name,
             code: code,
             created: created,
             lastUpdated: lastUpdated,
-            uid: uid,
             dirty: dirty);
 
   factory DAssignment.fromJson(Map<String, dynamic> json) {
@@ -95,7 +95,7 @@ class DAssignment extends IdentifiableEntity {
     // final warehouse = json['warehouse'] is int ? json['warehouse'] : json['warehouse']['id'];
 
     return DAssignment(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'] ??
             '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
@@ -103,12 +103,17 @@ class DAssignment extends IdentifiableEntity {
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         code: json['code'],
-        activity: json['activity'],
-        //activity,
-        organisationUnit: json['organisationUnit'],
-        team: json['team'],
-        //team,
-        warehouse: json['warehouse'],
+        activity: json['activity'] is String
+            ? json['activity']
+            : json['activity']['uid'],
+        organisationUnit: json['organisationUnit'] is String
+            ? json['organisationUnit']
+            : json['organisationUnit']['uid'],
+        warehouse: json['warehouse'] is String
+            ? json['warehouse']
+            : json['warehouse']['uid'],
+        team: json['team'] is String ? json['team'] : json['team']['uid'],
+
         //warehouse,
         startDate: json['startDate'],
         status: json['status'],

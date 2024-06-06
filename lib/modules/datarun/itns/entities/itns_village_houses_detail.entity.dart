@@ -44,8 +44,8 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
   dynamic itnsVillage;
 
   ItnsVillageHousesDetail(
-      {int? id,
-      required String uid,
+      {String? id,
+      String? uid,
       required this.deleted,
       required this.couponId,
       required this.male,
@@ -64,8 +64,8 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
       String? code,
       required dirty})
       : super(
-            uid: uid,
             id: id,
+            uid: uid,
             name: name,
             code: code,
             created: created,
@@ -74,9 +74,11 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
 
   factory ItnsVillageHousesDetail.fromJson(Map<String, dynamic> json) {
     return ItnsVillageHousesDetail(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
-        itnsVillage: json['itnsVillage'],
+        itnsVillage: json['itnsVillage'] is String
+            ? json['itnsVillage']
+            : json['itnsVillage']['uid'],
         deleted: json['deleted'],
         // houseUuid: json['houseUuid'],
         couponId: json['couponId'],

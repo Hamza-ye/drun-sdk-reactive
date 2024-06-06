@@ -12,8 +12,8 @@ class DUserAuthority extends IdentifiableEntity {
   dynamic user;
 
   DUserAuthority(
-      {required String uid,
-      int? id,
+      {required String id,
+      required String uid,
       required String name,
       required this.authority,
       required this.user,

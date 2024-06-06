@@ -40,8 +40,8 @@ class ChvRegister extends IdentifiableEntity {
   String? startEntryTime;
 
   ChvRegister(
-      {required String uid,
-      int? id,
+      {String? id,
+      String? uid,
       String? created,
       String? lastUpdated,
       String? name,
@@ -69,7 +69,7 @@ class ChvRegister extends IdentifiableEntity {
 
   factory ChvRegister.fromJson(Map<String, dynamic> json) {
     return ChvRegister(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
         created: json['createdDate'],
@@ -82,8 +82,10 @@ class ChvRegister extends IdentifiableEntity {
         treatment: json['treatment'],
         comment: json['comment'],
         startEntryTime: json['startEntryTime'],
-        team: json['team'],
-        patient: json['patient'],
+        team: json['team'] is String ? json['team'] : json['team']['uid'],
+        patient: json['patient'] is String
+            ? json['patient']
+            : json['patient']['uid'],
         code: json['code'],
         dirty: json['dirty']);
   }
@@ -91,8 +93,8 @@ class ChvRegister extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastUpdated'] = this.lastUpdated;
-    data['uid'] = this.uid;
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['createdDate'] = this.created;
     data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;

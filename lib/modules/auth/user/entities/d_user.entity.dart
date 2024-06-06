@@ -58,7 +58,7 @@ class DUser extends IdentifiableEntity {
   final String? imageUrl;
 
   DUser(
-      {required int id,
+      {required String? id,
       String? uid,
       this.username,
       this.password,
@@ -86,8 +86,8 @@ class DUser extends IdentifiableEntity {
       this.langKey,
       required bool dirty})
       : super(
-            uid: uid,
             id: id,
+            uid: uid,
             name: name,
             dirty: dirty,
             created: created,
@@ -113,7 +113,7 @@ class DUser extends IdentifiableEntity {
         lastUpdated: jsonData['lastUpdated'],
         authorities: (jsonData['authorities'] ?? [])
             .map<DUserAuthority>((authority) => DUserAuthority(
-                id: authority['id'],
+                id: authority['uid'],
                 uid: authority['uid'],
                 name: authority['name'],
                 authority: authority['authority'],
@@ -130,7 +130,7 @@ class DUser extends IdentifiableEntity {
 
   factory DUser.fromApi(Map<String, dynamic> jsonData) {
     return DUser(
-        id: jsonData['id'],
+        id: jsonData['id'].toString(),
         uid: jsonData['uid'],
         username: jsonData['username'],
         password: jsonData['password'],
@@ -148,11 +148,11 @@ class DUser extends IdentifiableEntity {
         authType: jsonData['authType'],
         authorities: (jsonData['authorities'] ?? [])
             .map<DUserAuthority>((authority) => DUserAuthority(
-                uid: '${jsonData['id']}_$authority',
-                name: '${jsonData['id']}_$authority',
-                id: jsonData['id'] ?? 0,
+                uid: '${jsonData['uid']}_$authority',
+                name: '${jsonData['uid']}_$authority',
+                id: jsonData['uid'] ?? 0,
                 authority: authority,
-                user: jsonData['id'].toString(),
+                user: jsonData['uid'].toString(),
                 dirty: jsonData['dirty'] ?? false))
             .toList(),
         email: jsonData['email'],

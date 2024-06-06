@@ -9,8 +9,8 @@ class DProject extends IdentifiableEntity {
   List<DActivity>? activities;
 
   DProject(
-      {required String uid,
-      int? id,
+      {required String id,
+      required String uid,
       String? created,
       String? lastUpdated,
       required String? name,
@@ -32,7 +32,7 @@ class DProject extends IdentifiableEntity {
 
   factory DProject.fromJson(Map<String, dynamic> json) {
     return DProject(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
         created: json['createdDate'],
@@ -42,7 +42,7 @@ class DProject extends IdentifiableEntity {
         displayName: json['displayName'],
         activities: List<dynamic>.from(json['activities'] ?? [])
             .map((activity) => DActivity.fromJson(
-                {...activity, 'project': json['id'], 'dirty': false}))
+                {...activity, 'project': json['uid'], 'dirty': false}))
             .toList(),
         dirty: json['dirty']);
   }
@@ -50,8 +50,8 @@ class DProject extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastUpdated'] = this.lastUpdated;
-    data['uid'] = this.uid;
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['createdDate'] = this.created;
     data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;

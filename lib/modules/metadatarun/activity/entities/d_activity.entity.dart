@@ -32,8 +32,8 @@ class DActivity extends IdentifiableEntity {
   final String? organisationUnits;
 
   DActivity(
-      {required String uid,
-      int? id,
+      {required String id,
+      required String uid,
       String? created,
       String? lastUpdated,
       String? name,
@@ -50,8 +50,8 @@ class DActivity extends IdentifiableEntity {
       this.organisationUnits,
       required dirty})
       : super(
-            uid: uid,
             id: id,
+            uid: uid,
             name: name,
             shortName: shortName,
             displayName: displayName,
@@ -62,8 +62,8 @@ class DActivity extends IdentifiableEntity {
 
   factory DActivity.fromJson(Map<String, dynamic> json) {
     return DActivity(
+        id: json['id'].toString(),
         uid: json['uid'],
-        id: json['id'],
         name: json['name'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
@@ -72,21 +72,20 @@ class DActivity extends IdentifiableEntity {
         displayName: json['displayName'],
         startDate: json['startDate'],
         endDate: json['endDate'],
-        project: json['project'],
+        project: json['project'] is String
+            ? json['project']
+            : json['project']['uid'],
         activated: json['activated'] ?? false,
         assignments: (json['assignments'] ?? [])
-            .map<DAssignment>((assignment) => DAssignment.fromJson({
-                  ...assignment,
-                  'activity': json['id'],
-                  'dirty': false
-                }))
+            .map<DAssignment>((assignment) => DAssignment.fromJson(
+                {...assignment, 'activity': json['uid'], 'dirty': false}))
             .toList(),
         teams: (json['teams'] ?? [])
             .map<DTeam>((team) => DTeam.fromJson(
-                {...team, 'activity': json['id'], 'dirty': false}))
+                {...team, 'activity': json['uid'], 'dirty': false}))
             .toList(),
         programs: json['programs'].toString(),
-        organisationUnits: json['organisationUnits'],
+        organisationUnits: json['organisationUnits'].toString(),
         dirty: json['dirty']);
   }
 

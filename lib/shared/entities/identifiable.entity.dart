@@ -17,7 +17,7 @@ class IdentifiableEntity extends BaseEntity {
 
   IdentifiableEntity({
     String? uid,
-    int? id,
+    String? id,
     required bool dirty,
     this.name,
     this.displayName,
@@ -25,5 +25,6 @@ class IdentifiableEntity extends BaseEntity {
     String? lastUpdated,
     String? created,
     this.code,
-  }) : super(id: id, uid: uid, dirty: dirty, created: created, lastUpdated: lastUpdated);
+    /// id changed to point to uid for DataRun
+  }) : super(id: uid, uid: uid, dirty: dirty, created: created, lastUpdated: lastUpdated);
 }

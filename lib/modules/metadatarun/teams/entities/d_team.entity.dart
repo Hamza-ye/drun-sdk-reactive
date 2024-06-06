@@ -18,8 +18,8 @@ class DTeam extends IdentifiableEntity {
   final String? mobile;
 
   DTeam(
-      {required String uid,
-      int? id,
+      {required String id,
+      required String uid,
       String? created,
       String? lastUpdated,
       required String name,
@@ -44,7 +44,7 @@ class DTeam extends IdentifiableEntity {
 
   factory DTeam.fromJson(Map<String, dynamic> json) {
     return DTeam(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
         created: json['createdDate'],
@@ -61,7 +61,7 @@ class DTeam extends IdentifiableEntity {
 
   factory DTeam.fromApi(Map<String, dynamic> jsonData) {
     return DTeam(
-        id: jsonData['id'],
+        id: jsonData['id'].toString(),
         uid: jsonData['uid'],
         name: jsonData['name'],
         created: jsonData['created'],

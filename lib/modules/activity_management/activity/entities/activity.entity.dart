@@ -1,6 +1,6 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/activity_management/project/entities/project.entity.dart';
 import 'package:d2_remote/modules/activity_management/assignment/entities/assignment.entity.dart';
+import 'package:d2_remote/modules/activity_management/project/entities/project.entity.dart';
 import 'package:d2_remote/modules/activity_management/team/entities/team.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
@@ -33,6 +33,7 @@ class Activity extends IdentifiableEntity {
 
   Activity(
       {required String id,
+      String? uid,
       String? created,
       String? lastUpdated,
       required String name,
@@ -49,7 +50,8 @@ class Activity extends IdentifiableEntity {
       this.organisationUnits,
       required dirty})
       : super(
-            uid: id,
+            id: id,
+            uid: uid,
             name: name,
             shortName: shortName,
             displayName: displayName,
@@ -60,7 +62,8 @@ class Activity extends IdentifiableEntity {
 
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
-        id: json['uid'],
+        id: json['id'],
+        uid: json['uid'],
         name: json['name'],
         created: json['created'],
         shortName: json['shortName'],
@@ -86,7 +89,8 @@ class Activity extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastUpdated'] = this.lastUpdated;
-    data['uid'] = this.id;
+    data['id'] = this.id;
+    data['uid'] = this.uid;
     data['created'] = this.created;
     data['name'] = this.name;
     data['shortName'] = this.shortName;

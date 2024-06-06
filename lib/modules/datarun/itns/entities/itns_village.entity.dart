@@ -89,8 +89,8 @@ class ItnsVillage extends IdentifiableEntity {
   List<ItnsVillageHousesDetail>? houseDetails;
 
   ItnsVillage(
-      {required String uid,
-      int? id,
+      {String? id,
+      String? uid,
       required this.deleted,
       this.workDayDate,
       this.surveytype,
@@ -123,16 +123,16 @@ class ItnsVillage extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
+            uid: uid,
             name: name,
             code: code,
             created: created,
             lastUpdated: lastUpdated,
-            uid: uid,
             dirty: dirty);
 
   factory ItnsVillage.fromJson(Map<String, dynamic> json) {
     return ItnsVillage(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
         deleted: json['deleted'],
         workDayDate: json['workDayDate'],
@@ -158,42 +158,24 @@ class ItnsVillage extends IdentifiableEntity {
         code: json['code'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
-        // houseDetails: (json['houseDetails'] ?? [])
-        //     .map<ItnsVillageHousesDetail>((houseDetail) =>
-        //         ItnsVillageHousesDetail.fromJson({
-        //           ...houseDetail,
-        //           'itnsVillage': json['id'],
-        //           'dirty': false
-        //         }))
-        //     .toList(),
         houseDetails: (json['houseDetails'] ?? [])
-            .map<ItnsVillageHousesDetail>(
-                (houseDetail) => ItnsVillageHousesDetail(
-                      id: houseDetail['id'],
-                      uid: houseDetail['uid'],
-                      deleted: houseDetail['deleted'],
-                      couponId: houseDetail['couponId'],
-                      male: houseDetail['male'],
-                      female: houseDetail['female'],
-                      pregnant: houseDetail['pregnant'],
-                      population: houseDetail['population'],
-                      maleChild: houseDetail['maleChild'],
-                      femaleChild: houseDetail['femaleChild'],
-                      displaced: houseDetail['displaced'],
-                      itns: houseDetail['itns'],
-                      comment: houseDetail['comment'],
-                      created: houseDetail['created'],
-                      lastUpdated: houseDetail['lastUpdated'],
-                      name: houseDetail['name'],
-                      code: houseDetail['code'],
-                      itnsVillage: json['id'],
-                      dirty: false,
-                    ))
+            .map<ItnsVillageHousesDetail>((houseDetail) =>
+                ItnsVillageHousesDetail.fromJson({
+                  ...houseDetail,
+                  'itnsVillage': json['uid'],
+                  'dirty': false
+                }))
             .toList(),
-        team: json['team'],
-        assignment: json['assignment'],
-        progressStatus: json['progressStatus'],
-        activity: json['activity'],
+        team: json['team'] is String ? json['team'] : json['team']['uid'],
+        assignment: json['assignment'] is String
+            ? json['assignment']
+            : json['assignment']['uid'],
+        progressStatus: json['progressStatus'] is String
+            ? json['progressStatus']
+            : json['progressStatus']['uid'],
+        activity: json['activity'] is String
+            ? json['activity']
+            : json['activity']['uid'],
         dirty: json['dirty']);
   }
 

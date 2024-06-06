@@ -10,6 +10,7 @@ class Project extends IdentifiableEntity {
 
   Project(
       {required String id,
+      String? uid,
       String? created,
       String? lastUpdated,
       required String name,
@@ -19,7 +20,8 @@ class Project extends IdentifiableEntity {
       this.activities,
       required dirty})
       : super(
-            uid: id,
+            id: id,
+            uid: uid,
             name: name,
             shortName: shortName,
             displayName: displayName,
@@ -30,7 +32,8 @@ class Project extends IdentifiableEntity {
 
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
-        id: json['uid'],
+        id: json['id'],
+        uid: json['uid'],
         name: json['name'],
         created: json['created'],
         shortName: json['shortName'],
@@ -47,7 +50,7 @@ class Project extends IdentifiableEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
-    data['uid'] = this.id;
+    data['uid'] = this.uid;
     data['created'] = this.created;
     data['name'] = this.name;
     data['shortName'] = this.shortName;

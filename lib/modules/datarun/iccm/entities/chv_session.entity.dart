@@ -27,8 +27,8 @@ class ChvSession extends IdentifiableEntity {
   dynamic team;
 
   ChvSession(
-      {required String uid,
-      int? id,
+      {String? id,
+      String? uid,
       String? created,
       String? lastUpdated,
       String? name,
@@ -52,7 +52,7 @@ class ChvSession extends IdentifiableEntity {
 
   factory ChvSession.fromJson(Map<String, dynamic> json) {
     return ChvSession(
-        id: json['id'],
+        id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
         created: json['createdDate'],
@@ -63,15 +63,15 @@ class ChvSession extends IdentifiableEntity {
         people: json['people'],
         comment: json['comment'],
         startEntryTime: json['startEntryTime'],
-        team: json['team'],
+        team: json['team'] is String ? json['team'] : json['team']['uid'],
         code: json['code'],
         dirty: json['dirty']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['uid'] = this.uid;
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['createdDate'] = this.created;
     data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;

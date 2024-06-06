@@ -16,7 +16,7 @@ class ValueTypeDeviceRendering extends IdentifiableEntity {
   int? decimalPoints;
 
   ValueTypeDeviceRendering(
-      {int? id,
+      {required String? id,
       String? name,
       this.objectTable,
       this.deviceType,

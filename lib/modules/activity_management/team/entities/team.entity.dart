@@ -23,6 +23,7 @@ class Team extends IdentifiableEntity {
 
   Team(
       {required String id,
+      String? uid,
       String? created,
       String? lastUpdated,
       required String name,
@@ -36,7 +37,8 @@ class Team extends IdentifiableEntity {
       this.synced,
       required dirty})
       : super(
-            uid: id,
+            id: id,
+            uid: uid,
             name: name,
             shortName: shortName,
             displayName: displayName,
@@ -47,7 +49,8 @@ class Team extends IdentifiableEntity {
 
   factory Team.fromJson(Map<String, dynamic> json) {
     return Team(
-        id: json['uid'],
+        id: json['id'],
+        uid: json['uid'],
         name: json['name'],
         created: json['created'],
         shortName: json['shortName'],
@@ -63,14 +66,17 @@ class Team extends IdentifiableEntity {
 
   factory Team.fromApi(Map<String, dynamic> jsonData) {
     return Team(
-        id: jsonData['uid'],
+        id: jsonData['id'].toString(),
+        uid: jsonData['uid'],
         name: jsonData['name'],
         created: jsonData['created'],
         shortName: jsonData['shortName'],
         code: jsonData['code'],
         displayName: jsonData['displayName'],
         teamGroup: jsonData['teamGroup'],
-        activity: jsonData['activity'],
+        activity: jsonData['activity'] is String
+            ? jsonData['activity']
+            : jsonData['activity']['uid'],
         inactive: jsonData['inactive'] ?? false,
         mobile: jsonData['mobile'],
         dirty: jsonData['dirty'] ?? false);
@@ -79,8 +85,8 @@ class Team extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastUpdated'] = this.lastUpdated;
-    data['uid'] = this.id;
     data['id'] = this.id;
+    data['uid'] = this.uid;
     data['created'] = this.created;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
