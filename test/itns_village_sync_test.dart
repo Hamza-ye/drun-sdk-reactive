@@ -133,11 +133,11 @@ void main() async {
   // // }, dioTestClient: dio);
 
 
-  // List<ItnsVillageHousesDetail> housesDetails =
-  // await D2Remote.itnsVillageModule.itnsVillageHousesDetail.get();
-  //
-  // test('should store all incoming itnsVillageHousesDetails metadata', () {
-  //   expect(housesDetails.length > 0, true);
-  // });
+  List<ItnsVillageHousesDetail> housesDetails =
+  await D2Remote.itnsVillageModule.itnsVillageHousesDetail.get();
+
+  test('should store all incoming itnsVillageHousesDetails metadata', () {
+    expect(housesDetails.length > 0, true);
+  });
 
 }

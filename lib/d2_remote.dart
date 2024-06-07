@@ -54,8 +54,8 @@ class D2Remote {
       await DActivityModule.createTables();
       await DTeamModule.createTables();
       await DAssignmentModule.createTables();
-      await ItnsVillageModule.createTables();
       await IccmModule.createTables();
+      await ItnsVillageModule.createTables();
 
       await OrganisationUnitModule.createTables();
       await DataElementModule.createTables();

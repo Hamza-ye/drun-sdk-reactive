@@ -16,8 +16,8 @@ class IdentifiableEntity extends BaseEntity {
   final String? code;
 
   IdentifiableEntity({
-    String? uid,
     String? id,
+    String? uid,
     required bool dirty,
     this.name,
     this.displayName,

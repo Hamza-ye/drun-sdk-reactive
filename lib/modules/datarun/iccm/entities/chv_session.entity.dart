@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
+import 'package:d2_remote/modules/datarun/shared/entities/syncable.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
-import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'chvSession', apiResourceName: 'chvSessions')
-class ChvSession extends IdentifiableEntity {
+class ChvSession extends SyncableEntity {
   @Column(nullable: true)
   String? sessionDate;
 
@@ -40,6 +43,13 @@ class ChvSession extends IdentifiableEntity {
       this.comment,
       this.startEntryTime,
       this.team,
+
+      /// Syncable
+      bool? deleted,
+      // bool? synced,
+      bool? syncFailed,
+      String? lastSyncDate,
+      EventImportSummary? lastSyncSummary,
       required dirty})
       : super(
             id: id,
@@ -48,13 +58,30 @@ class ChvSession extends IdentifiableEntity {
             code: code,
             created: created,
             lastUpdated: lastUpdated,
+
+            /// Syncable
+            deleted: deleted,
+            // synced: synced,
+            syncFailed: syncFailed,
+            lastSyncDate: lastSyncDate,
+            lastSyncSummary: lastSyncSummary,
             dirty: dirty);
 
   factory ChvSession.fromJson(Map<String, dynamic> json) {
+    final dynamic lastSyncSummary = json['lastSyncSummary'] != null
+        ? EventImportSummary.fromJson(jsonDecode(json['lastSyncSummary']))
+        : null;
     return ChvSession(
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
+
+        /// Syncable
+        deleted: json['deleted'],
+        // synced: json['synced'],
+        syncFailed: json['syncFailed'],
+        lastSyncSummary: lastSyncSummary,
+        lastSyncDate: json['lastSyncDate'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         subject: json['subject'],
@@ -72,6 +99,17 @@ class ChvSession extends IdentifiableEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['uid'] = this.uid;
+
+    /// Syncable
+    data['deleted'] = this.deleted;
+    // 'synced': this.synced,
+    data['syncFailed'] = this.syncFailed;
+    data['lastSyncSummary'] = this.lastSyncSummary != null
+        ? jsonEncode(
+            (this.lastSyncSummary as EventImportSummary).responseSummary)
+        : null;
+    data['lastSyncDate'] = this.lastSyncDate;
+    //
     data['createdDate'] = this.created;
     data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;
@@ -84,5 +122,42 @@ class ChvSession extends IdentifiableEntity {
     data['startEntryTime'] = this.startEntryTime;
     data['dirty'] = this.dirty;
     return data;
+  }
+
+  static toUpload(ChvSession syncable) {
+    Map<String, dynamic> syncableToUpload = {
+      "id": syncable.id,
+      "uid": syncable.uid,
+
+      /// Syncable
+      "deleted": syncable.deleted,
+      // 'synced': this.synced,
+      "syncFailed": syncable.syncFailed,
+      "lastSyncSummary": syncable.lastSyncSummary != null
+          ? jsonEncode(
+              (syncable.lastSyncSummary as EventImportSummary).responseSummary)
+          : null,
+      "lastSyncDate": syncable.lastSyncDate,
+      //
+      "createdDate": syncable.created,
+      "lastModifiedDate": syncable.lastUpdated,
+      "name": syncable.name,
+      "code": syncable.code,
+      "subject": syncable.subject,
+      "people": syncable.people,
+      "comment": syncable.comment,
+      "team": syncable.team is String
+          ? jsonEncode({'uid': syncable.team})
+          : syncable.team,
+      "sessionDate": syncable.sessionDate,
+      "startEntryTime": syncable.startEntryTime,
+      "dirty": syncable.dirty,
+    };
+
+    // if (syncable.team != null && syncable.team.runtimeType != String) {
+    //   syncableToUpload['team'] = syncable.team['id'];
+    // }
+
+    return syncableToUpload;
   }
 }

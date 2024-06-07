@@ -3,11 +3,11 @@ import 'package:d2_remote/shared/utilities/dhis_uid_generator.util.dart';
 
 // @AnnotationReflectable
 class BaseEntity {
-  @Column(nullable: true)
-  late String? uid;
-
   @PrimaryColumn()
   late String? id;
+
+  @Column(nullable: true)
+  late String? uid;
 
   @Column()
   bool dirty;
@@ -19,8 +19,8 @@ class BaseEntity {
   String? created;
 
   BaseEntity(
-      {this.uid,
-      this.id,
+      {this.id,
+      this.uid,
       required this.dirty,
       this.created,
       this.lastUpdated}) {

@@ -73,12 +73,13 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
             dirty: dirty);
 
   factory ItnsVillageHousesDetail.fromJson(Map<String, dynamic> json) {
+    final itnsVillage = json['itnsVillage'] is String
+        ? json['itnsVillage']
+        : json['itnsVillage']['uid'];
     return ItnsVillageHousesDetail(
         id: json['id'].toString(),
         uid: json['uid'],
-        itnsVillage: json['itnsVillage'] is String
-            ? json['itnsVillage']
-            : json['itnsVillage']['uid'],
+        itnsVillage: itnsVillage,
         deleted: json['deleted'],
         // houseUuid: json['houseUuid'],
         couponId: json['couponId'],
@@ -102,6 +103,7 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
     return {
       'id': id,
       'uid': uid,
+      'itnsVillage': itnsVillage,
       'deleted': deleted,
       // 'houseUuid': houseUuid,
       'couponId': couponId,

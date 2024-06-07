@@ -5,8 +5,8 @@ import 'package:d2_remote/modules/datarun/itns/queries/progress_status.query.dar
 class ItnsVillageModule {
   static createTables() async {
     await ProgressStatusQuery().createTable();
-    await ItnsVillageQuery().createTable();
     await ItnsVillageHousesDetailQuery().createTable();
+    await ItnsVillageQuery().createTable();
   }
 
   ProgressStatusQuery get progressStatus => ProgressStatusQuery();

@@ -1,11 +1,14 @@
+import 'dart:convert';
+
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
 import 'package:d2_remote/modules/datarun/iccm/entities/patient_info.entity.dart';
+import 'package:d2_remote/modules/datarun/shared/entities/syncable.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
-import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'chvRegister', apiResourceName: 'chvRegisters')
-class ChvRegister extends IdentifiableEntity {
+class ChvRegister extends SyncableEntity {
   @ManyToOne(table: PatientInfo, joinColumnName: 'patient')
   dynamic patient;
 
@@ -57,6 +60,13 @@ class ChvRegister extends IdentifiableEntity {
       this.startEntryTime,
       this.team,
       this.patient,
+
+      /// Syncable
+      bool? deleted,
+      // bool? synced,
+      bool? syncFailed,
+      String? lastSyncDate,
+      EventImportSummary? lastSyncSummary,
       required dirty})
       : super(
             id: id,
@@ -65,13 +75,30 @@ class ChvRegister extends IdentifiableEntity {
             code: code,
             created: created,
             lastUpdated: lastUpdated,
+
+            /// Syncable
+            deleted: deleted,
+            // synced: synced,
+            syncFailed: syncFailed,
+            lastSyncDate: lastSyncDate,
+            lastSyncSummary: lastSyncSummary,
             dirty: dirty);
 
   factory ChvRegister.fromJson(Map<String, dynamic> json) {
+    final dynamic lastSyncSummary = json['lastSyncSummary'] != null
+        ? EventImportSummary.fromJson(jsonDecode(json['lastSyncSummary']))
+        : null;
     return ChvRegister(
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
+
+        /// Syncable
+        deleted: json['deleted'],
+        // synced: json['synced'],
+        syncFailed: json['syncFailed'],
+        lastSyncSummary: lastSyncSummary,
+        lastSyncDate: json['lastSyncDate'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         visitDate: json['visitDate'],
@@ -95,6 +122,17 @@ class ChvRegister extends IdentifiableEntity {
     data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
     data['uid'] = this.uid;
+
+    /// Syncable
+    data['deleted'] = this.deleted;
+    // 'synced': this.synced,
+    data['syncFailed'] = this.syncFailed;
+    data['lastSyncSummary'] = this.lastSyncSummary != null
+        ? jsonEncode(
+            (this.lastSyncSummary as EventImportSummary).responseSummary)
+        : null;
+    data['lastSyncDate'] = this.lastSyncDate;
+    //
     data['createdDate'] = this.created;
     data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;
@@ -111,5 +149,47 @@ class ChvRegister extends IdentifiableEntity {
     data['patient'] = this.patient;
     data['dirty'] = this.dirty;
     return data;
+  }
+
+  static toUpload(ChvRegister syncable) {
+    Map<String, dynamic> syncableToUpload = {
+      // "id": syncable.id,
+      "uid": syncable.uid,
+      /// Syncable
+      "deleted": syncable.deleted,
+      // 'synced': syncable.synced,
+      "syncFailed": syncable.syncFailed,
+      "lastSyncSummary": syncable.lastSyncSummary != null
+          ? jsonEncode(
+              (syncable.lastSyncSummary as EventImportSummary).responseSummary)
+          : null,
+      "lastSyncDate": syncable.lastSyncDate,
+      //
+      "name": syncable.name,
+      "code": syncable.code,
+      "visitDate": syncable.visitDate,
+      "pregnant": syncable.pregnant,
+      "testResult": syncable.testResult,
+      "detectionType": syncable.detectionType,
+      "severity": syncable.severity,
+      "treatment": syncable.treatment,
+      "comment": syncable.comment,
+      "startEntryTime": syncable.startEntryTime,
+      "team": syncable.team,
+      "patient": syncable.patient,
+      "createdDate": syncable.created,
+      "lastModifiedDate": syncable.lastUpdated,
+      "dirty": syncable.dirty,
+    };
+
+    if (syncable.team != null && syncable.team.runtimeType != String) {
+      syncableToUpload['team'] = syncable.team['id'];
+    }
+
+    if (syncable.patient != null && syncable.patient.runtimeType != String) {
+      syncableToUpload['patient'] = syncable.patient['id'];
+    }
+
+    return syncableToUpload;
   }
 }
