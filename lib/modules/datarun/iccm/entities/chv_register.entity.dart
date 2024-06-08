@@ -63,7 +63,7 @@ class ChvRegister extends SyncableEntity {
 
       /// Syncable
       bool? deleted,
-      // bool? synced,
+      bool? synced,
       bool? syncFailed,
       String? lastSyncDate,
       EventImportSummary? lastSyncSummary,
@@ -78,7 +78,7 @@ class ChvRegister extends SyncableEntity {
 
             /// Syncable
             deleted: deleted,
-            // synced: synced,
+            synced: synced,
             syncFailed: syncFailed,
             lastSyncDate: lastSyncDate,
             lastSyncSummary: lastSyncSummary,
@@ -95,7 +95,7 @@ class ChvRegister extends SyncableEntity {
 
         /// Syncable
         deleted: json['deleted'],
-        // synced: json['synced'],
+        synced: json['synced'],
         syncFailed: json['syncFailed'],
         lastSyncSummary: lastSyncSummary,
         lastSyncDate: json['lastSyncDate'],
@@ -125,7 +125,7 @@ class ChvRegister extends SyncableEntity {
 
     /// Syncable
     data['deleted'] = this.deleted;
-    // 'synced': this.synced,
+    data['synced'] = this.synced;
     data['syncFailed'] = this.syncFailed;
     data['lastSyncSummary'] = this.lastSyncSummary != null
         ? jsonEncode(
@@ -157,7 +157,7 @@ class ChvRegister extends SyncableEntity {
       "uid": syncable.uid,
       /// Syncable
       "deleted": syncable.deleted,
-      // 'synced': syncable.synced,
+      'synced': syncable.synced,
       "syncFailed": syncable.syncFailed,
       "lastSyncSummary": syncable.lastSyncSummary != null
           ? jsonEncode(

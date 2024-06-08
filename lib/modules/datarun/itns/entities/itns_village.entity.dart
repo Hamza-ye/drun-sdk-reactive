@@ -122,7 +122,7 @@ class ItnsVillage extends SyncableEntity {
 
       /// Syncable
       bool? deleted,
-      // bool? synced,
+      bool? synced,
       bool? syncFailed,
       String? lastSyncDate,
       EventImportSummary? lastSyncSummary,
@@ -137,7 +137,7 @@ class ItnsVillage extends SyncableEntity {
 
             /// Syncable
             deleted: deleted,
-            // synced: synced,
+            synced: synced,
             syncFailed: syncFailed,
             lastSyncDate: lastSyncDate,
             lastSyncSummary: lastSyncSummary,
@@ -154,7 +154,7 @@ class ItnsVillage extends SyncableEntity {
 
         /// Syncable
         deleted: json['deleted'],
-        // synced: json['synced'],
+        synced: json['synced'],
         syncFailed: json['syncFailed'],
         lastSyncSummary: lastSyncSummary,
         lastSyncDate: json['lastSyncDate'],
@@ -211,7 +211,7 @@ class ItnsVillage extends SyncableEntity {
 
     /// Syncable
     data['deleted'] = deleted;
-    // 'synced'= this.synced;
+    data['synced'] = synced;
     data['syncFailed'] = this.syncFailed;
     data['lastSyncSummary'] = this.lastSyncSummary != null
         ? jsonEncode(
@@ -258,7 +258,7 @@ class ItnsVillage extends SyncableEntity {
 
       /// Syncable
       "deleted": syncable.deleted,
-      // "synced": syncable.synced,
+      "synced": syncable.synced,
       "syncFailed": syncable.syncFailed,
       "lastSyncSummary": syncable.lastSyncSummary != null
           ? jsonEncode(

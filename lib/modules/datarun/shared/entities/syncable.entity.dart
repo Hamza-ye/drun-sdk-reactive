@@ -13,8 +13,8 @@ class SyncableEntity extends BaseEntity {
   @Column(nullable: true)
   bool? deleted;
 
-  // @Column(nullable: true)
-  // bool? synced;
+  @Column(nullable: true)
+  bool? synced;
 
   @Column(nullable: true)
   bool? syncFailed;
@@ -33,7 +33,7 @@ class SyncableEntity extends BaseEntity {
       String? lastUpdated,
       String? created,
       this.deleted,
-      // this.synced,
+      this.synced,
       this.syncFailed,
       this.lastSyncDate,
       this.lastSyncSummary,

@@ -36,7 +36,7 @@ class PatientInfo extends SyncableEntity {
 
       /// Syncable
       bool? deleted,
-      // bool? synced,
+      bool? synced,
       bool? syncFailed,
       String? lastSyncDate,
       EventImportSummary? lastSyncSummary,
@@ -51,7 +51,7 @@ class PatientInfo extends SyncableEntity {
 
             /// Syncable
             deleted: deleted,
-            // synced: synced,
+            synced: synced,
             syncFailed: syncFailed,
             lastSyncDate: lastSyncDate,
             lastSyncSummary: lastSyncSummary,
@@ -67,7 +67,7 @@ class PatientInfo extends SyncableEntity {
 
         /// Syncable
         deleted: json['deleted'],
-        // synced: json['synced'],
+        synced: json['synced'],
         syncFailed: json['syncFailed'],
         lastSyncSummary: lastSyncSummary,
         lastSyncDate: json['lastSyncDate'],
@@ -97,7 +97,7 @@ class PatientInfo extends SyncableEntity {
 
     /// Syncable
     data['deleted'] = this.deleted;
-    // 'synced': this.synced,
+    data['synced'] = this.synced;
     data['syncFailed'] = this.syncFailed;
     data['lastSyncSummary'] = this.lastSyncSummary != null
         ? jsonEncode(
@@ -125,7 +125,7 @@ class PatientInfo extends SyncableEntity {
 
       /// Syncable
       "deleted": syncable.deleted,
-      // 'synced': this.synced,
+      "synced": syncable.synced,
       "syncFailed": syncable.syncFailed,
       "lastSyncSummary": syncable.lastSyncSummary != null
           ? jsonEncode(
