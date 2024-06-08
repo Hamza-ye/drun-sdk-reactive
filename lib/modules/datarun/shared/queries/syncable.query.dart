@@ -48,7 +48,7 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
 
   /// Synced entities couldn't be updated for updates that have errors,
   /// State = to_update but have errors
-  SyncableQuery withUpdateErrorState() {
+  SyncableQuery withUpdateSyncedErrorState() {
     this
         .where(attribute: 'synced', value: true)
         .where(attribute: 'dirty', value: true)
