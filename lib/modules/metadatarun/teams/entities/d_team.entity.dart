@@ -52,7 +52,9 @@ class DTeam extends IdentifiableEntity {
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
-        activity: json['activity'],
+        activity: json['activity'] is String
+            ? json['activity']
+            : json['activity']['uid'],
         mobile: json['mobile'],
         activated: json['activated'] ?? true,
         synced: json['synced'],
