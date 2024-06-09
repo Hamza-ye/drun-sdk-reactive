@@ -1,5 +1,7 @@
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
+import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
+import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
 
 @AnnotationReflectable
@@ -25,6 +27,19 @@ class SyncableEntity extends BaseEntity {
   @Column(nullable: true)
   String? lastSyncDate;
 
+  @Column(nullable: true)
+  String? startEntryTime;
+
+  @Column(nullable: true)
+  String? finishedEntryTime;
+
+  // Relations
+  @ManyToOne(table: DTeam, joinColumnName: 'team')
+  dynamic team;
+
+  @ManyToOne(table: DActivity, joinColumnName: 'activity')
+  dynamic activity;
+
   SyncableEntity(
       {String? id,
       String? uid,
@@ -37,6 +52,10 @@ class SyncableEntity extends BaseEntity {
       this.syncFailed,
       this.lastSyncDate,
       this.lastSyncSummary,
+      this.startEntryTime,
+      this.finishedEntryTime,
+      this.team,
+      this.activity,
       required bool dirty})
       : super(
             id: uid,

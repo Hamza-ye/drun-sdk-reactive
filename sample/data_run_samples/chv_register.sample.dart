@@ -34,20 +34,6 @@ final Map<String, dynamic> dSampleChvRegisters = {
         "name": "HAmza Patient iccm",
         "age": 23,
         "gender": "MALE"
-      },
-      "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "code": "1",
-        "name": "خالد عبدالله عبده المقطري",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
       }
     },
     {
@@ -79,20 +65,6 @@ final Map<String, dynamic> dSampleChvRegisters = {
         "name": "HAmza Patient iccm",
         "age": 23,
         "gender": "MALE"
-      },
-      "team": {
-        "createdBy": "admin",
-        "createdDate": "2024-05-23T00:07:23.572034Z",
-        "lastModifiedBy": "admin",
-        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
-        "id": 1109,
-        "uid": "m7txPtUWXWm",
-        "code": "1",
-        "name": "خالد عبدالله عبده المقطري",
-        "description": "جميل ثابت حسن الجرباني",
-        "mobile": "770862733",
-        "workers": null,
-        "mobility": null
       }
     }
   ]

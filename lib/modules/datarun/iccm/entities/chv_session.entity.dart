@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
 import 'package:d2_remote/modules/datarun/shared/entities/syncable.entity.dart';
-import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'chvSession', apiResourceName: 'chvSessions')
@@ -23,12 +22,6 @@ class ChvSession extends SyncableEntity {
   @Column(nullable: true)
   String? comment;
 
-  @Column(nullable: true)
-  String? startEntryTime;
-
-  @ManyToOne(table: DTeam, joinColumnName: 'team')
-  dynamic team;
-
   ChvSession(
       {String? id,
       String? uid,
@@ -41,8 +34,6 @@ class ChvSession extends SyncableEntity {
       this.sessions,
       this.people,
       this.comment,
-      this.startEntryTime,
-      this.team,
 
       /// Syncable
       bool? deleted,
@@ -50,6 +41,10 @@ class ChvSession extends SyncableEntity {
       bool? syncFailed,
       String? lastSyncDate,
       EventImportSummary? lastSyncSummary,
+      String? startEntryTime,
+      String? finishedEntryTime,
+      dynamic activity,
+      dynamic team,
       required dirty})
       : super(
             id: id,
@@ -65,6 +60,10 @@ class ChvSession extends SyncableEntity {
             syncFailed: syncFailed,
             lastSyncDate: lastSyncDate,
             lastSyncSummary: lastSyncSummary,
+            startEntryTime: startEntryTime,
+            finishedEntryTime: finishedEntryTime,
+            activity: activity,
+            team: team,
             dirty: dirty);
 
   factory ChvSession.fromJson(Map<String, dynamic> json) {
@@ -74,14 +73,8 @@ class ChvSession extends SyncableEntity {
     return ChvSession(
         id: json['id'].toString(),
         uid: json['uid'],
+        code: json['code'],
         name: json['name'],
-
-        /// Syncable
-        deleted: json['deleted'],
-        synced: json['synced'],
-        syncFailed: json['syncFailed'],
-        lastSyncSummary: lastSyncSummary,
-        lastSyncDate: json['lastSyncDate'],
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         subject: json['subject'],
@@ -89,9 +82,19 @@ class ChvSession extends SyncableEntity {
         sessions: json['sessions'],
         people: json['people'],
         comment: json['comment'],
+
+        /// Syncable
+        deleted: json['deleted'],
+        synced: json['synced'],
+        syncFailed: json['syncFailed'],
+        lastSyncSummary: lastSyncSummary,
+        lastSyncDate: json['lastSyncDate'],
         startEntryTime: json['startEntryTime'],
+        finishedEntryTime: json['finishedEntryTime'],
+        activity: json['activity'] is String
+            ? json['activity']
+            : json['activity']['uid'],
         team: json['team'] is String ? json['team'] : json['team']['uid'],
-        code: json['code'],
         dirty: json['dirty']);
   }
 
@@ -99,6 +102,15 @@ class ChvSession extends SyncableEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['uid'] = this.uid;
+    data['createdDate'] = this.created;
+    data['lastModifiedDate'] = this.lastUpdated;
+    data['name'] = this.name;
+    data['code'] = this.code;
+    data['subject'] = this.subject;
+    data['people'] = this.people;
+    data['comment'] = this.comment;
+    data['team'] = this.team;
+    data['sessionDate'] = this.sessionDate;
 
     /// Syncable
     data['deleted'] = this.deleted;
@@ -109,25 +121,26 @@ class ChvSession extends SyncableEntity {
             (this.lastSyncSummary as EventImportSummary).responseSummary)
         : null;
     data['lastSyncDate'] = this.lastSyncDate;
-    //
-    data['createdDate'] = this.created;
-    data['lastModifiedDate'] = this.lastUpdated;
-    data['name'] = this.name;
-    data['code'] = this.code;
-    data['subject'] = this.subject;
-    data['people'] = this.people;
-    data['comment'] = this.comment;
-    data['team'] = this.team;
-    data['sessionDate'] = this.sessionDate;
     data['startEntryTime'] = this.startEntryTime;
+    data['finishedEntryTime'] = this.finishedEntryTime;
+    data['activity'] = activity;
+    data['team'] = team;
     data['dirty'] = this.dirty;
     return data;
   }
 
   static toUpload(ChvSession syncable) {
     Map<String, dynamic> syncableToUpload = {
-      "id": syncable.id,
+      // "id": syncable.id,
       "uid": syncable.uid,
+      "createdDate": syncable.created,
+      "lastModifiedDate": syncable.lastUpdated,
+      "name": syncable.name,
+      "code": syncable.code,
+      "subject": syncable.subject,
+      "people": syncable.people,
+      "comment": syncable.comment,
+      "sessionDate": syncable.sessionDate,
 
       /// Syncable
       "deleted": syncable.deleted,
@@ -138,25 +151,16 @@ class ChvSession extends SyncableEntity {
               (syncable.lastSyncSummary as EventImportSummary).responseSummary)
           : null,
       "lastSyncDate": syncable.lastSyncDate,
-      //
-      "createdDate": syncable.created,
-      "lastModifiedDate": syncable.lastUpdated,
-      "name": syncable.name,
-      "code": syncable.code,
-      "subject": syncable.subject,
-      "people": syncable.people,
-      "comment": syncable.comment,
+      "startEntryTime": syncable.startEntryTime,
+      "finishedEntryTime": syncable.finishedEntryTime,
       "team": syncable.team is String
           ? jsonEncode({'uid': syncable.team})
           : syncable.team,
-      "sessionDate": syncable.sessionDate,
-      "startEntryTime": syncable.startEntryTime,
+      "activity": syncable.activity is String
+          ? jsonEncode({'uid': syncable.activity})
+          : syncable.activity,
       "dirty": syncable.dirty,
     };
-
-    // if (syncable.team != null && syncable.team.runtimeType != String) {
-    //   syncableToUpload['team'] = syncable.team['id'];
-    // }
 
     return syncableToUpload;
   }

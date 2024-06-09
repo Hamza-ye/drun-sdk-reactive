@@ -6,6 +6,20 @@ import 'package:sqflite/sqflite.dart';
 @AnnotationReflectable
 class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   SyncableQuery({Database? database}) : super(database: database);
+  String? activity;
+  String? team;
+
+  SyncableQuery<T> byActivity(String activity) {
+    this.where(attribute: 'activity', value: activity);
+    this.activity = activity;
+    return this;
+  }
+
+  SyncableQuery<T> byTeam(String team) {
+    this.where(attribute: 'team', value: team);
+    this.team = team;
+    return this;
+  }
 
   /// Not Synced to server at all, no available on server
   /// State = to_post

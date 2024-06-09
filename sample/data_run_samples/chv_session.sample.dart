@@ -21,6 +21,19 @@ final Map<String, dynamic> dSampleChvSessions = {
       "comment": "no comments session",
       "startEntryTime": "2024-05-30T14:34:00Z",
       "deleted": false,
+      "activity" : {
+        "createdBy": "admin",
+        "createdDate": "2024-05-23T00:06:27.312804Z",
+        "lastModifiedBy": "admin",
+        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
+        "id": 1,
+        "uid": "rIjAsHzL2VB",
+        "code": "CHVs Sessions",
+        "name": "CHVs Sessions",
+        "startDate": "2022-11-18T00:00:00Z",
+        "endDate": null,
+        "active": false
+      },
       "team": {
         "createdBy": "admin",
         "createdDate": "2024-05-23T00:07:23.572034Z",
@@ -52,6 +65,19 @@ final Map<String, dynamic> dSampleChvSessions = {
       "comment": "no c",
       "startEntryTime": "2024-05-30T14:34:00Z",
       "deleted": false,
+      "activity" : {
+        "createdBy": "admin",
+        "createdDate": "2024-05-23T00:06:27.312804Z",
+        "lastModifiedBy": "admin",
+        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
+        "id": 1,
+        "uid": "rIjAsHzL2VB",
+        "code": "CHVs Sessions",
+        "name": "CHVs Sessions",
+        "startDate": "2022-11-18T00:00:00Z",
+        "endDate": null,
+        "active": false
+      },
       "team": {
         "createdBy": "admin",
         "createdDate": "2024-05-23T00:07:23.572034Z",

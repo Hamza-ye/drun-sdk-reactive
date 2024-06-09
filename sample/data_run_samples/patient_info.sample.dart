@@ -39,6 +39,54 @@ final Map<String, dynamic> dSamplePatientInfo = {
         "longitude": 42.9566075135,
         "latitude": 15.7400957004,
         "startDate": null
+      },
+      "chvRegisters": [
+        {
+          "createdBy": "admin",
+          "createdDate": "2024-05-30T14:33:28.957297Z",
+          "lastModifiedBy": "admin",
+          "lastModifiedDate": "2024-05-30T14:33:28.957297Z",
+          "id": 1153,
+          "uid": "Z72t3xlELi1",
+          "code": null,
+          "name": null,
+          "visitDate": "2024-05-30T14:32:00Z",
+          "pregnant": false,
+          "testResult": "PV",
+          "detectionType": "REACTIVE",
+          "severity": "SEVERE",
+          "treatment": "FIRSTDOSE",
+          "comment": "no comments sss",
+          "startEntryTime": "2024-05-30T14:32:00Z",
+          "deleted": false
+        }
+      ],
+      "team": {
+        "createdBy": "admin",
+        "createdDate": "2024-05-23T00:07:23.572034Z",
+        "lastModifiedBy": "admin",
+        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
+        "id": 1109,
+        "uid": "m7txPtUWXWm",
+        "code": "1",
+        "name": "خالد عبدالله عبده المقطري",
+        "description": "جميل ثابت حسن الجرباني",
+        "mobile": "770862733",
+        "workers": null,
+        "mobility": null
+      },
+      "activity" : {
+        "createdBy": "admin",
+        "createdDate": "2024-05-23T00:06:27.312804Z",
+        "lastModifiedBy": "admin",
+        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
+        "id": 2,
+        "uid": "rIjAsHzL3VB",
+        "code": "CHVs Registers",
+        "name": "CHVs Registers",
+        "startDate": "2022-11-18T00:00:00Z",
+        "endDate": null,
+        "active": false
       }
     },
     {
@@ -75,6 +123,33 @@ final Map<String, dynamic> dSamplePatientInfo = {
         "longitude": 42.9298764718,
         "latitude": 15.7569026145,
         "startDate": null
+      },
+      "team": {
+        "createdBy": "admin",
+        "createdDate": "2024-05-23T00:07:23.572034Z",
+        "lastModifiedBy": "admin",
+        "lastModifiedDate": "2024-05-23T00:07:23.572034Z",
+        "id": 1109,
+        "uid": "m7txPtUWXWm",
+        "code": "1",
+        "name": "خالد عبدالله عبده المقطري",
+        "description": "جميل ثابت حسن الجرباني",
+        "mobile": "770862733",
+        "workers": null,
+        "mobility": null
+      },
+      "activity" : {
+        "createdBy": "admin",
+        "createdDate": "2024-05-23T00:06:27.312804Z",
+        "lastModifiedBy": "admin",
+        "lastModifiedDate": "2024-05-23T00:06:27.312804Z",
+        "id": 2,
+        "uid": "rIjAsHzL3VB",
+        "code": "CHVs Registers",
+        "name": "CHVs Registers",
+        "startDate": "2022-11-18T00:00:00Z",
+        "endDate": null,
+        "active": false
       }
     }
   ]

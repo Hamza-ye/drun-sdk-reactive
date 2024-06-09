@@ -64,6 +64,6 @@ void main() async {
   List<DActivity> activities = await D2Remote.activityModuleD.activity.get();
 
   test('should store all incoming activities metadata', () {
-    expect(activities.length, 3);
+    expect(activities.length, 5);
   });
 }

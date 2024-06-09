@@ -51,6 +51,6 @@ void main() async {
   List<DProject> projects = await D2Remote.projectModuleD.project.get();
 
   test('should store all incoming projects metadata', () {
-    expect(projects.length, 2);
+    expect(projects.length, 3);
   });
 }
