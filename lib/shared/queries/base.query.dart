@@ -63,9 +63,9 @@ class BaseQuery<T extends BaseEntity> {
     return this;
   }
 
-  byIds(List<String> uids) {
+  byIds(List<String> ids) {
     this.id = null;
-    return this.whereIn(attribute: 'id', values: uids, merge: false);
+    return this.whereIn(attribute: 'id', values: ids, merge: false);
   }
 
   whereIn(
@@ -240,6 +240,9 @@ class BaseQuery<T extends BaseEntity> {
           mergeMode: this._mergeMode,
           saveOptions: saveOptions);
     }
+    if (this.data != null && this.data.lastUpdated == null) {
+      this.data.lastUpdated = DateTime.now().toIso8601String();
+    }
 
     return this.repository.saveOne(
         entity: this.data as T,
@@ -276,7 +279,9 @@ class BaseQuery<T extends BaseEntity> {
     final response = await HttpClient.get(dataRunUrl,
         database: this.database, dioTestClient: dioTestClient);
 
-    List data = response.body[this.apiResourceName]?.toList();
+    List data = response.body != null
+        ? response.body[this.apiResourceName]?.toList() ?? []
+        : [];
 
     return data.map((dataItem) {
       dataItem['dirty'] = false;
