@@ -53,8 +53,8 @@ class HttpClient {
 
     final dioClient = dioTestClient ??
         Dio(BaseOptions(
-            connectTimeout: 100000,
-            receiveTimeout: 100000,
+            connectTimeout: Duration(milliseconds: 100000),
+            receiveTimeout: Duration(milliseconds: 100000),
             headers: {
               HttpHeaders.authorizationHeader:
                   '${httpDetails.authTokenType} ${httpDetails.authToken}',
@@ -94,8 +94,8 @@ class HttpClient {
 
     final dioClient = dioTestClient ??
         Dio(BaseOptions(
-            connectTimeout: 100000,
-            receiveTimeout: 100000,
+            connectTimeout: Duration(milliseconds: 100000),
+            receiveTimeout: Duration(milliseconds: 100000),
             headers: {
               HttpHeaders.authorizationHeader:
                   '${httpDetails.authTokenType} ${httpDetails.authToken}',
@@ -124,24 +124,24 @@ class HttpClient {
 
   static Future<HttpResponse> get(String resourceUrl,
       {String? baseUrl,
-      String? username,
-      String? password,
-      Database? database,
-      Dio? dioTestClient}) async {
+        String? username,
+        String? password,
+        Database? database,
+        Dio? dioTestClient}) async {
     HttpDetails httpDetails = await HttpDetails(
-            baseUrl: baseUrl,
-            username: username,
-            password: password,
-            database: database)
+        baseUrl: baseUrl,
+        username: username,
+        password: password,
+        database: database)
         .get();
 
     final dioClient = dioTestClient ??
         Dio(BaseOptions(
-            connectTimeout: 100000,
-            receiveTimeout: 100000,
+            connectTimeout: Duration(milliseconds: 100000),
+            receiveTimeout: Duration(milliseconds: 100000),
             headers: {
               HttpHeaders.authorizationHeader:
-                  '${httpDetails.authTokenType} ${httpDetails.authToken}',
+              '${httpDetails.authTokenType} ${httpDetails.authToken}',
             }));
 
     try {
@@ -150,7 +150,7 @@ class HttpClient {
 
       return HttpResponse(
           statusCode: response.statusCode ?? 500, body: response.data);
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       if (error.response != null) {
         dynamic errorBody = error.response?.data;
         if (error.response?.data is String) {
@@ -169,7 +169,7 @@ class HttpClient {
 
         try {
           final xmlToJsonConverter = Xml2Json();
-          xmlToJsonConverter.parse(error.message);
+          xmlToJsonConverter.parse(error.message!);
 
           errorBody = jsonDecode(xmlToJsonConverter.toParker());
         } catch (e) {}
