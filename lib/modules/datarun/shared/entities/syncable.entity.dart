@@ -1,5 +1,6 @@
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
+import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
@@ -33,6 +34,13 @@ class SyncableEntity extends BaseEntity {
   @Column(nullable: true)
   String? finishedEntryTime;
 
+  /// Active, Completed
+  @Column()
+  String status;
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  Geometry? geometry;
+
   // Relations
   @ManyToOne(table: DTeam, joinColumnName: 'team')
   dynamic team;
@@ -55,7 +63,9 @@ class SyncableEntity extends BaseEntity {
       this.startEntryTime,
       this.finishedEntryTime,
       this.team,
-      this.activity,
+      required this.activity,
+      this.geometry,
+      required this.status,
       required bool dirty})
       : super(
             id: uid,

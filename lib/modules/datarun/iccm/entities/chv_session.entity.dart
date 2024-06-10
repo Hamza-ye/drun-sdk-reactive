@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
+import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
 import 'package:d2_remote/modules/datarun/shared/entities/syncable.entity.dart';
 
 @AnnotationReflectable
@@ -45,6 +46,8 @@ class ChvSession extends SyncableEntity {
       String? finishedEntryTime,
       dynamic activity,
       dynamic team,
+      required String status,
+      Geometry? geometry,
       required dirty})
       : super(
             id: id,
@@ -64,11 +67,18 @@ class ChvSession extends SyncableEntity {
             finishedEntryTime: finishedEntryTime,
             activity: activity,
             team: team,
+            status: status,
+            geometry: geometry,
             dirty: dirty);
 
   factory ChvSession.fromJson(Map<String, dynamic> json) {
     final dynamic lastSyncSummary = json['lastSyncSummary'] != null
         ? EventImportSummary.fromJson(jsonDecode(json['lastSyncSummary']))
+        : null;
+    final Geometry? geometry = json["geometry"] != null
+        ? Geometry.fromJson(json["geometry"].runtimeType == String
+            ? jsonDecode(json["geometry"])
+            : json["geometry"])
         : null;
     return ChvSession(
         id: json['id'].toString(),
@@ -95,6 +105,8 @@ class ChvSession extends SyncableEntity {
             ? json['activity']
             : json['activity']['uid'],
         team: json['team'] is String ? json['team'] : json['team']['uid'],
+        status: json['status'],
+        geometry: geometry,
         dirty: json['dirty']);
   }
 
@@ -125,6 +137,9 @@ class ChvSession extends SyncableEntity {
     data['finishedEntryTime'] = this.finishedEntryTime;
     data['activity'] = activity;
     data['team'] = team;
+    data['status'] = this.status;
+    data['geometry'] =
+        this.geometry != null ? jsonEncode(this.geometry?.geometryData) : null;
     data['dirty'] = this.dirty;
     return data;
   }
@@ -159,6 +174,9 @@ class ChvSession extends SyncableEntity {
       "activity": syncable.activity is String
           ? jsonEncode({'uid': syncable.activity})
           : syncable.activity,
+      "status": syncable.status,
+      "geometry":
+          syncable.geometry != null ? syncable.geometry?.toJson() : null,
       "dirty": syncable.dirty,
     };
 

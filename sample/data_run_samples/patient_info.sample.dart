@@ -16,6 +16,7 @@ final Map<String, dynamic> dSamplePatientInfo = {
       "name": "HAmza Patient iccm",
       "age": 23,
       "gender": "MALE",
+      "status": "COMPLETED",
       "location": {
         "createdBy": "admin",
         "createdDate": "2024-05-23T00:07:33.670285Z",
@@ -100,6 +101,7 @@ final Map<String, dynamic> dSamplePatientInfo = {
       "name": "Moh Patient ICCM 2",
       "age": 22,
       "gender": "FEMALE",
+      "status": "COMPLETED",
       "location": {
         "createdBy": "admin",
         "createdDate": "2024-05-23T00:07:33.670285Z",

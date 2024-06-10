@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
+import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
 import 'package:d2_remote/modules/datarun/iccm/entities/chv_register.entity.dart';
 import 'package:d2_remote/modules/datarun/shared/entities/syncable.entity.dart';
 import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.entity.dart';
@@ -44,6 +45,8 @@ class PatientInfo extends SyncableEntity {
       String? finishedEntryTime,
       dynamic activity,
       dynamic team,
+      required String status,
+      Geometry? geometry,
       required dirty})
       : super(
             id: id,
@@ -63,6 +66,8 @@ class PatientInfo extends SyncableEntity {
             finishedEntryTime: finishedEntryTime,
             activity: activity,
             team: team,
+            status: status,
+            geometry: geometry,
             dirty: dirty);
 
   factory PatientInfo.fromJson(Map<String, dynamic> json) {
@@ -73,6 +78,12 @@ class PatientInfo extends SyncableEntity {
         ? json['activity'] is String
             ? json['activity']
             : json['activity']['uid']
+        : null;
+
+    final Geometry? geometry = json["geometry"] != null
+        ? Geometry.fromJson(json["geometry"].runtimeType == String
+            ? jsonDecode(json["geometry"])
+            : json["geometry"])
         : null;
     return PatientInfo(
         id: json['id'].toString(),
@@ -104,6 +115,8 @@ class PatientInfo extends SyncableEntity {
         finishedEntryTime: json['finishedEntryTime'],
         activity: activity,
         team: json['team'],
+        status: json['status'],
+        geometry: geometry,
         dirty: json['dirty']);
   }
 
@@ -134,6 +147,9 @@ class PatientInfo extends SyncableEntity {
     data['finishedEntryTime'] = this.finishedEntryTime;
     data['activity'] = activity;
     data['team'] = team;
+    data['status'] = this.status;
+    data['geometry'] =
+        this.geometry != null ? jsonEncode(this.geometry?.geometryData) : null;
     data['dirty'] = this.dirty;
     return data;
   }
@@ -166,12 +182,15 @@ class PatientInfo extends SyncableEntity {
       "finishedEntryTime": syncable.finishedEntryTime,
       "activity": syncable.activity != null
           ? syncable.activity is String
-          ? jsonEncode({'uid': syncable.activity})
-          : syncable.activity
+              ? jsonEncode({'uid': syncable.activity})
+              : syncable.activity
           : null,
       "team": syncable.team is String
           ? jsonEncode({'uid': syncable.team})
           : syncable.team,
+      "status": syncable.status,
+      "geometry":
+          syncable.geometry != null ? syncable.geometry?.toJson() : null,
       "dirty": syncable.dirty,
     };
 

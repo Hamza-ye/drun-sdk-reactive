@@ -5,6 +5,7 @@ import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
+import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
 import 'package:d2_remote/modules/datarun/itns/entities/itns_village_houses_detail.entity.dart';
 import 'package:d2_remote/modules/datarun/itns/entities/progress_status.entity.dart';
 import 'package:d2_remote/modules/datarun/shared/entities/syncable.entity.dart';
@@ -107,6 +108,8 @@ class ItnsVillage extends SyncableEntity {
       String? finishedEntryTime,
       dynamic team,
       dynamic activity,
+      required String status,
+      Geometry? geometry,
       required dirty})
       : super(
             id: id,
@@ -126,13 +129,19 @@ class ItnsVillage extends SyncableEntity {
             finishedEntryTime: finishedEntryTime,
             activity: activity,
             team: team,
+            status: status,
+            geometry: geometry,
             dirty: dirty);
 
   factory ItnsVillage.fromJson(Map<String, dynamic> json) {
     final dynamic lastSyncSummary = json['lastSyncSummary'] != null
         ? EventImportSummary.fromJson(jsonDecode(json['lastSyncSummary']))
         : null;
-
+    final Geometry? geometry = json["geometry"] != null
+        ? Geometry.fromJson(json["geometry"].runtimeType == String
+            ? jsonDecode(json["geometry"])
+            : json["geometry"])
+        : null;
     return ItnsVillage(
         id: json['id'].toString(),
         uid: json['uid'],
@@ -183,6 +192,8 @@ class ItnsVillage extends SyncableEntity {
             ? json['activity']
             : json['activity']['uid'],
         team: json['team'] is String ? json['team'] : json['team']['uid'],
+        status: json['status'],
+        geometry: geometry,
         dirty: json['dirty']);
   }
 
@@ -227,6 +238,9 @@ class ItnsVillage extends SyncableEntity {
     data['finishedEntryTime'] = this.finishedEntryTime;
     data['activity'] = activity;
     data['team'] = team;
+    data['status'] = this.status;
+    data['geometry'] =
+        this.geometry != null ? jsonEncode(this.geometry?.geometryData) : null;
     data['dirty'] = dirty;
     return data;
   }
@@ -235,8 +249,8 @@ class ItnsVillage extends SyncableEntity {
     Map<String, dynamic> syncableToUpload = {
       // "id": syncable.id,
       "uid": syncable.uid,
-      "name": syncable.name,
       "code": syncable.code,
+      "name": syncable.name,
       "createdDate": syncable.created,
       "lastModifiedDate": syncable.lastUpdated,
       "workDayDate": syncable.workDayDate,
@@ -279,6 +293,9 @@ class ItnsVillage extends SyncableEntity {
       "team": syncable.team is String
           ? jsonEncode({'uid': syncable.team})
           : syncable.team,
+      "status": syncable.status,
+      "geometry":
+          syncable.geometry != null ? syncable.geometry?.toJson() : null,
       "dirty": syncable.dirty,
     };
 
