@@ -9,7 +9,7 @@ class DProject extends IdentifiableEntity {
   List<DActivity>? activities;
 
   DProject(
-      {required String id,
+      {String? id,
       required String uid,
       String? created,
       String? lastUpdated,

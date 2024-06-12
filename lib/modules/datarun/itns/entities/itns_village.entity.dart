@@ -194,7 +194,7 @@ class ItnsVillage extends SyncableEntity {
         team: json['team'] is String ? json['team'] : json['team']['uid'],
         status: json['status'],
         geometry: geometry,
-        dirty: json['dirty']);
+        dirty: json['dirty'] ?? false);
   }
 
   Map<String, dynamic> toJson() {

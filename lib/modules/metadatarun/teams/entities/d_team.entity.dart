@@ -1,12 +1,13 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'dTeam', apiResourceName: 'teams')
 class DTeam extends IdentifiableEntity {
-  @ManyToOne(table: DActivity, joinColumnName: 'activity')
-  dynamic activity;
+  // @ManyToOne(table: DActivity, joinColumnName: 'activity')
+  // dynamic activity;
+  @Column(nullable: true)
+  String? activity;
 
   @Column(type: ColumnType.BOOLEAN)
   bool activated;
@@ -18,7 +19,7 @@ class DTeam extends IdentifiableEntity {
   final String? mobile;
 
   DTeam(
-      {required String id,
+      {String? id,
       required String uid,
       String? created,
       String? lastUpdated,
@@ -52,9 +53,11 @@ class DTeam extends IdentifiableEntity {
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
-        activity: json['activity'] is String
-            ? json['activity']
-            : json['activity']['uid'],
+        activity: json['activity'] != null
+            ? json['activity'] is String
+                ? json['activity']
+                : json['activity']['uid']
+            : null,
         mobile: json['mobile'],
         activated: json['activated'] ?? true,
         synced: json['synced'],

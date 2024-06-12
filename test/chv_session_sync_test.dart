@@ -16,14 +16,7 @@ import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../sample/data_run_samples/d_activity.sample.dart';
-import '../sample/data_run_samples/chv_session.sample.dart';
-import '../sample/data_run_samples/patient_info.sample.dart';
-import '../sample/data_run_samples/d_assignment.sample.dart';
-import '../sample/data_run_samples/d_current_user.sample.dart';
-import '../sample/data_run_samples/d_project.sample.dart';
-import '../sample/data_run_samples/d_team.sample.dart';
-import '../sample/data_run_samples/d_warehouse.sample.dart';
+import '../sample/all_samples.dart';
 import 'chv_session_sync_test.reflectable.dart';
 
 void main() async {
@@ -42,63 +35,63 @@ void main() async {
   final dio = Dio(BaseOptions());
   final dioAdapter = DioAdapter(dio: dio);
 
-  dUserData['password'] = 'district';
-  dUserData['isLoggedIn'] = true;
-  dUserData['login'] = 'admin';
-  dUserData['baseUrl'] = 'http://localhost:8080';
+  userData['password'] = 'district';
+  userData['isLoggedIn'] = true;
+  userData['login'] = 'admin';
+  userData['baseUrl'] = 'http://localhost:8080';
   DUserQuery userQuery = DUserQuery(database: db);
 
-  final user = DUser.fromApi(dUserData);
+  final user = DUser.fromApi(userData);
   await userQuery.setData(user).save();
 
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
-    (server) => server.reply(200, dSampleProjects),
-  );
-  DProjectQuery projectQuery = DProjectQuery(database: db);
-  await projectQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
+  //   (server) => server.reply(200, sampleProjects),
+  // );
+  // DProjectQuery projectQuery = DProjectQuery(database: db);
+  // await projectQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
 
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
-    (server) => server.reply(200, dSampleActivities),
-  );
-  final activityQuery = DActivityQuery(database: db);
-  await activityQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
-    (server) => server.reply(200, dSampleWarehouses),
-  );
-  final warehouseQuery = WarehouseQuery(database: db);
-  await warehouseQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/teams?paging=false&eagerload=true',
-    (server) => server.reply(200, dSampleTeams),
-  );
-  final teamQuery = DTeamQuery(database: db);
-  await teamQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/assignments?paging=false&eagerload=true',
-    (server) => server.reply(200, dSampleAssignments),
-  );
-  final assignmentQuery = DAssignmentQuery(database: db);
-  await assignmentQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
-
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
+  //   (server) => server.reply(200, sampleActivities),
+  // );
+  // final activityQuery = DActivityQuery(database: db);
+  // await activityQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
+  //   (server) => server.reply(200, sampleWarehouses),
+  // );
+  // final warehouseQuery = WarehouseQuery(database: db);
+  // await warehouseQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/teams?paging=false&eagerload=true',
+  //   (server) => server.reply(200, sampleTeams),
+  // );
+  // final teamQuery = DTeamQuery(database: db);
+  // await teamQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/assignments?paging=false&eagerload=true',
+  //   (server) => server.reply(200, sampleAssignments),
+  // );
+  // final assignmentQuery = DAssignmentQuery(database: db);
+  // await assignmentQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+  //
   dioAdapter.onGet(
     'http://localhost:8080/api/custom/chvSessions?paging=false&eagerload=true',
-    (server) => server.reply(200, dSampleChvSessions),
+    (server) => server.reply(200, sampleChvSessions),
   );
   final chvSessionQuery = ChvSessionQuery(database: db);
   await chvSessionQuery.download((progress, complete) {

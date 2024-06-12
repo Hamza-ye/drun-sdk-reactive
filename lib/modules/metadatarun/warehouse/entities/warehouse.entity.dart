@@ -49,9 +49,9 @@ class Warehouse extends IdentifiableEntity {
         supervisor: json['supervisor'],
         code: json['code'],
         supervisorMobile: json['supervisorMobile'],
-        activity: json['activity'] is String
+        activity: json['activity'] != null ? json['activity'] is String
             ? json['activity']
-            : json['activity']['uid'],
+            : json['activity']['uid'] : null,
         name: json['name'],
         dirty: json['dirty']);
   }

@@ -1,7 +1,7 @@
-import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
-import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
-import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/d2_remote.dart';
+import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
+import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
+import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,8 +9,7 @@ import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../sample/data_run_samples/d_auth-token.sample.dart';
-import '../sample/data_run_samples/d_current_user.sample.dart';
+import '../sample/all_samples.dart';
 import 'd_auth_test.reflectable.dart';
 
 void main() async {
@@ -60,7 +59,7 @@ void main() async {
 
   dioAdapter.onGet(
     'http://localhost:8080/api/custom/me',
-    (server) => server.reply(200, dUserData),
+    (server) => server.reply(200, userData),
   );
 
   final onlineLogIn = await D2Remote.logInDataRun(

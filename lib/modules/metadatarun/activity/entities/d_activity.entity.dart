@@ -1,7 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.entity.dart';
 import 'package:d2_remote/modules/metadatarun/project/entities/d_project.entity.dart';
-import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
@@ -19,12 +17,6 @@ class DActivity extends IdentifiableEntity {
   @Column(type: ColumnType.BOOLEAN)
   bool activated;
 
-  @OneToMany(table: DAssignment)
-  List<DAssignment>? assignments;
-
-  @OneToMany(table: DTeam)
-  List<DTeam>? teams;
-
   @Column(nullable: true)
   final String? programs;
 
@@ -32,7 +24,7 @@ class DActivity extends IdentifiableEntity {
   final String? organisationUnits;
 
   DActivity(
-      {required String id,
+      {String? id,
       required String uid,
       String? created,
       String? lastUpdated,
@@ -44,8 +36,6 @@ class DActivity extends IdentifiableEntity {
       this.startDate,
       this.endDate,
       this.activated = true,
-      this.assignments,
-      this.teams,
       this.programs,
       this.organisationUnits,
       required dirty})
@@ -72,20 +62,16 @@ class DActivity extends IdentifiableEntity {
         displayName: json['displayName'],
         startDate: json['startDate'],
         endDate: json['endDate'],
-        project: json['project'] is String
-            ? json['project']
-            : json['project']['uid'],
+        project: json['project'] != null
+            ? json['project'] is String
+                ? json['project']
+                : json['project']['uid']
+            : null,
         activated: json['activated'] ?? true,
-        assignments: (json['assignments'] ?? [])
-            .map<DAssignment>((assignment) => DAssignment.fromJson(
-                {...assignment, 'activity': json['uid'], 'dirty': false}))
-            .toList(),
-        teams: (json['teams'] ?? [])
-            .map<DTeam>((team) => DTeam.fromJson(
-                {...team, 'activity': json['uid'], 'dirty': false}))
-            .toList(),
-        programs: json['programs'].toString(),
-        organisationUnits: json['organisationUnits'].toString(),
+        programs: json['programs'] != null ? json['programs'].toString() : null,
+        organisationUnits: json['organisationUnits'] != null
+            ? json['organisationUnits'].toString()
+            : null,
         dirty: json['dirty']);
   }
 
@@ -104,8 +90,6 @@ class DActivity extends IdentifiableEntity {
     data['endDate'] = this.endDate;
     data['project'] = this.project;
     data['programs'] = this.programs;
-    data['assignments'] = this.assignments;
-    data['teams'] = this.teams;
     data['activated'] = this.activated;
     data['dirty'] = this.dirty;
     return data;

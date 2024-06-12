@@ -1,20 +1,16 @@
+import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.dart';
-import 'package:d2_remote/modules/metadatarun/project/queries/d_project.query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../sample/data_run_samples/d_activity.sample.dart';
-import '../sample/data_run_samples/d_current_user.sample.dart';
-import '../sample/data_run_samples/d_project.sample.dart';
+import '../sample/all_samples.dart';
 import 'activity_sync_test.reflectable.dart';
 
 void main() async {
@@ -33,30 +29,29 @@ void main() async {
   final dio = Dio(BaseOptions());
   final dioAdapter = DioAdapter(dio: dio);
 
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
-    (server) => server.reply(200, dSampleActivities),
-  );
-
-  dioAdapter.onGet(
-    'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
-    (server) => server.reply(200, dSampleProjects),
-  );
-
-  dUserData['password'] = 'district';
-  dUserData['isLoggedIn'] = true;
-  dUserData['login'] = 'admin';
-  dUserData['baseUrl'] = 'http://localhost:8080';
+  userData['password'] = 'district';
+  userData['isLoggedIn'] = true;
+  userData['login'] = 'admin';
+  userData['baseUrl'] = 'http://localhost:8080';
   DUserQuery userQuery = DUserQuery(database: db);
 
-  final user = DUser.fromApi(dUserData);
+  final user = DUser.fromApi(userData);
   await userQuery.setData(user).save();
 
-  DProjectQuery projectQuery = DProjectQuery(database: db);
-  await projectQuery.download((progress, complete) {
-    print(progress.message);
-  }, dioTestClient: dio);
+  // dioAdapter.onGet(
+  //   'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
+  //   (server) => server.reply(200, sampleProjects),
+  // );
 
+  // DProjectQuery projectQuery = DProjectQuery(database: db);
+  // await projectQuery.download((progress, complete) {
+  //   print(progress.message);
+  // }, dioTestClient: dio);
+
+  dioAdapter.onGet(
+    'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
+    (server) => server.reply(200, sampleActivities),
+  );
   final activityQuery = DActivityQuery(database: db);
   await activityQuery.download((progress, complete) {
     print(progress.message);
@@ -65,6 +60,6 @@ void main() async {
   List<DActivity> activities = await D2Remote.activityModuleD.activity.get();
 
   test('should store all incoming activities metadata', () {
-    expect(activities.length, 5);
+    expect(activities.length, 18);
   });
 }

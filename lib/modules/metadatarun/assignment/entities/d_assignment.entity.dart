@@ -1,24 +1,28 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
-import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
-import 'package:d2_remote/modules/metadatarun/village_location/entities/d_organisation_unit.entity.dart';
-import 'package:d2_remote/modules/metadatarun/warehouse/entities/warehouse.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'dAssignment', apiResourceName: 'assignments')
 class DAssignment extends IdentifiableEntity {
-  @ManyToOne(table: DActivity, joinColumnName: 'activity')
-  dynamic activity;
+  // @ManyToOne(table: DActivity, joinColumnName: 'activity')
+  // dynamic activity;
+  @Column(nullable: true)
+  String? activity;
 
-  @ManyToOne(table: DTeam, joinColumnName: 'team')
-  dynamic team;
+  // @ManyToOne(table: DTeam, joinColumnName: 'team')
+  // dynamic team;
+  @Column(nullable: true)
+  String? team;
 
-  @ManyToOne(table: DOrganisationUnit, joinColumnName: 'organisationUnit')
-  dynamic organisationUnit;
+  // @ManyToOne(table: DOrganisationUnit, joinColumnName: 'organisationUnit')
+  // dynamic organisationUnit;
+  @Column(nullable: true)
+  String? organisationUnit;
 
-  @ManyToOne(table: Warehouse, joinColumnName: 'warehouse')
-  dynamic warehouse;
+  // @ManyToOne(table: Warehouse, joinColumnName: 'warehouse')
+  // dynamic warehouse;
+  @Column(nullable: true)
+  String? warehouse;
 
   @Column(type: ColumnType.BOOLEAN)
   bool activated;
@@ -57,8 +61,8 @@ class DAssignment extends IdentifiableEntity {
   String? subvillage;
 
   DAssignment(
-      {required String uid,
-      required String id,
+      {String? id,
+      required String uid,
       String? created,
       String? lastUpdated,
       String? name,
@@ -103,16 +107,26 @@ class DAssignment extends IdentifiableEntity {
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         code: json['code'],
-        activity: json['activity'] is String
-            ? json['activity']
-            : json['activity']['uid'],
-        organisationUnit: json['organisationUnit'] is String
-            ? json['organisationUnit']
-            : json['organisationUnit']['uid'],
-        warehouse: json['warehouse'] is String
-            ? json['warehouse']
-            : json['warehouse']['uid'],
-        team: json['team'] is String ? json['team'] : json['team']['uid'],
+        activity: json['activity'] != null
+            ? json['activity'] is String
+                ? json['activity']
+                : json['activity']['uid']
+            : null,
+        organisationUnit: json['organisationUnit'] != null
+            ? json['organisationUnit'] is String
+                ? json['organisationUnit']
+                : json['organisationUnit']['uid']
+            : null,
+        warehouse: json['warehouse'] != null
+            ? json['warehouse'] is String
+                ? json['warehouse']
+                : json['warehouse']['uid']
+            : null,
+        team: json['team'] != null
+            ? json['team'] is String
+                ? json['team']
+                : json['team']['uid']
+            : null,
 
         //warehouse,
         startDate: json['startDate'],
