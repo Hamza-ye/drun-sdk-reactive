@@ -12,6 +12,7 @@ import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/modules/data/aggregate/aggregate.module.dart';
 import 'package:d2_remote/modules/data/tracker/tracked_entity_instance.module.dart';
+import 'package:d2_remote/modules/datarun/form/form.module.dart';
 import 'package:d2_remote/modules/datarun/iccm/iccm.module.dart';
 import 'package:d2_remote/modules/datarun/itns/itns.module.dart';
 import 'package:d2_remote/modules/file_resource/file_resource.module.dart';
@@ -56,6 +57,7 @@ class D2Remote {
       await DAssignmentModule.createTables();
       await IccmModule.createTables();
       await ItnsVillageModule.createTables();
+      await FormModule.createTables();
 
       await OrganisationUnitModule.createTables();
       await DataElementModule.createTables();
@@ -115,12 +117,12 @@ class D2Remote {
 
   static Future<LoginResponseStatus> logInDataRun(
       {required String username,
-        required String password,
-        required String url,
-        Future<SharedPreferences>? sharedPreferenceInstance,
-        bool? inMemory,
-        DatabaseFactory? databaseFactory,
-        Dio? dioTestClient}) async {
+      required String password,
+      required String url,
+      Future<SharedPreferences>? sharedPreferenceInstance,
+      bool? inMemory,
+      DatabaseFactory? databaseFactory,
+      Dio? dioTestClient}) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     // Data-Run
@@ -155,7 +157,7 @@ class D2Remote {
     await D2Remote.setDatabaseName(
         databaseName: databaseName,
         sharedPreferenceInstance:
-        sharedPreferenceInstance ?? SharedPreferences.getInstance());
+            sharedPreferenceInstance ?? SharedPreferences.getInstance());
 
     DUserQuery userQuery = DUserQuery();
 
@@ -354,6 +356,8 @@ class D2Remote {
   static DActivityModule activityModuleD = DActivityModule();
 
   static DAssignmentModule assignmentModuleD = DAssignmentModule();
+
+  static FormModule formModule = FormModule();
 
   static DTeamModule teamModuleD = DTeamModule();
 
