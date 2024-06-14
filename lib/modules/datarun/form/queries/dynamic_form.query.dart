@@ -1,6 +1,7 @@
 import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
+import 'package:d2_remote/modules/datarun/form/utilities/chv_itn_distribution_form.temp.dart';
 import 'package:d2_remote/modules/datarun/form/utilities/chv_registers_form.temp.dart';
 import 'package:d2_remote/modules/datarun/form/utilities/chv_sessions_form.temp.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
@@ -60,6 +61,7 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
     } else {
       data.add(dTempChvRegisterForm);
       data.add(dTempChvSessionForm);
+      data.add(dTempItnDistributionForm);
     }
 
 
