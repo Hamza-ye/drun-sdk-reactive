@@ -1,4 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/modules/metadatarun/teams/d_team.module.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
@@ -9,14 +10,14 @@ class DTeam extends IdentifiableEntity {
   @Column(nullable: true)
   String? activity;
 
-  @Column(type: ColumnType.BOOLEAN)
-  bool activated;
-
-  @Column(nullable: true)
-  bool? synced;
-
   @Column(nullable: true)
   final String? mobile;
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  TeamType? teamType;
+
+  @Column(type: ColumnType.BOOLEAN)
+  bool activated;
 
   DTeam(
       {String? id,
@@ -30,7 +31,7 @@ class DTeam extends IdentifiableEntity {
       this.mobile,
       this.activity,
       this.activated = true,
-      this.synced,
+      this.teamType,
       required dirty})
       : super(
             uid: uid,
@@ -60,7 +61,7 @@ class DTeam extends IdentifiableEntity {
             : null,
         mobile: json['mobile'],
         activated: json['activated'] ?? true,
-        synced: json['synced'],
+        teamType: TeamTypeUtil.getTeamType(json['teamType']),
         dirty: json['dirty']);
   }
 
@@ -76,6 +77,7 @@ class DTeam extends IdentifiableEntity {
         activity: jsonData['activity'],
         activated: jsonData['activated'] ?? true,
         mobile: jsonData['mobile'],
+        teamType: TeamTypeUtil.getTeamType(jsonData['teamType']),
         dirty: jsonData['dirty'] ?? false);
   }
 
@@ -93,7 +95,7 @@ class DTeam extends IdentifiableEntity {
     data['activity'] = this.activity;
     data['activated'] = this.activated;
     data['mobile'] = this.mobile;
-    data['synced'] = this.synced;
+    data['teamType'] = this.teamType;
     data['dirty'] = this.dirty;
     return data;
   }
