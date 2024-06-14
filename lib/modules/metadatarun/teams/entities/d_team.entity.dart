@@ -53,14 +53,14 @@ class DTeam extends IdentifiableEntity {
         lastUpdated: json['lastModifiedDate'],
         shortName: json['shortName'],
         code: json['code'],
-        displayName: json['displayName'],
+        displayName: json['displayName'] ?? json['name'],
         activity: json['activity'] != null
             ? json['activity'] is String
                 ? json['activity']
                 : json['activity']['uid']
             : null,
         mobile: json['mobile'],
-        activated: json['activated'] ?? true,
+        activated: json['activated'] ?? false,
         teamType: TeamTypeUtil.getTeamType(json['teamType']),
         dirty: json['dirty']);
   }
@@ -73,9 +73,9 @@ class DTeam extends IdentifiableEntity {
         created: jsonData['created'],
         shortName: jsonData['shortName'],
         code: jsonData['code'],
-        displayName: jsonData['displayName'],
+        displayName: jsonData['displayName'] ?? jsonData['name'],
         activity: jsonData['activity'],
-        activated: jsonData['activated'] ?? true,
+        activated: jsonData['activated'] ?? false,
         mobile: jsonData['mobile'],
         teamType: TeamTypeUtil.getTeamType(jsonData['teamType']),
         dirty: jsonData['dirty'] ?? false);

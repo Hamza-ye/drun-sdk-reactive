@@ -8,6 +8,9 @@ class DProject extends IdentifiableEntity {
   @OneToMany(table: DActivity)
   List<DActivity>? activities;
 
+  @Column(type: ColumnType.BOOLEAN)
+  bool activated;
+
   DProject(
       {String? id,
       required String uid,
@@ -18,6 +21,7 @@ class DProject extends IdentifiableEntity {
       String? code,
       String? displayName,
       this.activities,
+      required this.activated,
       required dirty})
       : super(
             id: id,
@@ -39,7 +43,8 @@ class DProject extends IdentifiableEntity {
         lastUpdated: json['lastModifiedDate'],
         shortName: json['shortName'],
         code: json['code'],
-        displayName: json['displayName'],
+        displayName: json['displayName'] ?? json['name'],
+        activated: json['activated'] ?? false,
         activities: List<dynamic>.from(json['activities'] ?? [])
             .map((activity) => DActivity.fromJson(
                 {...activity, 'project': json['uid'], 'dirty': false}))
@@ -58,6 +63,7 @@ class DProject extends IdentifiableEntity {
     data['shortName'] = this.shortName;
     data['code'] = this.code;
     data['displayName'] = this.displayName;
+    data['activated'] = this.activated;
     data['activities'] = this.activities;
     data['dirty'] = this.dirty;
     return data;

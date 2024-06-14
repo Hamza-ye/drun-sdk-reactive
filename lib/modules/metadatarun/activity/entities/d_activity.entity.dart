@@ -35,7 +35,7 @@ class DActivity extends IdentifiableEntity {
       String? displayName,
       this.startDate,
       this.endDate,
-      this.activated = true,
+      required this.activated,
       this.programs,
       this.organisationUnits,
       required dirty})
@@ -67,7 +67,7 @@ class DActivity extends IdentifiableEntity {
                 ? json['project']
                 : json['project']['uid']
             : null,
-        activated: json['activated'] ?? true,
+        activated: json['activated'] ?? false,
         programs: json['programs'] != null ? json['programs'].toString() : null,
         organisationUnits: json['organisationUnits'] != null
             ? json['organisationUnits'].toString()
