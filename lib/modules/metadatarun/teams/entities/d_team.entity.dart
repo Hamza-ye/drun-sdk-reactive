@@ -17,7 +17,7 @@ class DTeam extends IdentifiableEntity {
   TeamType? teamType;
 
   @Column(type: ColumnType.BOOLEAN)
-  bool activated;
+  bool disabled;
 
   DTeam(
       {String? id,
@@ -30,7 +30,7 @@ class DTeam extends IdentifiableEntity {
       String? displayName,
       this.mobile,
       this.activity,
-      this.activated = true,
+      this.disabled = true,
       this.teamType,
       required dirty})
       : super(
@@ -60,7 +60,7 @@ class DTeam extends IdentifiableEntity {
                 : json['activity']['uid']
             : null,
         mobile: json['mobile'],
-        activated: json['activated'] ?? false,
+        disabled: json['disabled'] ?? true,
         teamType: TeamTypeUtil.getTeamType(json['teamType']),
         dirty: json['dirty']);
   }
@@ -75,7 +75,7 @@ class DTeam extends IdentifiableEntity {
         code: jsonData['code'],
         displayName: jsonData['displayName'] ?? jsonData['name'],
         activity: jsonData['activity'],
-        activated: jsonData['activated'] ?? false,
+        disabled: jsonData['disabled'] ?? true,
         mobile: jsonData['mobile'],
         teamType: TeamTypeUtil.getTeamType(jsonData['teamType']),
         dirty: jsonData['dirty'] ?? false);
@@ -93,7 +93,7 @@ class DTeam extends IdentifiableEntity {
     data['code'] = this.code;
     data['displayName'] = this.displayName;
     data['activity'] = this.activity;
-    data['activated'] = this.activated;
+    data['disabled'] = this.disabled;
     data['mobile'] = this.mobile;
     data['teamType'] = this.teamType;
     data['dirty'] = this.dirty;

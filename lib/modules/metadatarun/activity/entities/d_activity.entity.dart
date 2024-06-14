@@ -15,7 +15,7 @@ class DActivity extends IdentifiableEntity {
   String? endDate;
 
   @Column(type: ColumnType.BOOLEAN)
-  bool activated;
+  bool disabled;
 
   @Column(nullable: true)
   final String? programs;
@@ -35,7 +35,7 @@ class DActivity extends IdentifiableEntity {
       String? displayName,
       this.startDate,
       this.endDate,
-      required this.activated,
+      required this.disabled,
       this.programs,
       this.organisationUnits,
       required dirty})
@@ -67,7 +67,7 @@ class DActivity extends IdentifiableEntity {
                 ? json['project']
                 : json['project']['uid']
             : null,
-        activated: json['activated'] ?? false,
+        disabled: json['disabled'] ?? true,
         programs: json['programs'] != null ? json['programs'].toString() : null,
         organisationUnits: json['organisationUnits'] != null
             ? json['organisationUnits'].toString()
@@ -90,7 +90,7 @@ class DActivity extends IdentifiableEntity {
     data['endDate'] = this.endDate;
     data['project'] = this.project;
     data['programs'] = this.programs;
-    data['activated'] = this.activated;
+    data['disabled'] = this.disabled;
     data['dirty'] = this.dirty;
     return data;
   }

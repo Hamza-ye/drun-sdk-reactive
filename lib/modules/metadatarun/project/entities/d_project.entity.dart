@@ -9,7 +9,7 @@ class DProject extends IdentifiableEntity {
   List<DActivity>? activities;
 
   @Column(type: ColumnType.BOOLEAN)
-  bool activated;
+  bool disabled;
 
   DProject(
       {String? id,
@@ -21,7 +21,7 @@ class DProject extends IdentifiableEntity {
       String? code,
       String? displayName,
       this.activities,
-      required this.activated,
+      required this.disabled,
       required dirty})
       : super(
             id: id,
@@ -44,7 +44,7 @@ class DProject extends IdentifiableEntity {
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'] ?? json['name'],
-        activated: json['activated'] ?? false,
+        disabled: json['disabled'] ?? true,
         activities: List<dynamic>.from(json['activities'] ?? [])
             .map((activity) => DActivity.fromJson(
                 {...activity, 'project': json['uid'], 'dirty': false}))
@@ -63,7 +63,7 @@ class DProject extends IdentifiableEntity {
     data['shortName'] = this.shortName;
     data['code'] = this.code;
     data['displayName'] = this.displayName;
-    data['activated'] = this.activated;
+    data['disabled'] = this.disabled;
     data['activities'] = this.activities;
     data['dirty'] = this.dirty;
     return data;

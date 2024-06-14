@@ -9,7 +9,7 @@ final Map<String, dynamic> dTempChvSessionForm = {
       "id": "1",
       "uid": "r1j333zL3VB",
       "name": "ChvRegister Form",
-      "code": "CHV_REGISTER_FORM",
+      "code": "CHV_SESSIONS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
       "activity": {
