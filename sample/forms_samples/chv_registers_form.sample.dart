@@ -18,7 +18,7 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
       },
       "fields": [
         {
-          "type": "Date",
+          "type": "date",
           "label": "Visit Date",
           "key": "visitDate",
           "options": null,
@@ -29,11 +29,11 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
-          "type": "YesNo",
+          "type": "yesNo",
           "label": "Pregnant",
           "key": "pregnant",
           "options": null,
@@ -44,11 +44,11 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Test Result",
           "key": "testResult",
           "options": null,
@@ -59,11 +59,11 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Detection Type",
           "key": "detectionType",
           "options": null,
@@ -74,11 +74,11 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Severity",
           "key": "severity",
           "options": null,
@@ -89,11 +89,11 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Treatment",
           "key": "treatment",
           "options": null,
@@ -104,11 +104,11 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
-          "type": "Text",
+          "type": "text",
           "label": "Comment",
           "key": "comment",
           "options": null,
@@ -119,11 +119,11 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
-          "type": "Text",
+          "type": "text",
           "label": "Patient",
           "key": "patient",
           "options": null,
@@ -134,7 +134,7 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         }
       ],

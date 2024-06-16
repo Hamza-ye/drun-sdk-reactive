@@ -18,21 +18,21 @@ final Map<String, dynamic> dTempChvSessionForm = {
       },
       "fields": [
         {
-          "type": "Date",
+          "type": "date",
           "label": "Session Date",
           "name": "sessionDate",
           "fieldRule": {"required": true}
         },
         {
           "id": "3",
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Session Subject",
           "name": "subject",
           "options": ["ITNs", "BreadingSite", "TRANSMISSION_PREVENTION"],
           "rules": {"required": true}
         },
         {
-          "type": "Number",
+          "type": "number",
           "name": "sessions",
           "label": "Sessions",
           "fieldRule": {
@@ -41,7 +41,7 @@ final Map<String, dynamic> dTempChvSessionForm = {
           }
         },
         {
-          "type": "Number",
+          "type": "number",
           "name": "people",
           "label": "People",
           "fieldRule": {

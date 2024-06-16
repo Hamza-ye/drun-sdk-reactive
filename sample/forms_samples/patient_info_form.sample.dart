@@ -19,21 +19,21 @@ final Map<String, dynamic> dSamplePatientInfoForm = {
       "fields": [
         {
           "id": "1",
-          "type": "Text",
+          "type": "text",
           "name": "name",
           "label": "Name",
           "rules": {"required": true, "minLength": 2, "maxLength": 50}
         },
         {
           "id": "2",
-          "type": "Number",
+          "type": "number",
           "name": "age",
           "label": "Age",
           "rules": {"required": true, "minValue": 0, "maxValue": 120}
         },
         {
           "id": "3",
-          "type": "SelectOne",
+          "type": "selectOne",
           "name": "gender",
           "label": "Gender",
           "options": ["Male", "Female", "Other"],

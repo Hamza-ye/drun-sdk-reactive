@@ -1,9 +1,9 @@
 import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
-import 'package:d2_remote/modules/datarun/form/utilities/chv_itn_distribution_form.temp.dart';
-import 'package:d2_remote/modules/datarun/form/utilities/chv_registers_form.temp.dart';
-import 'package:d2_remote/modules/datarun/form/utilities/chv_sessions_form.temp.dart';
+import 'package:d2_remote/modules/datarun_shared/temp/chv_itn_distribution_form.temp.dart';
+import 'package:d2_remote/modules/datarun_shared/temp/chv_registers_form.temp.dart';
+import 'package:d2_remote/modules/datarun_shared/temp/chv_sessions_form.temp.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
@@ -50,7 +50,7 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
             percentage: 26),
         false);
 
-    final dhisUrl = await this.dhisUrl();
+    final dhisUrl = await this.dataRunUrl();
 
     final response = await HttpClient.get(dhisUrl,
         database: this.database, dioTestClient: dioTestClient);

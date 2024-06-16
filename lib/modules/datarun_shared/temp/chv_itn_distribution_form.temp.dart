@@ -19,7 +19,7 @@ final Map<String, dynamic> dTempItnDistributionForm = {
       "fields": [
         {
           "id": "1",
-          "type": "Date",
+          "type": "date",
           "label": "Visit Date",
           "name": "visitDate",
           "options": null,
@@ -30,12 +30,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "2",
-          "type": "Text",
+          "type": "text",
           "label": "Patient Name",
           "name": "patientName",
           "options": null,
@@ -46,12 +46,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "3",
-          "type": "Text",
+          "type": "text",
           "label": "Patient Age",
           "name": "patientAge",
           "options": null,
@@ -62,12 +62,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "4",
-          "type": "Text",
+          "type": "text",
           "label": "Patient Location",
           "name": "patientLocation",
           "options": null,
@@ -78,12 +78,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "5",
-          "type": "SelectOne",
+          "type": "selectOne",
           "name": "gender",
           "label": "Gender",
           "options": ["Male", "Female", "Other"],
@@ -91,7 +91,7 @@ final Map<String, dynamic> dTempItnDistributionForm = {
         },
         {
           "id": "6",
-          "type": "YesNo",
+          "type": "yesNo",
           "label": "Pregnant",
           "name": "pregnant",
           "options": null,
@@ -102,12 +102,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "7",
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Test Result",
           "name": "testResult",
           "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"],
@@ -118,12 +118,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "8",
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Detection Type",
           "name": "detectionType",
           "options": ["REACTIVE", "ACTIVE"],
@@ -134,12 +134,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "9",
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Severity",
           "name": "severity",
           "options": ["SIMPLE", "SEVERE"],
@@ -150,12 +150,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "10",
-          "type": "SelectOne",
+          "type": "selectOne",
           "label": "Treatment",
           "name": "treatment",
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
@@ -166,12 +166,12 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         },
         {
           "id": "11",
-          "type": "Text",
+          "type": "text",
           "label": "Comment",
           "name": "comment",
           "options": null,
@@ -182,7 +182,7 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "numeric": null,
             "email": null,
             "dependentFieldId": null,
-            "dependentFieldValue": null
+            "dependentFieldValues": null
           }
         }
       ],

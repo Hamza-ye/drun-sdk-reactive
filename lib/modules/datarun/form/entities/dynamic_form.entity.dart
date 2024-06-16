@@ -4,7 +4,7 @@ import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
-import 'package:d2_remote/modules/datarun/form/utilities/dynamic_form_field.entity.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 

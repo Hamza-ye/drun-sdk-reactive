@@ -1,5 +1,4 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/metadatarun/teams/d_team.module.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
@@ -14,7 +13,7 @@ class DTeam extends IdentifiableEntity {
   final String? mobile;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  TeamType? teamType;
+  String teamType;
 
   @Column(type: ColumnType.BOOLEAN)
   bool disabled;
@@ -31,7 +30,7 @@ class DTeam extends IdentifiableEntity {
       this.mobile,
       this.activity,
       this.disabled = true,
-      this.teamType,
+      required this.teamType,
       required dirty})
       : super(
             uid: uid,
@@ -61,7 +60,7 @@ class DTeam extends IdentifiableEntity {
             : null,
         mobile: json['mobile'],
         disabled: json['disabled'] ?? true,
-        teamType: TeamTypeUtil.getTeamType(json['teamType']),
+        teamType: json['teamType'],
         dirty: json['dirty']);
   }
 
@@ -77,7 +76,7 @@ class DTeam extends IdentifiableEntity {
         activity: jsonData['activity'],
         disabled: jsonData['disabled'] ?? true,
         mobile: jsonData['mobile'],
-        teamType: TeamTypeUtil.getTeamType(jsonData['teamType']),
+        teamType: jsonData['teamType'],
         dirty: jsonData['dirty'] ?? false);
   }
 

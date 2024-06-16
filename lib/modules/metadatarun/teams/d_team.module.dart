@@ -18,7 +18,7 @@ enum TeamType {
 }
 
 class TeamTypeUtil {
-  static TeamType getTeamType(String fieldType) {
+  static TeamType getTeamType(String? fieldType) {
     switch (fieldType) {
       case 'ITNS_DISTRIBUTION':
         return TeamType.ITNS_DISTRIBUTION;

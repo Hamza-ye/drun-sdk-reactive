@@ -18,6 +18,7 @@ final Map<String, dynamic> dSampleTeams2 = {
       "mobile": "770862733",
       "workers": null,
       "mobility": null,
+      "teamType": "ITNS_DISTRIBUTION",
       "activity": {
         "createdBy": "admin",
         "createdDate": "2024-05-23T00:06:27.312804Z",
@@ -83,6 +84,7 @@ final Map<String, dynamic> dSampleTeams2 = {
       "uid": "vsVbF6aHOSP",
       "code": "2020",
       "name": "فريق متطوعات",
+      "teamType": "CHV_PATIENTS",
       "description": null,
       "mobile": null,
       "workers": null,

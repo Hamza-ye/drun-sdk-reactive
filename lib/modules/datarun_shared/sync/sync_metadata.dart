@@ -1,5 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/datarun/sync/call/d2_progress.dart';
+import 'package:d2_remote/modules/datarun_shared/sync/call/d2_progress.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:queue/queue.dart';
