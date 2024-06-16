@@ -1,0 +1,20 @@
+enum FieldValueRendering {
+  defaultType,
+  dropdown,
+  verticalRadioButtons,
+  horizontalRadioButtons,
+  verticalCheckboxes,
+  horizontalCheckboxes,
+  sharedHeaderRadioButtons,
+  iconsAsButtons,
+  spinner,
+  icon,
+  toggle,
+  value,
+  slider,
+  linearScale,
+  autocomplete,
+  qrCode,
+  barCode,
+  gs1Datamatrix
+}

@@ -21,7 +21,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "1",
           "type": "Date",
           "label": "Visit Date",
-          "key": "visitDate",
+          "name": "visitDate",
           "options": null,
           "fieldRule": {
             "required": true,
@@ -37,7 +37,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "2",
           "type": "Text",
           "label": "Patient Name",
-          "key": "patientName",
+          "name": "patientName",
           "options": null,
           "fieldRule": {
             "required": true,
@@ -53,7 +53,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "3",
           "type": "Text",
           "label": "Patient Age",
-          "key": "patientAge",
+          "name": "patientAge",
           "options": null,
           "fieldRule": {
             "required": true,
@@ -69,7 +69,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "4",
           "type": "Text",
           "label": "Patient Location",
-          "key": "patientLocation",
+          "name": "patientLocation",
           "options": null,
           "fieldRule": {
             "required": true,
@@ -93,7 +93,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "6",
           "type": "YesNo",
           "label": "Pregnant",
-          "key": "pregnant",
+          "name": "pregnant",
           "options": null,
           "fieldRule": {
             "required": false,
@@ -109,7 +109,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "7",
           "type": "SelectOne",
           "label": "Test Result",
-          "key": "testResult",
+          "name": "testResult",
           "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"],
           "fieldRule": {
             "required": false,
@@ -125,7 +125,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "8",
           "type": "SelectOne",
           "label": "Detection Type",
-          "key": "detectionType",
+          "name": "detectionType",
           "options": ["REACTIVE", "ACTIVE"],
           "fieldRule": {
             "required": false,
@@ -141,7 +141,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "9",
           "type": "SelectOne",
           "label": "Severity",
-          "key": "severity",
+          "name": "severity",
           "options": ["SIMPLE", "SEVERE"],
           "fieldRule": {
             "required": false,
@@ -157,7 +157,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "10",
           "type": "SelectOne",
           "label": "Treatment",
-          "key": "treatment",
+          "name": "treatment",
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
           "fieldRule": {
             "required": false,
@@ -173,7 +173,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "id": "11",
           "type": "Text",
           "label": "Comment",
-          "key": "comment",
+          "name": "comment",
           "options": null,
           "fieldRule": {
             "required": false,

@@ -63,8 +63,10 @@ class DynamicForm extends IdentifiableEntity {
     data['uid'] = uid;
     data['code'] = code;
     data['name'] = name;
-    data['fieldsList'] =
-        this.fieldsList != null ? jsonEncode(fieldsList) : null;
+    // data['fields'] =
+    //     this.fieldsList != null ? jsonEncode(fieldsList) : null;
+    data['fields'] =
+        this.fieldsList?.map((field) => field.toJson()).toList() ?? [];
     data['activity'] = activity;
     data['dirty'] = dirty;
     return data;
