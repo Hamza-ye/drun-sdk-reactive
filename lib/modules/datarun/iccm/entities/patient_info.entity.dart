@@ -22,52 +22,53 @@ class PatientInfo extends SyncableEntity {
   @OneToMany(table: ChvRegister)
   List<ChvRegister>? chvRegisters;
 
-  PatientInfo({String? id,
-    String? uid,
-    String? created,
-    String? lastUpdated,
-    required String? name,
-    String? code,
-    String? displayName,
-    this.age,
-    this.gender,
-    this.location,
-    this.chvRegisters,
-
-    /// Syncable
-    bool? deleted,
-    bool? synced,
-    bool? syncFailed,
-    String? lastSyncDate,
-    EventImportSummary? lastSyncSummary,
-    String? startEntryTime,
-    String? finishedEntryTime,
-    dynamic activity,
-    dynamic team,
-    required String status,
-    Geometry? geometry,
-    required dirty})
-      : super(
-      id: id,
-      uid: uid,
-      name: name,
-      code: code,
-      created: created,
-      lastUpdated: lastUpdated,
+  PatientInfo(
+      {String? id,
+      String? uid,
+      String? created,
+      String? lastUpdated,
+      required String? name,
+      String? code,
+      String? displayName,
+      this.age,
+      this.gender,
+      this.location,
+      this.chvRegisters,
 
       /// Syncable
-      deleted: deleted,
-      synced: synced,
-      syncFailed: syncFailed,
-      lastSyncDate: lastSyncDate,
-      lastSyncSummary: lastSyncSummary,
-      startEntryTime: startEntryTime,
-      finishedEntryTime: finishedEntryTime,
-      activity: activity,
-      team: team,
-      status: status,
-      geometry: geometry,
-      dirty: dirty);
+      bool? deleted,
+      bool? synced,
+      bool? syncFailed,
+      String? lastSyncDate,
+      EventImportSummary? lastSyncSummary,
+      String? startEntryTime,
+      String? finishedEntryTime,
+      dynamic activity,
+      dynamic team,
+      required String status,
+      Geometry? geometry,
+      required dirty})
+      : super(
+            id: id,
+            uid: uid,
+            name: name,
+            code: code,
+            created: created,
+            lastUpdated: lastUpdated,
+
+            /// Syncable
+            deleted: deleted,
+            synced: synced,
+            syncFailed: syncFailed,
+            lastSyncDate: lastSyncDate,
+            lastSyncSummary: lastSyncSummary,
+            startEntryTime: startEntryTime,
+            finishedEntryTime: finishedEntryTime,
+            activity: activity,
+            team: team,
+            status: status,
+            geometry: geometry,
+            dirty: dirty);
 
   factory PatientInfo.fromJson(Map<String, dynamic> json) {
     final dynamic lastSyncSummary = json['lastSyncSummary'] != null
@@ -75,14 +76,14 @@ class PatientInfo extends SyncableEntity {
         : null;
     final activity = json['activity'] != null
         ? json['activity'] is String
-        ? json['activity']
-        : json['activity']['uid']
+            ? json['activity']
+            : json['activity']['uid']
         : null;
 
     final Geometry? geometry = json["geometry"] != null
         ? Geometry.fromJson(json["geometry"].runtimeType == String
-        ? jsonDecode(json["geometry"])
-        : json["geometry"])
+            ? jsonDecode(json["geometry"])
+            : json["geometry"])
         : null;
     return PatientInfo(
         id: json['id'].toString(),
@@ -94,17 +95,25 @@ class PatientInfo extends SyncableEntity {
         age: json['age'],
         location: json['location'] != null
             ? json['location'] is String
-            ? json['location']
-            : json['location']['uid']
+                ? json['location']
+                : json['location']['uid']
             : null,
         gender: json['gender'],
         chvRegisters: (json['chvRegisters'] ?? [])
-            .map<ChvRegister>((chvRegisters) =>
-            ChvRegister.fromJson({
-              ...chvRegisters,
-              'patient': json['uid'],
-              'dirty': json['dirty'] ?? false,
-            }))
+            .map<ChvRegister>((chvRegisters) => ChvRegister.fromJson({
+                  ...chvRegisters,
+                  'location': json['location'],
+                  'age': json['age'],
+                  'gender': json['gender'],
+                  'activity': json['activity'],
+                  'name': json['name'],
+                  'lastSyncSummary': json['lastSyncSummary'],
+                  'geometry': json['geometry'],
+                  'team': json['team'],
+                  'status': json['status'],
+                  'patient': json['uid'],
+                  'dirty': json['dirty'] ?? false,
+                }))
             .toList(),
 
         /// Syncable
@@ -116,9 +125,11 @@ class PatientInfo extends SyncableEntity {
         startEntryTime: json['startEntryTime'],
         finishedEntryTime: json['finishedEntryTime'],
         activity: activity,
-        team: json['team'] != null ? json['team'] is String
-            ? json['team']
-            : json['team']['uid'] : null,
+        team: json['team'] != null
+            ? json['team'] is String
+                ? json['team']
+                : json['team']['uid']
+            : null,
         status: json['status'],
         geometry: geometry,
         dirty: json['dirty'] ?? false);
@@ -144,7 +155,7 @@ class PatientInfo extends SyncableEntity {
     data['syncFailed'] = this.syncFailed;
     data['lastSyncSummary'] = this.lastSyncSummary != null
         ? jsonEncode(
-        (this.lastSyncSummary as EventImportSummary).responseSummary)
+            (this.lastSyncSummary as EventImportSummary).responseSummary)
         : null;
     data['lastSyncDate'] = this.lastSyncDate;
     data['startEntryTime'] = this.startEntryTime;
@@ -153,7 +164,7 @@ class PatientInfo extends SyncableEntity {
     data['team'] = team;
     data['status'] = this.status;
     data['geometry'] =
-    this.geometry != null ? jsonEncode(this.geometry?.geometryData) : null;
+        this.geometry != null ? jsonEncode(this.geometry?.geometryData) : null;
     data['dirty'] = this.dirty;
     return data;
   }
@@ -179,22 +190,22 @@ class PatientInfo extends SyncableEntity {
       "syncFailed": syncable.syncFailed,
       "lastSyncSummary": syncable.lastSyncSummary != null
           ? jsonEncode(
-          (syncable.lastSyncSummary as EventImportSummary).responseSummary)
+              (syncable.lastSyncSummary as EventImportSummary).responseSummary)
           : null,
       "lastSyncDate": syncable.lastSyncDate,
       "startEntryTime": syncable.startEntryTime,
       "finishedEntryTime": syncable.finishedEntryTime,
       "activity": syncable.activity != null
           ? syncable.activity is String
-          ? jsonEncode({'uid': syncable.activity})
-          : syncable.activity
+              ? jsonEncode({'uid': syncable.activity})
+              : syncable.activity
           : null,
       "team": syncable.team is String
           ? jsonEncode({'uid': syncable.team})
           : syncable.team,
       "status": syncable.status,
       "geometry":
-      syncable.geometry != null ? syncable.geometry?.toJson() : null,
+          syncable.geometry != null ? syncable.geometry?.toJson() : null,
       "dirty": syncable.dirty,
     };
 
