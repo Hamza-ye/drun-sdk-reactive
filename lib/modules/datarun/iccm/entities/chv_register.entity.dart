@@ -3,15 +3,14 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
 import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
-import 'package:d2_remote/modules/datarun/iccm/entities/patient_info.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'chvRegister', apiResourceName: 'chvRegisters')
 class ChvRegister extends SyncableEntity {
-  @ManyToOne(table: PatientInfo, joinColumnName: 'patient')
-  dynamic patient;
+  // @ManyToOne(table: PatientInfo, joinColumnName: 'patient')
+  // dynamic patient;
 
   @Column(nullable: true)
   String? gender;
@@ -60,7 +59,7 @@ class ChvRegister extends SyncableEntity {
       this.severity,
       this.treatment,
       this.comment,
-      this.patient,
+      // this.patient,
 
       /// Syncable
       bool? deleted,
@@ -126,9 +125,9 @@ class ChvRegister extends SyncableEntity {
         severity: json['severity'],
         treatment: json['treatment'],
         comment: json['comment'],
-        patient: json['patient'] is String
-            ? json['patient']
-            : json['patient']['uid'],
+        // patient: json['patient'] is String
+        //     ? json['patient']
+        //     : json['patient']['uid'],
 
         /// Patient
         name: json['name'],
@@ -165,7 +164,7 @@ class ChvRegister extends SyncableEntity {
     data['uid'] = this.uid;
     data['name'] = this.name;
     data['code'] = this.code;
-    data['patient'] = this.patient;
+    // data['patient'] = this.patient;
     data['visitDate'] = this.visitDate;
     data['pregnant'] = this.pregnant;
     data['testResult'] = this.testResult;
@@ -200,5 +199,54 @@ class ChvRegister extends SyncableEntity {
     data['dirty'] = this.dirty;
 
     return data;
+  }
+
+  static toUpload(ChvRegister syncable) {
+    Map<String, dynamic> syncableToUpload = {
+      // "id": syncable.id,
+      "uid": syncable.uid,
+      "code": syncable.code,
+      "visitDate": syncable.visitDate,
+      "name": syncable.name,
+      "location": syncable.location is String
+          ? jsonEncode({'uid': syncable.location})
+          : syncable.location,
+      "gender": syncable.gender,
+      "age": syncable.age,
+      "pregnant": syncable.pregnant,
+      "testResult": syncable.testResult,
+      "detectionType": syncable.detectionType,
+      "severity": syncable.severity,
+      "treatment": syncable.treatment,
+      "comment": syncable.comment,
+      "createdDate": syncable.created,
+      "lastModifiedDate": syncable.lastUpdated,
+
+      /// Syncable
+      "deleted": syncable.deleted,
+      "synced": syncable.synced,
+      "syncFailed": syncable.syncFailed,
+      "lastSyncSummary": syncable.lastSyncSummary != null
+          ? jsonEncode(
+              (syncable.lastSyncSummary as EventImportSummary).responseSummary)
+          : null,
+      "lastSyncDate": syncable.lastSyncDate,
+      "startEntryTime": syncable.startEntryTime,
+      "finishedEntryTime": syncable.finishedEntryTime,
+      "activity": syncable.activity != null
+          ? syncable.activity is String
+              ? jsonEncode({'uid': syncable.activity})
+              : syncable.activity
+          : null,
+      "team": syncable.team is String
+          ? jsonEncode({'uid': syncable.team})
+          : syncable.team,
+      "status": syncable.status,
+      "geometry":
+          syncable.geometry != null ? syncable.geometry?.toJson() : null,
+      "dirty": syncable.dirty,
+    };
+
+    return syncableToUpload;
   }
 }
