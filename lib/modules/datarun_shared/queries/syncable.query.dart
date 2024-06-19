@@ -1,6 +1,7 @@
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
+import 'package:reflectable/mirrors.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
@@ -8,6 +9,12 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   SyncableQuery({Database? database}) : super(database: database);
   String? activity;
   String? team;
+
+  T fromJsonInstance(Map<String, dynamic> entityMap) {
+    ClassMirror classMirror =
+    AnnotationReflectable.reflectType(T) as ClassMirror;
+    return classMirror.newInstance('fromJson', [entityMap]) as T;
+  }
 
   SyncableQuery<T> byActivity(String activity) {
     this.where(attribute: 'activity', value: activity);
