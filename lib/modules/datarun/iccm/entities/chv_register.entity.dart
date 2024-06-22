@@ -175,7 +175,6 @@ class ChvRegister extends SyncableEntity {
     data['lastModifiedDate'] = this.lastUpdated;
     data['comment'] = this.comment;
 
-    /// patient
     data['age'] = this.age;
     data['gender'] = this.gender;
     data['location'] = this.location;

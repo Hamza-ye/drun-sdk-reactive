@@ -21,6 +21,7 @@ final Map<String, dynamic> dTempChvSessionForm = {
           "type": "date",
           "label": "Session Date",
           "name": "sessionDate",
+          "required": true,
           "fieldRule": {"required": true}
         },
         {
@@ -28,8 +29,9 @@ final Map<String, dynamic> dTempChvSessionForm = {
           "type": "selectOne",
           "label": "Session Subject",
           "name": "subject",
+          "required": true,
           "options": ["ITNs", "BreadingSite", "TRANSMISSION_PREVENTION"],
-          "rules": {"required": true}
+          "fieldRule": {"required": true}
         },
         {
           "type": "number",

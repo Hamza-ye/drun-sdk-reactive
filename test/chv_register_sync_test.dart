@@ -2,9 +2,7 @@ import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/modules/datarun/iccm/entities/chv_register.entity.dart';
-import 'package:d2_remote/modules/datarun/iccm/entities/patient_info.entity.dart';
 import 'package:d2_remote/modules/datarun/iccm/queries/chv_register.query.dart';
-import 'package:d2_remote/modules/datarun/iccm/queries/patient_info.query.dart';
 import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.dart';
 import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.entity.dart';
 import 'package:d2_remote/modules/metadatarun/assignment/queries/d_assignment.query.dart';
@@ -91,14 +89,6 @@ void main() async {
   //   print(progress.message);
   // }, dioTestClient: dio);
   //
-  // dioAdapter.onGet(
-  //   'http://localhost:8080/api/custom/patientInfo?paging=false&eagerload=true',
-  //       (server) => server.reply(200, samplePatientInfo),
-  // );
-  // final patientInfoQuery = PatientInfoQuery(database: db);
-  // await patientInfoQuery.download((progress, complete) {
-  //   print(progress.message);
-  // }, dioTestClient: dio);
 
   dioAdapter.onGet(
     'http://localhost:8080/api/custom/chvRegisters?paging=false&eagerload=true',

@@ -9,7 +9,7 @@ final Map<String, dynamic> dTempItnDistributionForm = {
       "id": "3",
       "uid": "r1j366zL3VB",
       "name": "ITN Distribution",
-      "code": "ITN_Distribution_FORM",
+      "code": "ITN_DISTRIBUTION_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
       "activity": {
@@ -22,6 +22,7 @@ final Map<String, dynamic> dTempItnDistributionForm = {
           "type": "date",
           "label": "Visit Date",
           "name": "visitDate",
+          "required": true,
           "options": null,
           "fieldRule": {
             "required": true,
@@ -38,6 +39,7 @@ final Map<String, dynamic> dTempItnDistributionForm = {
           "type": "text",
           "label": "Patient Name",
           "name": "patientName",
+          "required": true,
           "options": null,
           "fieldRule": {
             "required": true,
@@ -54,6 +56,7 @@ final Map<String, dynamic> dTempItnDistributionForm = {
           "type": "text",
           "label": "Patient Age",
           "name": "patientAge",
+          "required": true,
           "options": null,
           "fieldRule": {
             "required": true,
@@ -70,6 +73,7 @@ final Map<String, dynamic> dTempItnDistributionForm = {
           "type": "text",
           "label": "Patient Location",
           "name": "patientLocation",
+          "required": true,
           "options": null,
           "fieldRule": {
             "required": true,
@@ -85,15 +89,17 @@ final Map<String, dynamic> dTempItnDistributionForm = {
           "id": "5",
           "type": "selectOne",
           "name": "gender",
+          "required": true,
           "label": "Gender",
-          "options": ["Male", "Female", "Other"],
-          "rules": {"required": true}
+          "options": ["Male", "Female"],
+          "fieldRule": {"required": true}
         },
         {
           "id": "6",
           "type": "yesNo",
           "label": "Pregnant",
           "name": "pregnant",
+          "required": false,
           "options": null,
           "fieldRule": {
             "required": false,
@@ -101,8 +107,9 @@ final Map<String, dynamic> dTempItnDistributionForm = {
             "maxLength": null,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "dependentFieldId": "gender",
+            "rule": "=",
+            "dependentFieldValues": ["Female"]
           }
         },
         {
@@ -144,13 +151,9 @@ final Map<String, dynamic> dTempItnDistributionForm = {
           "name": "severity",
           "options": ["SIMPLE", "SEVERE"],
           "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "dependentFieldId": "testResult",
+            "rule": "=",
+            "dependentFieldValues": ["PF", "PV", "MIX"]
           }
         },
         {
@@ -160,13 +163,9 @@ final Map<String, dynamic> dTempItnDistributionForm = {
           "name": "treatment",
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
           "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "dependentFieldId": "testResult",
+            "rule": "=",
+            "dependentFieldValues": ["PF", "PV", "MIX"]
           }
         },
         {

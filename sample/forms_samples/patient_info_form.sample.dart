@@ -22,22 +22,25 @@ final Map<String, dynamic> dSamplePatientInfoForm = {
           "type": "text",
           "name": "name",
           "label": "Name",
-          "rules": {"required": true, "minLength": 2, "maxLength": 50}
+          "required": true,
+          "fieldRule": {"required": true, "minLength": 2, "maxLength": 50}
         },
         {
           "id": "2",
           "type": "number",
           "name": "age",
           "label": "Age",
-          "rules": {"required": true, "minValue": 0, "maxValue": 120}
+          "required": true,
+          "fieldRule": {"required": true, "minValue": 0, "maxValue": 120}
         },
         {
           "id": "3",
           "type": "selectOne",
           "name": "gender",
           "label": "Gender",
+          "required": true,
           "options": ["Male", "Female", "Other"],
-          "rules": {"required": true}
+          "fieldRule": {"required": true}
         }
       ]
     }

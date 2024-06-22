@@ -92,7 +92,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "required": true,
           "label": "Gender",
           "options": ["Male", "Female"],
-          "rules": {"required": true}
+          "fieldRule": {"required": true}
         },
         {
           "id": "6",

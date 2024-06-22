@@ -4,7 +4,7 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
   "pageCount": 1,
   "total": 2,
   "pageSize": 20,
-  "chvRegisters": [
+  "dynamicForms": [
     {
       "id": "1",
       "uid": "r1j333zL3VB",
