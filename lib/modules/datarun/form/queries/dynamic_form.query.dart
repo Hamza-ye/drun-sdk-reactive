@@ -55,15 +55,13 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
     final response = await HttpClient.get(dhisUrl,
         database: this.database, dioTestClient: dioTestClient);
 
-    List data = [];
+    List data;
     if (response.statusCode == 200) {
       data = response.body[this.apiResourceName]?.toList();
     } else {
-      data.add(dTempChvRegisterForm);
-      data.add(dTempChvSessionForm);
-      data.add(dTempItnDistributionForm);
+      final body = dTempChvRegisterForm;
+      data = body[this.apiResourceName]?.toList();
     }
-
 
     // List data = response.body[this.apiResourceName]?.toList();
     //
@@ -75,7 +73,6 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
     //         status: '',
     //         percentage: 50),
     //     false);
-
 
     this.data = data.map((dataItem) {
       dataItem['dirty'] = false;
