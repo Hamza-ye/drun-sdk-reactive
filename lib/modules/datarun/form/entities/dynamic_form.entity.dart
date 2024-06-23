@@ -12,7 +12,10 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 @Entity(tableName: 'dynamicForm', apiResourceName: 'dynamicForms')
 class DynamicForm extends IdentifiableEntity {
   @Column(nullable: true, type: ColumnType.TEXT)
-  List<DynamicFormField>? fieldsList;
+  DynamicFormField? mainField;
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  List<DynamicFormField>? fields;
 
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
@@ -20,11 +23,12 @@ class DynamicForm extends IdentifiableEntity {
   DynamicForm(
       {String? id,
       String? uid,
-      String? created,
-      String? lastUpdated,
       String? name,
       String? code,
-      this.fieldsList,
+      DynamicFormField? mainField,
+      String? created,
+      String? lastUpdated,
+      this.fields,
       this.activity,
       required dirty})
       : super(
@@ -41,14 +45,19 @@ class DynamicForm extends IdentifiableEntity {
         ? jsonDecode(json["fields"])
         : json["fields"];
 
+    final mainField = json["mainField"].runtimeType == String
+        ? jsonDecode(json["mainField"])
+        : json["mainField"];
+
     return DynamicForm(
         id: json['id'].toString(),
         uid: json['uid'],
         code: json['code'],
         name: json['name'],
+        mainField: DynamicFormField.fromJson(mainField),
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
-        fieldsList: List<dynamic>.from(fields ?? [])
+        fields: List<dynamic>.from(fields ?? [])
             .map((field) => DynamicFormField.fromJson(field))
             .toList(),
         activity: json['activity'] is String
@@ -63,10 +72,8 @@ class DynamicForm extends IdentifiableEntity {
     data['uid'] = uid;
     data['code'] = code;
     data['name'] = name;
-    // data['fields'] =
-    //     this.fieldsList != null ? jsonEncode(fieldsList) : null;
-    data['fields'] =
-        this.fieldsList?.map((field) => field.toJson()).toList() ?? [];
+    data['mainField'] = mainField?.toJson();
+    data['fields'] = this.fields?.map((field) => field.toJson()).toList() ?? [];
     data['activity'] = activity;
     data['dirty'] = dirty;
     return data;

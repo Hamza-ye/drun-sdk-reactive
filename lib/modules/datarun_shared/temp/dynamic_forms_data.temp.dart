@@ -12,6 +12,13 @@ final Map<String, dynamic> dTempChvRegisterForm = {
       "code": "CHV_PATIENTS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
+      "mainField": {
+        "id": "2",
+        "type": "text",
+        "label": "Patient Name",
+        "name": "patientName",
+        "required": true
+      },
       "activity": {
         "id": 17,
         "uid": "oBne891mA9n",
@@ -23,15 +30,8 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "label": "Visit Date",
           "name": "visitDate",
           "required": true,
-          "options": null,
           "fieldRule": {
             "required": true,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
           }
         },
         {
@@ -40,16 +40,6 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "label": "Patient Name",
           "name": "patientName",
           "required": true,
-          "options": null,
-          "fieldRule": {
-            "required": true,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
         },
         {
           "id": "3",
@@ -193,6 +183,12 @@ final Map<String, dynamic> dTempChvRegisterForm = {
       "code": "CHV_SESSIONS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
+      "mainField": {
+        "type": "date",
+        "label": "Session Date",
+        "name": "sessionDate",
+        "required": true
+      },
       "activity": {
         "id": 17,
         "uid": "oBne891mA9n",
@@ -241,6 +237,13 @@ final Map<String, dynamic> dTempChvRegisterForm = {
       "code": "ITN_DISTRIBUTION_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
+      "mainField": {
+        "id": "1",
+        "type": "date",
+        "label": "Visit Date",
+        "name": "visitDate",
+        "required": true
+      },
       "activity": {
         "id": 16,
         "uid": "oAne601mA8n",
@@ -251,17 +254,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "date",
           "label": "Visit Date",
           "name": "visitDate",
-          "required": true,
-          "options": null,
-          "fieldRule": {
-            "required": true,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
+          "required": true
         },
         {
           "id": "2",
