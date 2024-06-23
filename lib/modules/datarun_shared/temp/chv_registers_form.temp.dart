@@ -8,7 +8,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
     {
       "id": "1",
       "uid": "r1j223zL3VB",
-      "name": "ChvSession Form",
+      "name": "Case Reporting",
       "code": "CHV_PATIENTS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
@@ -189,7 +189,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
     {
       "id": "2",
       "uid": "r1j333zL3VB",
-      "name": "ChvRegister Form",
+      "name": "Sessions Reporting",
       "code": "CHV_SESSIONS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
@@ -237,7 +237,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
     {
       "id": "3",
       "uid": "r1j366zL3VB",
-      "name": "ITN Distribution",
+      "name": "ITN Reporting",
       "code": "ITN_DISTRIBUTION_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
