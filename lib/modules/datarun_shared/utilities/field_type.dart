@@ -11,8 +11,8 @@ enum FieldType {
 }
 
 class FieldTypeUtil {
-  static FieldType getFieldType(String fieldType) {
-    switch (fieldType.toLowerCase()) {
+  static FieldType getFieldType(String? fieldType) {
+    switch (fieldType?.toLowerCase()) {
       case 'text':
         return FieldType.text;
 
