@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../../../core/annotations/index.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA, aut: false)
+// @Query(type: QueryType.METADATA, aut: false)
 class OrganisationUnitLevelQuery extends BaseQuery<OrganisationUnitLevel> {
   OrganisationUnitLevelQuery({Database? database}) : super(database: database);
 }

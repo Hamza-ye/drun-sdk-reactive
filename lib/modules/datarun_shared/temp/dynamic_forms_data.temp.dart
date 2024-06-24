@@ -46,34 +46,14 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "text",
           "label": "Patient Age",
           "name": "patientAge",
-          "required": true,
-          "options": null,
-          "fieldRule": {
-            "required": true,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
+          "required": true
         },
         {
           "id": "4",
           "type": "text",
           "label": "Patient Location",
           "name": "patientLocation",
-          "required": true,
-          "options": null,
-          "fieldRule": {
-            "required": true,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
+          "required": true
         },
         {
           "id": "5",
@@ -90,13 +70,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "label": "Pregnant",
           "name": "pregnant",
           "required": false,
-          "options": null,
           "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
             "dependentFieldId": "gender",
             "rule": "=",
             "dependentFieldValues": ["Female"]
@@ -109,13 +83,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "name": "testResult",
           "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"],
           "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "required": false
           }
         },
         {
@@ -123,16 +91,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Detection Type",
           "name": "detectionType",
-          "options": ["REACTIVE", "ACTIVE"],
-          "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
+          "options": ["REACTIVE", "ACTIVE"]
         },
         {
           "id": "9",
@@ -163,15 +122,8 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "text",
           "label": "Comment",
           "name": "comment",
-          "options": null,
           "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": 2000,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "maxLength": 2000
           }
         }
       ],
@@ -186,8 +138,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
       "mainField": {
         "type": "date",
         "label": "Session Date",
-        "name": "sessionDate",
-        "required": true
+        "name": "sessionDate"
       },
       "activity": {
         "id": 17,
@@ -261,51 +212,21 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "text",
           "label": "Patient Name",
           "name": "patientName",
-          "required": true,
-          "options": null,
-          "fieldRule": {
-            "required": true,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
+          "required": true
         },
         {
           "id": "3",
           "type": "text",
           "label": "Patient Age",
           "name": "patientAge",
-          "required": true,
-          "options": null,
-          "fieldRule": {
-            "required": true,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
+          "required": true
         },
         {
           "id": "4",
           "type": "text",
           "label": "Patient Location",
           "name": "patientLocation",
-          "required": true,
-          "options": null,
-          "fieldRule": {
-            "required": true,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
+          "required": true
         },
         {
           "id": "5",
@@ -322,13 +243,8 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "label": "Pregnant",
           "name": "pregnant",
           "required": false,
-          "options": null,
           "fieldRule": {
             "required": false,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
             "dependentFieldId": "gender",
             "rule": "=",
             "dependentFieldValues": ["Female"]
@@ -341,13 +257,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "name": "testResult",
           "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"],
           "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "required": false
           }
         },
         {
@@ -355,16 +265,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Detection Type",
           "name": "detectionType",
-          "options": ["REACTIVE", "ACTIVE"],
-          "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": null,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
-          }
+          "options": ["REACTIVE", "ACTIVE"]
         },
         {
           "id": "9",
@@ -395,15 +296,8 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "text",
           "label": "Comment",
           "name": "comment",
-          "options": null,
           "fieldRule": {
-            "required": false,
-            "minLength": null,
-            "maxLength": 2000,
-            "numeric": null,
-            "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "maxLength": 2000
           }
         }
       ],

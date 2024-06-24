@@ -11,7 +11,7 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 @AnnotationReflectable
 @Entity(tableName: 'dynamicForm', apiResourceName: 'dynamicForms')
 class DynamicForm extends IdentifiableEntity {
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @Column(nullable: true, type: ColumnType.TEXT, name: "mainField")
   DynamicFormField? mainField;
 
   @Column(nullable: true, type: ColumnType.TEXT)
@@ -25,7 +25,7 @@ class DynamicForm extends IdentifiableEntity {
       String? uid,
       String? name,
       String? code,
-      DynamicFormField? mainField,
+      this.mainField,
       String? created,
       String? lastUpdated,
       this.fields,
@@ -41,20 +41,22 @@ class DynamicForm extends IdentifiableEntity {
             dirty: dirty);
 
   factory DynamicForm.fromJson(Map<String, dynamic> json) {
-    final fields = json["fields"].runtimeType == String
-        ? jsonDecode(json["fields"])
-        : json["fields"];
+    final dynamic mainField = json['mainField'] != null
+        ? DynamicFormField.fromJson(jsonDecode(json['mainField']))
+        : null;
 
-    final mainField = json["mainField"].runtimeType == String
-        ? jsonDecode(json["mainField"])
-        : json["mainField"];
+    final fields = json["fields"] != null
+        ? json["fields"].runtimeType == String
+            ? jsonDecode(json["fields"])
+            : json["fields"]
+        : null;
 
     return DynamicForm(
         id: json['id'].toString(),
         uid: json['uid'],
         code: json['code'],
         name: json['name'],
-        mainField: DynamicFormField.fromJson(mainField),
+        mainField: mainField,
         created: json['createdDate'],
         lastUpdated: json['lastModifiedDate'],
         fields: List<dynamic>.from(fields ?? [])
@@ -72,8 +74,8 @@ class DynamicForm extends IdentifiableEntity {
     data['uid'] = uid;
     data['code'] = code;
     data['name'] = name;
-    data['mainField'] = mainField?.toJson();
-    data['fields'] = this.fields?.map((field) => field.toJson()).toList() ?? [];
+    data['mainField'] = mainField != null ? jsonEncode(mainField) : null;
+    data['fields'] = fields?.map((field) => field.toJson()).toList() ?? [];
     data['activity'] = activity;
     data['dirty'] = dirty;
     return data;

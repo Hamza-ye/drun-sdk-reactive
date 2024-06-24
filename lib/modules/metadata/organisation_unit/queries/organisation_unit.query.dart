@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA)
+// @Query(type: QueryType.METADATA)
 class OrganisationUnitQuery extends BaseQuery<OrganisationUnit> {
   OrganisationUnitQuery({Database? database}) : super(database: database);
 

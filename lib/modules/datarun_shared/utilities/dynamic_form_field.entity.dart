@@ -1,16 +1,13 @@
 import 'dart:convert';
 
-import 'package:d2_remote/modules/datarun_shared/utilities/field_type.dart';
-import 'package:d2_remote/modules/datarun_shared/utilities/field_value_rendering_type.dart';
-
 import 'field_rule.dart';
 
 class DynamicFormField {
-  final FieldType type;
+  final String type;
 
   final String label;
 
-  final FieldValueRenderingType fieldValueRenderingType;
+  final String fieldValueRenderingType;
 
   final String name;
 
@@ -30,20 +27,17 @@ class DynamicFormField {
       this.fieldRule});
 
   factory DynamicFormField.fromJson(Map<String, dynamic> json) {
-    final FieldRule? fieldRule = json["fieldRule"] != null
-        ? FieldRule.fromJson(json["fieldRule"].runtimeType == String
-            ? jsonDecode(json["fieldRule"])
-            : json["fieldRule"])
+    final dynamic fieldRule = json["fieldRule"] != null
+        ? FieldRule.fromJson(jsonDecode(json["fieldRule"]))
         : null;
 
     final options =
         json['options'] != null ? List<String>.from(json['options']) : null;
     return DynamicFormField(
-      type: FieldTypeUtil.getFieldType(json['type']),
+      type: json['type'],
       label: json['label'],
       name: json['name'],
-      fieldValueRenderingType: FieldValueRenderingUtil.getFieldValueRendering(
-          json['fieldValueRenderingType']),
+      fieldValueRenderingType: json['fieldValueRenderingType'],
       required: json['required'] ?? false,
       options: options,
       fieldRule: fieldRule,
@@ -55,9 +49,9 @@ class DynamicFormField {
     data['label'] = label;
     data['type'] = type;
     data['name'] = name;
-    data['options'] = options;
-    data['fieldRule'] = fieldRule;
-    data['fieldValueRenderingType'] = fieldValueRenderingType;
+    data['options'] = options != null ? jsonEncode(options) : null;
+    data['fieldRule'] = fieldRule != null ? fieldRule!.toJson() : null;
+    data['fieldValueRenderingType'] = fieldValueRenderingType; //.name;
     return data;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class FieldRule {
   final String? dependentFieldId;
   final List<String>? dependentFieldValues;
@@ -13,5 +15,13 @@ class FieldRule {
       dependentFieldId: jsonData['dependentFieldId'],
       dependentFieldValues: dependentFieldValues,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['dependentFieldId'] = dependentFieldId;
+    data['dependentFieldValues'] =
+        dependentFieldValues != null ? jsonEncode(dependentFieldValues) : null;
+    return data;
   }
 }
