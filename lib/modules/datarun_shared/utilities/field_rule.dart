@@ -7,11 +7,13 @@ class FieldRule {
   FieldRule({this.dependentFieldId, this.dependentFieldValues});
 
   factory FieldRule.fromJson(Map<String, dynamic> json) {
+    final dependentFieldValues = json['dependentFieldValues'] != null
+        ? jsonDecode(json['dependentFieldValues']).cast<String>()
+        : null;
+
     return FieldRule(
       dependentFieldId: json['dependentFieldId'],
-      dependentFieldValues: json['dependentFieldValues'] != null
-          ? List<String>.from(json['dependentFieldValues'])
-          : null,
+      dependentFieldValues: dependentFieldValues,
     );
   }
 

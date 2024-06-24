@@ -22,28 +22,35 @@ class DynamicFormField {
   });
 
   factory DynamicFormField.fromJson(Map<String, dynamic> json) {
+    final dynamic fieldRule = json["fieldRule"] != null
+        ? FieldRule.fromJson(json["fieldRule"].runtimeType == String
+            ? jsonDecode(json["fieldRule"])
+            : json["fieldRule"])
+        : null;
+
+    final options = json['options'] != null
+        ? jsonDecode(json['options']).cast<String>()
+        : null;
+
     return DynamicFormField(
       type: json['type'],
       label: json['label'],
       name: json['name'],
       fieldValueRenderingType: json['fieldValueRenderingType'],
       required: json['required'] ?? false,
-      options:
-          json['options'] != null ? List<String>.from(json['options']) : null,
-      fieldRule: json['fieldRule'] != null
-          ? FieldRule.fromJson(jsonDecode(json['fieldRule']))
-          : null,
+      options: options,
+      fieldRule: fieldRule,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'label': label,
-      'type': type,
-      'name': name,
-      'options': options != null ? jsonEncode(options) : null,
-      'fieldRule': fieldRule != null ? jsonEncode(fieldRule!.toJson()) : null,
-      'fieldValueRenderingType': fieldValueRenderingType,
-    };
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['label'] = label;
+    data['type'] = type;
+    data['name'] = name;
+    data['options'] = options != null ? jsonEncode(options) : null;
+    data['fieldRule'] = fieldRule != null ? fieldRule!.toJson() : null;
+    data['fieldValueRenderingType'] = fieldValueRenderingType;
+    return data;
   }
 }
