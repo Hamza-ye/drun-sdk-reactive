@@ -6,22 +6,21 @@ class FieldRule {
 
   FieldRule({this.dependentFieldId, this.dependentFieldValues});
 
-  factory FieldRule.fromJson(Map<String, dynamic> jsonData) {
-    final dependentFieldValues = jsonData['dependentFieldValues'] != null
-        ? List<String>.from(jsonData['dependentFieldValues'])
-        : null;
-
+  factory FieldRule.fromJson(Map<String, dynamic> json) {
     return FieldRule(
-      dependentFieldId: jsonData['dependentFieldId'],
-      dependentFieldValues: dependentFieldValues,
+      dependentFieldId: json['dependentFieldId'],
+      dependentFieldValues: json['dependentFieldValues'] != null
+          ? List<String>.from(json['dependentFieldValues'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['dependentFieldId'] = dependentFieldId;
-    data['dependentFieldValues'] =
-        dependentFieldValues != null ? jsonEncode(dependentFieldValues) : null;
-    return data;
+    return {
+      'dependentFieldId': dependentFieldId,
+      'dependentFieldValues': dependentFieldValues != null
+          ? jsonEncode(dependentFieldValues)
+          : null,
+    };
   }
 }
