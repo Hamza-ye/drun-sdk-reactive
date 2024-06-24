@@ -19,9 +19,9 @@ class AttributeReservedValue extends IdentifiableEntity {
       required this.attribute,
       required this.value,
       required this.expiryDate,
-      String? created,
+      String? createdDate,
       required bool dirty})
-      : super(uid: id, name: name, dirty: dirty, created: created);
+      : super(uid: id, name: name, dirty: dirty, createdDate: createdDate);
 
   factory AttributeReservedValue.fromJson(Map<String, dynamic> json) {
     final attribute = json['attribute'] ?? json['ownerUid'];
@@ -33,7 +33,7 @@ class AttributeReservedValue extends IdentifiableEntity {
         attribute: attribute,
         value: value,
         expiryDate: json['expiryDate'],
-        created: json['created'],
+        createdDate: json['createdDate'],
         dirty: json['dirty']);
   }
 
@@ -45,7 +45,7 @@ class AttributeReservedValue extends IdentifiableEntity {
     data['attribute'] = this.attribute;
     data['value'] = this.value;
     data['expiryDate'] = this.expiryDate;
-    data['created'] = this.created;
+    data['createdDate'] = this.createdDate;
     data['dirty'] = this.dirty;
     return data;
   }

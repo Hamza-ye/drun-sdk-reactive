@@ -108,6 +108,6 @@ class OrganisationUnitQuery extends BaseQuery<OrganisationUnit> {
     final apiFilter =
     QueryFilter.getApiFilters(this.repository.columns, this.filters);
     return Future.value(
-        'organisationUnits.json${apiFilter != null ? '?$apiFilter&' : '?'}fields=id,dirty,lastUpdated,created,name,displayName,shortName,code,level,path,externalAccess,openingDate,geometry,parent,ancestors[id,name,displayName,level,path,openingDate],closedDate,programs&userOnly=true&paging=false');
+        'organisationUnits.json${apiFilter != null ? '?$apiFilter&' : '?'}fields=id,dirty,lastModifiedDate,created,name,displayName,shortName,code,level,path,externalAccess,openingDate,geometry,parent,ancestors[id,name,displayName,level,path,openingDate],closedDate,programs&userOnly=true&paging=false');
   }
 }

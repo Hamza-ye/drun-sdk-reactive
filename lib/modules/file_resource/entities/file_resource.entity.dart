@@ -56,15 +56,15 @@ class FileResource extends IdentifiableEntity {
       this.syncFailed,
       this.lastSyncSummary,
       this.lastSyncDate,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required bool dirty})
       : super(
             uid: id,
             name: name,
             dirty: dirty,
-            created: created,
-            lastUpdated: lastUpdated) {
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate) {
     this.uid = this.uid ?? '${this.formInstance}_${this.elementId}';
     this.name = this.name ?? this.localFilePath;
   }
@@ -87,8 +87,8 @@ class FileResource extends IdentifiableEntity {
         syncFailed: json['syncFailed'],
         lastSyncSummary: lastSyncSummary,
         lastSyncDate: json['lastSyncDate'],
-        created: json['created'],
-        lastUpdated: json['lastUpdated'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         dirty: json['dirty'] ?? false);
   }
 
@@ -105,12 +105,12 @@ class FileResource extends IdentifiableEntity {
     data['contentLength'] = this.contentLength;
     data['storageStatus'] = this.storageStatus;
     data['localFilePath'] = this.localFilePath;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
     data['synced'] = this.synced;
     data['syncFailed'] = this.syncFailed;
     data['lastSyncSummary'] = this.lastSyncSummary;
     data['lastSyncDate'] = this.lastSyncDate;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;
     return data;
   }

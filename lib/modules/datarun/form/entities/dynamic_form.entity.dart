@@ -5,6 +5,7 @@ import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/dynamic_form_field.entity.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
@@ -26,8 +27,8 @@ class DynamicForm extends IdentifiableEntity {
     String? name,
     String? code,
     this.mainField,
-    String? created,
-    String? lastUpdated,
+    String? createdDate,
+    String? lastModifiedDate,
     this.fields,
     this.activity,
     required dirty,
@@ -36,34 +37,46 @@ class DynamicForm extends IdentifiableEntity {
           uid: uid,
           name: name,
           code: code,
-          created: created,
-          lastUpdated: lastUpdated,
+          createdDate: createdDate,
+          lastModifiedDate: lastModifiedDate,
           dirty: dirty,
         );
 
+  // From JSON string (Database)
   factory DynamicForm.fromJson(Map<String, dynamic> json) {
+    final dynamic mainField = json['mainField'] != null
+        ? DynamicFormField.fromJson(parseDynamicField(json['mainField']))
+        : null;
+
+    final fields = json['fields'] != null
+        ? (parseDynamicList(json['fields']) as List)
+            .map((field) => DynamicFormField.fromJson(field))
+            .toList()
+        : null;
+
     return DynamicForm(
       id: json['id'].toString(),
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
-      mainField: json['mainField'] != null
+      mainField: mainField /*json['mainField'] != null
           ? DynamicFormField.fromJson(jsonDecode(json['mainField']))
-          : null,
-      created: json['createdDate'],
-      lastUpdated: json['lastModifiedDate'],
-      fields: json['fields'] != null
+          : null*/,
+      fields: fields/*json['fields'] != null
           ? (jsonDecode(json['fields']) as List)
               .map((field) => DynamicFormField.fromJson(field))
               .toList()
-          : null,
+          : null*/,
       activity: json['activity'] is String
           ? json['activity']
           : json['activity']['uid'],
+      createdDate: json['createdDate'],
+      lastModifiedDate: json['lastModifiedDate'],
       dirty: json['dirty'] ?? false,
     );
   }
 
+  /// To JSON string for Database
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -75,6 +88,8 @@ class DynamicForm extends IdentifiableEntity {
           ? jsonEncode(fields!.map((field) => field.toJson()).toList())
           : null,
       'activity': activity,
+      'createdDate': createdDate,
+      'lastModifiedDate': lastModifiedDate,
       'dirty': dirty,
     };
   }

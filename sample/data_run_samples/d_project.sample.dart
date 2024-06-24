@@ -9,8 +9,6 @@ final Map<String, dynamic> dSampleProjects = {
       "uid": "OTaPhM06yWf",
       "code": null,
       "name": "ITN Campaign",
-      "created": null,
-      "lastUpdated": null,
       "displayed": null
     },
     {
@@ -22,8 +20,6 @@ final Map<String, dynamic> dSampleProjects = {
       "uid": "rP3uZjcT6H7",
       "code": null,
       "name": "IRS Campaign",
-      "created": null,
-      "lastUpdated": null,
       "displayed": null
     },
     {
@@ -35,8 +31,6 @@ final Map<String, dynamic> dSampleProjects = {
       "uid": "rP4uZjcT6H7",
       "code": null,
       "name": "CHVs",
-      "created": null,
-      "lastUpdated": null,
       "displayed": null
     }
   ]

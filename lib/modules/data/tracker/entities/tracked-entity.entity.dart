@@ -52,8 +52,8 @@ class TrackedEntityInstance extends IdentifiableEntity {
   TrackedEntityInstance(
       {String? id,
       String? name,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required this.orgUnit,
       required bool dirty,
       required this.trackedEntityType,
@@ -70,8 +70,8 @@ class TrackedEntityInstance extends IdentifiableEntity {
       : super(
             uid: id,
             name: name,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty) {
     this.trackedEntityInstance = this.trackedEntityInstance ?? this.uid;
   }
@@ -92,8 +92,8 @@ class TrackedEntityInstance extends IdentifiableEntity {
     return TrackedEntityInstance(
         id: json['id'] ?? json['trackedEntityInstance'],
         name: json['trackedEntityInstance'],
-        created: json['created'],
-        lastUpdated: json['lastUpdated'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         orgUnit: json['orgUnit'],
         trackedEntityInstance: json['trackedEntityInstance'],
         trackedEntityType: json['trackedEntityType'],
@@ -146,8 +146,8 @@ class TrackedEntityInstance extends IdentifiableEntity {
     data['enrollments'] = this.enrollments;
     data['attributes'] = this.attributes;
     data['dirty'] = this.dirty;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['transfer'] = this.transfer;
     return data;
   }

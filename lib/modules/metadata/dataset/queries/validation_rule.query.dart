@@ -50,7 +50,7 @@ class ValidationRuleQuery extends BaseQuery<ValidationRule> {
         false);
 
     final response = await HttpClient.get(
-        'validationRules?dataSet=${dataSet.id}&fields=id,name,displayName,created,lastUpdated,description,operator,instruction,displayInstruction,displayFormName,periodOffset,periodType,leftSide,rightSide',
+        'validationRules?dataSet=${dataSet.id}&fields=id,name,displayName,createdDate,lastModifiedDate,description,operator,instruction,displayInstruction,displayFormName,periodOffset,periodType,leftSide,rightSide',
         database: this.database,
         dioTestClient: dioTestClient);
 

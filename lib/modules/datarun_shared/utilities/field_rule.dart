@@ -7,8 +7,14 @@ class FieldRule {
   FieldRule({this.dependentFieldId, this.dependentFieldValues});
 
   factory FieldRule.fromJson(Map<String, dynamic> json) {
+    // final dependentFieldValues2 = json['dependentFieldValues'] != null
+    //     ? jsonDecode(json['dependentFieldValues']).cast<String>()
+    //     : null;
+
     final dependentFieldValues = json['dependentFieldValues'] != null
+        ? json['dependentFieldValues'].runtimeType == String
         ? jsonDecode(json['dependentFieldValues']).cast<String>()
+        : json['dependentFieldValues'].cast<String>()
         : null;
 
     return FieldRule(

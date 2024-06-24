@@ -40,7 +40,7 @@ void main() async {
 
   dioAdapter.onGet(
     'http://localhost:8080/api/custom/dynamicForms?paging=false&eagerload=true',
-    (server) => server.reply(200, samplePatientInfoForm),
+    (server) => server.reply(200, sampleAllForms),
   );
   final dynamicFormQuery = DynamicFormQuery(database: db);
   await dynamicFormQuery.download((progress, complete) {
@@ -50,6 +50,6 @@ void main() async {
   List<DynamicForm> activities = await D2Remote.formModule.form.get();
 
   test('should store all incoming activities metadata', () {
-    expect(activities.length, 1);
+    expect(activities.length, 3);
   });
 }

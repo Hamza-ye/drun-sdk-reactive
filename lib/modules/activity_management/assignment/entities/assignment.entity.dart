@@ -42,8 +42,8 @@ class Assignment extends IdentifiableEntity {
   Assignment(
       {required String id,
       String? uid,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       String? code,
       this.warehouse,
@@ -61,8 +61,8 @@ class Assignment extends IdentifiableEntity {
             uid: uid,
             name: name,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory Assignment.fromJson(Map<String, dynamic> json) {
@@ -71,7 +71,6 @@ class Assignment extends IdentifiableEntity {
         id: json['id'],
         uid: json['uid'],
         name: json['name'],
-        created: json['createdDate'],
         code: json['code'],
         activity: json['activity']['uid'],
         organisationUnit: json['organisationUnit']['id'],
@@ -82,6 +81,8 @@ class Assignment extends IdentifiableEntity {
         startPeriod: json['startPeriod'],
         period: json['period'],
         periodType: json['periodType'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         dirty: json['dirty']);
   }
 
@@ -102,6 +103,8 @@ class Assignment extends IdentifiableEntity {
     data['startPeriod'] = this.startPeriod;
     data['period'] = this.period;
     data['periodType'] = this.periodType;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;
     return data;
   }

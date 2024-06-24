@@ -31,16 +31,16 @@ class EventDataValue extends IdentifiableEntity {
       required this.event,
       required bool dirty,
       this.storedBy,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       this.synced,
       this.providedElsewhere})
       : super(
             uid: id,
             name: name,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty) {
     this.uid = this.uid ?? '${this.event}_${this.dataElement}';
     this.name = this.name ?? this.uid;
@@ -52,8 +52,8 @@ class EventDataValue extends IdentifiableEntity {
         name: json['id'],
         dataElement: json['dataElement'],
         value: json['value'] ?? '',
-        created: json['created'],
-        lastUpdated: json['lastUpdated'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         event: json['event'],
         dirty: json['dirty']);
   }
@@ -65,9 +65,9 @@ class EventDataValue extends IdentifiableEntity {
     data['name'] = this.name;
     data['dataElement'] = this.dataElement;
     data['value'] = this.value;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
     data['event'] = this.event;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;
     return data;
   }

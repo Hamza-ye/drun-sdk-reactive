@@ -59,8 +59,8 @@ class ValidationRule extends IdentifiableEntity {
             uid: id,
             name: name,
             displayName: displayName,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: created,
+            lastModifiedDate: lastUpdated,
             dirty: dirty);
 
   factory ValidationRule.fromJson(Map<String, dynamic> json) {
@@ -93,8 +93,8 @@ class ValidationRule extends IdentifiableEntity {
 
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['created'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['name'] = this.name;
     data['displayName'] = this.displayName;
     data['displayFormName'] = this.displayFormName;

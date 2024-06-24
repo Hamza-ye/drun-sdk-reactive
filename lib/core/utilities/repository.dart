@@ -377,12 +377,12 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
       saveDataResponse = await db.insert(
           columnRelation.referencedEntity?.tableName as String, data);
     } else {
-      final lastUpdated = result[0]['lastUpdated'];
+      final lastUpdated = result[0]['lastModifiedDate'];
       if (lastUpdated != null) {
         final currentLastUpdatedDate = DateTime.parse(lastUpdated as String);
 
         final newLastUpdatedDate =
-            DateTime.parse(data['lastUpdated'] as String);
+            DateTime.parse(data['lastModifiedDate'] as String);
 
         if (currentLastUpdatedDate
                 .difference(newLastUpdatedDate)
@@ -391,7 +391,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
           saveDataResponse = 1;
         } else {
           if (data['dirty'] == 1) {
-            data['lastUpdated'] =
+            data['lastModifiedDate'] =
                 DateTime.now().toIso8601String().split('.')[0];
           }
           saveDataResponse = await db.update(
@@ -512,8 +512,8 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
 
     if (result != null) {
       final currentLastUpdatedDate =
-          DateTime.parse(result.lastUpdated as String);
-      final newLastUpdatedDate = DateTime.parse(entity.lastUpdated as String);
+          DateTime.parse(result.lastModifiedDate as String);
+      final newLastUpdatedDate = DateTime.parse(entity.lastModifiedDate as String);
 
       if (currentLastUpdatedDate.difference(newLastUpdatedDate).inMilliseconds >
           0) {
@@ -576,7 +576,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
   @override
   Future<int> updateOne({required T entity, Database? database}) async {
     if (entity.dirty == true) {
-      entity.lastUpdated = DateTime.now().toIso8601String().split('.')[0];
+      entity.lastModifiedDate = DateTime.now().toIso8601String().split('.')[0];
     }
     Map<String, dynamic> data = this
         .sanitizeIncomingData(entity: entity.toJson(), columns: this.columns);

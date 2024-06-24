@@ -27,9 +27,8 @@ class Warehouse extends IdentifiableEntity {
   dynamic activity;
 
   Warehouse(
-      {
-        required String id,
-        required String uid,
+      {required String id,
+      required String uid,
       required String name,
       String? code,
       this.activated = true,
@@ -49,9 +48,11 @@ class Warehouse extends IdentifiableEntity {
         supervisor: json['supervisor'],
         code: json['code'],
         supervisorMobile: json['supervisorMobile'],
-        activity: json['activity'] != null ? json['activity'] is String
-            ? json['activity']
-            : json['activity']['uid'] : null,
+        activity: json['activity'] != null
+            ? json['activity'] is String
+                ? json['activity']
+                : json['activity']['uid']
+            : null,
         name: json['name'],
         dirty: json['dirty']);
   }

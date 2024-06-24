@@ -13,25 +13,25 @@ class BaseEntity {
   bool dirty;
 
   @Column(nullable: true)
-  String? lastUpdated;
+  String? lastModifiedDate;
 
   @Column(nullable: true)
-  String? created;
+  String? createdDate;
 
   BaseEntity(
       {this.id,
       this.uid,
       required this.dirty,
-      this.created,
-      this.lastUpdated}) {
+      this.createdDate,
+      this.lastModifiedDate}) {
     this.id = this.id ?? DhisUidGenerator.generate();
 
     /// Added for DataRun
     this.uid = this.uid ?? DhisUidGenerator.generate();
 
-    this.created =
-        this.created ?? DateTime.now().toIso8601String().split('.')[0];
-    this.lastUpdated = this.lastUpdated ?? this.created;
+    this.createdDate =
+        this.createdDate ?? DateTime.now().toIso8601String().split('.')[0];
+    this.lastModifiedDate = this.lastModifiedDate ?? this.createdDate;
   }
 
   static fromJson(Map<String, dynamic> json) {

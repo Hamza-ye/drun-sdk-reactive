@@ -108,8 +108,8 @@ class ProgramStageDataElement extends IdentifiableEntity {
             shortName: shortName,
             displayName: displayName,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: created,
+            lastModifiedDate: lastUpdated,
             dirty: dirty);
 
   factory ProgramStageDataElement.fromJson(Map<String, dynamic> json) {
@@ -157,11 +157,11 @@ class ProgramStageDataElement extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
+    data['lastUpdated'] = this.lastModifiedDate;
     data['id'] = this.id;
     data['uid'] = this.id;
     data['programStage'] = this.programStage;
-    data['created'] = this.created;
+    data['created'] = this.createdDate;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['formName'] = this.formName;

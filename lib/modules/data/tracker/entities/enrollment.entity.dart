@@ -78,8 +78,8 @@ class Enrollment extends IdentifiableEntity {
   Enrollment(
       {String? id,
       String? name,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       this.enrollment,
       this.incidentDate,
       this.enrollmentDate,
@@ -103,14 +103,14 @@ class Enrollment extends IdentifiableEntity {
       : super(
             uid: id,
             name: name,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty) {
     this.enrollment = this.enrollment ?? this.uid;
     this.name = this.name ?? this.enrollment;
-    this.incidentDate = this.incidentDate ?? this.created;
-    this.enrollmentDate = this.enrollmentDate ?? this.created;
-    this.createdAtClient = this.createdAtClient ?? this.created;
+    this.incidentDate = this.incidentDate ?? this.createdDate;
+    this.enrollmentDate = this.enrollmentDate ?? this.createdDate;
+    this.createdAtClient = this.createdAtClient ?? this.createdDate;
   }
 
   factory Enrollment.fromJson(Map<String, dynamic> json) {
@@ -128,8 +128,8 @@ class Enrollment extends IdentifiableEntity {
         id: json['enrollment'],
         enrollment: json['enrollment'],
         name: json['enrollment'],
-        created: json['created'],
-        lastUpdated: json['lastUpdated'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         incidentDate: json['incidentDate'],
         enrollmentDate: json['enrollmentDate'],
         trackedEntityType: json['trackedEntityType'],
@@ -183,8 +183,8 @@ class Enrollment extends IdentifiableEntity {
     data['events'] = this.events ?? [];
     data['trackedEntityInstance'] = this.trackedEntityInstance;
     data['dirty'] = this.dirty;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['createdAtClient'] = this.createdAtClient;
     data['lastUpdatedAtClient'] = this.lastUpdatedAtClient;
     data['completedDate'] = this.lastUpdatedAtClient;

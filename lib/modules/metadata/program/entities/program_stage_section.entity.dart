@@ -43,8 +43,8 @@ class ProgramStageSection extends IdentifiableEntity {
             name: name,
             displayName: displayName,
             dirty: dirty,
-            created: created,
-            lastUpdated: lastUpdated);
+            createdDate: created,
+            lastModifiedDate: lastUpdated);
 
   factory ProgramStageSection.fromJson(Map<String, dynamic> jsonData) {
     final renderType = jsonData['renderType'] is String
@@ -86,8 +86,8 @@ class ProgramStageSection extends IdentifiableEntity {
     data['programStage'] = this.programStage;
     data['sortOrder'] = this.sortOrder;
     data['dataElements'] = this.dataElements;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['created'] = this.createdDate;
+    data['lastUpdated'] = this.lastModifiedDate;
     return data;
   }
 }

@@ -96,8 +96,8 @@ class Event extends IdentifiableEntity {
   Event(
       {String? id,
       String? name,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       this.event,
       required this.activity,
       required this.orgUnit,
@@ -129,8 +129,8 @@ class Event extends IdentifiableEntity {
       : super(
             uid: id,
             name: name,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty) {
     this.event = this.event ?? this.uid;
     this.name = this.name ?? this.event;
@@ -151,8 +151,8 @@ class Event extends IdentifiableEntity {
         id: json['event'],
         name: json['event'],
         event: json['event'],
-        created: json['createdAt'],
-        lastUpdated: json['updatedAt'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         // TODO: NMC delete tempo
         activity: json['activity'] ?? 'ActLwhy5VDY',
         orgUnit: json['orgUnit'],

@@ -22,9 +22,9 @@ class IdentifiableEntity extends BaseEntity {
     this.name,
     this.displayName,
     this.shortName,
-    String? lastUpdated,
-    String? created,
+    String? lastModifiedDate,
+    String? createdDate,
     this.code,
     /// id changed to point to uid for DataRun
-  }) : super(id: uid, uid: uid, dirty: dirty, created: created, lastUpdated: lastUpdated);
+  }) : super(id: uid, uid: uid, dirty: dirty, createdDate: createdDate, lastModifiedDate: lastModifiedDate);
 }

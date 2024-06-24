@@ -31,8 +31,8 @@ void main() {
       name: 'Test Form',
       code: 'formCode',
       mainField: dynamicFormField,
-      created: '2024-06-23T18:25:43.511Z',
-      lastUpdated: '2024-06-23T18:25:43.511Z',
+      createdDate: '2024-06-23T18:25:43.511Z',
+      lastModifiedDate: '2024-06-23T18:25:43.511Z',
       fields: [dynamicFormField],
       activity: 'activity1',
       dirty: true,
@@ -63,8 +63,8 @@ void main() {
         dynamicForm.mainField!.fieldRule!.dependentFieldId);
     expect(deserializedForm.mainField!.fieldRule!.dependentFieldValues,
         dynamicForm.mainField!.fieldRule!.dependentFieldValues);
-    expect(deserializedForm.created, dynamicForm.created);
-    expect(deserializedForm.lastUpdated, dynamicForm.lastUpdated);
+    expect(deserializedForm.createdDate, dynamicForm.createdDate);
+    expect(deserializedForm.lastModifiedDate, dynamicForm.lastModifiedDate);
     expect(deserializedForm.activity, dynamicForm.activity);
     expect(deserializedForm.dirty, dynamicForm.dirty);
     expect(deserializedForm.fields!.length, dynamicForm.fields!.length);

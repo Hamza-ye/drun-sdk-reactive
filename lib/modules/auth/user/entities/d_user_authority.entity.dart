@@ -38,8 +38,7 @@ class DUserAuthority extends IdentifiableEntity {
     data['authority'] = this.authority;
     data['user'] = this.user;
     data['dirty'] = this.dirty;
-    data['createdDate'] = this.created;
-    data['lastModifiedDate'] = this.lastUpdated;
+
     return data;
   }
 }

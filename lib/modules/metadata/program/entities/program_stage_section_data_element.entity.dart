@@ -20,7 +20,7 @@ class ProgramStageSectionDataElement extends BaseEntity {
       String? lastUpdated,
       required this.dataElement,
       required this.programStageSection})
-      : super(uid: id, dirty: dirty, created: created, lastUpdated: lastUpdated);
+      : super(uid: id, dirty: dirty, createdDate: created, lastModifiedDate: lastUpdated);
 
   factory ProgramStageSectionDataElement.fromJson(
       Map<String, dynamic> jsonData) {
@@ -37,8 +37,8 @@ class ProgramStageSectionDataElement extends BaseEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['created'] = this.createdDate;
+    data['lastUpdated'] = this.lastModifiedDate;
     data['dataElement'] = this.dataElement;
     data['programStageSection'] = this.programStageSection;
     data['dirty'] = this.dirty;

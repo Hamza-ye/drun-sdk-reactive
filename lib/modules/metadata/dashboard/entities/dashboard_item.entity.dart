@@ -29,8 +29,8 @@ class DashboardItem extends IdentifiableEntity {
   DashboardItem(
       {required String id,
       required String name,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required this.dashboard,
       this.type,
       this.contentCount,
@@ -47,20 +47,19 @@ class DashboardItem extends IdentifiableEntity {
         name: json['name'],
         type: json['type'],
         dashboard: json['dashboard'],
-        created: json['created'],
         contentCount: json['contentCount'],
         interpretationCount: json['interpretationCount'],
         interpretationLikeCount: json['interpretationLikeCount'],
         chart: json['chart'],
         report: json['report'],
+        createdDate: json['createdDate'],
         dirty: json['dirty']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['id'] = this.id;
-    data['created'] = this.created;
     data['type'] = this.type;
     data['dashboard'] = this.dashboard!.toJson();
     data['contentcount'] = this.contentCount;
@@ -68,6 +67,7 @@ class DashboardItem extends IdentifiableEntity {
     data['interpretationLikeCount'] = this.interpretationLikeCount;
     data['chart'] = this.chart;
     data['report'] = this.report;
+    data['createdDate'] = this.createdDate;
     data['dirty'] = this.dirty;
 
     return data;

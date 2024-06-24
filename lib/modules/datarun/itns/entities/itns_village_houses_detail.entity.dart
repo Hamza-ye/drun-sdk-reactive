@@ -58,8 +58,8 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
       required this.itns,
       this.comment,
       required this.itnsVillage,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       String? code,
       required dirty})
@@ -68,8 +68,8 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
             uid: uid,
             name: name,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory ItnsVillageHousesDetail.fromJson(Map<String, dynamic> json) {
@@ -94,8 +94,8 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
         itns: json['itns'],
         comment: json['comment'],
         code: json['code'] ?? json['couponId'].toString(),
-        created: json['createdDate'],
-        lastUpdated: json['lastModifiedDate'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         dirty: json['dirty']);
   }
 
@@ -118,8 +118,8 @@ class ItnsVillageHousesDetail extends IdentifiableEntity {
       'itns': itns,
       'comment': comment,
       'code': code ?? couponId,
-      'createdDate': created,
-      'lastModifiedDate': lastUpdated,
+      'createdDate': createdDate,
+      'lastModifiedDate': lastModifiedDate,
       'dirty': dirty,
     };
   }

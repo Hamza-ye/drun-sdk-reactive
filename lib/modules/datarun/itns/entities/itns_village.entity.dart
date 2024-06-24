@@ -93,8 +93,8 @@ class ItnsVillage extends SyncableEntity {
       this.assignment,
       this.progressStatus,
       this.houseDetails,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       String? code,
 
@@ -116,8 +116,8 @@ class ItnsVillage extends SyncableEntity {
             uid: uid,
             name: name,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
 
             /// Syncable
             deleted: deleted,
@@ -163,8 +163,8 @@ class ItnsVillage extends SyncableEntity {
         otherVillageName: json['otherVillageName'],
         otherVillageCode: json['otherVillageCode'],
         otherTeamNo: json['otherTeamNo'],
-        created: json['createdDate'],
-        lastUpdated: json['lastModifiedDate'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         houseDetails: (json['houseDetails'] ?? [])
             .map<ItnsVillageHousesDetail>(
                 (houseDetail) => ItnsVillageHousesDetail.fromJson({
@@ -203,8 +203,8 @@ class ItnsVillage extends SyncableEntity {
     data['uid'] = uid;
     data['code'] = code;
     data['name'] = name;
-    data['createdDate'] = created;
-    data['lastModifiedDate'] = lastUpdated;
+    data['createdDate'] = createdDate;
+    data['lastModifiedDate'] = lastModifiedDate;
     data['houseDetails'] = this.houseDetails;
     data['workDayDate'] = workDayDate;
     data['surveytype'] = surveytype;
@@ -251,8 +251,8 @@ class ItnsVillage extends SyncableEntity {
       "uid": syncable.uid,
       "code": syncable.code,
       "name": syncable.name,
-      "createdDate": syncable.created,
-      "lastModifiedDate": syncable.lastUpdated,
+      "createdDate": syncable.createdDate,
+      "lastModifiedDate": syncable.lastModifiedDate,
       "workDayDate": syncable.workDayDate,
       "surveytype": syncable.surveytype,
       "otherReasonComment": syncable.otherReasonComment,

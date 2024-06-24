@@ -21,8 +21,8 @@ class DTeam extends IdentifiableEntity {
   DTeam(
       {String? id,
       required String uid,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required String name,
       String? shortName,
       String? code,
@@ -39,8 +39,8 @@ class DTeam extends IdentifiableEntity {
             shortName: shortName,
             displayName: displayName,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory DTeam.fromJson(Map<String, dynamic> json) {
@@ -48,8 +48,6 @@ class DTeam extends IdentifiableEntity {
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
-        created: json['createdDate'],
-        lastUpdated: json['lastModifiedDate'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'] ?? json['name'],
@@ -61,6 +59,8 @@ class DTeam extends IdentifiableEntity {
         mobile: json['mobile'],
         disabled: json['disabled'] ?? true,
         teamType: json['teamType'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         dirty: json['dirty']);
   }
 
@@ -69,7 +69,6 @@ class DTeam extends IdentifiableEntity {
         id: jsonData['id'].toString(),
         uid: jsonData['uid'],
         name: jsonData['name'],
-        created: jsonData['created'],
         shortName: jsonData['shortName'],
         code: jsonData['code'],
         displayName: jsonData['displayName'] ?? jsonData['name'],
@@ -77,16 +76,15 @@ class DTeam extends IdentifiableEntity {
         disabled: jsonData['disabled'] ?? true,
         mobile: jsonData['mobile'],
         teamType: jsonData['teamType'],
+        createdDate: jsonData['createdDate'],
+        lastModifiedDate: jsonData['lastModifiedDate'],
         dirty: jsonData['dirty'] ?? false);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
     data['uid'] = this.uid;
-    data['createdDate'] = this.created;
-    data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;
@@ -95,6 +93,8 @@ class DTeam extends IdentifiableEntity {
     data['disabled'] = this.disabled;
     data['mobile'] = this.mobile;
     data['teamType'] = this.teamType;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;
     return data;
   }

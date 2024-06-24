@@ -27,8 +27,8 @@ class OrganisationUnitLevel extends IdentifiableEntity {
             uid: id,
             name: name,
             displayName: displayName,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: created,
+            lastModifiedDate: lastUpdated,
             dirty: dirty);
 
   factory OrganisationUnitLevel.fromJson(Map<String, dynamic> json) {
@@ -44,11 +44,11 @@ class OrganisationUnitLevel extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['id'] = this.id;
     data['uid'] = this.id;
     data['level'] = this.level;
-    data['created'] = this.created;
+    data['created'] = this.createdDate;
     data['name'] = this.name;
     data['offlineLevels'] = this.offlineLevels;
     data['displayName'] = this.displayName;

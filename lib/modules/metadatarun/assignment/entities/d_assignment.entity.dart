@@ -63,8 +63,8 @@ class DAssignment extends IdentifiableEntity {
   DAssignment(
       {String? id,
       required String uid,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       String? code,
       this.activated = true,
@@ -88,8 +88,8 @@ class DAssignment extends IdentifiableEntity {
             uid: uid,
             name: name,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory DAssignment.fromJson(Map<String, dynamic> json) {
@@ -104,8 +104,8 @@ class DAssignment extends IdentifiableEntity {
         name: json['name'] ??
             '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
         activated: json['activated'] ?? true,
-        created: json['createdDate'],
-        lastUpdated: json['lastModifiedDate'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         code: json['code'],
         activity: json['activity'] != null
             ? json['activity'] is String
@@ -148,8 +148,6 @@ class DAssignment extends IdentifiableEntity {
     data['uid'] = this.uid;
     data['name'] = this.name;
     data['activated'] = this.activated;
-    data['createdDate'] = this.created;
-    data['lastModifiedDate'] = this.lastUpdated;
     data['shortName'] = this.shortName;
     data['code'] = this.code;
     data['displayName'] = this.displayName;
@@ -167,6 +165,8 @@ class DAssignment extends IdentifiableEntity {
     data['subdistrict'] = this.subdistrict;
     data['village'] = this.village;
     data['subvillage'] = this.subvillage;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;
     return data;
   }

@@ -5,7 +5,7 @@ import 'field_rule.dart';
 class DynamicFormField {
   final String type;
   final String label;
-  final String fieldValueRenderingType;
+  final String? fieldValueRenderingType;
   final String name;
   final List<String>? options;
   final bool required;
@@ -16,7 +16,7 @@ class DynamicFormField {
     required this.required,
     required this.type,
     required this.name,
-    required this.fieldValueRenderingType,
+    this.fieldValueRenderingType,
     this.options,
     this.fieldRule,
   });
@@ -29,8 +29,12 @@ class DynamicFormField {
         : null;
 
     final options = json['options'] != null
-        ? jsonDecode(json['options']).cast<String>()
+        ? json['options'].runtimeType == String
+            ? jsonDecode(json['options']).cast<String>()
+            : json['options'].cast<String>()
         : null;
+
+    print('Deserializing DynamicFormField with required: ${json['required']}');
 
     return DynamicFormField(
       type: json['type'],
@@ -51,6 +55,10 @@ class DynamicFormField {
     data['options'] = options != null ? jsonEncode(options) : null;
     data['fieldRule'] = fieldRule != null ? fieldRule!.toJson() : null;
     data['fieldValueRenderingType'] = fieldValueRenderingType;
+    data['required'] = required;
+
+    print('Serializing DynamicFormField with required: $required');
+
     return data;
   }
 }

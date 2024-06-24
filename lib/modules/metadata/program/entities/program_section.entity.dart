@@ -40,8 +40,8 @@ class ProgramSection extends IdentifiableEntity {
       : super(
           uid: id,
           dirty: dirty,
-          created: created,
-          lastUpdated: lastUpdated,
+          createdDate: created,
+          lastModifiedDate: lastUpdated,
           name: name,
           displayName: displayName,
         );
@@ -83,8 +83,8 @@ class ProgramSection extends IdentifiableEntity {
     data['formName'] = this.formName;
     data['renderType'] = this.renderType;
     data['sortOrder'] = this.sortOrder;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['created'] = this.createdDate;
+    data['lastUpdated'] = this.lastModifiedDate;
     data['program'] = this.program;
     data['dirty'] = this.dirty;
     data['attributes'] = this.attributes;

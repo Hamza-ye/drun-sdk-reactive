@@ -30,8 +30,8 @@ class TrackedEntityAttributeValue extends IdentifiableEntity {
       : super(
             uid: id,
             name: name,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: created,
+            lastModifiedDate: lastUpdated,
             dirty: dirty) {
     this.uid = '${this.trackedEntityInstance}_${this.attribute}';
     this.name = this.uid;
@@ -43,7 +43,7 @@ class TrackedEntityAttributeValue extends IdentifiableEntity {
         name: json['id'],
         attribute: json['attribute'],
         created: json['created'],
-        lastUpdated: json['lastUpdated'],
+        lastUpdated: json['lastModifiedDate'],
         trackedEntityInstance: json['trackedEntityInstance'],
         value: json['value'],
         dirty: json['dirty']);
@@ -58,8 +58,8 @@ class TrackedEntityAttributeValue extends IdentifiableEntity {
     data['value'] = this.value;
     data['trackedEntityInstance'] = this.trackedEntityInstance;
     data['dirty'] = this.dirty;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['created'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     return data;
   }
 

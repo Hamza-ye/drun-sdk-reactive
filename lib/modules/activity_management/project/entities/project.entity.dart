@@ -11,8 +11,8 @@ class Project extends IdentifiableEntity {
   Project(
       {required String id,
       String? uid,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required String name,
       required String shortName,
       String? code,
@@ -26,8 +26,8 @@ class Project extends IdentifiableEntity {
             shortName: shortName,
             displayName: displayName,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -35,7 +35,7 @@ class Project extends IdentifiableEntity {
         id: json['id'],
         uid: json['uid'],
         name: json['name'],
-        created: json['created'],
+        createdDate: json['createdDate'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
@@ -48,10 +48,10 @@ class Project extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['id'] = this.id;
     data['uid'] = this.uid;
-    data['created'] = this.created;
+    data['createdDate'] = this.createdDate;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;

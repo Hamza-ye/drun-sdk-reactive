@@ -26,8 +26,13 @@ import 'data_run_samples/patient_info.sample.dart';
 import 'data_run_samples/patient_info2.sample.dart';
 import 'forms_samples/chv_registers_form.sample.dart';
 import 'forms_samples/patient_info_form.sample.dart';
+import 'forms_samples/all_forms.sample.dart';
 
 final sample_no = 2;
+
+final Map<String, dynamic> sampleAllForms =
+sample_no == 1 ? dSampleAllForms : dSampleAllForms;
+
 
 final Map<String, dynamic> samplePatientInfoForm =
     sample_no == 1 ? dSamplePatientInfoForm : dSamplePatientInfoForm;

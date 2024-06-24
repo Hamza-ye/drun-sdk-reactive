@@ -34,8 +34,8 @@ class DataValue extends IdentifiableEntity {
 
   DataValue(
       {String? id,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       required this.dataElement,
       required this.attributeOptionCombo,
@@ -48,8 +48,8 @@ class DataValue extends IdentifiableEntity {
       : super(
             uid: id,
             name: name,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty) {
     this.uid = this.uid ??
         '${this.dataElement}_${this.categoryOptionCombo}_${this.dataValueSet}';
@@ -62,8 +62,6 @@ class DataValue extends IdentifiableEntity {
     return DataValue(
         id: id,
         name: json['name'] ?? id,
-        created: json['created'],
-        lastUpdated: json['lastUpdated'],
         dirty: json['dirty'],
         dataElement: json['dataElement'],
         attributeOptionCombo: json['attributeOptionCombo'],
@@ -71,15 +69,16 @@ class DataValue extends IdentifiableEntity {
         dataValueSet: json['dataValueSet'],
         value: json['value'],
         comment: json['comment'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         synced: json['synced']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
     data['name'] = this.name;
     data['dirty'] = this.dirty;
     data['dataElement'] = this.dataElement;
@@ -88,6 +87,7 @@ class DataValue extends IdentifiableEntity {
     data['dataValueSet'] = this.dataValueSet;
     data['value'] = this.value;
     data['comment'] = this.comment;
+    data['createdDate'] = this.createdDate;
     data['synced'] = this.synced;
 
     return data;

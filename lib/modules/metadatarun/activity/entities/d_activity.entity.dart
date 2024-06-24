@@ -26,8 +26,8 @@ class DActivity extends IdentifiableEntity {
   DActivity(
       {String? id,
       required String uid,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       String? shortName,
       this.project,
@@ -46,8 +46,8 @@ class DActivity extends IdentifiableEntity {
             shortName: shortName,
             displayName: displayName,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory DActivity.fromJson(Map<String, dynamic> json) {
@@ -55,8 +55,8 @@ class DActivity extends IdentifiableEntity {
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
-        created: json['createdDate'],
-        lastUpdated: json['lastModifiedDate'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
@@ -77,11 +77,9 @@ class DActivity extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['id'] = this.id;
     data['uid'] = this.uid;
-    data['createdDate'] = this.created;
-    data['lastModifiedDate'] = this.lastUpdated;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;
@@ -91,6 +89,8 @@ class DActivity extends IdentifiableEntity {
     data['project'] = this.project;
     data['programs'] = this.programs;
     data['disabled'] = this.disabled;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;
     return data;
   }

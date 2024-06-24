@@ -38,8 +38,8 @@ class DataSet extends IdentifiableEntity {
 
   DataSet(
       {required String id,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required String name,
       String? shortName,
       String? code,
@@ -61,15 +61,14 @@ class DataSet extends IdentifiableEntity {
             shortName: shortName,
             displayName: displayName,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory DataSet.fromJson(Map<String, dynamic> json) {
     return DataSet(
         id: json['id'],
         name: json['name'],
-        created: json['created'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
@@ -91,15 +90,14 @@ class DataSet extends IdentifiableEntity {
                   'dataSet': json['id'],
                   'dirty': false
                 }))
-            .toList());
+            .toList(),
+        createdDate: json['createdDate']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;
@@ -111,6 +109,8 @@ class DataSet extends IdentifiableEntity {
     data['periodType'] = this.periodType;
     data['openFuturePeriods'] = this.openFuturePeriods;
     data['dataSetElements'] = this.dataSetElements;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;
 
     return data;

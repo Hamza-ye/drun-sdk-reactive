@@ -301,7 +301,7 @@ class TrackedEntityInstanceQuery extends BaseQuery<TrackedEntityInstance> {
     }
 
     String url =
-        'trackedEntityInstances.json?ou=${this.orgUnit}&$orgUnitMode${this.activity != null ? '&activity=${this.activity}' : ''}&program=${this.program}&programStatus=ACTIVE&pageSize=50&order=created:desc&fields=*${this.attributeFilters?.length == 0 ? "" : "&" + (this.attributeFilters?.map((queryFilterItem) {
+        'trackedEntityInstances.json?ou=${this.orgUnit}&$orgUnitMode${this.activity != null ? '&activity=${this.activity}' : ''}&program=${this.program}&programStatus=ACTIVE&pageSize=50&order=createdDate:desc&fields=*${this.attributeFilters?.length == 0 ? "" : "&" + (this.attributeFilters?.map((queryFilterItem) {
               return "filter=" +
                   queryFilterItem.attribute +
                   (queryFilterItem.condition == QueryCondition.In

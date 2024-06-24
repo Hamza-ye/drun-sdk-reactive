@@ -26,8 +26,8 @@ class ChvSession extends SyncableEntity {
   ChvSession(
       {String? id,
       String? uid,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       String? code,
       this.subject,
@@ -54,8 +54,8 @@ class ChvSession extends SyncableEntity {
             uid: uid,
             name: name,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
 
             /// Syncable
             deleted: deleted,
@@ -85,8 +85,8 @@ class ChvSession extends SyncableEntity {
         uid: json['uid'],
         code: json['code'],
         name: json['name'],
-        created: json['createdDate'],
-        lastUpdated: json['lastModifiedDate'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         subject: json['subject'],
         sessionDate: json['sessionDate'],
         sessions: json['sessions'],
@@ -114,8 +114,8 @@ class ChvSession extends SyncableEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['uid'] = this.uid;
-    data['createdDate'] = this.created;
-    data['lastModifiedDate'] = this.lastUpdated;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['name'] = this.name;
     data['code'] = this.code;
     data['subject'] = this.subject;
@@ -148,8 +148,8 @@ class ChvSession extends SyncableEntity {
     Map<String, dynamic> syncableToUpload = {
       // "id": syncable.id,
       "uid": syncable.uid,
-      "createdDate": syncable.created,
-      "lastModifiedDate": syncable.lastUpdated,
+      "createdDate": syncable.createdDate,
+      "lastModifiedDate": syncable.lastModifiedDate,
       "name": syncable.name,
       "code": syncable.code,
       "subject": syncable.subject,

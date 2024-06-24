@@ -20,8 +20,8 @@ class Message extends IdentifiableEntity {
 
   Message(
       {required String id,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required String name,
       String? displayName,
       this.sender,
@@ -32,8 +32,8 @@ class Message extends IdentifiableEntity {
             uid: id,
             name: name,
             displayName: displayName,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory Message.fromJson(Map<String, dynamic> json) {
@@ -43,26 +43,26 @@ class Message extends IdentifiableEntity {
     return Message(
         id: json['id'],
         name: json['name'],
-        created: json['created'],
         displayName: json['displayName'],
-        lastUpdated: json['lastUpdated'],
         dirty: json['dirty'],
         text: json['text'],
         sender: sender.toString(),
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         messageConversation: json['messageConversation']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
     data['name'] = this.name;
     data['displayName'] = this.displayName;
     data['dirty'] = this.dirty;
     data['text'] = this.text;
     data['sender'] = this.sender;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['messageConversation'] = this.messageConversation;
 
     return data;

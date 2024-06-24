@@ -20,7 +20,7 @@ class ProgramSectionAttribute extends BaseEntity {
       String? lastUpdated,
       required this.attribute,
       required this.programSection})
-      : super(uid: id, dirty: dirty, created: created, lastUpdated: lastUpdated);
+      : super(uid: id, dirty: dirty, createdDate: created, lastModifiedDate: lastUpdated);
 
   factory ProgramSectionAttribute.fromJson(Map<String, dynamic> jsonData) {
     return ProgramSectionAttribute(
@@ -36,8 +36,8 @@ class ProgramSectionAttribute extends BaseEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
-    data['lastUpdated'] = this.lastUpdated;
+    data['created'] = this.createdDate;
+    data['lastUpdated'] = this.lastModifiedDate;
     data['attribute'] = this.attribute;
     data['programSection'] = this.programSection;
     data['dirty'] = this.dirty;

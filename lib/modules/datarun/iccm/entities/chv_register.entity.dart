@@ -45,8 +45,8 @@ class ChvRegister extends SyncableEntity {
   ChvRegister(
       {String? id,
       String? uid,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       String? code,
       this.gender,
@@ -79,8 +79,8 @@ class ChvRegister extends SyncableEntity {
             uid: uid,
             name: name,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
 
             /// Syncable
             deleted: deleted,
@@ -116,8 +116,8 @@ class ChvRegister extends SyncableEntity {
         id: json['id'].toString(),
         uid: json['uid'],
         code: json['code'],
-        created: json['createdDate'],
-        lastUpdated: json['lastModifiedDate'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         visitDate: json['visitDate'],
         pregnant: json['pregnant'],
         testResult: json['testResult'],
@@ -171,8 +171,8 @@ class ChvRegister extends SyncableEntity {
     data['detectionType'] = this.detectionType;
     data['severity'] = this.severity;
     data['treatment'] = this.treatment;
-    data['createdDate'] = this.created;
-    data['lastModifiedDate'] = this.lastUpdated;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['comment'] = this.comment;
 
     data['age'] = this.age;
@@ -218,8 +218,8 @@ class ChvRegister extends SyncableEntity {
       "severity": syncable.severity,
       "treatment": syncable.treatment,
       "comment": syncable.comment,
-      "createdDate": syncable.created,
-      "lastModifiedDate": syncable.lastUpdated,
+      "createdDate": syncable.createdDate,
+      "lastModifiedDate": syncable.lastModifiedDate,
 
       /// Syncable
       "deleted": syncable.deleted,

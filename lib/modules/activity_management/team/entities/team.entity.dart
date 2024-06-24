@@ -24,8 +24,8 @@ class Team extends IdentifiableEntity {
   Team(
       {required String id,
       String? uid,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required String name,
       String? shortName,
       String? code,
@@ -43,8 +43,8 @@ class Team extends IdentifiableEntity {
             shortName: shortName,
             displayName: displayName,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory Team.fromJson(Map<String, dynamic> json) {
@@ -52,7 +52,7 @@ class Team extends IdentifiableEntity {
         id: json['id'],
         uid: json['uid'],
         name: json['name'],
-        created: json['created'],
+        createdDate: json['createdDate'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
@@ -69,7 +69,7 @@ class Team extends IdentifiableEntity {
         id: jsonData['id'].toString(),
         uid: jsonData['uid'],
         name: jsonData['name'],
-        created: jsonData['created'],
+        createdDate: jsonData['createdDate'],
         shortName: jsonData['shortName'],
         code: jsonData['code'],
         displayName: jsonData['displayName'],
@@ -84,10 +84,10 @@ class Team extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['id'] = this.id;
     data['uid'] = this.uid;
-    data['created'] = this.created;
+    data['createdDate'] = this.createdDate;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;

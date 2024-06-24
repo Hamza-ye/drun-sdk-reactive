@@ -21,8 +21,8 @@ final Map<String, dynamic> dSampleActivities = {
         "uid": "rP4uZjcT6H7",
         "code": null,
         "name": "CHVs",
-        "created": null,
-        "lastUpdated": null,
+        "createdDate": null,
+        "lastModifiedDate": null,
         "displayed": null
       }
     },
@@ -47,8 +47,8 @@ final Map<String, dynamic> dSampleActivities = {
         "uid": "rP4uZjcT6H7",
         "code": null,
         "name": "CHVs",
-        "created": null,
-        "lastUpdated": null,
+        "createdDate": null,
+        "lastModifiedDate": null,
         "displayed": null
       }
     },
@@ -73,8 +73,6 @@ final Map<String, dynamic> dSampleActivities = {
         "uid": "rP3uZjcT6H7",
         "code": null,
         "name": "IRS Campaign",
-        "created": null,
-        "lastUpdated": null,
         "displayed": null
       }
     },
@@ -99,8 +97,6 @@ final Map<String, dynamic> dSampleActivities = {
         "uid": "rP3uZjcT6H7",
         "code": null,
         "name": "IRS Campaign",
-        "created": null,
-        "lastUpdated": null,
         "displayed": null
       }
     },
@@ -125,8 +121,6 @@ final Map<String, dynamic> dSampleActivities = {
         "uid": "OTaPhM06yWf",
         "code": null,
         "name": "ITN Campaign",
-        "created": null,
-        "lastUpdated": null,
         "displayed": null
       }
     }

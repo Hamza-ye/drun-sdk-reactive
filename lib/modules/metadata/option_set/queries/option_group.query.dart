@@ -89,6 +89,6 @@ class OptionGroupQuery extends BaseQuery<OptionGroup> {
   @override
   Future<String> dhisUrl() {
     return Future.value(
-        'optionGroups.json?fields=id,name,displayName,shortName,lastUpdated,created,code,dirty,description,optionSet[id,code,name,shortName,displayName,created,lastUpdated],options[id,code,name,description,sortOrder,displayName,lastUpdated,created]&paging=false');
+        'optionGroups.json?fields=id,name,displayName,shortName,lastModifiedDate,createdDate,code,dirty,description,optionSet[id,code,name,shortName,displayName,createdDate,lastModifiedDate],options[id,code,name,description,sortOrder,displayName,lastUpdated,created]&paging=false');
   }
 }

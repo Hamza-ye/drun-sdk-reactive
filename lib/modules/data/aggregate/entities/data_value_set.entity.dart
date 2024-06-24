@@ -40,8 +40,8 @@ class DataValueSet extends IdentifiableEntity {
 
   DataValueSet(
       {String? id,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       String? name,
       required this.period,
       required this.orgUnit,
@@ -56,8 +56,8 @@ class DataValueSet extends IdentifiableEntity {
       : super(
             uid: id,
             name: name,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty) {
     this.uid = '${this.dataSet}_${this.orgUnit}_${this.period}';
     this.name = this.name ?? this.uid;
@@ -75,9 +75,9 @@ class DataValueSet extends IdentifiableEntity {
     return DataValueSet(
         id: id,
         name: json['name'] ?? id,
-        created: json['created'],
         completeDate: json['completeDate'],
-        lastUpdated: json['lastUpdated'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         dirty: json['dirty'],
         synced: json['synced'],
         syncFailed: json['syncFailed'],
@@ -96,10 +96,10 @@ class DataValueSet extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
+    data['createdDate'] = this.createdDate;
     data['completeDate'] = this.completeDate;
     data['name'] = this.name;
     data['dirty'] = this.dirty;

@@ -240,8 +240,8 @@ class BaseQuery<T extends BaseEntity> {
           mergeMode: this._mergeMode,
           saveOptions: saveOptions);
     }
-    if (this.data != null && this.data.lastUpdated == null) {
-      this.data.lastUpdated = DateTime.now().toIso8601String();
+    if (this.data != null && this.data.lastModifiedDate == null) {
+      this.data.lastModifiedDate = DateTime.now().toIso8601String();
     }
 
     return this.repository.saveOne(

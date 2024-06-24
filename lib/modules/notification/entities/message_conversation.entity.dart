@@ -24,8 +24,8 @@ class MessageConversation extends IdentifiableEntity {
 
   MessageConversation(
       {required String id,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required String name,
       required this.status,
       required this.messageType,
@@ -38,22 +38,22 @@ class MessageConversation extends IdentifiableEntity {
             uid: id,
             name: name,
             displayName: displayName,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory MessageConversation.fromJson(Map<String, dynamic> json) {
     return MessageConversation(
         id: json['id'],
         name: json['name'],
-        created: json['created'],
         displayName: json['displayName'],
-        lastUpdated: json['lastUpdated'],
         dirty: json['dirty'],
         status: json['status'],
         messageType: json['messageType'],
         read: json['read'],
         lastMessage: json['lastMessage'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         messages: (json['messages'] ?? [])
             .map<Message>((message) => Message.fromJson({
                   ...message,
@@ -65,15 +65,15 @@ class MessageConversation extends IdentifiableEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
     data['name'] = this.name;
     data['displayName'] = this.displayName;
     data['status'] = this.status;
     data['messageType'] = this.messageType;
     data['read'] = this.read;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['lastMessage'] = this.lastMessage;
     data['dirty'] = this.dirty;
 

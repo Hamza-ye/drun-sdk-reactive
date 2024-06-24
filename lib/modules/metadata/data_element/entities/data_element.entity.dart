@@ -43,8 +43,8 @@ class DataElement extends IdentifiableEntity {
 
   DataElement(
       {required String id,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       required String name,
       required String shortName,
       String? code,
@@ -62,8 +62,8 @@ class DataElement extends IdentifiableEntity {
             shortName: shortName,
             displayName: displayName,
             code: code,
-            created: created,
-            lastUpdated: lastUpdated,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory DataElement.fromJson(Map<String, dynamic> json) {
@@ -76,7 +76,6 @@ class DataElement extends IdentifiableEntity {
     return DataElement(
         id: json['id'],
         name: json['name'],
-        created: json['created'],
         shortName: json['shortName'],
         code: json['code'],
         displayName: json['displayName'],
@@ -86,15 +85,14 @@ class DataElement extends IdentifiableEntity {
         formName: json['formName'],
         optionSet: optionSet,
         fieldMask: json['fieldMask'],
+        createdDate: json['createdDate'],
         dirty: json['dirty']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lastUpdated'] = this.lastUpdated;
     data['id'] = this.id;
     data['uid'] = this.id;
-    data['created'] = this.created;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;
@@ -105,6 +103,8 @@ class DataElement extends IdentifiableEntity {
     data['formName'] = this.formName;
     data['optionSet'] = this.optionSet;
     data['fieldMask'] = this.fieldMask;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;
 
     return data;

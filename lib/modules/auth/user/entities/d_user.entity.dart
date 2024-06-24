@@ -73,8 +73,8 @@ class DUser extends IdentifiableEntity {
       String? shortName,
       String? displayName,
       String? code,
-      String? created,
-      String? lastUpdated,
+      String? createdDate,
+      String? lastModifiedDate,
       this.firstName,
       this.surname,
       this.authorities,
@@ -90,8 +90,8 @@ class DUser extends IdentifiableEntity {
             uid: uid,
             name: name,
             dirty: dirty,
-            created: created,
-            lastUpdated: lastUpdated);
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate);
 
   factory DUser.fromJson(Map<String, dynamic> jsonData) {
     return DUser(
@@ -109,8 +109,6 @@ class DUser extends IdentifiableEntity {
         name: jsonData['name'],
         phoneNumber: jsonData['phoneNumber'],
         baseUrl: jsonData['baseUrl'],
-        created: jsonData['created'],
-        lastUpdated: jsonData['lastUpdated'],
         authorities: (jsonData['authorities'] ?? [])
             .map<DUserAuthority>((authority) => DUserAuthority(
                 id: authority['uid'],
@@ -125,6 +123,8 @@ class DUser extends IdentifiableEntity {
         activated: jsonData['activated'],
         imageUrl: jsonData['imageUrl'],
         langKey: jsonData['langKey'],
+        createdDate: jsonData['createdDate'],
+        lastModifiedDate: jsonData['lastModifiedDate'],
         dirty: jsonData['dirty']);
   }
 
@@ -139,8 +139,6 @@ class DUser extends IdentifiableEntity {
         name: jsonData['username'],
         phoneNumber: jsonData['phoneNumber'],
         baseUrl: jsonData['baseUrl'],
-        created: jsonData['created'],
-        lastUpdated: jsonData['lastUpdated'],
         token: jsonData['token'],
         tokenType: jsonData['tokenType'],
         refreshToken: jsonData['refreshToken'],
@@ -160,6 +158,8 @@ class DUser extends IdentifiableEntity {
         imageUrl: jsonData['imageUrl'],
         langKey: jsonData['langKey'],
         isLoggedIn: jsonData['isLoggedIn'],
+        createdDate: jsonData['createdDate'],
+        lastModifiedDate: jsonData['lastModifiedDate'],
         dirty: jsonData['dirty'] ?? false);
   }
 
@@ -174,8 +174,6 @@ class DUser extends IdentifiableEntity {
     data['username'] = this.username;
     data['password'] = this.password;
     data['phoneNumber'] = this.phoneNumber;
-    data['createdDate'] = this.created;
-    data['lastModifiedDate'] = this.lastUpdated;
     data['token'] = this.token;
     data['tokenType'] = this.tokenType;
     data['refreshToken'] = this.refreshToken;
@@ -190,6 +188,8 @@ class DUser extends IdentifiableEntity {
     data['activated'] = this.activated;
     data['imageUrl'] = this.imageUrl;
     data['langKey'] = this.langKey;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
 
     data['dirty'] = this.dirty;
 

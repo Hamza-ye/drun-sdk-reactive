@@ -53,8 +53,8 @@ class SyncableEntity extends BaseEntity {
       String? uid,
       this.name,
       this.code,
-      String? lastUpdated,
-      String? created,
+      String? lastModifiedDate,
+      String? createdDate,
       this.deleted,
       this.synced,
       this.syncFailed,
@@ -71,8 +71,8 @@ class SyncableEntity extends BaseEntity {
             id: uid,
             uid: uid,
             dirty: dirty,
-            created: created,
-            lastUpdated: lastUpdated);
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate);
 
   static toUpload(SyncableEntity syncable) {
     throw UnimplementedError();
