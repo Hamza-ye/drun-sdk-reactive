@@ -1,33 +1,32 @@
 import 'dart:convert';
 
 class FieldRule {
-  final String? dependentFieldId;
-  final List<String>? dependentFieldValues;
+  final String? relevantFieldId;
+  final String? rule;
+  final List<String>? relevantFieldValues;
 
-  FieldRule({this.dependentFieldId, this.dependentFieldValues});
+  FieldRule({this.relevantFieldId, this.rule, this.relevantFieldValues});
 
   factory FieldRule.fromJson(Map<String, dynamic> json) {
-    // final dependentFieldValues2 = json['dependentFieldValues'] != null
-    //     ? jsonDecode(json['dependentFieldValues']).cast<String>()
-    //     : null;
-
-    final dependentFieldValues = json['dependentFieldValues'] != null
-        ? json['dependentFieldValues'].runtimeType == String
-        ? jsonDecode(json['dependentFieldValues']).cast<String>()
-        : json['dependentFieldValues'].cast<String>()
+    final relevantFieldValues = json['relevantFieldValues'] != null
+        ? json['relevantFieldValues'].runtimeType == String
+            ? jsonDecode(json['relevantFieldValues']).cast<String>()
+            : json['relevantFieldValues'].cast<String>()
         : null;
 
     return FieldRule(
-      dependentFieldId: json['dependentFieldId'],
-      dependentFieldValues: dependentFieldValues,
+      relevantFieldId: json['relevantFieldId'],
+      rule: json['rule'],
+      relevantFieldValues: relevantFieldValues,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'dependentFieldId': dependentFieldId,
-      'dependentFieldValues': dependentFieldValues != null
-          ? jsonEncode(dependentFieldValues)
+      'relevantFieldId': relevantFieldId,
+      'rule': rule,
+      'relevantFieldValues': relevantFieldValues != null
+          ? jsonEncode(relevantFieldValues)
           : null,
     };
   }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
+
 import 'field_rule.dart';
 
 class DynamicFormField {
@@ -9,7 +11,7 @@ class DynamicFormField {
   final String name;
   final List<String>? options;
   final bool required;
-  final FieldRule? fieldRule;
+  final List<FieldRule>? fieldRules;
 
   DynamicFormField({
     required this.label,
@@ -18,14 +20,19 @@ class DynamicFormField {
     required this.name,
     this.fieldValueRenderingType,
     this.options,
-    this.fieldRule,
+    this.fieldRules,
   });
 
   factory DynamicFormField.fromJson(Map<String, dynamic> json) {
-    final dynamic fieldRule = json["fieldRule"] != null
-        ? FieldRule.fromJson(json["fieldRule"].runtimeType == String
-            ? jsonDecode(json["fieldRule"])
-            : json["fieldRule"])
+    // final dynamic fieldRule = json["fieldRule"] != null
+    //     ? FieldRule.fromJson(json["fieldRule"].runtimeType == String
+    //         ? jsonDecode(json["fieldRule"])
+    //         : json["fieldRule"])
+    //     : null;
+    final fieldRules = json['fieldRules'] != null
+        ? (parseDynamicList(json['fieldRules']) as List)
+            .map((ruleField) => FieldRule.fromJson(ruleField))
+            .toList()
         : null;
 
     final options = json['options'] != null
@@ -34,8 +41,6 @@ class DynamicFormField {
             : json['options'].cast<String>()
         : null;
 
-    print('Deserializing DynamicFormField with required: ${json['required']}');
-
     return DynamicFormField(
       type: json['type'],
       label: json['label'],
@@ -43,7 +48,7 @@ class DynamicFormField {
       fieldValueRenderingType: json['fieldValueRenderingType'],
       required: json['required'] ?? false,
       options: options,
-      fieldRule: fieldRule,
+      fieldRules: fieldRules,
     );
   }
 
@@ -53,7 +58,11 @@ class DynamicFormField {
     data['type'] = type;
     data['name'] = name;
     data['options'] = options != null ? jsonEncode(options) : null;
-    data['fieldRule'] = fieldRule != null ? fieldRule!.toJson() : null;
+    // data['fieldRule'] = fieldRule != null ? fieldRule!.toJson() : null;
+    data['fieldRules'] = fieldRules != null
+        ? jsonEncode(
+            fieldRules!.map((fieldRule) => fieldRule.toJson()).toList())
+        : null;
     data['fieldValueRenderingType'] = fieldValueRenderingType;
     data['required'] = required;
 

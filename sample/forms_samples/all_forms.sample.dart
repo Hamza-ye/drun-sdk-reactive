@@ -12,13 +12,22 @@ final Map<String, dynamic> dSampleAllForms = {
       "code": "CHV_PATIENTS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
-      "mainField": {
-        "id": "2",
-        "type": "text",
-        "label": "Patient Name",
-        "name": "patientName",
-        "required": true
-      },
+      "mainFields": [
+        {
+          "id": "2",
+          "type": "text",
+          "label": "Patient Name",
+          "name": "patientName",
+          "required": true
+        },
+        {
+          "id": "4",
+          "type": "text",
+          "label": "Patient Location",
+          "name": "patientLocation",
+          "required": true
+        }
+      ],
       "activity": {
         "id": 17,
         "uid": "oBne891mA9n",
@@ -29,10 +38,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "date",
           "label": "Visit Date",
           "name": "visitDate",
-          "required": true,
-          "fieldRule": {
-            "required": true,
-          }
+          "required": true
         },
         {
           "id": "2",
@@ -61,36 +67,41 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "gender",
           "required": true,
           "label": "Gender",
-          "options": ["Male", "Female"],
-          "fieldRule": {"required": true}
+          "options": ["Male", "Female"]
         },
         {
           "id": "6",
           "type": "yesNo",
           "label": "Pregnant",
           "name": "pregnant",
-          "required": false,
-          "fieldRule": {
-            "dependentFieldId": "gender",
-            "rule": "=",
-            "dependentFieldValues": ["Female"]
-          }
+          "required": true,
+          "fieldRules": [
+            {
+              "relevantFieldId": "gender",
+              "rule": "=",
+              "relevantFieldValues": ["Female"]
+            },
+            {
+              "relevantFieldId": "patientAge",
+              "rule": ">=",
+              "relevantFieldValues": ["10"]
+            }
+          ]
         },
         {
           "id": "7",
           "type": "selectOne",
           "label": "Test Result",
           "name": "testResult",
-          "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"],
-          "fieldRule": {
-            "required": false
-          }
+          "required": true,
+          "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"]
         },
         {
           "id": "8",
           "type": "selectOne",
           "label": "Detection Type",
           "name": "detectionType",
+          "required": true,
           "options": ["REACTIVE", "ACTIVE"]
         },
         {
@@ -98,33 +109,36 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "selectOne",
           "label": "Severity",
           "name": "severity",
+          "required": true,
           "options": ["SIMPLE", "SEVERE"],
-          "fieldRule": {
-            "dependentFieldId": "testResult",
-            "rule": "=",
-            "dependentFieldValues": ["PF", "PV", "MIX"]
-          }
+          "fieldRules": [
+            {
+              "relevantFieldId": "testResult",
+              "rule": "=",
+              "relevantFieldValues": ["PF", "PV", "MIX"]
+            }
+          ]
         },
         {
           "id": "10",
           "type": "selectOne",
           "label": "Treatment",
           "name": "treatment",
+          "required": true,
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
-          "fieldRule": {
-            "dependentFieldId": "testResult",
-            "rule": "=",
-            "dependentFieldValues": ["PF", "PV", "MIX"]
-          }
+          "fieldRules": [
+            {
+              "relevantFieldId": "testResult",
+              "rule": "=",
+              "relevantFieldValues": ["PF", "PV", "MIX"]
+            }
+          ]
         },
         {
           "id": "11",
           "type": "text",
           "label": "Comment",
-          "name": "comment",
-          "fieldRule": {
-            "maxLength": 2000
-          }
+          "name": "comment"
         }
       ],
     },
@@ -135,11 +149,11 @@ final Map<String, dynamic> dSampleAllForms = {
       "code": "CHV_SESSIONS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
-      "mainField": {
+      "mainFields": [{
         "type": "date",
         "label": "Session Date",
         "name": "sessionDate"
-      },
+      },],
       "activity": {
         "id": 17,
         "uid": "oBne891mA9n",
@@ -149,8 +163,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "date",
           "label": "Session Date",
           "name": "sessionDate",
-          "required": true,
-          "fieldRule": {"required": true}
+          "required": true
         },
         {
           "id": "3",
@@ -158,26 +171,19 @@ final Map<String, dynamic> dSampleAllForms = {
           "label": "Session Subject",
           "name": "subject",
           "required": true,
-          "options": ["ITNs", "BreadingSite", "TRANSMISSION_PREVENTION"],
-          "fieldRule": {"required": true}
+          "options": ["ITNs", "BreadingSite", "TRANSMISSION_PREVENTION"]
         },
         {
           "type": "number",
           "name": "sessions",
           "label": "Sessions",
-          "fieldRule": {
-            "required": false,
-            "numeric": true,
-          }
+          "required": true
         },
         {
           "type": "number",
           "name": "people",
           "label": "People",
-          "fieldRule": {
-            "required": false,
-            "numeric": true,
-          }
+          "required": true
         }
       ],
     },
@@ -188,13 +194,22 @@ final Map<String, dynamic> dSampleAllForms = {
       "code": "ITN_DISTRIBUTION_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
-      "mainField": {
-        "id": "1",
-        "type": "date",
-        "label": "Visit Date",
-        "name": "visitDate",
-        "required": true
-      },
+      "mainFields": [
+        {
+          "id": "2",
+          "type": "text",
+          "label": "Patient Name",
+          "name": "patientName",
+          "required": true
+        },
+        {
+          "id": "4",
+          "type": "text",
+          "label": "Patient Location",
+          "name": "patientLocation",
+          "required": true
+        }
+      ],
       "activity": {
         "id": 16,
         "uid": "oAne601mA8n",
@@ -212,11 +227,11 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "text",
           "label": "Patient Name",
           "name": "patientName",
-          "required": true
+          "required": true,
         },
         {
           "id": "3",
-          "type": "text",
+          "type": "number",
           "label": "Patient Age",
           "name": "patientAge",
           "required": true
@@ -234,37 +249,41 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "gender",
           "required": true,
           "label": "Gender",
-          "options": ["Male", "Female"],
-          "fieldRule": {"required": true}
+          "options": ["Male", "Female"]
         },
         {
           "id": "6",
           "type": "yesNo",
           "label": "Pregnant",
           "name": "pregnant",
-          "required": false,
-          "fieldRule": {
-            "required": false,
-            "dependentFieldId": "gender",
-            "rule": "=",
-            "dependentFieldValues": ["Female"]
-          }
+          "required": true,
+          "fieldRules": [
+            {
+              "relevantFieldId": "gender",
+              "rule": "=",
+              "relevantFieldValues": ["Female"]
+            },
+            {
+              "relevantFieldId": "patientAge",
+              "rule": ">=",
+              "relevantFieldValues": ["10"]
+            }
+          ]
         },
         {
           "id": "7",
           "type": "selectOne",
           "label": "Test Result",
           "name": "testResult",
-          "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"],
-          "fieldRule": {
-            "required": false
-          }
+          "required": true,
+          "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"]
         },
         {
           "id": "8",
           "type": "selectOne",
           "label": "Detection Type",
           "name": "detectionType",
+          "required": true,
           "options": ["REACTIVE", "ACTIVE"]
         },
         {
@@ -272,33 +291,36 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "selectOne",
           "label": "Severity",
           "name": "severity",
+          "required": true,
           "options": ["SIMPLE", "SEVERE"],
-          "fieldRule": {
-            "dependentFieldId": "testResult",
-            "rule": "=",
-            "dependentFieldValues": ["PF", "PV", "MIX"]
-          }
+          "fieldRules": [
+            {
+              "relevantFieldId": "testResult",
+              "rule": "=",
+              "relevantFieldValues": ["PF", "PV", "MIX"]
+            }
+          ]
         },
         {
           "id": "10",
           "type": "selectOne",
           "label": "Treatment",
           "name": "treatment",
+          "required": true,
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
-          "fieldRule": {
-            "dependentFieldId": "testResult",
-            "rule": "=",
-            "dependentFieldValues": ["PF", "PV", "MIX"]
-          }
+          "fieldRules": [
+            {
+              "relevantFieldId": "testResult",
+              "rule": "=",
+              "relevantFieldValues": ["PF", "PV", "MIX"]
+            }
+          ]
         },
         {
           "id": "11",
           "type": "text",
           "label": "Comment",
-          "name": "comment",
-          "fieldRule": {
-            "maxLength": 2000
-          }
+          "name": "comment"
         }
       ],
     }

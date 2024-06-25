@@ -13,7 +13,7 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 @Entity(tableName: 'dynamicForm', apiResourceName: 'dynamicForms')
 class DynamicForm extends IdentifiableEntity {
   @Column(nullable: true, type: ColumnType.TEXT, name: "mainField")
-  DynamicFormField? mainField;
+  List<DynamicFormField>? mainFields;
 
   @Column(nullable: true, type: ColumnType.TEXT)
   List<DynamicFormField>? fields;
@@ -26,7 +26,7 @@ class DynamicForm extends IdentifiableEntity {
     String? uid,
     String? name,
     String? code,
-    this.mainField,
+    this.mainFields,
     String? createdDate,
     String? lastModifiedDate,
     this.fields,
@@ -44,9 +44,15 @@ class DynamicForm extends IdentifiableEntity {
 
   // From JSON string (Database)
   factory DynamicForm.fromJson(Map<String, dynamic> json) {
-    final dynamic mainField = json['mainField'] != null
-        ? DynamicFormField.fromJson(parseDynamicField(json['mainField']))
+    final mainFields = json['mainFields'] != null
+        ? (parseDynamicList(json['mainFields']) as List)
+        .map((mainField) => DynamicFormField.fromJson(mainField))
+        .toList()
         : null;
+
+    // final dynamic mainField = json['mainField'] != null
+    //     ? DynamicFormField.fromJson(parseDynamicField(json['mainField']))
+    //     : null;
 
     final fields = json['fields'] != null
         ? (parseDynamicList(json['fields']) as List)
@@ -59,7 +65,7 @@ class DynamicForm extends IdentifiableEntity {
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
-      mainField: mainField /*json['mainField'] != null
+      mainFields: mainFields /*json['mainField'] != null
           ? DynamicFormField.fromJson(jsonDecode(json['mainField']))
           : null*/,
       fields: fields/*json['fields'] != null
@@ -83,7 +89,10 @@ class DynamicForm extends IdentifiableEntity {
       'uid': uid,
       'code': code,
       'name': name,
-      'mainField': mainField != null ? jsonEncode(mainField!.toJson()) : null,
+      // 'mainField': mainField != null ? jsonEncode(mainField!.toJson()) : null,
+      'mainFields': mainFields != null
+          ? jsonEncode(mainFields!.map((field) => field.toJson()).toList())
+          : null,
       'fields': fields != null
           ? jsonEncode(fields!.map((field) => field.toJson()).toList())
           : null,

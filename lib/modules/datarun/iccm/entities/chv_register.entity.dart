@@ -50,6 +50,9 @@ class ChvRegister extends SyncableEntity {
       String? name,
       String? code,
       this.gender,
+      // fix in Ui When tha main field is
+      // location set at adding new entity,
+      // now it's the default behaviour
       this.location,
       this.visitDate,
       this.age,

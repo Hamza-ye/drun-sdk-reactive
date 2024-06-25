@@ -8,9 +8,16 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('DynamicForm serialization and deserialization', () {
     // Create a FieldRule instance
-    final fieldRule = FieldRule(
-      dependentFieldId: '123',
-      dependentFieldValues: ['value1', 'value2'],
+    final fieldRule1 = FieldRule(
+      relevantFieldId: '123',
+      rule: '=',
+      relevantFieldValues: ['value1', 'value2'],
+    );
+
+    final fieldRule2 = FieldRule(
+      relevantFieldId: '123',
+      rule: '=',
+      relevantFieldValues: ['value21', 'value22'],
     );
 
     // Create a DynamicFormField instance
@@ -21,7 +28,7 @@ void main() {
       name: 'Test Field',
       required: true,
       options: ['Option 1', 'Option 2'],
-      fieldRule: fieldRule,
+      fieldRules: [fieldRule1, fieldRule2],
     );
 
     // Create a DynamicForm instance
@@ -30,7 +37,7 @@ void main() {
       uid: 'uid1',
       name: 'Test Form',
       code: 'formCode',
-      mainField: dynamicFormField,
+      mainFields: [dynamicFormField],
       createdDate: '2024-06-23T18:25:43.511Z',
       lastModifiedDate: '2024-06-23T18:25:43.511Z',
       fields: [dynamicFormField],
@@ -51,18 +58,25 @@ void main() {
     expect(deserializedForm.uid, dynamicForm.uid);
     expect(deserializedForm.name, dynamicForm.name);
     expect(deserializedForm.code, dynamicForm.code);
-    expect(deserializedForm.mainField!.label, dynamicForm.mainField!.label);
-    expect(deserializedForm.mainField!.type, dynamicForm.mainField!.type);
-    expect(deserializedForm.mainField!.name, dynamicForm.mainField!.name);
-    expect(deserializedForm.mainField!.fieldValueRenderingType,
-        dynamicForm.mainField!.fieldValueRenderingType);
+    expect(deserializedForm.mainFields!.first!.label,
+        dynamicForm.mainFields!.first!.label);
+    expect(deserializedForm.mainFields!.first!.type,
+        dynamicForm.mainFields!.first!.type);
+    expect(deserializedForm.mainFields!.first!.name,
+        dynamicForm.mainFields!.first!.name);
+    expect(deserializedForm.mainFields!.first!.fieldValueRenderingType,
+        dynamicForm.mainFields!.first!.fieldValueRenderingType);
+    expect(deserializedForm.mainFields!.first!.required,
+        dynamicForm.mainFields!.first!.required);
+    expect(deserializedForm.mainFields!.first!.options,
+        dynamicForm.mainFields!.first!.options);
     expect(
-        deserializedForm.mainField!.required, dynamicForm.mainField!.required);
-    expect(deserializedForm.mainField!.options, dynamicForm.mainField!.options);
-    expect(deserializedForm.mainField!.fieldRule!.dependentFieldId,
-        dynamicForm.mainField!.fieldRule!.dependentFieldId);
-    expect(deserializedForm.mainField!.fieldRule!.dependentFieldValues,
-        dynamicForm.mainField!.fieldRule!.dependentFieldValues);
+        deserializedForm.mainFields!.first!.fieldRules!.first!.relevantFieldId,
+        dynamicForm.mainFields!.first!.fieldRules!.first!.relevantFieldId);
+    expect(
+        deserializedForm
+            .mainFields!.first!.fieldRules!.first!.relevantFieldValues,
+        dynamicForm.mainFields!.first!.fieldRules!.first!.relevantFieldValues);
     expect(deserializedForm.createdDate, dynamicForm.createdDate);
     expect(deserializedForm.lastModifiedDate, dynamicForm.lastModifiedDate);
     expect(deserializedForm.activity, dynamicForm.activity);

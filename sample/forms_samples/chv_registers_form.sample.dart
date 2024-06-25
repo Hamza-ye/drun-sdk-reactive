@@ -28,8 +28,8 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "maxLength": null,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "relevantFieldId": null,
+            "relevantFieldValues": null
           }
         },
         {
@@ -43,8 +43,8 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "maxLength": null,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "relevantFieldId": null,
+            "relevantFieldValues": null
           }
         },
         {
@@ -58,8 +58,8 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "maxLength": null,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "relevantFieldId": null,
+            "relevantFieldValues": null
           }
         },
         {
@@ -73,8 +73,8 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "maxLength": null,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "relevantFieldId": null,
+            "relevantFieldValues": null
           }
         },
         {
@@ -88,8 +88,8 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "maxLength": null,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "relevantFieldId": null,
+            "relevantFieldValues": null
           }
         },
         {
@@ -103,8 +103,8 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "maxLength": null,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "relevantFieldId": null,
+            "relevantFieldValues": null
           }
         },
         {
@@ -118,8 +118,8 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "maxLength": 2000,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "relevantFieldId": null,
+            "relevantFieldValues": null
           }
         },
         {
@@ -133,8 +133,8 @@ final Map<String, dynamic> dSampleChvRegisterForm = {
             "maxLength": null,
             "numeric": null,
             "email": null,
-            "dependentFieldId": null,
-            "dependentFieldValues": null
+            "relevantFieldId": null,
+            "relevantFieldValues": null
           }
         }
       ],
