@@ -71,7 +71,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
         },
         {
           "id": "6",
-          "type": "yesNo",
+          "type": "boolean",
           "label": "Pregnant",
           "name": "pregnant",
           "required": true,
@@ -136,7 +136,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
         },
         {
           "id": "11",
-          "type": "text",
+          "type": "longText",
           "label": "Comment",
           "name": "comment"
         }

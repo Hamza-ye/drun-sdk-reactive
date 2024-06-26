@@ -27,7 +27,7 @@ class BaseEntity {
     this.id = this.id ?? DhisUidGenerator.generate();
 
     /// Added for DataRun
-    this.uid = this.uid ?? DhisUidGenerator.generate();
+    this.uid = this.id;
 
     this.createdDate =
         this.createdDate ?? DateTime.now().toIso8601String().split('.')[0];

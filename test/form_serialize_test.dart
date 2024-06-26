@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
-import 'package:d2_remote/modules/datarun_shared/utilities/dynamic_form_field.entity.dart';
-import 'package:d2_remote/modules/datarun_shared/utilities/field_rule.dart';
+import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_rule.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

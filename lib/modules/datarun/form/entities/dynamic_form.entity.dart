@@ -4,7 +4,7 @@ import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
-import 'package:d2_remote/modules/datarun_shared/utilities/dynamic_form_field.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
@@ -12,11 +12,11 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 @AnnotationReflectable
 @Entity(tableName: 'dynamicForm', apiResourceName: 'dynamicForms')
 class DynamicForm extends IdentifiableEntity {
-  @Column(nullable: true, type: ColumnType.TEXT, name: "mainField")
-  List<DynamicFormField>? mainFields;
+  @Column(nullable: true, type: ColumnType.TEXT)
+  final List<DynamicFormField>? mainFields;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  List<DynamicFormField>? fields;
+  final List<DynamicFormField>? fields;
 
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
