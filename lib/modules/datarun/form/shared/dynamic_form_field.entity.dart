@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 
 import 'field_rule.dart';
@@ -12,23 +13,19 @@ class DynamicFormField {
   final List<String>? options;
   final bool required;
   final List<FieldRule>? fieldRules;
+  final List<Rule>? rules;
 
-  DynamicFormField({
-    required this.label,
-    required this.required,
-    required this.type,
-    required this.name,
-    this.fieldValueRenderingType,
-    this.options,
-    this.fieldRules,
-  });
+  DynamicFormField(
+      {required this.label,
+      required this.required,
+      required this.type,
+      required this.name,
+      this.fieldValueRenderingType,
+      this.options,
+      this.fieldRules,
+      this.rules});
 
   factory DynamicFormField.fromJson(Map<String, dynamic> json) {
-    // final dynamic fieldRule = json["fieldRule"] != null
-    //     ? FieldRule.fromJson(json["fieldRule"].runtimeType == String
-    //         ? jsonDecode(json["fieldRule"])
-    //         : json["fieldRule"])
-    //     : null;
     final fieldRules = json['fieldRules'] != null
         ? (parseDynamicList(json['fieldRules']) as List)
             .map((ruleField) => FieldRule.fromJson(ruleField))
@@ -41,6 +38,12 @@ class DynamicFormField {
             : json['options'].cast<String>()
         : null;
 
+    final rules = json['rules'] != null
+        ? json['rules'].runtimeType == String
+            ? jsonDecode(json['rules']).cast<String>()
+            : json['rules'].cast<String>()
+        : null;
+
     return DynamicFormField(
       type: json['type'],
       label: json['label'],
@@ -49,6 +52,7 @@ class DynamicFormField {
       required: json['required'] ?? false,
       options: options,
       fieldRules: fieldRules,
+      rules: rules,
     );
   }
 
@@ -58,15 +62,13 @@ class DynamicFormField {
     data['type'] = type;
     data['name'] = name;
     data['options'] = options != null ? jsonEncode(options) : null;
-    // data['fieldRule'] = fieldRule != null ? fieldRule!.toJson() : null;
+    data['rules'] = rules != null ? jsonEncode(rules) : null;
     data['fieldRules'] = fieldRules != null
         ? jsonEncode(
             fieldRules!.map((fieldRule) => fieldRule.toJson()).toList())
         : null;
     data['fieldValueRenderingType'] = fieldValueRenderingType;
     data['required'] = required;
-
-    print('Serializing DynamicFormField with required: $required');
 
     return data;
   }
