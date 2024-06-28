@@ -1,25 +1,23 @@
-import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
-import 'package:fast_expressions/fast_expressions.dart';
-import 'package:fast_expressions/fast_expressions.dart';
+import 'package:expressions/expressions.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class RuleEngine {
-  Map<String, dynamic> formState;
+  Map<String, Map<String, dynamic>> formState;
   late Map<String, dynamic> context;
+  final evaluator = const ExpressionEvaluator();
 
   RuleEngine({required this.formState}) {
     context = adaptFormState(formState);
   }
 
-  dynamic evaluateExpression(String expression) {
-    // Use fast_expressions to evaluate the expression in the context of formState
-    final result = parseExpression(expression, context: context)();
+  dynamic evaluateExpression(String expressionString) {
+    Expression expression = Expression.parse(expressionString);
+    var result = evaluator.eval(expression, context);
     return result;
   }
 
   void applyRules(List<Rule> rules) {
-    final kid = [];
     for (var rule in rules) {
       final result = evaluateExpression(rule.expression!);
       if (result) {
@@ -31,18 +29,23 @@ class RuleEngine {
   void _applyAction(Rule rule) {
     switch (rule.action) {
       case 'show':
-        formState[rule.field]['visible'] = true;
+        formState[rule.field]?['visible'] = true;
         break;
       case 'hide':
-        formState[rule.field]['visible'] = false;
+        formState[rule.field]?['visible'] = false;
         break;
       case 'error':
-        formState[rule.field]['error'] = rule.message;
+        formState[rule.field]?['error'] = rule.message;
         break;
       case 'warning':
-        formState[rule.field]['warning'] = rule.message;
+        // formState[rule.field]?['warning'] = rule.message;
+      if(formState[rule.field]?['warning'] != null) {
+        formState[rule.field]?.remove('warning');
+      }
+      formState[rule.field]?['warning'] = rule.message;
+        // formState.get(rule.field);
         break;
-    // Add more actions as needed
+      // Add more actions as needed
     }
   }
 

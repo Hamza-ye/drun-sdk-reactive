@@ -1,9 +1,10 @@
 import 'package:d2_remote/modules/datarun/engine/rule_engine.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 void main() {
   // Define form data (simplified for testing purposes)
-  final formState = {
+  final formState = <String, Map<String, dynamic>>{
     "visitDate": {"value": "2024-06-13", "visible": true, "error": null, "warning": null},
     "patientName": {"value": "John Doe", "visible": true, "error": null, "warning": null},
     "patientAge": {"value": 12, "visible": true, "error": null, "warning": null},
