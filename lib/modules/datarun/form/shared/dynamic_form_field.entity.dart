@@ -5,6 +5,11 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 
 import 'field_rule.dart';
 
+import 'dart:convert';
+import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
+import 'field_rule.dart';
+
 class DynamicFormField {
   final String type;
   final String label;
@@ -15,33 +20,34 @@ class DynamicFormField {
   final List<FieldRule>? fieldRules;
   final List<Rule>? rules;
 
-  DynamicFormField(
-      {required this.label,
-      required this.required,
-      required this.type,
-      required this.name,
-      this.fieldValueRenderingType,
-      this.options,
-      this.fieldRules,
-      this.rules});
+  DynamicFormField({
+    required this.label,
+    required this.required,
+    required this.type,
+    required this.name,
+    this.fieldValueRenderingType,
+    this.options,
+    this.fieldRules,
+    this.rules,
+  });
 
   factory DynamicFormField.fromJson(Map<String, dynamic> json) {
     final fieldRules = json['fieldRules'] != null
         ? (parseDynamicList(json['fieldRules']) as List)
-            .map((ruleField) => FieldRule.fromJson(ruleField))
-            .toList()
+        .map((ruleField) => FieldRule.fromJson(ruleField))
+        .toList()
         : null;
 
     final options = json['options'] != null
         ? json['options'].runtimeType == String
-            ? jsonDecode(json['options']).cast<String>()
-            : json['options'].cast<String>()
+        ? jsonDecode(json['options']).cast<String>()
+        : json['options'].cast<String>()
         : null;
 
     final rules = json['rules'] != null
-        ? json['rules'].runtimeType == String
-            ? jsonDecode(json['rules']).cast<String>()
-            : json['rules'].cast<String>()
+        ? (parseDynamicList(json['rules']) as List)
+        .map((ruleField) => Rule.fromJson(ruleField))
+        .toList()
         : null;
 
     return DynamicFormField(
@@ -57,15 +63,15 @@ class DynamicFormField {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['label'] = label;
     data['type'] = type;
     data['name'] = name;
     data['options'] = options != null ? jsonEncode(options) : null;
-    data['rules'] = rules != null ? jsonEncode(rules) : null;
+    data['rules'] = rules != null ? jsonEncode(rules!.map((rule) => rule.toJson()).toList()) : null;
     data['fieldRules'] = fieldRules != null
         ? jsonEncode(
-            fieldRules!.map((fieldRule) => fieldRule.toJson()).toList())
+        fieldRules!.map((fieldRule) => fieldRule.toJson()).toList())
         : null;
     data['fieldValueRenderingType'] = fieldValueRenderingType;
     data['required'] = required;
@@ -73,3 +79,4 @@ class DynamicFormField {
     return data;
   }
 }
+

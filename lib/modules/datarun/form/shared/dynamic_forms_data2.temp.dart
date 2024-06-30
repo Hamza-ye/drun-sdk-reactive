@@ -61,12 +61,10 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "required": true,
           "rules": [
             {
-              "id": "eF3gH4iJ5K6",
-              // Using an expression language
-              "expression": "\${gender} == 'Female' && \${patientAge} >= 10",
-              // Specify action based on evaluation
+              "id": "eF5gH6iJ5K6",
+              "field": "eF3gH4iJ5K6",
+              "expression": "gender == 'Female' && patientAge >= 10",
               "action": "show",
-              // Optional message for error/warning actions
               "message":
                   "This field is hidden/invalid/requires attention because..."
             }
@@ -89,10 +87,9 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "options": ["SIMPLE", "SEVERE"],
           "rules": [
             {
+              "id": "eF3gH8iJ5K9",
               "field": "zA5bC6dE7F8",
-              // Using an expression language
-              "expression": '\${testResult} IN [\"PF\", \"PV\", \"MIX\"]',
-              // Specify action based on evaluation
+              "expression": 'testResult == "PF" || testResult == "PV" || testResult == "MIX"',
               "action": "show"
             }
           ]
@@ -106,11 +103,10 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
           "rules": [
             {
+              "id": "gH10J1kL1M2",
               "field": "gH9iJ0kL1M2",
-              // Using an expression language
-              "expression": '\${testResult} IN [\"PF\", \"PV\", \"MIX\"]',
-              // Specify action based on evaluation
-              "action": "warning"
+              "expression": 'testResult == "PF" || testResult == "PV" || testResult == "MIX"',
+              "action": "warning",
             }
           ]
         },
@@ -121,6 +117,49 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "name": "comment"
         }
       ]
-    }
+    },
+    {
+      "id": "2",
+      "uid": "r1j333zL3VB",
+      "name": "Sessions Reporting",
+      "code": "CHV_SESSIONS_FORM",
+      "createdDate": "2024-06-13T00:00:00.000Z",
+      "lastModifiedDate": "2024-06-13T00:00:00.000Z",
+      "mainFields": [
+        {"type": "date", "label": "Session Date", "name": "sessionDate"},
+      ],
+      "activity": {
+        "id": 17,
+        "uid": "oBne891mA9n",
+      },
+      "fields": [
+        {
+          "type": "date",
+          "label": "Session Date",
+          "name": "sessionDate",
+          "required": true
+        },
+        {
+          "id": "3",
+          "type": "selectOne",
+          "label": "Session Subject",
+          "name": "subject",
+          "required": true,
+          "options": ["ITNs", "BreadingSite", "TRANSMISSION_PREVENTION"]
+        },
+        {
+          "type": "number",
+          "name": "sessions",
+          "label": "Sessions",
+          "required": true
+        },
+        {
+          "type": "number",
+          "name": "people",
+          "label": "People",
+          "required": true
+        }
+      ],
+    },
   ]
 };
