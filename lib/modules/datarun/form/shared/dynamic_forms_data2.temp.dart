@@ -20,29 +20,29 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
         {
           "id": "vW3xY4zA5B6",
           "type": "date",
-          "label": "Visit Date",
           "name": "visitDate",
+          "label": "Visit Date",
           "required": true
         },
         {
           "id": "cD7eF8gH9I0",
           "type": "text",
+          "name": "name",
           "label": "Patient Name",
-          "name": "patientName",
           "required": true,
         },
         {
           "id": "jK1lM2nO3P4",
           "type": "number",
+          "name": "age",
           "label": "Patient Age",
-          "name": "patientAge",
           "required": true
         },
         {
           "id": "qR5sT6uV7W8",
           "type": "text",
+          "name": "locationName",
           "label": "Patient Location",
-          "name": "patientLocation",
           "required": true
         },
         {
@@ -56,14 +56,14 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
         {
           "id": "eF3gH4iJ5K6",
           "type": "boolean",
-          "label": "Pregnant",
           "name": "pregnant",
+          "label": "Pregnant",
           "required": true,
           "rules": [
             {
               "id": "eF5gH6iJ5K6",
               "field": "eF3gH4iJ5K6",
-              "expression": "gender == 'Female' && patientAge >= 10",
+              "expression": "gender == 'Female' && age > 10",
               "action": "show",
               "message":
                   "This field is hidden/invalid/requires attention because..."
@@ -73,16 +73,16 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
         {
           "id": "lM7nO8pQ9R0",
           "type": "selectOne",
-          "label": "Test Result",
           "name": "testResult",
+          "label": "Test Result",
           "required": true,
           "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"]
         },
         {
           "id": "zA5bC6dE7F8",
           "type": "selectOne",
-          "label": "Severity",
           "name": "severity",
+          "label": "Severity",
           "required": true,
           "options": ["SIMPLE", "SEVERE"],
           "rules": [
@@ -97,8 +97,8 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
         {
           "id": "gH9iJ0kL1M2",
           "type": "selectOne",
-          "label": "Treatment",
           "name": "treatment",
+          "label": "Treatment",
           "required": true,
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
           "rules": [
@@ -115,6 +115,22 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "longText",
           "label": "Comment",
           "name": "comment"
+        }
+      ],
+      "mainFields": [
+        {
+          "id": "2",
+          "type": "text",
+          "name": "name",
+          "label": "Patient Name",
+          "required": true
+        },
+        {
+          "id": "4",
+          "type": "text",
+          "name": "locationName",
+          "label": "Patient Location",
+          "required": true
         }
       ]
     },
@@ -134,26 +150,29 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
       },
       "fields": [
         {
+          "id": "22",
           "type": "date",
-          "label": "Session Date",
           "name": "sessionDate",
+          "label": "Session Date",
           "required": true
         },
         {
-          "id": "3",
+          "id": "21",
           "type": "selectOne",
-          "label": "Session Subject",
           "name": "subject",
+          "label": "Session Subject",
           "required": true,
           "options": ["ITNs", "BreadingSite", "TRANSMISSION_PREVENTION"]
         },
         {
+          "id": "23",
           "type": "number",
           "name": "sessions",
           "label": "Sessions",
           "required": true
         },
         {
+          "id": "24",
           "type": "number",
           "name": "people",
           "label": "People",

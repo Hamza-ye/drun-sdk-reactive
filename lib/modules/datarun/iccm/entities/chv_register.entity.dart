@@ -15,8 +15,11 @@ class ChvRegister extends SyncableEntity {
   @Column(nullable: true)
   String? gender;
 
-  @ManyToOne(table: DAssignment, joinColumnName: 'location')
-  dynamic location;
+  // @ManyToOne(table: DAssignment, joinColumnName: 'location')
+  // dynamic location;
+
+  @Column(nullable: true)
+  String? locationName;
 
   @Column(nullable: true)
   String? visitDate;
@@ -53,7 +56,8 @@ class ChvRegister extends SyncableEntity {
       // fix in Ui When tha main field is
       // location set at adding new entity,
       // now it's the default behaviour
-      this.location,
+      // this.location,
+      this.locationName,
       this.visitDate,
       this.age,
       this.pregnant,
@@ -62,7 +66,6 @@ class ChvRegister extends SyncableEntity {
       this.severity,
       this.treatment,
       this.comment,
-      // this.patient,
 
       /// Syncable
       bool? deleted,
@@ -128,19 +131,17 @@ class ChvRegister extends SyncableEntity {
         severity: json['severity'],
         treatment: json['treatment'],
         comment: json['comment'],
-        // patient: json['patient'] is String
-        //     ? json['patient']
-        //     : json['patient']['uid'],
 
         /// Patient
         name: json['name'],
         age: json['age'],
         gender: json['gender'],
-        location: json['location'] != null
-            ? json['location'] is String
-                ? json['location']
-                : json['location']['uid']
-            : null,
+        locationName: json['locationName'],
+        // location: json['location'] != null
+        //     ? json['location'] is String
+        //         ? json['location']
+        //         : json['location']['uid']
+        //     : null,
 
         /// Syncable
         deleted: json['deleted'],
@@ -180,7 +181,8 @@ class ChvRegister extends SyncableEntity {
 
     data['age'] = this.age;
     data['gender'] = this.gender;
-    data['location'] = this.location;
+    // data['location'] = this.location;
+    data['locationName'] = this.locationName;
 
     /// Syncable
     data['deleted'] = this.deleted;
@@ -210,9 +212,10 @@ class ChvRegister extends SyncableEntity {
       "code": syncable.code,
       "visitDate": syncable.visitDate,
       "name": syncable.name,
-      "location": syncable.location is String
-          ? jsonEncode({'uid': syncable.location})
-          : syncable.location,
+      // "location": syncable.location is String
+      //     ? jsonEncode({'uid': syncable.location})
+      //     : syncable.location,
+      "locationName": syncable.locationName,
       "gender": syncable.gender,
       "age": syncable.age,
       "pregnant": syncable.pregnant,
