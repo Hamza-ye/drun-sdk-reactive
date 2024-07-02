@@ -125,13 +125,6 @@ class D2Remote {
       Dio? dioTestClient}) async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // Data-Run
-    // HttpResponse tokenResponse = await HttpClient.get('authenticate',
-    //     baseUrl: url,
-    //     username: username,
-    //     password: password,
-    //     dioTestClient: dioTestClient);
-
     HttpResponse userResponse = await HttpClient.get('me',
         baseUrl: url,
         username: username,
@@ -168,77 +161,12 @@ class D2Remote {
     userData['baseUrl'] = url;
     userData['authTye'] = 'basic';
     userData['dirty'] = true;
-    // // Data-Run
-    // userData['token'] = tokenResponse.body['id_token'];
 
     final user = DUser.fromApi(userData);
     await userQuery.setData(user).save();
 
-    // await DUserOrganisationUnitQuery().setData(user.organisationUnits).save();
-
-    // await DUserTeamQuery().setData(user.teams).save();
-
     return LoginResponseStatus.ONLINE_LOGIN_SUCCESS;
   }
-
-  // static Future<LoginResponseStatus> logIn({required String username,
-  //   required String password,
-  //   required String url,
-  //   Future<SharedPreferences>? sharedPreferenceInstance,
-  //   bool? inMemory,
-  //   DatabaseFactory? databaseFactory,
-  //   Dio? dioTestClient}) async {
-  //   WidgetsFlutterBinding.ensureInitialized();
-  //   HttpResponse userResponse = await HttpClient.get(
-  //     // 'me.json?fields=id,name,lastName,login,created,lastUpdated,birthday,gender,displayName,jobTitle,surname,employer,email,firstName,phoneNumber,nationality,userCredentials[code,id,name,lastLogin,displayName,username,userRoles[id,name,code]],organisationUnits[id,code,name],teams[id,code,name],dataViewOrganisationUnits[id,code,name],userGroups[id,name],authorities,programs,dataSets',
-  //       'me.json?fields=id,name,lastName,langKey,login,created,lastUpdated,birthday,gender,displayName,jobTitle,surname,employer,email,firstName,phoneNumber,nationality,code,lastLogin,username,userRoles[id,name,code],organisationUnits[id,code,name],teams[id,name],dataViewOrganisationUnits[id,code,name],userGroups[id,name],authorities,programs,dataSets',
-  //       baseUrl: url,
-  //       username: username,
-  //       password: password,
-  //       dioTestClient: dioTestClient);
-  //
-  //   if (userResponse.statusCode == 401) {
-  //     return LoginResponseStatus.WRONG_CREDENTIALS;
-  //   }
-  //
-  //   if (userResponse.statusCode == 500) {
-  //     return LoginResponseStatus.SERVER_ERROR;
-  //   }
-  //
-  //   final uri = Uri
-  //       .parse(url)
-  //       .host;
-  //   final String databaseName = '${username}_$uri';
-  //
-  //   await D2Remote.initialize(
-  //       databaseName: databaseName,
-  //       inMemory: inMemory,
-  //       databaseFactory: databaseFactory);
-  //
-  //   await D2Remote.setDatabaseName(
-  //       databaseName: databaseName,
-  //       sharedPreferenceInstance:
-  //       sharedPreferenceInstance ?? SharedPreferences.getInstance());
-  //
-  //   UserQuery userQuery = UserQuery();
-  //
-  //   Map<String, dynamic> userData = userResponse.body;
-  //   userData['password'] = password;
-  //   userData['isLoggedIn'] = true;
-  //   userData['username'] = username;
-  //   userData['baseUrl'] = url;
-  //   userData['authTye'] = 'basic';
-  //   userData['dirty'] = true;
-  //
-  //   final user = User.fromApi(userData);
-  //   await userQuery.setData(user).save();
-  //
-  //   await UserOrganisationUnitQuery().setData(user.organisationUnits).save();
-  //
-  //   await UserTeamQuery().setData(user.teams).save();
-  //
-  //   return LoginResponseStatus.ONLINE_LOGIN_SUCCESS;
-  // }
 
   static Future<bool> logOut() async {
     WidgetsFlutterBinding.ensureInitialized();
