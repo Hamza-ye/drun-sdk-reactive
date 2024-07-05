@@ -245,60 +245,93 @@ class ItnsVillage extends SyncableEntity {
     return data;
   }
 
-  static toUpload(ItnsVillage syncable) {
-    Map<String, dynamic> syncableToUpload = {
-      // "id": syncable.id,
-      "uid": syncable.uid,
-      "code": syncable.code,
-      "name": syncable.name,
-      "createdDate": syncable.createdDate,
-      "lastModifiedDate": syncable.lastModifiedDate,
-      "workDayDate": syncable.workDayDate,
-      "surveytype": syncable.surveytype,
-      "otherReasonComment": syncable.otherReasonComment,
-      "reasonNotcomplete": syncable.reasonNotcomplete,
-      "settlement": syncable.settlement,
-      "settlementName": syncable.settlementName,
-      "tlCommenet": syncable.tlCommenet,
-      "timeSpentHours": syncable.timeSpentHours,
-      "timeSpentMinutes": syncable.timeSpentMinutes,
-      "difficulties": syncable.difficulties,
-      "locationCaptured": syncable.locationCaptured,
-      "locationCaptureTime": syncable.locationCaptureTime,
-      "untargetingOtherSpecify": syncable.untargetingOtherSpecify,
-      "otherVillageName": syncable.otherVillageName,
-      "otherVillageCode": syncable.otherVillageCode,
-      "otherTeamNo": syncable.otherTeamNo,
-      "assignment": syncable.assignment is String
-          ? jsonEncode({'uid': syncable.assignment})
-          : syncable.assignment,
-      "progressStatus": syncable.progressStatus is String
-          ? jsonEncode({'uid': syncable.progressStatus})
-          : syncable.progressStatus,
+  @override
+  Map<String, dynamic> toUpload() {
+    Map<String, dynamic> syncableToUpload = super.toUpload();
 
-      /// Syncable
-      "deleted": syncable.deleted,
-      "synced": syncable.synced,
-      "syncFailed": syncable.syncFailed,
-      "lastSyncSummary": syncable.lastSyncSummary != null
-          ? jsonEncode(
-              (syncable.lastSyncSummary as EventImportSummary).responseSummary)
-          : null,
-      "lastSyncDate": syncable.lastSyncDate,
-      "startEntryTime": syncable.startEntryTime,
-      "finishedEntryTime": syncable.finishedEntryTime,
-      "activity": syncable.activity is String
-          ? jsonEncode({'uid': syncable.activity})
-          : syncable.activity,
-      "team": syncable.team is String
-          ? jsonEncode({'uid': syncable.team})
-          : syncable.team,
-      "status": syncable.status,
-      "geometry":
-          syncable.geometry != null ? syncable.geometry?.toJson() : null,
-      "dirty": syncable.dirty,
-    };
+    syncableToUpload.addAll({
+      "workDayDate": this.workDayDate,
+      "surveytype": this.surveytype,
+      "otherReasonComment": this.otherReasonComment,
+      "reasonNotcomplete": this.reasonNotcomplete,
+      "settlement": this.settlement,
+      "settlementName": this.settlementName,
+      "tlCommenet": this.tlCommenet,
+      "timeSpentHours": this.timeSpentHours,
+      "timeSpentMinutes": this.timeSpentMinutes,
+      "difficulties": this.difficulties,
+      "locationCaptured": this.locationCaptured,
+      "locationCaptureTime": this.locationCaptureTime,
+      "untargetingOtherSpecify": this.untargetingOtherSpecify,
+      "otherVillageName": this.otherVillageName,
+      "otherVillageCode": this.otherVillageCode,
+      "otherTeamNo": this.otherTeamNo,
+      "assignment": this.assignment is String
+          ? jsonEncode({'uid': this.assignment})
+          : this.assignment,
+      "progressStatus": this.progressStatus is String
+          ? jsonEncode({'uid': this.progressStatus})
+          : this.progressStatus,
+    });
 
     return syncableToUpload;
   }
+
+  // static toUpload(ItnsVillage syncable) {
+  //   Map<String, dynamic> syncableToUpload = {
+  //     // "id": syncable.id,
+  //     "uid": syncable.uid,
+  //     "code": syncable.code,
+  //     "name": syncable.name,
+  //     "createdDate": syncable.createdDate,
+  //     "lastModifiedDate": syncable.lastModifiedDate,
+  //
+  //     "workDayDate": syncable.workDayDate,
+  //     "surveytype": syncable.surveytype,
+  //     "otherReasonComment": syncable.otherReasonComment,
+  //     "reasonNotcomplete": syncable.reasonNotcomplete,
+  //     "settlement": syncable.settlement,
+  //     "settlementName": syncable.settlementName,
+  //     "tlCommenet": syncable.tlCommenet,
+  //     "timeSpentHours": syncable.timeSpentHours,
+  //     "timeSpentMinutes": syncable.timeSpentMinutes,
+  //     "difficulties": syncable.difficulties,
+  //     "locationCaptured": syncable.locationCaptured,
+  //     "locationCaptureTime": syncable.locationCaptureTime,
+  //     "untargetingOtherSpecify": syncable.untargetingOtherSpecify,
+  //     "otherVillageName": syncable.otherVillageName,
+  //     "otherVillageCode": syncable.otherVillageCode,
+  //     "otherTeamNo": syncable.otherTeamNo,
+  //     "assignment": syncable.assignment is String
+  //         ? jsonEncode({'uid': syncable.assignment})
+  //         : syncable.assignment,
+  //     "progressStatus": syncable.progressStatus is String
+  //         ? jsonEncode({'uid': syncable.progressStatus})
+  //         : syncable.progressStatus,
+  //
+  //     /// Syncable
+  //     "deleted": syncable.deleted,
+  //     "synced": syncable.synced,
+  //     "syncFailed": syncable.syncFailed,
+  //     "lastSyncSummary": syncable.lastSyncSummary != null
+  //         ? jsonEncode(
+  //             (syncable.lastSyncSummary as EventImportSummary).responseSummary)
+  //         : null,
+  //     "lastSyncDate": syncable.lastSyncDate,
+  //     "startEntryTime": syncable.startEntryTime,
+  //     "finishedEntryTime": syncable.finishedEntryTime,
+  //     "activity": syncable.activity is String
+  //         ? jsonEncode({'uid': syncable.activity})
+  //         : syncable.activity,
+  //     "team": syncable.team is String
+  //         ? jsonEncode({'uid': syncable.team})
+  //         : syncable.team,
+  //     "status": syncable.status,
+  //     "geometry":
+  //         syncable.geometry != null ? syncable.geometry?.toJson() : null,
+  //     "dirty": syncable.dirty,
+  //   };
+  //
+  //   return syncableToUpload;
+  // }
 }

@@ -8,4 +8,22 @@ import 'package:sqflite/sqflite.dart';
 @Query(type: QueryType.METADATA)
 class ChvRegisterQuery extends SyncableQuery<ChvRegister> {
   ChvRegisterQuery({Database? database}) : super(database: database);
+
+  @override
+  Future create() async {
+    ChvRegister event = ChvRegister(
+        activity: this.activity,
+        team: this.team,
+        status: 'ACTIVE',
+        dirty: true,
+        synced: false,
+        deleted: false,
+        startEntryTime: DateTime.now().toIso8601String().split(".")[0]);
+
+    this.data = event;
+
+    await this.save();
+
+    return event;
+  }
 }

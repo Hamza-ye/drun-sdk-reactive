@@ -144,42 +144,57 @@ class ChvSession extends SyncableEntity {
     return data;
   }
 
-  static toUpload(ChvSession syncable) {
-    Map<String, dynamic> syncableToUpload = {
-      // "id": syncable.id,
-      "uid": syncable.uid,
-      "createdDate": syncable.createdDate,
-      "lastModifiedDate": syncable.lastModifiedDate,
-      "name": syncable.name,
-      "code": syncable.code,
-      "subject": syncable.subject,
-      "people": syncable.people,
-      "comment": syncable.comment,
-      "sessionDate": syncable.sessionDate,
+  @override
+  Map<String, dynamic> toUpload() {
+    Map<String, dynamic> syncableToUpload = super.toUpload();
 
-      /// Syncable
-      "deleted": syncable.deleted,
-      "synced": syncable.synced,
-      "syncFailed": syncable.syncFailed,
-      "lastSyncSummary": syncable.lastSyncSummary != null
-          ? jsonEncode(
-              (syncable.lastSyncSummary as EventImportSummary).responseSummary)
-          : null,
-      "lastSyncDate": syncable.lastSyncDate,
-      "startEntryTime": syncable.startEntryTime,
-      "finishedEntryTime": syncable.finishedEntryTime,
-      "team": syncable.team is String
-          ? jsonEncode({'uid': syncable.team})
-          : syncable.team,
-      "activity": syncable.activity is String
-          ? jsonEncode({'uid': syncable.activity})
-          : syncable.activity,
-      "status": syncable.status,
-      "geometry":
-          syncable.geometry != null ? syncable.geometry?.toJson() : null,
-      "dirty": syncable.dirty,
-    };
+    syncableToUpload.addAll({
+      "subject": this.subject,
+      "people": this.people,
+      "comment": this.comment,
+      "sessionDate": this.sessionDate,
+    });
 
     return syncableToUpload;
   }
+
+// static toUpload(ChvSession syncable) {
+//   Map<String, dynamic> syncableToUpload = {
+//     // "id": syncable.id,
+//     "uid": syncable.uid,
+//     "name": syncable.name,
+//     "code": syncable.code,
+//
+//     "subject": syncable.subject,
+//     "people": syncable.people,
+//     "comment": syncable.comment,
+//     "sessionDate": syncable.sessionDate,
+//
+//     "createdDate": syncable.createdDate,
+//     "lastModifiedDate": syncable.lastModifiedDate,
+//     /// Syncable
+//     "deleted": syncable.deleted,
+//     "synced": syncable.synced,
+//     "syncFailed": syncable.syncFailed,
+//     "lastSyncSummary": syncable.lastSyncSummary != null
+//         ? jsonEncode(
+//             (syncable.lastSyncSummary as EventImportSummary).responseSummary)
+//         : null,
+//     "lastSyncDate": syncable.lastSyncDate,
+//     "startEntryTime": syncable.startEntryTime,
+//     "finishedEntryTime": syncable.finishedEntryTime,
+//     "team": syncable.team is String
+//         ? jsonEncode({'uid': syncable.team})
+//         : syncable.team,
+//     "activity": syncable.activity is String
+//         ? jsonEncode({'uid': syncable.activity})
+//         : syncable.activity,
+//     "status": syncable.status,
+//     "geometry":
+//         syncable.geometry != null ? syncable.geometry?.toJson() : null,
+//     "dirty": syncable.dirty,
+//   };
+//
+//   return syncableToUpload;
+// }
 }

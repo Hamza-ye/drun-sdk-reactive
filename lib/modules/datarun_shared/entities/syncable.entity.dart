@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
 import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
@@ -74,7 +76,41 @@ class SyncableEntity extends BaseEntity {
             createdDate: createdDate,
             lastModifiedDate: lastModifiedDate);
 
-  static toUpload(SyncableEntity syncable) {
-    throw UnimplementedError();
+  Map<String, dynamic> toUpload() {
+    Map<String, dynamic> syncableToUpload = {
+      // "id": this.id,
+      "uid": this.uid,
+      "code": this.code,
+      "name": this.name,
+      "createdDate": this.createdDate,
+      "lastModifiedDate": this.lastModifiedDate,
+
+      /// Syncable
+      "deleted": this.deleted,
+      "synced": this.synced,
+      "syncFailed": this.syncFailed,
+      "lastSyncSummary": this.lastSyncSummary != null
+          ? jsonEncode(
+              (this.lastSyncSummary as EventImportSummary).responseSummary)
+          : null,
+      "lastSyncDate": this.lastSyncDate,
+      "startEntryTime": this.startEntryTime,
+      "finishedEntryTime": this.finishedEntryTime,
+      "activity": this.activity != null
+          ? this.activity is String
+              ? jsonEncode({'uid': this.activity})
+              : jsonEncode(this.activity)
+          : null,
+      "team": this.team != null
+          ? this.team is String
+              ? jsonEncode({'uid': this.team})
+              : jsonEncode(this.team)
+          : null,
+      "status": this.status,
+      "geometry": this.geometry != null ? this.geometry?.toJson() : null,
+      "dirty": this.dirty,
+    };
+
+    return syncableToUpload;
   }
 }

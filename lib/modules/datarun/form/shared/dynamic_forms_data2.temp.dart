@@ -106,7 +106,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
               "id": "gH10J1kL1M2",
               "field": "gH9iJ0kL1M2",
               "expression": 'testResult == "PF" || testResult == "PV" || testResult == "MIX"',
-              "action": "warning",
+              "action": "show",
             }
           ]
         },

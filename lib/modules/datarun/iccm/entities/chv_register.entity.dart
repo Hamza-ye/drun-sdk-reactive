@@ -4,7 +4,6 @@ import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
 import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
-import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'chvRegister', apiResourceName: 'chvRegisters')
@@ -205,53 +204,80 @@ class ChvRegister extends SyncableEntity {
     return data;
   }
 
-  static toUpload(ChvRegister syncable) {
-    Map<String, dynamic> syncableToUpload = {
-      // "id": syncable.id,
-      "uid": syncable.uid,
-      "code": syncable.code,
-      "visitDate": syncable.visitDate,
-      "name": syncable.name,
-      // "location": syncable.location is String
-      //     ? jsonEncode({'uid': syncable.location})
-      //     : syncable.location,
-      "locationName": syncable.locationName,
-      "gender": syncable.gender,
-      "age": syncable.age,
-      "pregnant": syncable.pregnant,
-      "testResult": syncable.testResult,
-      "detectionType": syncable.detectionType,
-      "severity": syncable.severity,
-      "treatment": syncable.treatment,
-      "comment": syncable.comment,
-      "createdDate": syncable.createdDate,
-      "lastModifiedDate": syncable.lastModifiedDate,
+  @override
+  Map<String, dynamic> toUpload() {
+    // Use ChvRegister specific properties and call super.toUpload
+    Map<String, dynamic> syncableToUpload = super.toUpload();
 
-      /// Syncable
-      "deleted": syncable.deleted,
-      "synced": syncable.synced,
-      "syncFailed": syncable.syncFailed,
-      "lastSyncSummary": syncable.lastSyncSummary != null
-          ? jsonEncode(
-              (syncable.lastSyncSummary as EventImportSummary).responseSummary)
-          : null,
-      "lastSyncDate": syncable.lastSyncDate,
-      "startEntryTime": syncable.startEntryTime,
-      "finishedEntryTime": syncable.finishedEntryTime,
-      "activity": syncable.activity != null
-          ? syncable.activity is String
-              ? jsonEncode({'uid': syncable.activity})
-              : syncable.activity
-          : null,
-      "team": syncable.team is String
-          ? jsonEncode({'uid': syncable.team})
-          : syncable.team,
-      "status": syncable.status,
-      "geometry":
-          syncable.geometry != null ? syncable.geometry?.toJson() : null,
-      "dirty": syncable.dirty,
-    };
+    // Add specific properties of ChvRegister
+    syncableToUpload.addAll({
+      // "location": this.location is String
+      //     ? jsonEncode({'uid': this.location})
+      //     : this.location,
+      "locationName": this.locationName,
+      "gender": this.gender,
+      "age": this.age,
+      "pregnant": this.pregnant,
+      "testResult": this.testResult,
+      "detectionType": this.detectionType,
+      "severity": this.severity,
+      "treatment": this.treatment,
+      "comment": this.comment,
+    });
 
     return syncableToUpload;
   }
+
+  // @override
+  // Map<String, dynamic> toUpload() {
+  //   Map<String, dynamic> syncableToUpload = {
+  //     // "id": this.id,
+  //     "uid": this.uid,
+  //     "code": this.code,
+  //     "visitDate": this.visitDate,
+  //     "name": this.name,
+  //     // "location": this.location is String
+  //     //     ? jsonEncode({'uid': this.location})
+  //     //     : this.location,
+  //     "locationName": this.locationName,
+  //     "gender": this.gender,
+  //     "age": this.age,
+  //     "pregnant": this.pregnant,
+  //     "testResult": this.testResult,
+  //     "detectionType": this.detectionType,
+  //     "severity": this.severity,
+  //     "treatment": this.treatment,
+  //     "comment": this.comment,
+  //     "createdDate": this.createdDate,
+  //     "lastModifiedDate": this.lastModifiedDate,
+  //
+  //     /// Syncable
+  //     "deleted": this.deleted,
+  //     "synced": this.synced,
+  //     "syncFailed": this.syncFailed,
+  //     "lastSyncSummary": this.lastSyncSummary != null
+  //         ? jsonEncode(
+  //             (this.lastSyncSummary as EventImportSummary).responseSummary)
+  //         : null,
+  //     "lastSyncDate": this.lastSyncDate,
+  //     "startEntryTime": this.startEntryTime,
+  //     "finishedEntryTime": this.finishedEntryTime,
+  //     "activity": this.activity != null
+  //         ? this.activity is String
+  //             ? jsonEncode({'uid': this.activity})
+  //             : jsonEncode(this.activity)
+  //         : null,
+  //     "team": this.team != null
+  //         ? this.team is String
+  //             ? jsonEncode({'uid': this.team})
+  //             : jsonEncode(this.team)
+  //         : null,
+  //     "status": this.status,
+  //     "geometry":
+  //         this.geometry != null ? this.geometry?.toJson() : null,
+  //     "dirty": this.dirty,
+  //   };
+  //
+  //   return syncableToUpload;
+  // }
 }
