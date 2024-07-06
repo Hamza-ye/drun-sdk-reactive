@@ -286,6 +286,8 @@ class BaseQuery<T extends BaseEntity> {
     return data.map((dataItem) {
       dataItem['dirty'] = false;
       dataItem['synced'] = true;
+      // //DRun
+      // dataItem['status'] = 'COMPLETE';
       ClassMirror classMirror =
           AnnotationReflectable.reflectType(T) as ClassMirror;
 

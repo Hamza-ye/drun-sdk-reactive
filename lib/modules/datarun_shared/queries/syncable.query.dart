@@ -1,4 +1,5 @@
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.dart';
@@ -39,29 +40,23 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   /// Not Synced to server at all, no available on server
   /// State = to_post
   /// withNotSyncedState
-  SyncableQuery withToPostState() {
+  SyncableQuery withCompleteState() {
     this.filters?.removeWhere((element) => element.attribute == 'syncFailed');
-    this
-        .where(attribute: 'synced', value: false)
-        .where(attribute: 'dirty', value: true);
+    this.where(attribute: 'status', value: 'COMPLETED');
     return this;
   }
 
   /// Synced to server with updates to be synced, State = to_update
-  SyncableQuery withToUpdateState() {
+  SyncableQuery withActiveState() {
     this.filters?.removeWhere((element) => element.attribute == 'syncFailed');
-    this
-        .where(attribute: 'synced', value: true)
-        .where(attribute: 'dirty', value: true);
+    this.where(attribute: 'status', value: 'ACTIVE');
     return this;
   }
 
   /// Synced to server with No Updates to be synced
   SyncableQuery withSyncedState() {
     this.filters?.removeWhere((element) => element.attribute == 'syncFailed');
-    this
-        .where(attribute: 'synced', value: true)
-        .where(attribute: 'dirty', value: false);
+    this.where(attribute: 'synced', value: true);
     return this;
   }
 
@@ -69,20 +64,25 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   /// State = to_post but have errors
   SyncableQuery withSyncErrorState() {
     this
-        .where(attribute: 'synced', value: false)
         .where(attribute: 'dirty', value: true)
         .where(attribute: 'syncFailed', value: true);
     return this;
   }
 
-  /// Synced entities couldn't be updated for updates that have errors,
-  /// State = to_update but have errors
-  SyncableQuery withUpdateSyncedErrorState() {
-    this
-        .where(attribute: 'synced', value: true)
-        .where(attribute: 'dirty', value: true)
-        .where(attribute: 'syncFailed', value: true);
-    return this;
+  Future<bool> canEdit() async {
+    final user = await D2Remote.userModule.user.withAuthorities().getOne();
+    if (user == null) {
+      return false;
+    }
+
+    final authorities = user.authorities;
+    final haveChvSuperAuth =
+        authorities?.map((t) => t.authority).contains('ROLE_CHV_SUPERVISOR') ??
+            false;
+
+    final entity = await getOne();
+
+    return entity?.synced == false || haveChvSuperAuth;
   }
 
   /// **2. Preparing SyncableEntity Data for Upload (51%):**
@@ -185,13 +185,10 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
     List<DActivity> activities =
         await DActivityQuery().byIds(syncableActivityIds).get();
 
-    List<DTeam> teams =
-        await DTeamQuery().byIds(syncableTeamIds).get();
+    List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
 
     final eventUploadPayload = events.map((event) {
-      event.team = teams
-          .lastWhere((team) => team.id == event.team)
-          .toJson();
+      event.team = teams.lastWhere((team) => team.id == event.team).toJson();
 
       event.activity = activities
           .lastWhere((activity) => activity.id == event.activity)

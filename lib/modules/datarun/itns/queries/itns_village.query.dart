@@ -12,8 +12,8 @@ class ItnsVillageQuery extends SyncableQuery<ItnsVillage> {
   @override
   Future create() async {
     ItnsVillage event = ItnsVillage(
-        activity: this.activity,
-        team: this.team,
+        activity: this.activity!,
+        team: this.team!,
         status: 'ACTIVE',
         dirty: true,
         synced: false,
