@@ -1,4 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
 import 'package:d2_remote/modules/data/tracker/entities/attribute_reserved_value.entity.dart';
 import 'package:d2_remote/modules/data/tracker/entities/enrollment.entity.dart';
@@ -455,8 +456,7 @@ class TrackedEntityInstanceQuery extends BaseQuery<TrackedEntityInstance> {
         trackedEntityInstance.synced = !syncFailed;
         trackedEntityInstance.dirty = true;
         trackedEntityInstance.syncFailed = syncFailed;
-        trackedEntityInstance.lastSyncDate =
-            DateTime.now().toIso8601String().split('.')[0];
+        trackedEntityInstance.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
 
         trackedEntityInstance.lastSyncSummary =
             TrackedEntityInstanceImportSummary.fromJson(importSummary);

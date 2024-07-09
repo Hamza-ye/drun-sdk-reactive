@@ -71,6 +71,7 @@ class ChvRegister extends SyncableEntity {
       bool? synced,
       bool? syncFailed,
       String? lastSyncDate,
+      String? lastSyncMessage,
       EventImportSummary? lastSyncSummary,
       String? startEntryTime,
       String? finishedEntryTime,
@@ -92,6 +93,7 @@ class ChvRegister extends SyncableEntity {
             synced: synced,
             syncFailed: syncFailed,
             lastSyncDate: lastSyncDate,
+            lastSyncMessage: lastSyncMessage,
             lastSyncSummary: lastSyncSummary,
             startEntryTime: startEntryTime,
             finishedEntryTime: finishedEntryTime,
@@ -148,6 +150,7 @@ class ChvRegister extends SyncableEntity {
         syncFailed: json['syncFailed'],
         lastSyncSummary: lastSyncSummary,
         lastSyncDate: json['lastSyncDate'],
+        lastSyncMessage: json['lastSyncMessage'],
         startEntryTime: json['startEntryTime'],
         finishedEntryTime: json['finishedEntryTime'],
         activity: activity,
@@ -158,7 +161,7 @@ class ChvRegister extends SyncableEntity {
             : null,
         status: json['status'],
         geometry: geometry,
-        dirty: json['dirty'] ?? false);
+        dirty: json['dirty']);
   }
 
   Map<String, dynamic> toJson() {
@@ -192,6 +195,7 @@ class ChvRegister extends SyncableEntity {
             (this.lastSyncSummary as EventImportSummary).responseSummary)
         : null;
     data['lastSyncDate'] = this.lastSyncDate;
+    data['lastSyncMessage'] = this.lastSyncMessage;
     data['startEntryTime'] = this.startEntryTime;
     data['finishedEntryTime'] = this.finishedEntryTime;
     data['activity'] = activity;
@@ -215,6 +219,7 @@ class ChvRegister extends SyncableEntity {
       //     ? jsonEncode({'uid': this.location})
       //     : this.location,
       "locationName": this.locationName,
+      "visitDate": this.visitDate,
       "gender": this.gender,
       "age": this.age,
       "pregnant": this.pregnant,
@@ -227,57 +232,4 @@ class ChvRegister extends SyncableEntity {
 
     return syncableToUpload;
   }
-
-  // @override
-  // Map<String, dynamic> toUpload() {
-  //   Map<String, dynamic> syncableToUpload = {
-  //     // "id": this.id,
-  //     "uid": this.uid,
-  //     "code": this.code,
-  //     "visitDate": this.visitDate,
-  //     "name": this.name,
-  //     // "location": this.location is String
-  //     //     ? jsonEncode({'uid': this.location})
-  //     //     : this.location,
-  //     "locationName": this.locationName,
-  //     "gender": this.gender,
-  //     "age": this.age,
-  //     "pregnant": this.pregnant,
-  //     "testResult": this.testResult,
-  //     "detectionType": this.detectionType,
-  //     "severity": this.severity,
-  //     "treatment": this.treatment,
-  //     "comment": this.comment,
-  //     "createdDate": this.createdDate,
-  //     "lastModifiedDate": this.lastModifiedDate,
-  //
-  //     /// Syncable
-  //     "deleted": this.deleted,
-  //     "synced": this.synced,
-  //     "syncFailed": this.syncFailed,
-  //     "lastSyncSummary": this.lastSyncSummary != null
-  //         ? jsonEncode(
-  //             (this.lastSyncSummary as EventImportSummary).responseSummary)
-  //         : null,
-  //     "lastSyncDate": this.lastSyncDate,
-  //     "startEntryTime": this.startEntryTime,
-  //     "finishedEntryTime": this.finishedEntryTime,
-  //     "activity": this.activity != null
-  //         ? this.activity is String
-  //             ? jsonEncode({'uid': this.activity})
-  //             : jsonEncode(this.activity)
-  //         : null,
-  //     "team": this.team != null
-  //         ? this.team is String
-  //             ? jsonEncode({'uid': this.team})
-  //             : jsonEncode(this.team)
-  //         : null,
-  //     "status": this.status,
-  //     "geometry":
-  //         this.geometry != null ? this.geometry?.toJson() : null,
-  //     "dirty": this.dirty,
-  //   };
-  //
-  //   return syncableToUpload;
-  // }
 }

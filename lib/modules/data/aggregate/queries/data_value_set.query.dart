@@ -1,4 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
 import 'package:d2_remote/modules/data/aggregate/entities/data_value.entity.dart';
 import 'package:d2_remote/modules/data/aggregate/entities/data_value_set.entity.dart';
@@ -180,7 +181,7 @@ class DataValueSetQuery extends BaseQuery<DataValueSet> {
     dataValueSet.synced = !syncFailed;
     dataValueSet.dirty = syncFailed;
     dataValueSet.syncFailed = syncFailed;
-    dataValueSet.lastSyncDate = DateTime.now().toIso8601String().split('.')[0];
+    dataValueSet.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
     dataValueSet.lastSyncSummary = importSummary.toString();
 
     return DataValueSetQuery()

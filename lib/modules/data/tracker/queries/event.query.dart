@@ -1,4 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
 import 'package:d2_remote/modules/activity_management/activity/entities/activity.entity.dart';
 import 'package:d2_remote/modules/activity_management/activity/queries/activity.query.dart';
@@ -102,7 +103,7 @@ class EventQuery extends BaseQuery<Event> {
         dirty: true,
         synced: false,
         programStage: this.programStage,
-        eventDate: DateTime.now().toIso8601String().split(".")[0]);
+        eventDate: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
     this.data = event;
 
@@ -220,7 +221,7 @@ class EventQuery extends BaseQuery<Event> {
         event.synced = !syncFailed;
         event.dirty = true;
         event.syncFailed = syncFailed;
-        event.lastSyncDate = DateTime.now().toIso8601String().split('.')[0];
+        event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
         await queue.add(() => EventQuery().setData(event).save());
       }
@@ -237,7 +238,7 @@ class EventQuery extends BaseQuery<Event> {
     //     event.synced = !syncFailed;
     //     event.dirty = true;
     //     event.syncFailed = syncFailed;
-    //     event.lastSyncDate = DateTime.now().toIso8601String().split('.')[0];
+    //     event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
     //     event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
     //     queue.add(() => EventQuery().setData(event).save());
     //   }

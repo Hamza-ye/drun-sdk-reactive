@@ -1,3 +1,4 @@
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/modules/data/tracker/entities/event_data_value.entity.dart';
 import 'package:d2_remote/modules/data/tracker/entities/tracked_entity_attribute_value.entity.dart';
 import 'package:d2_remote/modules/data/tracker/queries/event_data_value.query.dart';
@@ -116,7 +117,7 @@ class FileResourceQuery extends BaseQuery<FileResource> {
         fileResource.storageStatus =
             importSummary['response']?['fileResource']?['storageStatus'];
         fileResource.lastSyncDate =
-            DateTime.now().toIso8601String().split('.')[0];
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         fileResource.lastSyncSummary = importSummary.toString();
         queue.add(() => FileResourceQuery().setData(fileResource).save());
 

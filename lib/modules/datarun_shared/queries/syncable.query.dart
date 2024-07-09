@@ -1,11 +1,12 @@
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/sync_summary.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/queries/d_team.query.dart';
-import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
 import 'package:dio/dio.dart';
@@ -82,7 +83,7 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
 
     final entity = await getOne();
 
-    return entity?.synced == false || haveChvSuperAuth;
+    return entity?.synced == false /* || haveChvSuperAuth*/;
   }
 
   /// **2. Preparing SyncableEntity Data for Upload (51%):**
@@ -135,45 +136,173 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   ///
   /// - **Commented-out approach:** The code originally had a commented-out section that likely aimed to
   ///
-  Future<List<T>?> upload(Function(RequestProgress, bool) callback,
-      {Dio? dioTestClient}) async {
-    callback(
-        RequestProgress(
-            resourceName: this.apiResourceName as String,
-            message:
-                'Retrieving ${this.apiResourceName?.toLowerCase()} from phone database....',
-            status: '',
-            percentage: 0),
-        false);
-    List<T> events = await this
+  // Future<List<T>?> upload(Function(RequestProgress, bool) callback,
+  //     {List<String>? uids, Dio? dioTestClient}) async {
+  //   callback(
+  //       RequestProgress(
+  //           resourceName: this.apiResourceName as String,
+  //           message:
+  //               'Retrieving ${this.apiResourceName?.toLowerCase()} from phone database....',
+  //           status: '',
+  //           percentage: 0),
+  //       false);
+  //
+  //   if(uids != null && uids.isNotEmpty){
+  //     this.byIds(uids);
+  //   }
+  //
+  //   List<T> events = await this
+  //       .where(attribute: 'status', value: 'COMPLETED')
+  //       .where(attribute: 'synced', value: false)
+  //       .where(attribute: 'dirty', value: true)
+  //       .get();
+  //
+  //   callback(
+  //       RequestProgress(
+  //           resourceName: this.apiResourceName as String,
+  //           message:
+  //               '${events.length} ${this.apiResourceName?.toLowerCase()} retrieved successfully',
+  //           status: '',
+  //           percentage: 50),
+  //       false);
+  //
+  //   callback(
+  //       RequestProgress(
+  //           resourceName: this.apiResourceName as String,
+  //           message:
+  //               'Uploading ${events.length} ${this.apiResourceName?.toLowerCase()} into the server...',
+  //           status: '',
+  //           percentage: 51),
+  //       false);
+  //
+  //   List<String> eventIds = [];
+  //   List<String> syncableTeamIds = [];
+  //   List<String> syncableActivityIds = [];
+  //
+  //   events.forEach((event) {
+  //     eventIds.add(event.id as String);
+  //
+  //     syncableActivityIds.removeWhere((id) => id == event.activity);
+  //     syncableActivityIds.add(event.activity);
+  //
+  //     syncableTeamIds.removeWhere((id) => id == event.team);
+  //     syncableTeamIds.add(event.team);
+  //   });
+  //
+  //   List<DActivity> activities =
+  //       await DActivityQuery().byIds(syncableActivityIds).get();
+  //
+  //   List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
+  //
+  //   final uploadPayload = events.map((event) {
+  //     event.team = teams.lastWhere((team) => team.id == event.team).toJson();
+  //
+  //     event.activity = activities
+  //         .lastWhere((activity) => activity.id == event.activity)
+  //         .toJson();
+  //
+  //     return event.toUpload();
+  //   }).toList();
+  //
+  //   final response = await HttpClient.post(
+  //       this.apiResourceName as String, {uploadPayload},
+  //       database: this.database, dioTestClient: dioTestClient);
+  //
+  //   callback(
+  //       RequestProgress(
+  //           resourceName: this.apiResourceName as String,
+  //           message:
+  //               'Upload for ${events.length} ${this.apiResourceName?.toLowerCase()} is completed.',
+  //           status: '',
+  //           percentage: 75),
+  //       true);
+  //
+  //   callback(
+  //       RequestProgress(
+  //           resourceName: this.apiResourceName as String,
+  //           message: 'Saving import summaries into the phone database...',
+  //           status: '',
+  //           percentage: 76),
+  //       true);
+  //
+  //   final List<dynamic> importSummaries =
+  //       (response.body?['response']?['importSummaries'] ?? []).toList();
+  //
+  //   final queue = Queue(parallel: 50);
+  //   num availableItemCount = 0;
+  //
+  //   for (var event in events) {
+  //     final importSummary = importSummaries.lastWhere((summary) =>
+  //         summary['reference'] != null && summary['reference'] == event.id);
+  //
+  //     // if (importSummary != null) {
+  //     //   availableItemCount++;
+  //     //   final syncFailed = importSummary['status'] == 'ERROR';
+  //     //   event.synced = !syncFailed;
+  //     //   event.dirty = true;
+  //     //   event.syncFailed = syncFailed;
+  //     //   event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+  //     //   event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
+  //     //   await queue.add(() => EventQuery().setData(event).save());
+  //     // }
+  //   }
+  //
+  //   // ! START: IMPROVE APPROACH
+  //   // events.forEach((event) {
+  //   //   final importSummary = importSummaries.lastWhere((summary) =>
+  //   //       summary['reference'] != null && summary['reference'] == event.id);
+  //
+  //   //   if (importSummary != null) {
+  //   //     availableItemCount++;
+  //   //     final syncFailed = importSummary['status'] == 'ERROR';
+  //   //     event.synced = !syncFailed;
+  //   //     event.dirty = true;
+  //   //     event.syncFailed = syncFailed;
+  //   //     event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+  //   //     event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
+  //   //     queue.add(() => EventQuery().setData(event).save());
+  //   //   }
+  //   // });
+  //   // ! END: IMPROVE APPROACH
+  //
+  //   if (availableItemCount == 0) {
+  //     queue.cancel();
+  //   } else {
+  //     await queue.onComplete;
+  //   }
+  //
+  //   callback(
+  //       RequestProgress(
+  //           resourceName: this.apiResourceName as String,
+  //           message: 'Import summaries saved succussfully',
+  //           status: '',
+  //           percentage: 100),
+  //       true);
+  //
+  //   // START: IMPROVE APPROACH
+  //   // final fetchedEvents = (await EventQuery().byIds(eventIds).get());
+  //   // return await EventQuery().byIds(eventIds).get();
+  //   // END: IMPROVE APPROACH
+  //   return events;
+  // }
+
+  Future<List<T>?> upload({Dio? dioTestClient}) async {
+    // if (uids != null && uids.isNotEmpty) {
+    //   this.byIds(uids);
+    // }
+
+    List<T> syncableEntities = await this
+        .where(attribute: 'status', value: 'COMPLETED')
         .where(attribute: 'synced', value: false)
         .where(attribute: 'dirty', value: true)
         .get();
 
-    callback(
-        RequestProgress(
-            resourceName: this.apiResourceName as String,
-            message:
-                '${events.length} ${this.apiResourceName?.toLowerCase()} retrieved successfully',
-            status: '',
-            percentage: 50),
-        false);
-
-    callback(
-        RequestProgress(
-            resourceName: this.apiResourceName as String,
-            message:
-                'Uploading ${events.length} ${this.apiResourceName?.toLowerCase()} into the server...',
-            status: '',
-            percentage: 51),
-        false);
-
-    List<String> eventIds = [];
+    List<String> syncableEntityIds = [];
     List<String> syncableTeamIds = [];
     List<String> syncableActivityIds = [];
 
-    events.forEach((event) {
-      eventIds.add(event.id as String);
+    syncableEntities.forEach((event) {
+      syncableEntityIds.add(event.id as String);
 
       syncableActivityIds.removeWhere((id) => id == event.activity);
       syncableActivityIds.add(event.activity);
@@ -187,10 +316,12 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
 
     List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
 
-    final eventUploadPayload = events.map((event) {
-      event.team = teams.lastWhere((team) => team.id == event.team).toJson();
+    final uploadPayload = syncableEntities.map((event) {
+      final team = teams
+          .lastWhere((team) => team.id == event.team)
+          .toJson();
 
-      event.activity = activities
+      final activity = activities
           .lastWhere((activity) => activity.id == event.activity)
           .toJson();
 
@@ -198,84 +329,48 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
     }).toList();
 
     final response = await HttpClient.post(
-        this.apiResourceName as String, {'events': eventUploadPayload},
+        '${this.apiResourceName as String}/bulk', uploadPayload,
         database: this.database, dioTestClient: dioTestClient);
 
-    callback(
-        RequestProgress(
-            resourceName: this.apiResourceName as String,
-            message:
-                'Upload for ${events.length} ${this.apiResourceName?.toLowerCase()} is completed.',
-            status: '',
-            percentage: 75),
-        true);
-
-    callback(
-        RequestProgress(
-            resourceName: this.apiResourceName as String,
-            message: 'Saving import summaries into the phone database...',
-            status: '',
-            percentage: 76),
-        true);
-
-    final List<dynamic> importSummaries =
-        (response.body?['response']?['importSummaries'] ?? []).toList();
+    SyncSummary summary = SyncSummary.fromJson(response.body);
 
     final queue = Queue(parallel: 50);
     num availableItemCount = 0;
 
-    for (var event in events) {
-      final importSummary = importSummaries.lastWhere((summary) =>
-          summary['reference'] != null && summary['reference'] == event.id);
+    for (var syncableEntity in syncableEntities) {
+      final syncFailed = summary.failed.containsKey(syncableEntity.id);
+      final syncCreated = summary.created.contains(syncableEntity.id);
+      final syncUpdated = summary.updated.contains(syncableEntity.id);
 
-      // if (importSummary != null) {
-      //   availableItemCount++;
-      //   final syncFailed = importSummary['status'] == 'ERROR';
-      //   event.synced = !syncFailed;
-      //   event.dirty = true;
-      //   event.syncFailed = syncFailed;
-      //   event.lastSyncDate = DateTime.now().toIso8601String().split('.')[0];
-      //   event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
-      //   await queue.add(() => EventQuery().setData(event).save());
-      // }
+      if (syncCreated || syncUpdated) {
+        syncableEntity.synced = true;
+        syncableEntity.dirty = false;
+        syncableEntity.syncFailed = false;
+        syncableEntity.lastSyncDate =
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+        availableItemCount++;
+      } else if (syncFailed) {
+        syncableEntity.synced = false;
+        syncableEntity.dirty = true;
+        syncableEntity.syncFailed = true;
+        syncableEntity.lastSyncDate =
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+        syncableEntity.lastSyncMessage = summary.failed[syncableEntity.id];
+        availableItemCount++;
+      }
+
+      queue.add(() => setDataAndSave(syncableEntity));
     }
-
-    // ! START: IMPROVE APPROACH
-    // events.forEach((event) {
-    //   final importSummary = importSummaries.lastWhere((summary) =>
-    //       summary['reference'] != null && summary['reference'] == event.id);
-
-    //   if (importSummary != null) {
-    //     availableItemCount++;
-    //     final syncFailed = importSummary['status'] == 'ERROR';
-    //     event.synced = !syncFailed;
-    //     event.dirty = true;
-    //     event.syncFailed = syncFailed;
-    //     event.lastSyncDate = DateTime.now().toIso8601String().split('.')[0];
-    //     event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
-    //     queue.add(() => EventQuery().setData(event).save());
-    //   }
-    // });
-    // ! END: IMPROVE APPROACH
 
     if (availableItemCount == 0) {
       queue.cancel();
     } else {
       await queue.onComplete;
     }
+    return syncableEntities;
+  }
 
-    callback(
-        RequestProgress(
-            resourceName: this.apiResourceName as String,
-            message: 'Import summaries saved succussfully',
-            status: '',
-            percentage: 100),
-        true);
-
-    // START: IMPROVE APPROACH
-    // final fetchedEvents = (await EventQuery().byIds(eventIds).get());
-    // return await EventQuery().byIds(eventIds).get();
-    // END: IMPROVE APPROACH
-    return events;
+  Future setDataAndSave(T data) {
+    throw UnimplementedError();
   }
 }

@@ -31,6 +31,9 @@ class SyncableEntity extends BaseEntity {
   String? lastSyncDate;
 
   @Column(nullable: true)
+  String? lastSyncMessage;
+
+  @Column(nullable: true)
   String? startEntryTime;
 
   @Column(nullable: true)
@@ -65,6 +68,7 @@ class SyncableEntity extends BaseEntity {
       this.startEntryTime,
       this.finishedEntryTime,
       this.team,
+      this.lastSyncMessage,
       required this.activity,
       this.geometry,
       required this.status,
@@ -88,6 +92,7 @@ class SyncableEntity extends BaseEntity {
       /// Syncable
       "deleted": this.deleted,
       "synced": this.synced,
+      "lastSyncMassage": this.lastSyncMessage,
       "syncFailed": this.syncFailed,
       "lastSyncSummary": this.lastSyncSummary != null
           ? jsonEncode(
@@ -96,20 +101,34 @@ class SyncableEntity extends BaseEntity {
       "lastSyncDate": this.lastSyncDate,
       "startEntryTime": this.startEntryTime,
       "finishedEntryTime": this.finishedEntryTime,
-      "activity": this.activity != null
-          ? this.activity is String
-              ? jsonEncode({'uid': this.activity})
-              : jsonEncode(this.activity)
-          : null,
-      "team": this.team != null
-          ? this.team is String
-              ? jsonEncode({'uid': this.team})
-              : jsonEncode(this.team)
-          : null,
+      "activity": this.activity,
+      "team": this.team,
       "status": this.status,
       "geometry": this.geometry != null ? this.geometry?.toJson() : null,
       "dirty": this.dirty,
     };
+
+    if (activity != null) {
+      if (activity.runtimeType == String) {
+        syncableToUpload['activity'] = <String, dynamic>{
+          'uid': activity
+        };
+      } else {
+        syncableToUpload['activity'] = <String, dynamic>{
+          'uid': activity['id']
+        };
+      }
+    }
+
+    if (team != null) {
+      if (team.runtimeType == String) {
+        syncableToUpload['team'] = <String, dynamic>{'uid': team};
+      } else {
+        syncableToUpload['team'] = <String, dynamic>{
+          'uid': team['id']
+        };
+      }
+    }
 
     return syncableToUpload;
   }

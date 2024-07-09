@@ -1,5 +1,6 @@
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/core/database/database_manager.dart';
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/core/datarun/utilities/query_expression_d.dart';
 import 'package:d2_remote/core/datarun/utilities/repository_util_d.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
@@ -492,7 +493,7 @@ class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
         } else {
           if (data['dirty'] == 1) {
             data['lastModifiedDate'] =
-                DateTime.now().toIso8601String().split('.')[0];
+                DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
           }
           saveDataResponse = await db.update(
             columnRelation.referencedEntity?.tableName as String,
@@ -676,7 +677,7 @@ class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
   @override
   Future<int> updateOne({required T entity, Database? database}) async {
     if (entity.dirty == true) {
-      entity.lastModifiedDate = DateTime.now().toIso8601String().split('.')[0];
+      entity.lastModifiedDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
     }
     Map<String, dynamic> data = this
         .sanitizeIncomingData(entity: entity.toJson(), columns: this.columns);

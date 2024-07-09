@@ -2,6 +2,7 @@
 /// It is used to perform CRUD operations on entities.
 ///
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
 import 'package:d2_remote/shared/utilities/data-run-url-generator.util.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
@@ -241,7 +242,7 @@ class BaseQuery<T extends BaseEntity> {
           saveOptions: saveOptions);
     }
     if (this.data != null && this.data.lastModifiedDate == null) {
-      this.data.lastModifiedDate = DateTime.now().toIso8601String();
+      this.data.lastModifiedDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
     }
 
     return this.repository.saveOne(
@@ -287,7 +288,7 @@ class BaseQuery<T extends BaseEntity> {
       dataItem['dirty'] = false;
       dataItem['synced'] = true;
       // //DRun
-      // dataItem['status'] = 'COMPLETE';
+      // dataItem['status'] = 'COMPLETED';
       ClassMirror classMirror =
           AnnotationReflectable.reflectType(T) as ClassMirror;
 

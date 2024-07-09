@@ -1,3 +1,4 @@
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/modules/data/tracker/entities/enrollment.entity.dart';
 import 'package:d2_remote/modules/data/tracker/models/enrollment_import_summary.dart';
 import 'package:d2_remote/modules/data/tracker/queries/event.query.dart';
@@ -56,7 +57,7 @@ class EnrollmentQuery extends BaseQuery<Enrollment> {
         enrollment.dirty = syncFailed;
         enrollment.syncFailed = syncFailed;
         enrollment.lastSyncDate =
-            DateTime.now().toIso8601String().split('.')[0].split('.')[0];
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc()).split('.')[0];
         enrollment.lastSyncSummary =
             EnrollmentImportSummary.fromJson(importSummary);
         queue.add(() => EnrollmentQuery().setData(enrollment).save());

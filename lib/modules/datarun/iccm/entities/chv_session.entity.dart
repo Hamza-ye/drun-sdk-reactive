@@ -41,6 +41,7 @@ class ChvSession extends SyncableEntity {
       bool? synced,
       bool? syncFailed,
       String? lastSyncDate,
+      String? lastSyncMessage,
       EventImportSummary? lastSyncSummary,
       String? startEntryTime,
       String? finishedEntryTime,
@@ -62,6 +63,7 @@ class ChvSession extends SyncableEntity {
             synced: synced,
             syncFailed: syncFailed,
             lastSyncDate: lastSyncDate,
+            lastSyncMessage: lastSyncMessage,
             lastSyncSummary: lastSyncSummary,
             startEntryTime: startEntryTime,
             finishedEntryTime: finishedEntryTime,
@@ -92,6 +94,7 @@ class ChvSession extends SyncableEntity {
         sessions: json['sessions'],
         people: json['people'],
         comment: json['comment'],
+        lastSyncMessage: json['lastSyncMessage'],
 
         /// Syncable
         deleted: json['deleted'],
@@ -116,11 +119,12 @@ class ChvSession extends SyncableEntity {
     data['uid'] = this.uid;
     data['createdDate'] = this.createdDate;
     data['lastModifiedDate'] = this.lastModifiedDate;
+    data['lastSyncMessage'] = this.lastSyncMessage;
     data['name'] = this.name;
     data['code'] = this.code;
     data['subject'] = this.subject;
     data['people'] = this.people;
-    data['comment'] = this.comment;
+    data['sessions'] = this.sessions;
     data['team'] = this.team;
     data['sessionDate'] = this.sessionDate;
 
@@ -151,7 +155,7 @@ class ChvSession extends SyncableEntity {
     syncableToUpload.addAll({
       "subject": this.subject,
       "people": this.people,
-      "comment": this.comment,
+      "sessions": this.sessions,
       "sessionDate": this.sessionDate,
     });
 

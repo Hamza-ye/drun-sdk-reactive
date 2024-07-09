@@ -51,7 +51,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "name": "gender",
           "required": true,
           "label": "Gender",
-          "options": ["Male", "Female"]
+          "options": ["MALE", "FEMALE"]
         },
         {
           "id": "eF3gH4iJ5K6",
@@ -63,7 +63,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
             {
               "id": "eF5gH6iJ5K6",
               "field": "eF3gH4iJ5K6",
-              "expression": "gender == 'Female' && age > 10",
+              "expression": "gender == 'FEMALE' && age > 10",
               "action": "show",
               "message":
                   "This field is hidden/invalid/requires attention because..."

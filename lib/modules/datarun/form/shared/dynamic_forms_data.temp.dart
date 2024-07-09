@@ -67,7 +67,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "name": "gender",
           "required": true,
           "label": "Gender",
-          "options": ["Male", "Female"]
+          "options": ["Male", "FEMALE"]
         },
         {
           "id": "6",
@@ -79,7 +79,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
             {
               "relevantFieldId": "gender",
               "rule": "=",
-              "relevantFieldValues": ["Female"]
+              "relevantFieldValues": ["FEMALE"]
             },
             {
               "relevantFieldId": "patientAge",
@@ -249,7 +249,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "name": "gender",
           "required": true,
           "label": "Gender",
-          "options": ["Male", "Female"]
+          "options": ["Male", "FEMALE"]
         },
         {
           "id": "6",
@@ -261,7 +261,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
             {
               "relevantFieldId": "gender",
               "rule": "=",
-              "relevantFieldValues": ["Female"]
+              "relevantFieldValues": ["FEMALE"]
             },
             {
               "relevantFieldId": "patientAge",

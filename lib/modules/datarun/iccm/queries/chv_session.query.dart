@@ -1,5 +1,6 @@
 import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/modules/datarun/iccm/entities/chv_session.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/queries/syncable.query.dart';
 import 'package:sqflite/sqflite.dart';
@@ -19,12 +20,17 @@ class ChvSessionQuery extends SyncableQuery<ChvSession> {
         dirty: true,
         synced: false,
         deleted: false,
-        startEntryTime: DateTime.now().toIso8601String().split(".")[0]);
+        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
     this.data = event;
 
     await this.save();
 
     return event;
+  }
+
+  @override
+  Future setDataAndSave(ChvSession data) {
+    return ChvSessionQuery().setData(data).save();
   }
 }
