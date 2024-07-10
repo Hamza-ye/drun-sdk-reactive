@@ -13,7 +13,7 @@ import '../../../../core/annotations/index.dart';
 import '../entities/event.entity.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.DATA)
+// @Query(type: QueryType.DATA)
 class EnrollmentQuery extends BaseQuery<Enrollment> {
   EnrollmentQuery({Database? database}) : super(database: database);
 
@@ -56,8 +56,9 @@ class EnrollmentQuery extends BaseQuery<Enrollment> {
         enrollment.synced = !syncFailed;
         enrollment.dirty = syncFailed;
         enrollment.syncFailed = syncFailed;
-        enrollment.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc()).split('.')[0];
+        enrollment.lastSyncDate = DateUtils.databaseDateFormat()
+            .format(DateTime.now())
+            .split('.')[0];
         enrollment.lastSyncSummary =
             EnrollmentImportSummary.fromJson(importSummary);
         queue.add(() => EnrollmentQuery().setData(enrollment).save());

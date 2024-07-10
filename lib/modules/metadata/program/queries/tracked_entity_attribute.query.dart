@@ -5,7 +5,7 @@ import 'package:sqflite/sqlite_api.dart';
 import '../../../../core/annotations/index.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA)
+// @Query(type: QueryType.METADATA)
 class TrackedEntityAttributeQuery extends BaseQuery<TrackedEntityAttribute> {
   TrackedEntityAttributeQuery({Database? database}) : super(database: database);
 }

@@ -15,7 +15,7 @@ class ActivityQuery extends BaseQuery<Activity> {
   ActivityQuery withAssignments() {
     final assignment = Repository<Assignment>();
     final Column? relationColumn = assignment.columns.firstWhere((column) =>
-    column.relation?.referencedEntity?.tableName == this.tableName);
+        column.relation?.referencedEntity?.tableName == this.tableName);
 
     if (relationColumn != null) {
       ColumnRelation relation = ColumnRelation(
@@ -37,7 +37,7 @@ class ActivityQuery extends BaseQuery<Activity> {
   ActivityQuery withTeams() {
     final team = Repository<Team>();
     final Column? relationColumn = team.columns.firstWhere((column) =>
-    column.relation?.referencedEntity?.tableName == this.tableName);
+        column.relation?.referencedEntity?.tableName == this.tableName);
 
     if (relationColumn != null) {
       ColumnRelation relation = ColumnRelation(
@@ -48,8 +48,7 @@ class ActivityQuery extends BaseQuery<Activity> {
           referencedEntity: Entity.getEntityDefinition(
               AnnotationReflectable.reflectType(Team) as ClassMirror),
           referencedEntityColumns: Entity.getEntityColumns(
-              AnnotationReflectable.reflectType(Team) as ClassMirror,
-              false));
+              AnnotationReflectable.reflectType(Team) as ClassMirror, false));
       this.relations.add(relation);
     }
 

@@ -241,7 +241,7 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   //     //   event.synced = !syncFailed;
   //     //   event.dirty = true;
   //     //   event.syncFailed = syncFailed;
-  //     //   event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+  //     //   event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now());
   //     //   event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
   //     //   await queue.add(() => EventQuery().setData(event).save());
   //     // }
@@ -258,7 +258,7 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   //   //     event.synced = !syncFailed;
   //   //     event.dirty = true;
   //   //     event.syncFailed = syncFailed;
-  //   //     event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+  //   //     event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now());
   //   //     event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
   //   //     queue.add(() => EventQuery().setData(event).save());
   //   //   }
@@ -347,14 +347,14 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
         syncableEntity.dirty = false;
         syncableEntity.syncFailed = false;
         syncableEntity.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+            DateUtils.databaseDateFormat().format(DateTime.now());
         availableItemCount++;
       } else if (syncFailed) {
         syncableEntity.synced = false;
         syncableEntity.dirty = true;
         syncableEntity.syncFailed = true;
         syncableEntity.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+            DateUtils.databaseDateFormat().format(DateTime.now());
         syncableEntity.lastSyncMessage = summary.failed[syncableEntity.id];
         availableItemCount++;
       }

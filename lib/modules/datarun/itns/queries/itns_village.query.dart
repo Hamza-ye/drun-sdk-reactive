@@ -6,7 +6,7 @@ import 'package:d2_remote/modules/datarun_shared/queries/syncable.query.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA)
+@Query(type: QueryType.DATA)
 class ItnsVillageQuery extends SyncableQuery<ItnsVillage> {
   ItnsVillageQuery({Database? database}) : super(database: database);
 
@@ -19,7 +19,7 @@ class ItnsVillageQuery extends SyncableQuery<ItnsVillage> {
         dirty: true,
         synced: false,
         deleted: false,
-        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
+        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now()));
 
     this.data = event;
 

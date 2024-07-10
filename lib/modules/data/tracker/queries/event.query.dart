@@ -18,7 +18,7 @@ import 'package:reflectable/reflectable.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.DATA)
+// @Query(type: QueryType.DATA)
 class EventQuery extends BaseQuery<Event> {
   String? project;
   String? activity;
@@ -103,7 +103,8 @@ class EventQuery extends BaseQuery<Event> {
         dirty: true,
         synced: false,
         programStage: this.programStage,
-        eventDate: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
+        eventDate:
+            DateUtils.databaseDateFormat().format(DateTime.now()));
 
     this.data = event;
 
@@ -221,7 +222,8 @@ class EventQuery extends BaseQuery<Event> {
         event.synced = !syncFailed;
         event.dirty = true;
         event.syncFailed = syncFailed;
-        event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+        event.lastSyncDate =
+            DateUtils.databaseDateFormat().format(DateTime.now());
         event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
         await queue.add(() => EventQuery().setData(event).save());
       }
@@ -238,7 +240,7 @@ class EventQuery extends BaseQuery<Event> {
     //     event.synced = !syncFailed;
     //     event.dirty = true;
     //     event.syncFailed = syncFailed;
-    //     event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+    //     event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now());
     //     event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
     //     queue.add(() => EventQuery().setData(event).save());
     //   }

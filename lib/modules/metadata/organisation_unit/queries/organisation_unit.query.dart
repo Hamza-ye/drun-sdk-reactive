@@ -1,4 +1,3 @@
-import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/modules/metadata/organisation_unit/entities/organisation_unit.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
@@ -106,7 +105,7 @@ class OrganisationUnitQuery extends BaseQuery<OrganisationUnit> {
   @override
   Future<String> dhisUrl() {
     final apiFilter =
-    QueryFilter.getApiFilters(this.repository.columns, this.filters);
+        QueryFilter.getApiFilters(this.repository.columns, this.filters);
     return Future.value(
         'organisationUnits.json${apiFilter != null ? '?$apiFilter&' : '?'}fields=id,dirty,lastModifiedDate,created,name,displayName,shortName,code,level,path,externalAccess,openingDate,geometry,parent,ancestors[id,name,displayName,level,path,openingDate],closedDate,programs&userOnly=true&paging=false');
   }

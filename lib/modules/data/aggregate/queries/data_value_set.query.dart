@@ -14,7 +14,7 @@ import 'package:reflectable/reflectable.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.DATA, aut: false)
+// @Query(type: QueryType.DATA, aut: false)
 class DataValueSetQuery extends BaseQuery<DataValueSet> {
   String? orgUnit;
   String? dataSet;
@@ -181,7 +181,8 @@ class DataValueSetQuery extends BaseQuery<DataValueSet> {
     dataValueSet.synced = !syncFailed;
     dataValueSet.dirty = syncFailed;
     dataValueSet.syncFailed = syncFailed;
-    dataValueSet.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+    dataValueSet.lastSyncDate =
+        DateUtils.databaseDateFormat().format(DateTime.now());
     dataValueSet.lastSyncSummary = importSummary.toString();
 
     return DataValueSetQuery()

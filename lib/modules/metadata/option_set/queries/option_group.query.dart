@@ -8,7 +8,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../../../core/annotations/index.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA)
+// @Query(type: QueryType.METADATA)
 class OptionGroupQuery extends BaseQuery<OptionGroup> {
   OptionGroupQuery({Database? database}) : super(database: database);
 

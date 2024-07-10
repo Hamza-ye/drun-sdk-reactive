@@ -1,6 +1,8 @@
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
+import 'package:d2_remote/modules/activity_management/activity/entities/activity.entity.dart';
+import 'package:d2_remote/modules/activity_management/activity/queries/activity.query.dart';
 import 'package:d2_remote/modules/data/tracker/entities/attribute_reserved_value.entity.dart';
 import 'package:d2_remote/modules/data/tracker/entities/enrollment.entity.dart';
 import 'package:d2_remote/modules/data/tracker/entities/event.entity.dart';
@@ -10,8 +12,6 @@ import 'package:d2_remote/modules/data/tracker/models/tracked_entity_instance_im
 import 'package:d2_remote/modules/data/tracker/queries/attribute_reserved_value.query.dart';
 import 'package:d2_remote/modules/data/tracker/queries/enrollment.query.dart';
 import 'package:d2_remote/modules/data/tracker/queries/event.query.dart';
-import 'package:d2_remote/modules/activity_management/activity/entities/activity.entity.dart';
-import 'package:d2_remote/modules/activity_management/activity/queries/activity.query.dart';
 import 'package:d2_remote/modules/metadata/program/entities/program.entity.dart';
 import 'package:d2_remote/modules/metadata/program/entities/program_stage.entity.dart';
 import 'package:d2_remote/modules/metadata/program/entities/program_tracked_entity_attribute.entity.dart';
@@ -29,7 +29,7 @@ import 'package:reflectable/mirrors.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.DATA, aut: false)
+// @Query(type: QueryType.DATA, aut: false)
 class TrackedEntityInstanceQuery extends BaseQuery<TrackedEntityInstance> {
   String? activity;
   String? orgUnit;
@@ -456,7 +456,8 @@ class TrackedEntityInstanceQuery extends BaseQuery<TrackedEntityInstance> {
         trackedEntityInstance.synced = !syncFailed;
         trackedEntityInstance.dirty = true;
         trackedEntityInstance.syncFailed = syncFailed;
-        trackedEntityInstance.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+        trackedEntityInstance.lastSyncDate =
+            DateUtils.databaseDateFormat().format(DateTime.now());
 
         trackedEntityInstance.lastSyncSummary =
             TrackedEntityInstanceImportSummary.fromJson(importSummary);

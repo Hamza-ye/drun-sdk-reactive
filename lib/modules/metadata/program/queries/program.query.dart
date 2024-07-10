@@ -11,7 +11,7 @@ import 'package:reflectable/reflectable.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA)
+// @Query(type: QueryType.METADATA)
 class ProgramQuery extends BaseQuery<Program> {
   ProgramQuery({Database? database}) : super(database: database);
 

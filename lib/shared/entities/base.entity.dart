@@ -31,7 +31,7 @@ class BaseEntity {
     this.uid = this.id;
 
     this.createdDate =
-        this.createdDate ?? DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+        this.createdDate ?? DateUtils.databaseDateFormat().format(DateTime.now());
     this.lastModifiedDate = this.lastModifiedDate ?? this.createdDate;
   }
 

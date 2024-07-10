@@ -1,4 +1,3 @@
-import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/modules/datarun/itns/entities/itns_village_houses_detail.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
@@ -8,19 +7,19 @@ import 'package:dio/dio.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA)
+// @Query(type: QueryType.METADATA)
 class ItnsVillageHousesDetailQuery extends BaseQuery<ItnsVillageHousesDetail> {
   ItnsVillageHousesDetailQuery({Database? database})
       : super(database: database);
 
   @override
   Future<String> dataRunUrl() {
-    return Future.value(
-        'itnsVillageHousesDetails');
+    return Future.value('itnsVillageHousesDetails');
   }
 
   @override
-  Future<List<ItnsVillageHousesDetail>?> download(Function(RequestProgress, bool) callback,
+  Future<List<ItnsVillageHousesDetail>?> download(
+      Function(RequestProgress, bool) callback,
       {Dio? dioTestClient}) async {
     callback(
         RequestProgress(
@@ -41,7 +40,7 @@ class ItnsVillageHousesDetailQuery extends BaseQuery<ItnsVillageHousesDetail> {
         RequestProgress(
             resourceName: this.apiResourceName as String,
             message:
-            '${data.length} ${this.apiResourceName?.toLowerCase()} downloaded successfully',
+                '${data.length} ${this.apiResourceName?.toLowerCase()} downloaded successfully',
             status: '',
             percentage: 50),
         false);
@@ -55,7 +54,7 @@ class ItnsVillageHousesDetailQuery extends BaseQuery<ItnsVillageHousesDetail> {
         RequestProgress(
             resourceName: this.apiResourceName as String,
             message:
-            'Saving ${data.length} ${this.apiResourceName?.toLowerCase()} into phone database...',
+                'Saving ${data.length} ${this.apiResourceName?.toLowerCase()} into phone database...',
             status: '',
             percentage: 51),
         false);
@@ -66,7 +65,7 @@ class ItnsVillageHousesDetailQuery extends BaseQuery<ItnsVillageHousesDetail> {
         RequestProgress(
             resourceName: this.apiResourceName as String,
             message:
-            '${data.length} ${this.apiResourceName?.toLowerCase()} successfully saved into the database',
+                '${data.length} ${this.apiResourceName?.toLowerCase()} successfully saved into the database',
             status: '',
             percentage: 100),
         true);

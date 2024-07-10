@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../../../core/annotations/index.dart';
 
 @AnnotationReflectable
-@Query(type: QueryType.METADATA)
+// @Query(type: QueryType.METADATA)
 class OptionSetQuery extends BaseQuery<OptionSet> {
   OptionSetQuery({Database? database}) : super(database: database);
 }
