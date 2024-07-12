@@ -139,7 +139,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
     {
       "id": "2",
       "uid": "r1j333zL3VB",
-      "name": "جلسات التثقيف - شهري",
+      "name": "جلسات التثقيف المجتمعي",
       "code": "CHV_SESSIONS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
