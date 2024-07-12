@@ -42,17 +42,13 @@ class DynamicForm extends IdentifiableEntity {
           dirty: dirty,
         );
 
-  // From JSON string (Database)
+  // From JSON string (Database and API)
   factory DynamicForm.fromJson(Map<String, dynamic> json) {
     final mainFields = json['mainFields'] != null
         ? (parseDynamicList(json['mainFields']) as List)
         .map((mainField) => DynamicFormField.fromJson(mainField))
         .toList()
         : null;
-
-    // final dynamic mainField = json['mainField'] != null
-    //     ? DynamicFormField.fromJson(parseDynamicField(json['mainField']))
-    //     : null;
 
     final fields = json['fields'] != null
         ? (parseDynamicList(json['fields']) as List)
@@ -65,14 +61,8 @@ class DynamicForm extends IdentifiableEntity {
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
-      mainFields: mainFields /*json['mainField'] != null
-          ? DynamicFormField.fromJson(jsonDecode(json['mainField']))
-          : null*/,
-      fields: fields/*json['fields'] != null
-          ? (jsonDecode(json['fields']) as List)
-              .map((field) => DynamicFormField.fromJson(field))
-              .toList()
-          : null*/,
+      mainFields: mainFields,
+      fields: fields,
       activity: json['activity'] is String
           ? json['activity']
           : json['activity']['uid'],
@@ -82,14 +72,13 @@ class DynamicForm extends IdentifiableEntity {
     );
   }
 
-  /// To JSON string for Database
+  /// To JSON string for Database and API
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'uid': uid,
       'code': code,
       'name': name,
-      // 'mainField': mainField != null ? jsonEncode(mainField!.toJson()) : null,
       'mainFields': mainFields != null
           ? jsonEncode(mainFields!.map((field) => field.toJson()).toList())
           : null,
