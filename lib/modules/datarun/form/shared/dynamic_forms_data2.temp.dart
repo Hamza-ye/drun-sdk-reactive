@@ -18,13 +18,6 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
       },
       "fields": [
         {
-          "id": "vW3xY4zA5B6",
-          "type": "date",
-          "name": "visitDate",
-          "label": "تاريخ الزيارة",
-          "required": true
-        },
-        {
           "id": "cD7eF8gH9I0",
           "type": "text",
           "name": "name",
@@ -32,17 +25,24 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "required": true,
         },
         {
-          "id": "jK1lM2nO3P4",
-          "type": "number",
-          "name": "age",
-          "label": "العمر بالسنوات",
-          "required": true
-        },
-        {
           "id": "qR5sT6uV7W8",
           "type": "text",
           "name": "locationName",
           "label": "القرية",
+          "required": true
+        },
+        {
+          "id": "vW3xY4zA5B6",
+          "type": "date",
+          "name": "visitDate",
+          "label": "تاريخ الزيارة",
+          "required": true
+        },
+        {
+          "id": "jK1lM2nO3P4",
+          "type": "number",
+          "name": "age",
+          "label": "العمر بالسنوات",
           "required": true
         },
         {
