@@ -21,6 +21,12 @@ class DynamicForm extends IdentifiableEntity {
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
 
+  @Column(nullable: false, type: ColumnType.TEXT)
+  final Map<String, String> label;
+
+  @Column(nullable: false, type: ColumnType.TEXT)
+  final String defaultLocale;
+
   DynamicForm({
     String? id,
     String? uid,
@@ -31,6 +37,8 @@ class DynamicForm extends IdentifiableEntity {
     String? lastModifiedDate,
     this.fields,
     this.activity,
+    required this.label,
+    required this.defaultLocale,
     required dirty,
   }) : super(
           id: id,
@@ -46,8 +54,8 @@ class DynamicForm extends IdentifiableEntity {
   factory DynamicForm.fromJson(Map<String, dynamic> json) {
     final mainFields = json['mainFields'] != null
         ? (parseDynamicList(json['mainFields']) as List)
-        .map((mainField) => DynamicFormField.fromJson(mainField))
-        .toList()
+            .map((mainField) => DynamicFormField.fromJson(mainField))
+            .toList()
         : null;
 
     final fields = json['fields'] != null
@@ -61,6 +69,9 @@ class DynamicForm extends IdentifiableEntity {
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
+      label: Map<String, String>.from(
+          json['label'] is String ? jsonDecode(json['label']) : json['label']),
+      defaultLocale: json['defaultLocale'],
       mainFields: mainFields,
       fields: fields,
       activity: json['activity'] is String
@@ -79,6 +90,8 @@ class DynamicForm extends IdentifiableEntity {
       'uid': uid,
       'code': code,
       'name': name,
+      'label': jsonEncode(label),
+      'defaultLocale': defaultLocale,
       'mainFields': mainFields != null
           ? jsonEncode(mainFields!.map((field) => field.toJson()).toList())
           : null,

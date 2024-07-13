@@ -1,34 +1,42 @@
 import 'dart:convert';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/field_rule.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
+import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 
 void main() {
   test('DynamicForm serialization and deserialization', () {
-    // Create a FieldRule instance
-    final fieldRule1 = FieldRule(
-      relevantFieldId: '123',
-      rule: '=',
-      relevantFieldValues: ['value1', 'value2'],
+    // Create instances of FormOption
+    final option1 = FormOption(
+      label: {'en': 'Option 1', 'ar': 'الخيار 1'},
+      name: 'option1',
     );
 
-    final fieldRule2 = FieldRule(
-      relevantFieldId: '123',
-      rule: '=',
-      relevantFieldValues: ['value21', 'value22'],
+    final option2 = FormOption(
+      label: {'en': 'Option 2', 'ar': 'الخيار 2'},
+      name: 'option2',
+    );
+
+    // Create a Rule instance
+    final rule1 = Rule(
+      id: 'rule1',
+      field: 'field1',
+      expression: "gender == 'Female' && patientAge >= 10",
+      action: 'show',
+      message: {'en': 'This field is hidden/invalid/requires attention because...'},
     );
 
     // Create a DynamicFormField instance
     final dynamicFormField = DynamicFormField(
-      type: 'text',
-      label: 'Test Label',
-      fieldValueRenderingType: 'textField',
-      name: 'Test Field',
+      type: 'select',
+      label: {'en': 'Test Label', 'ar': 'تسمية الاختبار'},
+      name: 'testField',
       required: true,
-      options: ['Option 1', 'Option 2'],
-      fieldRules: [fieldRule1, fieldRule2],
+      options: [option1, option2],
+      rules: [rule1],
+      fieldValueRenderingType: 'dropdown',
     );
 
     // Create a DynamicForm instance
@@ -42,6 +50,8 @@ void main() {
       lastModifiedDate: '2024-06-23T18:25:43.511Z',
       fields: [dynamicFormField],
       activity: 'activity1',
+      label: {'en': 'Form Label', 'ar': 'تسمية النموذج'},
+      defaultLocale: 'en',
       dirty: true,
     );
 
@@ -58,31 +68,40 @@ void main() {
     expect(deserializedForm.uid, dynamicForm.uid);
     expect(deserializedForm.name, dynamicForm.name);
     expect(deserializedForm.code, dynamicForm.code);
-    expect(deserializedForm.mainFields!.first!.label,
-        dynamicForm.mainFields!.first!.label);
-    expect(deserializedForm.mainFields!.first!.type,
-        dynamicForm.mainFields!.first!.type);
-    expect(deserializedForm.mainFields!.first!.name,
-        dynamicForm.mainFields!.first!.name);
-    expect(deserializedForm.mainFields!.first!.fieldValueRenderingType,
-        dynamicForm.mainFields!.first!.fieldValueRenderingType);
-    expect(deserializedForm.mainFields!.first!.required,
-        dynamicForm.mainFields!.first!.required);
-    expect(deserializedForm.mainFields!.first!.options,
-        dynamicForm.mainFields!.first!.options);
-    expect(
-        deserializedForm.mainFields!.first!.fieldRules!.first!.relevantFieldId,
-        dynamicForm.mainFields!.first!.fieldRules!.first!.relevantFieldId);
-    expect(
-        deserializedForm
-            .mainFields!.first!.fieldRules!.first!.relevantFieldValues,
-        dynamicForm.mainFields!.first!.fieldRules!.first!.relevantFieldValues);
+
+    final deserializedField = deserializedForm.mainFields!.first;
+    final originalField = dynamicForm.mainFields!.first;
+    expect(deserializedField.label, originalField.label);
+    expect(deserializedField.type, originalField.type);
+    expect(deserializedField.name, originalField.name);
+    expect(deserializedField.required, originalField.required);
+    expect(deserializedField.fieldValueRenderingType, originalField.fieldValueRenderingType);
+
+    final deserializedOptions = deserializedField.options;
+    final originalOptions = originalField.options;
+    expect(deserializedOptions?.length, originalOptions?.length);
+    expect(deserializedOptions?.first.label, originalOptions?.first.label);
+    expect(deserializedOptions?.first.name, originalOptions?.first.name);
+
+    final deserializedRules = deserializedField.rules;
+    final originalRules = originalField.rules;
+    expect(deserializedRules?.length, originalRules?.length);
+    expect(deserializedRules?.first.id, originalRules?.first.id);
+    expect(deserializedRules?.first.field, originalRules?.first.field);
+    expect(deserializedRules?.first.expression, originalRules?.first.expression);
+    expect(deserializedRules?.first.action, originalRules?.first.action);
+    expect(deserializedRules?.first.message, originalRules?.first.message);
+
     expect(deserializedForm.createdDate, dynamicForm.createdDate);
     expect(deserializedForm.lastModifiedDate, dynamicForm.lastModifiedDate);
     expect(deserializedForm.activity, dynamicForm.activity);
     expect(deserializedForm.dirty, dynamicForm.dirty);
-    expect(deserializedForm.fields!.length, dynamicForm.fields!.length);
-    expect(
-        deserializedForm.fields!.first.label, dynamicForm.fields!.first.label);
+    expect(deserializedForm.label, dynamicForm.label);
+    expect(deserializedForm.defaultLocale, dynamicForm.defaultLocale);
+
+    final deserializedFields = deserializedForm.fields;
+    final originalFields = dynamicForm.fields;
+    expect(deserializedFields?.length, originalFields?.length);
+    expect(deserializedFields?.first.label, originalFields?.first.label);
   });
 }

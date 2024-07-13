@@ -1,11 +1,9 @@
 import 'dart:math';
 
-import 'package:d2_remote/modules/datarun/form/shared/dynamic_forms_data2.temp.dart';
 import 'package:fast_expressions/fast_expressions.dart';
 
 void main(List<String> args) {
   {
-
     const e = '1.isEven ? "Yes, 1 is even" : "No, 1 is odd"';
     final r = parseExpression(
       e,

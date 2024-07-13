@@ -1,6 +1,5 @@
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
 import 'package:expressions/expressions.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class RuleEngine {
   Map<String, Map<String, dynamic>> formState;
@@ -39,10 +38,10 @@ class RuleEngine {
         break;
       case 'warning':
         // formState[rule.field]?['warning'] = rule.message;
-      if(formState[rule.field]?['warning'] != null) {
-        formState[rule.field]?.remove('warning');
-      }
-      formState[rule.field]?['warning'] = rule.message;
+        if (formState[rule.field]?['warning'] != null) {
+          formState[rule.field]?.remove('warning');
+        }
+        formState[rule.field]?['warning'] = rule.message;
         // formState.get(rule.field);
         break;
       // Add more actions as needed

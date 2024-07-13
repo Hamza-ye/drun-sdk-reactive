@@ -3,10 +3,6 @@ import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/sync_summary.dart';
-import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
-import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.dart';
-import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
-import 'package:d2_remote/modules/metadatarun/teams/queries/d_team.query.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
 import 'package:dio/dio.dart';
@@ -76,10 +72,10 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
       return false;
     }
 
-    final authorities = user.authorities;
-    final haveChvSuperAuth =
-        authorities?.map((t) => t.authority).contains('ROLE_CHV_SUPERVISOR') ??
-            false;
+    // final authorities = user.authorities;
+    // // final haveChvSuperAuth =
+    // //     authorities?.map((t) => t.authority).contains('ROLE_CHV_SUPERVISOR') ??
+    // //         false;
 
     final entity = await getOne();
 
@@ -311,19 +307,17 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
       syncableTeamIds.add(event.team);
     });
 
-    List<DActivity> activities =
-        await DActivityQuery().byIds(syncableActivityIds).get();
-
-    List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
+    // List<DActivity> activities =
+    //     await DActivityQuery().byIds(syncableActivityIds).get();
+    //
+    // List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
 
     final uploadPayload = syncableEntities.map((event) {
-      final team = teams
-          .lastWhere((team) => team.id == event.team)
-          .toJson();
-
-      final activity = activities
-          .lastWhere((activity) => activity.id == event.activity)
-          .toJson();
+      // final team = teams.lastWhere((team) => team.id == event.team).toJson();
+      //
+      // final activity = activities
+      //     .lastWhere((activity) => activity.id == event.activity)
+      //     .toJson();
 
       return event.toUpload();
     }).toList();
