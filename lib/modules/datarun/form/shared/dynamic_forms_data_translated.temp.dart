@@ -1,4 +1,4 @@
-final Map<String, dynamic> dTempChvRegisterForm2 = {
+final Map<String, dynamic> dTempFormsTranslated = {
   "paging": true,
   "page": 0,
   "pageCount": 1,
@@ -299,7 +299,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
         "en": "Community Awareness Sessions",
         "ar": "جلسات التثقيف المجتمعي"
       },
-      "defaultLocale": "ar",
+      "defaultLocal": "ar",
       "mainFields": [
         {
           "type": "date",

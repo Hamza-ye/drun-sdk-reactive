@@ -9,7 +9,7 @@ final Map<String, dynamic> dSampleAllForms = {
       "id": "aB1cD2eF3G4",
       "uid": "aB1cD2eF3G4",
       "code": "CHV_PATIENTS_FORM",
-      "defaultLocale": "en",
+      "defaultLocal": "en",
       "name": "Chv Cases Register",
       "label": {
         "en": "chv cases register",
@@ -293,7 +293,7 @@ final Map<String, dynamic> dSampleAllForms = {
       "uid": "r1j333zL3VB",
       "name": "Community Awareness Sessions",
       "code": "CHV_SESSIONS_FORM",
-      "defaultLocale": "en",
+      "defaultLocal": "en",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
       "label": {

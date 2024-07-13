@@ -51,7 +51,7 @@ void main() {
       fields: [dynamicFormField],
       activity: 'activity1',
       label: {'en': 'Form Label', 'ar': 'تسمية النموذج'},
-      defaultLocale: 'en',
+      defaultLocal: 'en',
       dirty: true,
     );
 
@@ -97,7 +97,7 @@ void main() {
     expect(deserializedForm.activity, dynamicForm.activity);
     expect(deserializedForm.dirty, dynamicForm.dirty);
     expect(deserializedForm.label, dynamicForm.label);
-    expect(deserializedForm.defaultLocale, dynamicForm.defaultLocale);
+    expect(deserializedForm.defaultLocal, dynamicForm.defaultLocal);
 
     final deserializedFields = deserializedForm.fields;
     final originalFields = dynamicForm.fields;

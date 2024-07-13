@@ -25,7 +25,7 @@ class DynamicForm extends IdentifiableEntity {
   final Map<String, String> label;
 
   @Column(nullable: false, type: ColumnType.TEXT)
-  final String defaultLocale;
+  final String defaultLocal;
 
   DynamicForm({
     String? id,
@@ -38,7 +38,7 @@ class DynamicForm extends IdentifiableEntity {
     this.fields,
     this.activity,
     required this.label,
-    required this.defaultLocale,
+    required this.defaultLocal,
     required dirty,
   }) : super(
           id: id,
@@ -71,7 +71,7 @@ class DynamicForm extends IdentifiableEntity {
       name: json['name'],
       label: Map<String, String>.from(
           json['label'] is String ? jsonDecode(json['label']) : json['label']),
-      defaultLocale: json['defaultLocale'],
+      defaultLocal: json['defaultLocal'],
       mainFields: mainFields,
       fields: fields,
       activity: json['activity'] is String
@@ -91,7 +91,7 @@ class DynamicForm extends IdentifiableEntity {
       'code': code,
       'name': name,
       'label': jsonEncode(label),
-      'defaultLocale': defaultLocale,
+      'defaultLocal': defaultLocal,
       'mainFields': mainFields != null
           ? jsonEncode(mainFields!.map((field) => field.toJson()).toList())
           : null,
