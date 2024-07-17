@@ -10,7 +10,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
       "uid": "aB1cD2eF3G4",
       "code": "CHV_PATIENTS_FORM",
       "defaultLocal": "en",
-      "name": "Chv Cases Register",
+      "name": "استمارة تدبير حالات الملاريا",
       "label": {
         "en": "chv cases register",
         "ar": "تسجيل حالات chv"
@@ -187,7 +187,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
               "name": "SIMPLE",
               "label": {
                 "en": "Simple",
-                "ar": "بسيط"
+                "ar": "بسيطة"
               }
             },
             {
@@ -195,7 +195,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
               "name": "SEVERE",
               "label": {
                 "en": "Severe",
-                "ar": "شديد"
+                "ar": "وخيمة"
               }
             }
           ],
@@ -260,7 +260,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
           "name": "comment",
           "label": {
             "en": "Comments",
-            "ar": "تعليقات"
+            "ar": "ملاحظات وتعليقات"
           }
         }
       ],
@@ -291,7 +291,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
     {
       "id": "2",
       "uid": "r1j333zL3VB",
-      "name": "Community Awareness Sessions",
+      "name": "جلسات التثقيف المجتمعي",
       "code": "CHV_SESSIONS_FORM",
       "createdDate": "2024-06-13T00:00:00.000Z",
       "lastModifiedDate": "2024-06-13T00:00:00.000Z",
