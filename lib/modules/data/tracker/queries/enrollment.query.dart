@@ -57,7 +57,7 @@ class EnrollmentQuery extends BaseQuery<Enrollment> {
         enrollment.dirty = syncFailed;
         enrollment.syncFailed = syncFailed;
         enrollment.lastSyncDate = DateUtils.databaseDateFormat()
-            .format(DateTime.now())
+            .format(DateTime.now().toUtc())
             .split('.')[0];
         enrollment.lastSyncSummary =
             EnrollmentImportSummary.fromJson(importSummary);

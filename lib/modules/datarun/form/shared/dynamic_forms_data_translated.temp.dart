@@ -24,6 +24,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
       "fields": [
         {
           "id": "cD7eF8gH9I0",
+          "uid": "cD7eF8gH9I0",
           "form": "aB1cD2eF3G4",
           "type": "text",
           "name": "name",
@@ -35,6 +36,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
         },
         {
           "id": "qR5sT6uV7W8",
+          "uid": "qR5sT6uV7W8",
           "form": "aB1cD2eF3G4",
           "type": "text",
           "name": "locationName",
@@ -46,6 +48,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
         },
         {
           "id": "vW3xY4zA5B6",
+          "uid": "vW3xY4zA5B6",
           "form": "aB1cD2eF3G4",
           "type": "date",
           "name": "visitDate",
@@ -57,6 +60,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
         },
         {
           "id": "jK1lM2nO3P4",
+          "uid": "jK1lM2nO3P4",
           "form": "aB1cD2eF3G4",
           "type": "number",
           "name": "age",
@@ -68,6 +72,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
         },
         {
           "id": "xY9zA0bC1D2",
+          "uid": "xY9zA0bC1D2",
           "form": "aB1cD2eF3G4",
           "type": "selectOne",
           "name": "gender",
@@ -79,6 +84,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
           "options": [
             {
               "id": "5Y1200dC5D1",
+              "uid": "5Y1200dC5D1",
               "name" : "MALE",
               "label": {
                 "en": "Male",
@@ -87,6 +93,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
             },
             {
               "id": "xY1200bC1D2",
+              "uid": "xY1200bC1D2",
               "name" : "FEMALE",
               "label": {
                 "en": "Female",
@@ -97,6 +104,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
         },
         {
           "id": "eF3gH4iJ5K6",
+          "uid": "eF3gH4iJ5K6",
           "form": "aB1cD2eF3G4",
           "type": "boolean",
           "name": "pregnant",
@@ -108,6 +116,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
           "rules": [
             {
               "id": "eF5gH6iJ5K6",
+              "uid": "eF5gH6iJ5K6",
               "field": "eF3gH4iJ5K6",
               "expression": "gender == 'FEMALE' && age > 10",
               "action": "show",

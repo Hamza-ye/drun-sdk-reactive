@@ -19,7 +19,7 @@ class ChvRegisterQuery extends SyncableQuery<ChvRegister> {
         dirty: true,
         synced: false,
         deleted: false,
-        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now()));
+        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
 
 

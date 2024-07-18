@@ -182,7 +182,7 @@ class DataValueSetQuery extends BaseQuery<DataValueSet> {
     dataValueSet.dirty = syncFailed;
     dataValueSet.syncFailed = syncFailed;
     dataValueSet.lastSyncDate =
-        DateUtils.databaseDateFormat().format(DateTime.now());
+        DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
     dataValueSet.lastSyncSummary = importSummary.toString();
 
     return DataValueSetQuery()

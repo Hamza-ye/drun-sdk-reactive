@@ -104,7 +104,7 @@ class EventQuery extends BaseQuery<Event> {
         synced: false,
         programStage: this.programStage,
         eventDate:
-            DateUtils.databaseDateFormat().format(DateTime.now()));
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
     this.data = event;
 
@@ -223,7 +223,7 @@ class EventQuery extends BaseQuery<Event> {
         event.dirty = true;
         event.syncFailed = syncFailed;
         event.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now());
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
         await queue.add(() => EventQuery().setData(event).save());
       }
@@ -240,7 +240,7 @@ class EventQuery extends BaseQuery<Event> {
     //     event.synced = !syncFailed;
     //     event.dirty = true;
     //     event.syncFailed = syncFailed;
-    //     event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now());
+    //     event.lastSyncDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
     //     event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
     //     queue.add(() => EventQuery().setData(event).save());
     //   }

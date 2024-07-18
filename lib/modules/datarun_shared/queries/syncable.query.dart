@@ -341,14 +341,14 @@ class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
         syncableEntity.dirty = false;
         syncableEntity.syncFailed = false;
         syncableEntity.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now());
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         availableItemCount++;
       } else if (syncFailed) {
         syncableEntity.synced = false;
         syncableEntity.dirty = true;
         syncableEntity.syncFailed = true;
         syncableEntity.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now());
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         syncableEntity.lastSyncMessage = summary.failed[syncableEntity.id];
         availableItemCount++;
       }

@@ -20,7 +20,7 @@ class ChvSessionQuery extends SyncableQuery<ChvSession> {
         dirty: true,
         synced: false,
         deleted: false,
-        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now()));
+        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
     this.data = event;
 
