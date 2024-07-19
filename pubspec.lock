@@ -169,14 +169,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.6"
-  dev_build:
-    dependency: transitive
-    description:
-      name: dev_build
-      sha256: e91063fa7b6e597f37a2cb55e95bdb9a789d0934758c262e51650b8bb30c7e2a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0+5"
   dio:
     dependency: "direct main"
     description:
@@ -512,14 +504,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-  process_run:
-    dependency: transitive
-    description:
-      name: process_run
-      sha256: "6052115540ad88715d6bcee60656970f70c68c85846d1948b92e435f0382899e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0+1"
   pub_semver:
     dependency: transitive
     description:
@@ -677,14 +661,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.3"
-  sqflite_common_ffi_web:
-    dependency: "direct main"
-    description:
-      name: sqflite_common_ffi_web
-      sha256: cfc9d1c61a3e06e5b2e96994a44b11125b4f451fee95b9fad8bd473b4613d592
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.3+1"
   sqlite3:
     dependency: transitive
     description:
