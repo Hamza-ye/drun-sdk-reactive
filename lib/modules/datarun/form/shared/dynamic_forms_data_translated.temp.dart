@@ -62,7 +62,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
           "id": "jK1lM2nO3P4",
           "uid": "jK1lM2nO3P4",
           "form": "aB1cD2eF3G4",
-          "type": "integerPositive",
+          "type": "number",
           "name": "age",
           "label": {
             "en": "Age in years",
@@ -74,11 +74,11 @@ final Map<String, dynamic> dTempFormsTranslated = {
               "id": "eF66H6iJ5K6",
               "uid": "eF66H6iJ5K6",
               "field": "jK1lM2nO3P4",
-              "expression": "age > 120",
+              "expression": "age <= 0 || age > 120",
               "action": "error",
               "message": {
-                "en": "Value is Higher than normal",
-                "ar": "العمر المدخل أعلى من الطبيعي"
+                "en": "Make sure a valid age is entered",
+                "ar": "تأكد من ادخال العمر الصحيح"
               }
             }
           ]
