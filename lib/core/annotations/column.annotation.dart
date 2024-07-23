@@ -5,7 +5,7 @@ import 'package:reflectable/reflectable.dart';
 
 import 'entity.annotation.dart';
 
-enum ColumnType { TEXT, INTEGER, BOOLEAN }
+enum ColumnType { TEXT, INTEGER, BOOLEAN, REAL }
 
 enum RelationType { OneToMany, ManyToOne, OneToOne }
 
@@ -75,6 +75,9 @@ class Column {
         return 'INTEGER';
       case ColumnType.BOOLEAN:
         return 'BOOLEAN';
+      //NMC
+      case ColumnType.REAL:
+        return 'REAL';
       default:
         return 'TEXT';
     }
@@ -88,6 +91,10 @@ class Column {
         return ColumnType.INTEGER;
       case bool:
         return ColumnType.BOOLEAN;
+      // NMC
+      case double:
+      case num:
+        return ColumnType.REAL;
       default:
         return ColumnType.TEXT;
     }

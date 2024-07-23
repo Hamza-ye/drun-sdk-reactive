@@ -23,8 +23,8 @@ class ChvRegister extends SyncableEntity {
   @Column(nullable: true)
   String? visitDate;
 
-  @Column(nullable: true)
-  String? age;
+  @Column(nullable: true, type: ColumnType.REAL)
+  double? age;
 
   @Column(nullable: true)
   bool? pregnant;
