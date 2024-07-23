@@ -49,14 +49,14 @@ final Map<String, dynamic> dTempFormsTranslated = {
           "form": "aB1cD2eF3G4",
           "type": "age",
           "name": "age",
-          "label": {"en": "Age", "ar": "العمر سنوات وأشهر"},
+          "label": {"en": "Age", "ar": "العمر"},
           "required": true,
           "rules": [
             {
               "id": "eF66H6iJ5K6",
               "uid": "eF66H6iJ5K6",
               "field": "jK1lM2nO3P4",
-              "expression": "age <= 0 || age > 120",
+              "expression": "age <= 0 || age > 100",
               "action": "error",
               "message": {
                 "en": "Make sure a valid age is entered",
@@ -101,7 +101,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
               "id": "eF5gH6iJ5K6",
               "uid": "eF5gH6iJ5K6",
               "field": "eF3gH4iJ5K6",
-              "expression": "gender == 'FEMALE' && age > 14",
+              "expression": "gender == 'FEMALE' && age >= 14",
               "action": "show",
               "message": {
                 "en":
@@ -150,11 +150,40 @@ final Map<String, dynamic> dTempFormsTranslated = {
           ]
         },
         {
+          "id": "z33bC6dE7F8",
+          "form": "aB1cD2eF3G4",
+          "type": "selectOne",
+          "name": "detectionType",
+          "label": {"en": "Detection Type", "ar": "نوع الاكتشاف"},
+          "required": true,
+          "options": [
+            {
+              "id": "9CC8F66C7D1",
+              "name": "REACTIVE",
+              "label": {"en": "Reactive", "ar": "زيارة روتينية"}
+            },
+            {
+              "id": "10CDF77C7D1",
+              "name": "ACTIVE",
+              "label": {"en": "Active", "ar": "بحث نشط"}
+            }
+          ],
+          "rules": [
+            {
+              "id": "eF3gH8iJ5K9",
+              "field": "zA5bC6dE7F8",
+              "expression":
+              "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
+              "action": "show"
+            }
+          ]
+        },
+        {
           "id": "zA5bC6dE7F8",
           "form": "aB1cD2eF3G4",
           "type": "selectOne",
           "name": "severity",
-          "label": {"en": "Severity", "ar": "الشدة"},
+          "label": {"en": "Severity", "ar": "تصنيف الحالة"},
           "required": true,
           "options": [
             {
@@ -183,7 +212,7 @@ final Map<String, dynamic> dTempFormsTranslated = {
           "form": "aB1cD2eF3G4",
           "type": "selectOne",
           "name": "treatment",
-          "label": {"en": "Treatment", "ar": "العلاج"},
+          "label": {"en": "Treatment", "ar": "تدبير الحالة"},
           "required": true,
           "options": [
             {
