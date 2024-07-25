@@ -341,16 +341,16 @@ final Map<String, dynamic> dTempFormsTranslated = {
             }
           ]
         },
-        {
-          "id": "23",
-          "type": "number",
-          "name": "sessions",
-          "label": {"en": "Number of Sessions", "ar": "عدد الجلسات"},
-          "required": false
-        },
+        // {
+        //   "id": "23",
+        //   "type": "integerZeroOrPositive",
+        //   "name": "sessions",
+        //   "label": {"en": "Number of Sessions", "ar": "عدد الجلسات"},
+        //   "required": false
+        // },
         {
           "id": "24",
-          "type": "number",
+          "type": "integerZeroOrPositive",
           "name": "people",
           "label": {"en": "Number of Beneficiaries", "ar": "عدد المستفيدين"},
           "required": true
