@@ -8,7 +8,7 @@ class DynamicFormField {
   final String type;
   final Map<String, String> label;
   final String name;
-  final bool required;
+  final bool mandatory;
   final List<FormOption>? options;
   final List<Rule>? rules;
 
@@ -16,7 +16,7 @@ class DynamicFormField {
 
   DynamicFormField(
       {required this.label,
-      required this.required,
+      required this.mandatory,
       required this.type,
       required this.name,
       this.options,
@@ -47,7 +47,7 @@ class DynamicFormField {
       label: Map<String, String>.from(
           json['label'] is String ? jsonDecode(json['label']) : json['label']),
       name: json['name'],
-      required: json['required'] ?? false,
+      mandatory: json['mandatory'] ?? false,
       options: options,
       rules: rules,
       fieldValueRenderingType: json['fieldValueRenderingType'],
@@ -59,7 +59,7 @@ class DynamicFormField {
       'type': type,
       'label': jsonEncode(label),
       'name': name,
-      'required': required,
+      'mandatory': mandatory,
       'rules': rules != null
           ? jsonEncode(rules!.map((rule) => rule.toJson()).toList())
           : null,

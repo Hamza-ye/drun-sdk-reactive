@@ -135,7 +135,7 @@ class ChvRegister extends SyncableEntity {
 
         /// Patient
         name: json['name'],
-        age: json['age'],
+        age: json['age']?.toDouble(),
         gender: json['gender'],
         locationName: json['locationName'],
         // location: json['location'] != null

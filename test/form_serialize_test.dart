@@ -33,7 +33,7 @@ void main() {
       type: 'select',
       label: {'en': 'Test Label', 'ar': 'تسمية الاختبار'},
       name: 'testField',
-      required: true,
+      mandatory: true,
       options: [option1, option2],
       rules: [rule1],
       fieldValueRenderingType: 'dropdown',
@@ -45,6 +45,7 @@ void main() {
       uid: 'uid1',
       name: 'Test Form',
       code: 'formCode',
+      version: "1",
       mainFields: [dynamicFormField],
       createdDate: '2024-06-23T18:25:43.511Z',
       lastModifiedDate: '2024-06-23T18:25:43.511Z',
@@ -74,7 +75,7 @@ void main() {
     expect(deserializedField.label, originalField.label);
     expect(deserializedField.type, originalField.type);
     expect(deserializedField.name, originalField.name);
-    expect(deserializedField.required, originalField.required);
+    expect(deserializedField.mandatory, originalField.mandatory);
     expect(deserializedField.fieldValueRenderingType, originalField.fieldValueRenderingType);
 
     final deserializedOptions = deserializedField.options;

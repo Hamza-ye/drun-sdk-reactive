@@ -10,7 +10,7 @@ import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entit
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'dynamicForm', apiResourceName: 'dynamicForms')
+@Entity(tableName: 'dynamicForm', apiResourceName: 'dataForms')
 class DynamicForm extends IdentifiableEntity {
   @Column(nullable: true, type: ColumnType.TEXT)
   final List<DynamicFormField>? mainFields;
@@ -27,6 +27,9 @@ class DynamicForm extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.TEXT)
   final String defaultLocal;
 
+  @Column(nullable: false)
+  final String version;
+
   DynamicForm({
     String? id,
     String? uid,
@@ -37,6 +40,7 @@ class DynamicForm extends IdentifiableEntity {
     String? lastModifiedDate,
     this.fields,
     this.activity,
+    required this.version,
     required this.label,
     required this.defaultLocal,
     required dirty,
@@ -69,6 +73,7 @@ class DynamicForm extends IdentifiableEntity {
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
+      version: json['version'].toString(),
       label: Map<String, String>.from(
           json['label'] is String ? jsonDecode(json['label']) : json['label']),
       defaultLocal: json['defaultLocal'],
@@ -90,6 +95,7 @@ class DynamicForm extends IdentifiableEntity {
       'uid': uid,
       'code': code,
       'name': name,
+      'version': version,
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
       'mainFields': mainFields != null

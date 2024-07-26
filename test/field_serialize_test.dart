@@ -12,7 +12,7 @@ void main() {
       "type": "text",
       "label": {"en": "Patient Name", "ar": "اسم المريض"},
       "name": "patientName",
-      "required": true,
+      "mandatory": true,
       "options": [
         {"label": {"en": "Option 1", "ar": "الخيار 1"}, "name": "option1"},
         {"label": {"en": "Option 2", "ar": "الخيار 2"}, "name": "option2"}
@@ -35,7 +35,7 @@ void main() {
     expect(dynamicFormField.type, "text");
     expect(dynamicFormField.label, {"en": "Patient Name", "ar": "اسم المريض"});
     expect(dynamicFormField.name, "patientName");
-    expect(dynamicFormField.required, true);
+    expect(dynamicFormField.mandatory, true);
     expect(dynamicFormField.options?.length, 2);
     expect(dynamicFormField.options?.first.name, "option1");
     expect(dynamicFormField.options?.first.label, {"en": "Option 1", "ar": "الخيار 1"});
@@ -50,7 +50,7 @@ void main() {
     expect(serializedJson['type'], "text");
     expect(serializedJson['label'], jsonEncode({"en": "Patient Name", "ar": "اسم المريض"}));
     expect(serializedJson['name'], "patientName");
-    expect(serializedJson['required'], true);
+    expect(serializedJson['mandatory'], true);
     expect(serializedJson['options'], isNotNull);
     expect(serializedJson['rules'], isNotNull);
     expect(serializedJson['fieldValueRenderingType'], "textField");

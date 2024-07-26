@@ -4,7 +4,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
   "pageCount": 1,
   "total": 2,
   "pageSize": 20,
-  "dynamicForms": [
+  "dataForms": [
     {
       "id": "aB1cD2eF3G4",
       "uid": "aB1cD2eF3G4",
@@ -23,7 +23,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "text",
           "name": "name",
           "label": "اسم المريض",
-          "required": true,
+          "mandatory": true,
         },
         {
           "id": "qR5sT6uV7W8",
@@ -31,7 +31,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "text",
           "name": "locationName",
           "label": "القرية",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "vW3xY4zA5B6",
@@ -39,7 +39,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "date",
           "name": "visitDate",
           "label": "تاريخ الزيارة",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "jK1lM2nO3P4",
@@ -47,7 +47,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "number",
           "name": "age",
           "label": "العمر بالسنوات",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "xY9zA0bC1D2",
@@ -55,7 +55,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "selectOne",
           "name": "gender",
           "label": "الجنس",
-          "required": true,
+          "mandatory": true,
           "options": ["MALE", "FEMALE"]
         },
         {
@@ -64,7 +64,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "boolean",
           "name": "pregnant",
           "label": "حامل؟",
-          "required": true,
+          "mandatory": true,
           "rules": [
             {
               "id": "eF5gH6iJ5K6",
@@ -82,7 +82,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "selectOne",
           "name": "testResult",
           "label": "نتيجة الفحص",
-          "required": true,
+          "mandatory": true,
           "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"]
         },
         {
@@ -91,7 +91,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "selectOne",
           "name": "severity",
           "label": "Severity",
-          "required": true,
+          "mandatory": true,
           "options": ["SIMPLE", "SEVERE"],
           "rules": [
             {
@@ -109,7 +109,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "selectOne",
           "name": "treatment",
           "label": "العلاج",
-          "required": true,
+          "mandatory": true,
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
           "rules": [
             {
@@ -136,14 +136,14 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "text",
           "name": "name",
           "label": "اسم المريض",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "qR5sT6uV7W8",
           "type": "text",
           "name": "locationName",
           "label": "القرية",
-          "required": true
+          "mandatory": true
         }
       ]
     },
@@ -159,7 +159,7 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "date",
           "name": "sessionDate",
           "label": "التاريخ",
-          "required": true
+          "mandatory": true
         },
       ],
       "activity": {
@@ -172,14 +172,14 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "date",
           "name": "sessionDate",
           "label": "التاريخ",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "21",
           "type": "selectOne",
           "name": "subject",
           "label": "نوع الجلسة",
-          "required": true,
+          "mandatory": true,
           "options": ["ITNs", "BreadingSite", "TRANSMISSION_PREVENTION"]
         },
         {
@@ -187,14 +187,14 @@ final Map<String, dynamic> dTempChvRegisterForm2 = {
           "type": "number",
           "name": "sessions",
           "label": "عدد الجلسات",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "24",
           "type": "number",
           "name": "people",
           "label": "عدد المستفيدين",
-          "required": true
+          "mandatory": true
         }
       ],
     },

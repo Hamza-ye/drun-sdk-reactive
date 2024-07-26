@@ -39,7 +39,7 @@ void main() async {
   await userQuery.setData(user).save();
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/dynamicForms?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/dataForms?paging=false&eagerload=true',
     (server) => server.reply(200, sampleAllForms),
   );
   final dynamicFormQuery = DynamicFormQuery(database: db);

@@ -4,7 +4,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
   "pageCount": 1,
   "total": 2,
   "pageSize": 20,
-  "dynamicForms": [
+  "dataForms": [
     {
       "id": "1",
       "uid": "r1j223zL3VB",
@@ -18,14 +18,14 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "text",
           "label": "Patient Name",
           "name": "patientName",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "4",
           "type": "text",
           "label": "Patient Location",
           "name": "patientLocation",
-          "required": true
+          "mandatory": true
         }
       ],
       "activity": {
@@ -38,34 +38,34 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "date",
           "label": "Visit Date",
           "name": "visitDate",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "2",
           "type": "text",
           "label": "Patient Name",
           "name": "patientName",
-          "required": true,
+          "mandatory": true,
         },
         {
           "id": "3",
           "type": "number",
           "label": "Patient Age",
           "name": "patientAge",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "4",
           "type": "text",
           "label": "Patient Location",
           "name": "patientLocation",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "5",
           "type": "selectOne",
           "name": "gender",
-          "required": true,
+          "mandatory": true,
           "label": "Gender",
           "options": ["Male", "FEMALE"]
         },
@@ -74,7 +74,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "boolean",
           "label": "Pregnant",
           "name": "pregnant",
-          "required": true,
+          "mandatory": true,
           "fieldRules": [
             {
               "relevantFieldId": "gender",
@@ -93,7 +93,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Test Result",
           "name": "testResult",
-          "required": true,
+          "mandatory": true,
           "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"]
         },
         {
@@ -101,7 +101,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Detection Type",
           "name": "detectionType",
-          "required": true,
+          "mandatory": true,
           "options": ["REACTIVE", "ACTIVE"]
         },
         {
@@ -109,7 +109,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Severity",
           "name": "severity",
-          "required": true,
+          "mandatory": true,
           "options": ["SIMPLE", "SEVERE"],
           "fieldRules": [
             {
@@ -124,7 +124,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Treatment",
           "name": "treatment",
-          "required": true,
+          "mandatory": true,
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
           "fieldRules": [
             {
@@ -163,27 +163,27 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "date",
           "label": "Session Date",
           "name": "sessionDate",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "3",
           "type": "selectOne",
           "label": "Session Subject",
           "name": "subject",
-          "required": true,
+          "mandatory": true,
           "options": ["ITNs", "BreadingSite", "TRANSMISSION_PREVENTION"]
         },
         {
           "type": "number",
           "name": "sessions",
           "label": "Sessions",
-          "required": true
+          "mandatory": true
         },
         {
           "type": "number",
           "name": "people",
           "label": "People",
-          "required": true
+          "mandatory": true
         }
       ],
     },
@@ -200,14 +200,14 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "text",
           "label": "Patient Name",
           "name": "patientName",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "4",
           "type": "text",
           "label": "Patient Location",
           "name": "patientLocation",
-          "required": true
+          "mandatory": true
         }
       ],
       "activity": {
@@ -220,34 +220,34 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "date",
           "label": "Visit Date",
           "name": "visitDate",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "2",
           "type": "text",
           "label": "Patient Name",
           "name": "patientName",
-          "required": true,
+          "mandatory": true,
         },
         {
           "id": "3",
           "type": "number",
           "label": "Patient Age",
           "name": "patientAge",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "4",
           "type": "text",
           "label": "Patient Location",
           "name": "patientLocation",
-          "required": true
+          "mandatory": true
         },
         {
           "id": "5",
           "type": "selectOne",
           "name": "gender",
-          "required": true,
+          "mandatory": true,
           "label": "Gender",
           "options": ["Male", "FEMALE"]
         },
@@ -256,7 +256,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "yesNo",
           "label": "Pregnant",
           "name": "pregnant",
-          "required": true,
+          "mandatory": true,
           "fieldRules": [
             {
               "relevantFieldId": "gender",
@@ -275,7 +275,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Test Result",
           "name": "testResult",
-          "required": true,
+          "mandatory": true,
           "options": ["NEGATIVE", "PF", "PV", "MIX", "INVALID"]
         },
         {
@@ -283,7 +283,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Detection Type",
           "name": "detectionType",
-          "required": true,
+          "mandatory": true,
           "options": ["REACTIVE", "ACTIVE"]
         },
         {
@@ -291,7 +291,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Severity",
           "name": "severity",
-          "required": true,
+          "mandatory": true,
           "options": ["SIMPLE", "SEVERE"],
           "fieldRules": [
             {
@@ -306,7 +306,7 @@ final Map<String, dynamic> dTempChvRegisterForm = {
           "type": "selectOne",
           "label": "Treatment",
           "name": "treatment",
-          "required": true,
+          "mandatory": true,
           "options": ["TREATED", "FIRSTDOSE", "REFERAL"],
           "fieldRules": [
             {
