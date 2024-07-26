@@ -18,7 +18,7 @@ class Rule {
 
   factory Rule.fromJson(Map<String, dynamic> json) {
     return Rule(
-        id: json['id'],
+        id: json['uid'],
         field: json['field'],
         expression: json['expression'],
         action: json['action'],
@@ -37,6 +37,7 @@ class Rule {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'uid': id,
       'field': field,
       'expression': expression,
       'action': action,
