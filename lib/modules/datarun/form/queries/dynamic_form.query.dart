@@ -1,7 +1,6 @@
 import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/dynamic_forms_data_translated.temp.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
@@ -54,12 +53,12 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
         database: this.database, dioTestClient: dioTestClient);
 
     List data;
-    if (response.statusCode == 200) {
-      data = response.body[this.apiResourceName]?.toList();
-    } else {
-      final body = dTempFormsTranslated;
-      data = body[this.apiResourceName]?.toList();
-    }
+    // if (response.statusCode == 200) {
+    data = response.body[this.apiResourceName]?.toList();
+    // } else {
+    //   final body = dTempFormsTranslated;
+    //   data = body[this.apiResourceName]?.toList();
+    // }
 
     // List data = response.body[this.apiResourceName]?.toList();
     //
