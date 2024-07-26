@@ -6,355 +6,547 @@ final Map<String, dynamic> dSampleAllForms = {
   "pageSize": 20,
   "dataForms": [
     {
-      "id": "aB1cD2eF3G4",
-      "uid": "aB1cD2eF3G4",
+      "createdBy": null,
+      "createdDate": "2024-07-26T19:53:13.664Z",
+      "lastModifiedBy": "admin",
+      "lastModifiedDate": "2024-07-26T19:53:13.830Z",
+      "id": "66a3f93774a867644e1935f0",
+      "uid": "KeaZ3KDRfQB",
       "code": "CHV_PATIENTS_FORM",
-      "defaultLocal": "en",
       "name": "استمارة تدبير حالات الملاريا",
-      "version": 1,
-      "label": {"en": "chv cases register", "ar": "تسجيل حالات chv"},
-      "createdDate": "2024-06-13T00:00:00.000Z",
-      "lastModifiedDate": "2024-06-13T00:00:00.000Z",
-      "activity": {"id": 17, "uid": "oBne891mA9n"},
+      "description": "CHV cases registering form",
+      "disabled": false,
       "fields": [
         {
-          "id": "cD7eF8gH9I0",
-          "uid": "cD7eF8gH9I0",
-          "form": "aB1cD2eF3G4",
-          "type": "text",
-          "name": "name",
-          "label": {"en": "Patient name", "ar": "اسم المريض"},
-          "mandatory": true
-        },
-        {
-          "id": "qR5sT6uV7W8",
           "uid": "qR5sT6uV7W8",
-          "form": "aB1cD2eF3G4",
-          "type": "text",
+          "code": null,
           "name": "locationName",
-          "label": {"en": "Location Name", "ar": "اسم الموقع"},
-          "mandatory": true
+          "description": null,
+          "type": "Text",
+          "mandatory": true,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Location Name",
+            "ar": "اسم الموقع"
+          }
         },
         {
-          "id": "vW3xY4zA5B6",
+          "uid": "cD7eF8gH9I0",
+          "code": null,
+          "name": "name",
+          "description": "Name of the patient",
+          "type": "Text",
+          "mandatory": true,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Patient name",
+            "ar": "اسم المريض"
+          }
+        },
+        {
           "uid": "vW3xY4zA5B6",
-          "form": "aB1cD2eF3G4",
-          "type": "date",
+          "code": null,
           "name": "visitDate",
-          "label": {"en": "Visit Date", "ar": "تاريخ الزيارة"},
-          "mandatory": true
+          "description": null,
+          "type": "Date",
+          "mandatory": true,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Visit Date",
+            "ar": "تاريخ الزيارة"
+          }
         },
         {
-          "id": "jK1lM2nO3P4",
           "uid": "jK1lM2nO3P4",
-          "form": "aB1cD2eF3G4",
-          "type": "age",
+          "code": null,
           "name": "age",
-          "label": {"en": "Age", "ar": "العمر"},
+          "description": "Age in Years and (months for age less than 1 year)",
+          "type": "Age",
           "mandatory": true,
           "rules": [
             {
-              "id": "eF66H6iJ5K6",
               "uid": "eF66H6iJ5K6",
-              "field": "jK1lM2nO3P4",
               "expression": "age <= 0 || age > 100",
-              "action": "error",
-              "message": {
-                "en": "Make sure a valid age is entered",
-                "ar": "تأكد من ادخال العمر الصحيح"
-              }
+              "action": "Error",
+              "filterInfo": null
             }
-          ]
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Age",
+            "ar": "العمر"
+          }
         },
         {
-          "id": "xY9zA0bC1D2",
           "uid": "xY9zA0bC1D2",
-          "form": "aB1cD2eF3G4",
-          "type": "selectOne",
+          "code": null,
           "name": "gender",
-          "label": {"en": "Gender", "ar": "الجنس"},
+          "description": null,
+          "type": "SelectOne",
           "mandatory": true,
+          "rules": [
+          ],
           "options": [
             {
-              "id": "5Y1200dC5D1",
               "uid": "5Y1200dC5D1",
+              "code": null,
               "name": "MALE",
-              "label": {"en": "Male", "ar": "ذكر"}
+              "description": null,
+              "label": {
+                "en": "Male",
+                "ar": "ذكر"
+              }
             },
             {
-              "id": "xY1200bC1D2",
               "uid": "xY1200bC1D2",
+              "code": null,
               "name": "FEMALE",
-              "label": {"en": "Female", "ar": "أنثى"}
+              "description": null,
+              "label": {
+                "en": "Female",
+                "ar": "أنثى"
+              }
             }
-          ]
+          ],
+          "label": {
+            "en": "Gender",
+            "ar": "الجنس"
+          }
         },
         {
-          "id": "eF3gH4iJ5K6",
           "uid": "eF3gH4iJ5K6",
-          "form": "aB1cD2eF3G4",
-          "type": "boolean",
+          "code": null,
           "name": "pregnant",
-          "label": {"en": "Is pregnant?", "ar": "هل هي حامل؟"},
+          "description": null,
+          "type": "Boolean",
           "mandatory": true,
           "rules": [
             {
-              "id": "eF5gH6iJ5K6",
               "uid": "eF5gH6iJ5K6",
-              "field": "eF3gH4iJ5K6",
               "expression": "gender == 'FEMALE' && age >= 14",
-              "action": "show",
-              "message": {
-                "en":
-                    "This field is hidden/invalid/requires attention because...",
-                "ar": "هذا الحقل مخفي/غير صالح/يتطلب الانتباه لأنه..."
-              }
+              "action": "Show",
+              "filterInfo": null
             }
-          ]
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Is pregnant?",
+            "ar": "هل هي حامل؟"
+          }
         },
         {
-          "id": "lM7nO8pQ9R0",
-          "form": "aB1cD2eF3G4",
-          "type": "selectOne",
+          "uid": "lM7nO8pQ9R0",
+          "code": null,
           "name": "testResult",
-          "label": {"en": "Test Result", "ar": "نتيجة الفحص"},
+          "description": null,
+          "type": "SelectOne",
           "mandatory": true,
+          "rules": [
+          ],
           "options": [
             {
-              "id": "6Y1288dC5D1",
+              "uid": "6Y1288dC5D1",
+              "code": null,
               "name": "NEGATIVE",
-              "label": {"en": "Negative", "ar": "سلبي"}
+              "description": null,
+              "label": {
+                "en": "Negative",
+                "ar": "سلبي"
+              }
             },
             {
-              "id": "6Y3338dC5D1",
+              "uid": "6Y3338dC5D1",
+              "code": null,
               "name": "PF",
+              "description": null,
               "label": {
                 "en": "Plasmodium falciparum",
                 "ar": "بلاسموديوم فالسيباروم"
               }
             },
             {
-              "id": "555288dC5D1",
+              "uid": "555288dC5D1",
+              "code": null,
               "name": "PV",
-              "label": {"en": "Plasmodium vivax", "ar": "بلاسموديوم فيفاكس"}
+              "description": null,
+              "label": {
+                "en": "Plasmodium vivax",
+                "ar": "بلاسموديوم فيفاكس"
+              }
             },
             {
-              "id": "666288dC5D1",
+              "uid": "666288dC5D1",
+              "code": null,
               "name": "MIX",
-              "label": {"en": "Mixed", "ar": "مختلط"}
+              "description": null,
+              "label": {
+                "en": "Mixed",
+                "ar": "مختلط"
+              }
             },
             {
-              "id": "688888BC7D1",
+              "uid": "688888BC7D1",
+              "code": null,
               "name": "INVALID",
-              "label": {"en": "Invalid", "ar": "غير صالح"}
+              "description": null,
+              "label": {
+                "en": "Invalid",
+                "ar": "غير صالح"
+              }
             }
-          ]
+          ],
+          "label": {
+            "en": "Test Result",
+            "ar": "نتيجة الفحص"
+          }
         },
         {
-          "id": "z33bC6dE7F8",
-          "form": "aB1cD2eF3G4",
-          "type": "selectOne",
+          "uid": "z33bC6dE7F8",
+          "code": null,
           "name": "detectionType",
-          "label": {"en": "Detection Type", "ar": "نوع الاكتشاف"},
+          "description": null,
+          "type": "SelectOne",
           "mandatory": true,
+          "rules": [
+            {
+              "uid": "eF3gH8iJ5K9",
+              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
+              "action": "Show",
+              "filterInfo": null
+            }
+          ],
           "options": [
             {
-              "id": "9CC8F66C7D1",
+              "uid": "9CC8F66C7D1",
+              "code": null,
               "name": "REACTIVE",
-              "label": {"en": "Reactive", "ar": "زيارة روتينية"}
+              "description": null,
+              "label": {
+                "en": "Reactive",
+                "ar": "زيارة روتينية"
+              }
             },
             {
-              "id": "10CDF77C7D1",
+              "uid": "10CDF77C7D1",
+              "code": null,
               "name": "ACTIVE",
-              "label": {"en": "Active", "ar": "بحث نشط"}
+              "description": null,
+              "label": {
+                "en": "Active",
+                "ar": "بحث نشط"
+              }
             }
           ],
-          "rules": [
-            {
-              "id": "eF3gH8iJ5K9",
-              "uid": "eF3gH8iJ5K9",
-              "field": "zA5bC6dE7F8",
-              "expression":
-                  "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
-              "action": "show"
-            }
-          ]
+          "label": {
+            "en": "Detection Type",
+            "ar": "نوع الاكتشاف"
+          }
         },
         {
-          "id": "zA5bC6dE7F8",
-          "form": "aB1cD2eF3G4",
-          "type": "selectOne",
+          "uid": "zA5bDDdE7F8",
+          "code": null,
           "name": "severity",
-          "label": {"en": "Severity", "ar": "تصنيف الحالة"},
+          "description": null,
+          "type": "SelectOne",
           "mandatory": true,
+          "rules": [
+            {
+              "uid": "eF9gH8iJ5K9",
+              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
+              "action": "Show",
+              "filterInfo": null
+            }
+          ],
           "options": [
             {
-              "id": "9CC8F8BC7D1",
+              "uid": "9CC8F8BC7D1",
+              "code": null,
               "name": "SIMPLE",
-              "label": {"en": "Simple", "ar": "بسيطة"}
+              "description": null,
+              "label": {
+                "en": "Simple",
+                "ar": "بسيطة"
+              }
             },
             {
-              "id": "10CDF8BC7D1",
+              "uid": "10CDF8BC7D1",
+              "code": null,
               "name": "SEVERE",
-              "label": {"en": "Severe", "ar": "وخيمة"}
+              "description": null,
+              "label": {
+                "en": "Severe",
+                "ar": "وخيمة"
+              }
             }
           ],
-          "rules": [
-            {
-              "id": "eF3gH8iJ5K9",
-              "uid": "eF3gH8iJ5K9",
-              "field": "zA5bC6dE7F8",
-              "expression":
-                  "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
-              "action": "show"
-            }
-          ]
+          "label": {
+            "en": "Severity",
+            "ar": "تصنيف الحالة"
+          }
         },
         {
-          "id": "gH9iJ0kL1M2",
-          "form": "aB1cD2eF3G4",
-          "type": "selectOne",
+          "uid": "gH9iJ0kL1M2",
+          "code": null,
           "name": "treatment",
-          "label": {"en": "Treatment", "ar": "تدبير الحالة"},
+          "description": null,
+          "type": "SelectOne",
           "mandatory": true,
+          "rules": [
+            {
+              "uid": "gH10J1kL1M2",
+              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
+              "action": "Show",
+              "filterInfo": null
+            },
+            {
+              "uid": "gH99J1kL1M2",
+              "expression": "pregnant && (testResult == 'PF' || testResult == 'PV' || testResult == 'MIX')",
+              "action": "Filter",
+              "filterInfo": {
+                "fieldToFilter": "treatment",
+                "optionsToHide": [
+                  "TREATED",
+                  "FIRSTDOSE"
+                ],
+                "optionsToShow": null
+              }
+            },
+            {
+              "uid": "gH1011kL1M2",
+              "expression": "severity == 'SEVERE'",
+              "action": "Filter",
+              "filterInfo": {
+                "fieldToFilter": "treatment",
+                "optionsToHide": [
+                  "TREATED"
+                ],
+                "optionsToShow": null
+              }
+            }
+          ],
           "options": [
             {
-              "id": "1CD8FEBC7D1",
+              "uid": "1CD8FEBC7D1",
+              "code": null,
               "name": "TREATED",
-              "label": {"en": "Treated", "ar": "معالج"}
+              "description": null,
+              "label": {
+                "en": "Treated",
+                "ar": "معالج"
+              }
             },
             {
-              "id": "ECDYFEBC8D1",
+              "uid": "ECDYFEBC8D1",
+              "code": null,
               "name": "FIRSTDOSE",
-              "label": {"en": "First Dose", "ar": "الجرعة الأولى"}
+              "description": null,
+              "label": {
+                "en": "First Dose",
+                "ar": "الجرعة الأولى"
+              }
             },
             {
-              "id": "9RD8FEFC7D0",
+              "uid": "9RD8FEFC7D0",
+              "code": null,
               "name": "REFERAL",
-              "label": {"en": "Referral", "ar": "إحالة"}
+              "description": null,
+              "label": {
+                "en": "Referral",
+                "ar": "إحالة"
+              }
             }
           ],
-          "rules": [
-            {
-              "id": "gH10J1kL1M2",
-              "uid": "gH10J1kL1M2",
-              "field": "gH9iJ0kL1M2",
-              "expression":
-                  "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
-              "action": "show"
-            },
-            {
-              "id": "gH10J1kL1M2",
-              "uid": "gH10J1kL1M2",
-              "field": "gH9iJ0kL1M2",
-              "expression":
-                  "pregnant && (testResult == 'PF' || testResult == 'PV' || testResult == 'MIX')",
-              "action": "filter",
-              "filterInfo": {
-                "fieldToFilter": "treatment",
-                "optionsToHide": ["TREATED", "FIRSTDOSE"]
-              }
-            },
-            {
-              "id": "gH10J1kL1M2",
-              "uid": "gH10J1kL1M2",
-              "field": "gH9iJ0kL1M2",
-              "expression": "severity == 'SEVERE'",
-              "action": "filter",
-              "filterInfo": {
-                "fieldToFilter": "treatment",
-                "optionsToHide": ["TREATED"]
-              }
-            }
-          ]
+          "label": {
+            "en": "Treatment",
+            "ar": "تدبير الحالة"
+          }
         },
         {
-          "id": "nO3pQ4rS5T6",
-          "form": "aB1cD2eF3G4",
-          "type": "longText",
+          "uid": "nO3pQ4rS5T6",
+          "code": null,
           "name": "comment",
-          "label": {"en": "Comments", "ar": "ملاحظات وتعليقات"}
+          "description": null,
+          "type": "LongText",
+          "mandatory": null,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Comments",
+            "ar": "ملاحظات وتعليقات"
+          }
         }
       ],
       "mainFields": [
         {
-          "id": "cD7eF8gH9I0",
-          "form": "aB1cD2eF3G4",
-          "type": "text",
+          "uid": "cD7eF8gH9I0",
+          "code": null,
           "name": "name",
-          "label": {"en": "Patient name", "ar": "اسم المريض"},
-          "mandatory": true
+          "description": null,
+          "type": "Text",
+          "mandatory": true,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Patient name",
+            "ar": "اسم المريض"
+          }
         },
         {
-          "id": "qR5sT6uV7W8",
-          "type": "text",
+          "uid": "qR5sT6uV7W8",
+          "code": null,
           "name": "locationName",
-          "label": {"en": "Location name", "ar": "اسم الموقع"},
-          "mandatory": true
+          "description": null,
+          "type": "Text",
+          "mandatory": true,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Location name",
+            "ar": "اسم الموقع"
+          }
         }
-      ]
+      ],
+      "activity": "oBne891mA9n",
+      "defaultLocal": "en",
+      "version": 2,
+      "label": {
+        "en": "chv cases register",
+        "ar": "تسجيل حالات chv"
+      }
     },
     {
-      "id": "2",
-      "uid": "r1j333zL3VB",
-      "name": "جلسات التثقيف المجتمعي",
+      "createdBy": "admin",
+      "createdDate": "2024-07-26T19:59:29.194Z",
+      "lastModifiedBy": "admin",
+      "lastModifiedDate": "2024-07-26T19:59:29.194Z",
+      "id": "66a4002174a867644e1935f6",
+      "uid": "EYAcXGuoCPJ",
       "code": "CHV_SESSIONS_FORM",
-      "createdDate": "2024-06-13T00:00:00.000Z",
-      "lastModifiedDate": "2024-06-13T00:00:00.000Z",
-      "label": {
-        "en": "Community Awareness Sessions",
-        "ar": "جلسات التثقيف المجتمعي"
-      },
-      "defaultLocal": "ar",
-      "mainFields": [
-        {
-          "type": "date",
-          "name": "sessionDate",
-          "label": {"en": "Date", "ar": "التاريخ"},
-          "mandatory": true
-        }
-      ],
-      "activity": {"id": 17, "uid": "oBne891mA9n"},
+      "name": "جلسات التثقيف المجتمعي",
+      "description": null,
+      "disabled": null,
       "fields": [
         {
-          "id": "22",
-          "type": "date",
+          "uid": "oBne999mA9n",
+          "code": null,
           "name": "sessionDate",
-          "label": {"en": "Date", "ar": "التاريخ"},
-          "mandatory": true
+          "description": null,
+          "type": "Date",
+          "mandatory": true,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Date",
+            "ar": "التاريخ"
+          }
         },
         {
-          "id": "21",
-          "type": "selectOne",
+          "uid": "oBne339mA9n",
+          "code": null,
           "name": "subject",
-          "label": {"en": "Session Type", "ar": "نوع الجلسة"},
+          "description": null,
+          "type": "SelectOne",
           "mandatory": true,
+          "rules": [
+          ],
           "options": [
             {
-              "label": {"en": "ITNs", "ar": "النموسيات المعالجة"},
-              "name": "ITNs"
+              "uid": "oBne669mA9n",
+              "code": null,
+              "name": "ITNs",
+              "description": null,
+              "label": {
+                "en": "ITNs",
+                "ar": "النموسيات المعالجة"
+              }
             },
             {
-              "label": {"en": "Breading Site", "ar": "مواقع التوالد"},
-              "name": "BreadingSite"
+              "uid": "oBne889mA9n",
+              "code": null,
+              "name": "BreadingSite",
+              "description": null,
+              "label": {
+                "en": "Breading Site",
+                "ar": "مواقع التوالد"
+              }
             },
             {
+              "uid": "oBne111mA9n",
+              "code": null,
+              "name": "TRANSMISSION_PREVENTION",
+              "description": null,
               "label": {
                 "en": "Transmission Prevention",
                 "ar": "الوقاية من الانتقال"
-              },
-              "name": "TRANSMISSION_PREVENTION"
+              }
             }
-          ]
+          ],
+          "label": {
+            "en": "Session Type",
+            "ar": "نوع الجلسة"
+          }
         },
         {
-          "id": "24",
-          "type": "integerZeroOrPositive",
+          "uid": "o999339mA9n",
+          "code": null,
           "name": "people",
-          "label": {"en": "Number of Beneficiaries", "ar": "عدد المستفيدين"},
-          "mandatory": true
+          "description": null,
+          "type": "IntegerZeroOrPositive",
+          "mandatory": true,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Number of Beneficiaries",
+            "ar": "عدد المستفيدين"
+          }
         }
-      ]
+      ],
+      "mainFields": [
+        {
+          "uid": "oBne999mA9n",
+          "code": null,
+          "name": "sessionDate",
+          "description": null,
+          "type": "Date",
+          "mandatory": true,
+          "rules": [
+          ],
+          "options": [
+          ],
+          "label": {
+            "en": "Date",
+            "ar": "التاريخ"
+          }
+        }
+      ],
+      "activity": "oBne891mA9n",
+      "defaultLocal": "ar",
+      "version": 1,
+      "label": {
+        "en": "Community Awareness Sessions",
+        "ar": "جلسات التثقيف المجتمعي"
+      }
     }
   ]
 };

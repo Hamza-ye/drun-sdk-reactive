@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class Rule {
   final String id;
-  final String field;
+  // final String field;
   final String? expression;
   final String? action;
   final Map<String, String>? message;
@@ -10,7 +10,7 @@ class Rule {
 
   Rule(
       {required this.id,
-      required this.field,
+      // required this.field,
       this.expression,
       this.action,
       this.message,
@@ -19,7 +19,7 @@ class Rule {
   factory Rule.fromJson(Map<String, dynamic> json) {
     return Rule(
         id: json['uid'],
-        field: json['field'],
+        // field: json['field'],
         expression: json['expression'],
         action: json['action'],
         message: json['message'] != null
@@ -38,10 +38,11 @@ class Rule {
     return {
       'id': id,
       'uid': id,
-      'field': field,
+      // 'field': field,
       'expression': expression,
       'action': action,
       'message': message != null ? jsonEncode(message) : null,
+      'filterInfo': filterInfo != null ? filterInfo!.toJson() : null,
     };
   }
 }

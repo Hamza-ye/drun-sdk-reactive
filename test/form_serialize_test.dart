@@ -22,7 +22,7 @@ void main() {
     // Create a Rule instance
     final rule1 = Rule(
       id: 'rule1',
-      field: 'field1',
+      // field: 'field1',
       expression: "gender == 'Female' && patientAge >= 10",
       action: 'show',
       message: {'en': 'This field is hidden/invalid/requires attention because...'},
@@ -88,7 +88,7 @@ void main() {
     final originalRules = originalField.rules;
     expect(deserializedRules?.length, originalRules?.length);
     expect(deserializedRules?.first.id, originalRules?.first.id);
-    expect(deserializedRules?.first.field, originalRules?.first.field);
+    // expect(deserializedRules?.first.field, originalRules?.first.field);
     expect(deserializedRules?.first.expression, originalRules?.first.expression);
     expect(deserializedRules?.first.action, originalRules?.first.action);
     expect(deserializedRules?.first.message, originalRules?.first.message);
