@@ -14,8 +14,8 @@ void main() {
       "name": "patientName",
       "mandatory": true,
       "options": [
-        {"label": {"en": "Option 1", "ar": "الخيار 1"}, "name": "option1"},
-        {"label": {"en": "Option 2", "ar": "الخيار 2"}, "name": "option2"}
+        {"label": {"en": "Option 1", "ar": "الخيار 1"}, "name": "option1", "listName": "listName1"},
+        {"label": {"en": "Option 2", "ar": "الخيار 2"}, "name": "option2", "listName": "listName1"}
       ],
       "rules": [
         {
@@ -39,6 +39,7 @@ void main() {
     expect(dynamicFormField.options?.length, 2);
     expect(dynamicFormField.options?.first.name, "option1");
     expect(dynamicFormField.options?.first.label, {"en": "Option 1", "ar": "الخيار 1"});
+    expect(dynamicFormField.options?.first.listName, "listName1");
     expect(dynamicFormField.rules?.length, 1);
     expect(dynamicFormField.rules?.first.id, "eF3gH4iJ5K6");
     expect(dynamicFormField.rules?.first.expression, "gender == 'Female' && patientAge >= 10");

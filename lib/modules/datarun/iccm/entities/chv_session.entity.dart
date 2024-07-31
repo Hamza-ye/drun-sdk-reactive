@@ -18,7 +18,13 @@ class ChvSession extends SyncableEntity {
   int? sessions;
 
   @Column(nullable: true)
-  int? people;
+  int? peopleItns;
+
+  @Column(nullable: true)
+  int? peopleBreadingSites;
+
+  @Column(nullable: true)
+  int? peopleTransmissionPrevention;
 
   @Column(nullable: true)
   String? comment;
@@ -33,7 +39,9 @@ class ChvSession extends SyncableEntity {
       this.subject,
       this.sessionDate,
       this.sessions,
-      this.people,
+      this.peopleItns,
+      this.peopleBreadingSites,
+      this.peopleTransmissionPrevention,
       this.comment,
 
       /// Syncable
@@ -92,7 +100,9 @@ class ChvSession extends SyncableEntity {
         subject: json['subject'],
         sessionDate: json['sessionDate'],
         sessions: json['sessions'],
-        people: json['people'],
+        peopleItns: json['peopleItns'],
+        peopleBreadingSites: json['peopleBreadingSites'],
+        peopleTransmissionPrevention: json['peopleTransmissionPrevention'],
         comment: json['comment'],
         lastSyncMessage: json['lastSyncMessage'],
 
@@ -123,7 +133,9 @@ class ChvSession extends SyncableEntity {
     data['name'] = this.name;
     data['code'] = this.code;
     data['subject'] = this.subject;
-    data['people'] = this.people;
+    data['peopleItns'] = this.peopleItns;
+    data['peopleBreadingSites'] = this.peopleBreadingSites;
+    data['peopleTransmissionPrevention'] = this.peopleTransmissionPrevention;
     data['sessions'] = this.sessions;
     data['team'] = this.team;
     data['sessionDate'] = this.sessionDate;
@@ -154,51 +166,13 @@ class ChvSession extends SyncableEntity {
 
     syncableToUpload.addAll({
       "subject": this.subject,
-      "people": this.people,
+      "peopleItns": this.peopleItns,
+      "peopleBreadingSites": this.peopleBreadingSites,
+      "peopleTransmissionPrevention": this.peopleTransmissionPrevention,
       "sessions": this.sessions,
       "sessionDate": this.sessionDate,
     });
 
     return syncableToUpload;
   }
-
-// static toUpload(ChvSession syncable) {
-//   Map<String, dynamic> syncableToUpload = {
-//     // "id": syncable.id,
-//     "uid": syncable.uid,
-//     "name": syncable.name,
-//     "code": syncable.code,
-//
-//     "subject": syncable.subject,
-//     "people": syncable.people,
-//     "comment": syncable.comment,
-//     "sessionDate": syncable.sessionDate,
-//
-//     "createdDate": syncable.createdDate,
-//     "lastModifiedDate": syncable.lastModifiedDate,
-//     /// Syncable
-//     "deleted": syncable.deleted,
-//     "synced": syncable.synced,
-//     "syncFailed": syncable.syncFailed,
-//     "lastSyncSummary": syncable.lastSyncSummary != null
-//         ? jsonEncode(
-//             (syncable.lastSyncSummary as EventImportSummary).responseSummary)
-//         : null,
-//     "lastSyncDate": syncable.lastSyncDate,
-//     "startEntryTime": syncable.startEntryTime,
-//     "finishedEntryTime": syncable.finishedEntryTime,
-//     "team": syncable.team is String
-//         ? jsonEncode({'uid': syncable.team})
-//         : syncable.team,
-//     "activity": syncable.activity is String
-//         ? jsonEncode({'uid': syncable.activity})
-//         : syncable.activity,
-//     "status": syncable.status,
-//     "geometry":
-//         syncable.geometry != null ? syncable.geometry?.toJson() : null,
-//     "dirty": syncable.dirty,
-//   };
-//
-//   return syncableToUpload;
-// }
 }

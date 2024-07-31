@@ -8,7 +8,9 @@ class DynamicFormField {
   final String type;
   final Map<String, String> label;
   final String name;
+  final String? listName;
   final bool mandatory;
+  final bool mainField;
   final List<FormOption>? options;
   final List<Rule>? rules;
 
@@ -17,6 +19,8 @@ class DynamicFormField {
   DynamicFormField(
       {required this.label,
       required this.mandatory,
+      required this.mainField,
+      this.listName,
       required this.type,
       required this.name,
       this.options,
@@ -24,12 +28,6 @@ class DynamicFormField {
       this.fieldValueRenderingType});
 
   factory DynamicFormField.fromJson(Map<String, dynamic> json) {
-    // final options = json['options'] != null
-    //     ? (json['options'] as List)
-    //     .map((option) => FormOption.fromJson(option))
-    //     .toList()
-    //     : null;
-
     final options = json['options'] != null
         ? (parseDynamicList(json['options']) as List)
             .map((option) => FormOption.fromJson(option))
@@ -48,7 +46,9 @@ class DynamicFormField {
           json['label'] is String ? jsonDecode(json['label']) : json['label']),
       name: json['name'],
       mandatory: json['mandatory'] ?? false,
+      mainField: json['mainField'] ?? false,
       options: options,
+      listName: json['listName'],
       rules: rules,
       fieldValueRenderingType: json['fieldValueRenderingType'],
     );
@@ -60,12 +60,14 @@ class DynamicFormField {
       'label': jsonEncode(label),
       'name': name,
       'mandatory': mandatory,
+      'mainField': mainField,
       'rules': rules != null
           ? jsonEncode(rules!.map((rule) => rule.toJson()).toList())
           : null,
       'options': options != null
           ? jsonEncode(options!.map((option) => option.toJson()).toList())
           : null,
+      'listName': listName,
       'fieldValueRenderingType': fieldValueRenderingType,
     };
   }

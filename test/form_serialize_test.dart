@@ -12,17 +12,19 @@ void main() {
     final option1 = FormOption(
       label: {'en': 'Option 1', 'ar': 'الخيار 1'},
       name: 'option1',
+      listName: 'listName1',
     );
 
     final option2 = FormOption(
       label: {'en': 'Option 2', 'ar': 'الخيار 2'},
       name: 'option2',
+      listName: 'listName1',
     );
 
     // Create a Rule instance
     final rule1 = Rule(
       id: 'rule1',
-      // field: 'field1',
+      field: 'field1',
       expression: "gender == 'Female' && patientAge >= 10",
       action: 'show',
       message: {'en': 'This field is hidden/invalid/requires attention because...'},
@@ -34,6 +36,7 @@ void main() {
       label: {'en': 'Test Label', 'ar': 'تسمية الاختبار'},
       name: 'testField',
       mandatory: true,
+      mainField: false,
       options: [option1, option2],
       rules: [rule1],
       fieldValueRenderingType: 'dropdown',
@@ -88,7 +91,7 @@ void main() {
     final originalRules = originalField.rules;
     expect(deserializedRules?.length, originalRules?.length);
     expect(deserializedRules?.first.id, originalRules?.first.id);
-    // expect(deserializedRules?.first.field, originalRules?.first.field);
+    expect(deserializedRules?.first.field, originalRules?.first.field);
     expect(deserializedRules?.first.expression, originalRules?.first.expression);
     expect(deserializedRules?.first.action, originalRules?.first.action);
     expect(deserializedRules?.first.message, originalRules?.first.message);
