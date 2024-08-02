@@ -11,16 +11,16 @@ import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 @Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmissions')
 class DataFormSubmission extends SyncableEntity {
   @Column(nullable: false, type: ColumnType.TEXT)
-  final Map<String, dynamic>? formData;
+  final Map<String, dynamic> formData;
 
   DataFormSubmission({
     String? id,
     String? uid,
     String? name,
     String? code,
+    required this.formData,
     String? createdDate,
     String? lastModifiedDate,
-    this.formData,
 
     /// Syncable
     required int version,
@@ -91,7 +91,7 @@ class DataFormSubmission extends SyncableEntity {
 
       formData: Map<String, String>.from(json['formData'] is String
           ? jsonDecode(json['formData'])
-          : json['formData']),
+          : json['formData'] ?? {}),
 
       /// Syncable
       form: json['form'],
