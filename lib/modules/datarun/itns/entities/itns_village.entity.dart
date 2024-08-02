@@ -99,6 +99,8 @@ class ItnsVillage extends SyncableEntity {
       String? code,
 
       /// Syncable
+      required dynamic form,
+      required int version,
       bool? deleted,
       bool? synced,
       bool? syncFailed,
@@ -122,6 +124,8 @@ class ItnsVillage extends SyncableEntity {
             lastModifiedDate: lastModifiedDate,
 
             /// Syncable
+            form: form,
+            version: version,
             deleted: deleted,
             synced: synced,
             syncFailed: syncFailed,
@@ -183,6 +187,8 @@ class ItnsVillage extends SyncableEntity {
             : json['progressStatus']['uid'],
 
         /// Syncable
+        form: json['form'],
+        version: json['version'],
         deleted: json['deleted'],
         synced: json['synced'],
         syncFailed: json['syncFailed'],
@@ -229,6 +235,8 @@ class ItnsVillage extends SyncableEntity {
     data['progressStatus'] = progressStatus;
 
     /// Syncable
+    data['form'] = this.form;
+    data['version'] = this.version;
     data['deleted'] = this.deleted;
     data['synced'] = this.synced;
     data['syncFailed'] = this.syncFailed;
@@ -280,62 +288,4 @@ class ItnsVillage extends SyncableEntity {
 
     return syncableToUpload;
   }
-
-// static toUpload(ItnsVillage syncable) {
-//   Map<String, dynamic> syncableToUpload = {
-//     // "id": syncable.id,
-//     "uid": syncable.uid,
-//     "code": syncable.code,
-//     "name": syncable.name,
-//     "createdDate": syncable.createdDate,
-//     "lastModifiedDate": syncable.lastModifiedDate,
-//
-//     "workDayDate": syncable.workDayDate,
-//     "surveytype": syncable.surveytype,
-//     "otherReasonComment": syncable.otherReasonComment,
-//     "reasonNotcomplete": syncable.reasonNotcomplete,
-//     "settlement": syncable.settlement,
-//     "settlementName": syncable.settlementName,
-//     "tlCommenet": syncable.tlCommenet,
-//     "timeSpentHours": syncable.timeSpentHours,
-//     "timeSpentMinutes": syncable.timeSpentMinutes,
-//     "difficulties": syncable.difficulties,
-//     "locationCaptured": syncable.locationCaptured,
-//     "locationCaptureTime": syncable.locationCaptureTime,
-//     "untargetingOtherSpecify": syncable.untargetingOtherSpecify,
-//     "otherVillageName": syncable.otherVillageName,
-//     "otherVillageCode": syncable.otherVillageCode,
-//     "otherTeamNo": syncable.otherTeamNo,
-//     "assignment": syncable.assignment is String
-//         ? jsonEncode({'uid': syncable.assignment})
-//         : syncable.assignment,
-//     "progressStatus": syncable.progressStatus is String
-//         ? jsonEncode({'uid': syncable.progressStatus})
-//         : syncable.progressStatus,
-//
-//     /// Syncable
-//     "deleted": syncable.deleted,
-//     "synced": syncable.synced,
-//     "syncFailed": syncable.syncFailed,
-//     "lastSyncSummary": syncable.lastSyncSummary != null
-//         ? jsonEncode(
-//             (syncable.lastSyncSummary as EventImportSummary).responseSummary)
-//         : null,
-//     "lastSyncDate": syncable.lastSyncDate,
-//     "startEntryTime": syncable.startEntryTime,
-//     "finishedEntryTime": syncable.finishedEntryTime,
-//     "activity": syncable.activity is String
-//         ? jsonEncode({'uid': syncable.activity})
-//         : syncable.activity,
-//     "team": syncable.team is String
-//         ? jsonEncode({'uid': syncable.team})
-//         : syncable.team,
-//     "status": syncable.status,
-//     "geometry":
-//         syncable.geometry != null ? syncable.geometry?.toJson() : null,
-//     "dirty": syncable.dirty,
-//   };
-//
-//   return syncableToUpload;
-// }
 }

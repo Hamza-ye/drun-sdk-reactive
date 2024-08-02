@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
 import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
+import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
@@ -43,6 +44,10 @@ class SyncableEntity extends BaseEntity {
   @Column()
   String status;
 
+  /// Active, Completed
+  @Column(nullable: false, type: ColumnType.INTEGER)
+  int version;
+
   @Column(nullable: true, type: ColumnType.TEXT)
   Geometry? geometry;
 
@@ -53,6 +58,9 @@ class SyncableEntity extends BaseEntity {
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
 
+  @ManyToOne(table: DynamicForm, joinColumnName: 'form')
+  dynamic form;
+
   SyncableEntity(
       {String? id,
       String? uid,
@@ -60,6 +68,7 @@ class SyncableEntity extends BaseEntity {
       this.code,
       String? lastModifiedDate,
       String? createdDate,
+      required this.form,
       this.deleted,
       this.synced,
       this.syncFailed,
@@ -72,6 +81,7 @@ class SyncableEntity extends BaseEntity {
       required this.activity,
       this.geometry,
       required this.status,
+      required this.version,
       required bool dirty})
       : super(
             id: uid,
@@ -85,11 +95,13 @@ class SyncableEntity extends BaseEntity {
       // "id": this.id,
       "uid": this.uid,
       "code": this.code,
+      "form": this.form,
       "name": this.name,
       "createdDate": this.createdDate,
       "lastModifiedDate": this.lastModifiedDate,
 
       /// Syncable
+      "version": this.version,
       "deleted": this.deleted,
       "synced": this.synced,
       "lastSyncMassage": this.lastSyncMessage,
@@ -108,27 +120,25 @@ class SyncableEntity extends BaseEntity {
       "dirty": this.dirty,
     };
 
-    if (activity != null) {
-      if (activity.runtimeType == String) {
-        syncableToUpload['activity'] = <String, dynamic>{
-          'uid': activity
-        };
-      } else {
-        syncableToUpload['activity'] = <String, dynamic>{
-          'uid': activity['id']
-        };
-      }
+    if (activity != null && activity.runtimeType != String) {
+      syncableToUpload['activity'] = activity['uid'];
     }
 
-    if (team != null) {
-      if (team.runtimeType == String) {
-        syncableToUpload['team'] = <String, dynamic>{'uid': team};
-      } else {
-        syncableToUpload['team'] = <String, dynamic>{
-          'uid': team['id']
-        };
-      }
+    if (team != null && team.runtimeType != String) {
+      syncableToUpload['team'] = team['uid'];
     }
+
+    if (form != null && form.runtimeType != String) {
+      syncableToUpload['form'] = form['uid'];
+    }
+
+    // if (team != null) {
+    //   if (team.runtimeType == String) {
+    //     syncableToUpload['team'] = <String, dynamic>{'uid': team};
+    //   } else {
+    //     syncableToUpload['team'] = <String, dynamic>{'uid': team['id']};
+    //   }
+    // }
 
     return syncableToUpload;
   }

@@ -8,29 +8,31 @@ import 'package:sqflite/sqflite.dart';
 @AnnotationReflectable
 @Query(type: QueryType.DATA)
 class ChvSessionQuery extends SyncableQuery<ChvSession> {
-
   ChvSessionQuery({Database? database}) : super(database: database);
 
   @override
-  Future create() async {
+  Future setDataAndSave(ChvSession data) {
+    return ChvSessionQuery().setData(data).save();
+  }
+
+  @override
+  Future createSubmission(String form, int version) async {
     ChvSession event = ChvSession(
         activity: this.activity,
         team: this.team,
         status: 'ACTIVE',
+        form: form,
+        version: version,
         dirty: true,
         synced: false,
         deleted: false,
-        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
+        startEntryTime:
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
     this.data = event;
 
     await this.save();
 
     return event;
-  }
-
-  @override
-  Future setDataAndSave(ChvSession data) {
-    return ChvSessionQuery().setData(data).save();
   }
 }

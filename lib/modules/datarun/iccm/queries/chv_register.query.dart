@@ -11,27 +11,28 @@ class ChvRegisterQuery extends SyncableQuery<ChvRegister> {
   ChvRegisterQuery({Database? database}) : super(database: database);
 
   @override
-  Future create() async {
+  Future setDataAndSave(ChvRegister data) {
+    return ChvRegisterQuery().setData(data).save();
+  }
+
+  @override
+  Future createSubmission(String form, int version) async {
     ChvRegister event = ChvRegister(
         activity: this.activity,
         team: this.team,
         status: 'ACTIVE',
+        form: form,
+        version: version,
         dirty: true,
         synced: false,
         deleted: false,
-        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
-
-
+        startEntryTime:
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
     this.data = event;
 
     await this.save();
 
     return event;
-  }
-
-  @override
-  Future setDataAndSave(ChvRegister data) {
-    return ChvRegisterQuery().setData(data).save();
   }
 }

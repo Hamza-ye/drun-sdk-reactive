@@ -45,6 +45,8 @@ class ChvSession extends SyncableEntity {
       this.comment,
 
       /// Syncable
+      required dynamic form,
+      required int version,
       bool? deleted,
       bool? synced,
       bool? syncFailed,
@@ -67,6 +69,8 @@ class ChvSession extends SyncableEntity {
             lastModifiedDate: lastModifiedDate,
 
             /// Syncable
+            form: form,
+            version: version,
             deleted: deleted,
             synced: synced,
             syncFailed: syncFailed,
@@ -107,6 +111,8 @@ class ChvSession extends SyncableEntity {
         lastSyncMessage: json['lastSyncMessage'],
 
         /// Syncable
+        form: json['form'],
+        version: json['version'],
         deleted: json['deleted'],
         synced: json['synced'],
         syncFailed: json['syncFailed'],
@@ -141,6 +147,8 @@ class ChvSession extends SyncableEntity {
     data['sessionDate'] = this.sessionDate;
 
     /// Syncable
+    data['form'] = this.form;
+    data['version'] = this.version;
     data['deleted'] = this.deleted;
     data['synced'] = this.synced;
     data['syncFailed'] = this.syncFailed;

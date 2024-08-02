@@ -1,16 +1,46 @@
-import 'package:d2_remote/core/annotations/nmc/query.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/utilities/repository.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_definition.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
 import 'package:dio/dio.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
 class DynamicFormQuery extends BaseQuery<DynamicForm> {
   DynamicFormQuery({Database? database}) : super(database: database);
+  int? version;
+
+  DynamicFormQuery byVersion(int version) {
+    this.version = version;
+    return this.where(attribute: 'version', value: version);
+  }
+
+  DynamicFormQuery withFormDefinitions() {
+    final formDefinition = Repository<FormDefinition>();
+    final Column? relationColumn = formDefinition.columns.firstWhere((column) =>
+    column.relation?.referencedEntity?.tableName == this.tableName);
+
+    if (relationColumn != null) {
+      ColumnRelation relation = ColumnRelation(
+          referencedColumn: relationColumn.relation?.attributeName,
+          attributeName: 'formDefinitions',
+          primaryKey: this.primaryKey?.name,
+          relationType: RelationType.OneToMany,
+          referencedEntity: Entity.getEntityDefinition(
+              AnnotationReflectable.reflectType(FormDefinition) as ClassMirror),
+          referencedEntityColumns: Entity.getEntityColumns(
+              AnnotationReflectable.reflectType(FormDefinition) as ClassMirror,
+              false));
+      this.relations.add(relation);
+    }
+
+    return this;
+  }
 
   @override
   Future<List<DynamicForm>?> download(Function(RequestProgress, bool) callback,
@@ -18,25 +48,10 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
     callback(
         RequestProgress(
             resourceName: this.apiResourceName as String,
-            message: 'Fetching user assigned Teams....',
+            message: 'Fetching user assigned Forms....',
             status: '',
             percentage: 0),
         false);
-
-    // final List<UserTeam> userTeams = await UserTeamQuery().get();
-
-    // callback(
-    //     RequestProgress(
-    //         resourceName: this.apiResourceName as String,
-    //         message: '${userTeams.length} user assigned Teams found!',
-    //         status: '',
-    //         percentage: 25),
-    //     false);
-
-    // this.whereIn(
-    //     attribute: 'id',
-    //     values: userTeams.map((userTeam) => userTeam.team).toList(),
-    //     merge: false);
 
     callback(
         RequestProgress(
@@ -53,25 +68,19 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
         database: this.database, dioTestClient: dioTestClient);
 
     List data;
-    // if (response.statusCode == 200) {
     data = response.body[this.apiResourceName]?.toList();
-    // } else {
-    //   final body = dTempFormsTranslated;
-    //   data = body[this.apiResourceName]?.toList();
-    // }
 
-    // List data = response.body[this.apiResourceName]?.toList();
-    //
-    // callback(
-    //     RequestProgress(
-    //         resourceName: this.apiResourceName as String,
-    //         message:
-    //             '${data.length} ${this.apiResourceName?.toLowerCase()} downloaded successfully',
-    //         status: '',
-    //         percentage: 50),
-    //     false);
+    List<Map<String, dynamic>> forms = [];
 
-    this.data = data.map((dataItem) {
+    for (final item in data) {
+      if (item['formDefinitions'] == null) {
+        item['formDefinitions'] = [item];
+      }
+
+      forms.add(item);
+    }
+
+    this.data = forms.map((dataItem) {
       dataItem['dirty'] = false;
       return DynamicForm.fromJson(dataItem);
     }).toList();

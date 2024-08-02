@@ -11,25 +11,28 @@ class ItnsVillageQuery extends SyncableQuery<ItnsVillage> {
   ItnsVillageQuery({Database? database}) : super(database: database);
 
   @override
-  Future create() async {
+  Future setDataAndSave(ItnsVillage data) {
+    return ItnsVillageQuery().setData(data).save();
+  }
+
+  @override
+  Future createSubmission(String form, int version) async {
     ItnsVillage event = ItnsVillage(
         activity: this.activity!,
         team: this.team!,
         status: 'ACTIVE',
+        form: form,
+        version: version,
         dirty: true,
         synced: false,
         deleted: false,
-        startEntryTime: DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
+        startEntryTime:
+            DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
     this.data = event;
 
     await this.save();
 
     return event;
-  }
-
-  @override
-  Future setDataAndSave(ItnsVillage data) {
-    return ItnsVillageQuery().setData(data).save();
   }
 }

@@ -11,11 +11,18 @@ class ChvSupplyQuery extends SyncableQuery<ChvSupply> {
   ChvSupplyQuery({Database? database}) : super(database: database);
 
   @override
-  Future create() async {
+  Future setDataAndSave(ChvSupply data) {
+    return ChvSupplyQuery().setData(data).save();
+  }
+
+  @override
+  Future createSubmission(String form, int version) async {
     ChvSupply event = ChvSupply(
         activity: this.activity,
         team: this.team,
         status: 'ACTIVE',
+        form: form,
+        version: version,
         dirty: true,
         synced: false,
         deleted: false,
@@ -27,10 +34,5 @@ class ChvSupplyQuery extends SyncableQuery<ChvSupply> {
     await this.save();
 
     return event;
-  }
-
-  @override
-  Future setDataAndSave(ChvSupply data) {
-    return ChvSupplyQuery().setData(data).save();
   }
 }

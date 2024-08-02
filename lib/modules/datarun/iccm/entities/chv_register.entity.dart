@@ -56,10 +56,10 @@ class ChvRegister extends SyncableEntity {
       // location set at adding new entity,
       // now it's the default behaviour
       // this.location,
-      this.locationName,
       this.visitDate,
       this.age,
       this.pregnant,
+      this.locationName,
       this.testResult,
       this.detectionType,
       this.severity,
@@ -67,6 +67,8 @@ class ChvRegister extends SyncableEntity {
       this.comment,
 
       /// Syncable
+      required dynamic form,
+      required int version,
       bool? deleted,
       bool? synced,
       bool? syncFailed,
@@ -89,6 +91,8 @@ class ChvRegister extends SyncableEntity {
             lastModifiedDate: lastModifiedDate,
 
             /// Syncable
+            form: form,
+            version: version,
             deleted: deleted,
             synced: synced,
             syncFailed: syncFailed,
@@ -133,7 +137,9 @@ class ChvRegister extends SyncableEntity {
         treatment: json['treatment'],
         comment: json['comment'],
 
-        /// Patient
+        /// Patient,
+        form: json['form'],
+        version: json['version'],
         name: json['name'],
         age: json['age']?.toDouble(),
         gender: json['gender'],
@@ -187,6 +193,8 @@ class ChvRegister extends SyncableEntity {
     data['locationName'] = this.locationName;
 
     /// Syncable
+    data['form'] = this.form;
+    data['version'] = this.version;
     data['deleted'] = this.deleted;
     data['synced'] = this.synced;
     data['syncFailed'] = this.syncFailed;
@@ -215,9 +223,6 @@ class ChvRegister extends SyncableEntity {
 
     // Add specific properties of ChvRegister
     syncableToUpload.addAll({
-      // "location": this.location is String
-      //     ? jsonEncode({'uid': this.location})
-      //     : this.location,
       "locationName": this.locationName,
       "visitDate": this.visitDate,
       "gender": this.gender,

@@ -3,23 +3,15 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
-import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
 import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
-import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmissions')
 class DataFormSubmission extends SyncableEntity {
-  @ManyToOne(table: DynamicForm, joinColumnName: 'form')
-  dynamic form;
-
-  // @Column(nullable: false, type: ColumnType.TEXT)
-  // final dynamic version;
-
   @Column(nullable: false, type: ColumnType.TEXT)
-  final Map<String, Object?>? formData;
+  final Map<String, dynamic>? formData;
 
   DataFormSubmission({
     String? id,
@@ -28,11 +20,11 @@ class DataFormSubmission extends SyncableEntity {
     String? code,
     String? createdDate,
     String? lastModifiedDate,
-    // required this.version,
-    this.form,
     this.formData,
 
     /// Syncable
+    required int version,
+    required dynamic form,
     bool? deleted,
     bool? synced,
     bool? syncFailed,
@@ -55,6 +47,8 @@ class DataFormSubmission extends SyncableEntity {
           lastModifiedDate: lastModifiedDate,
 
           /// Syncable
+          form: form,
+          version: version,
           deleted: deleted,
           synced: synced,
           syncFailed: syncFailed,
@@ -95,13 +89,13 @@ class DataFormSubmission extends SyncableEntity {
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
 
-      // version: json['version'].toString(),
-      form: json['form'],
       formData: Map<String, String>.from(json['formData'] is String
           ? jsonDecode(json['formData'])
           : json['formData']),
 
       /// Syncable
+      form: json['form'],
+      version: json['version'],
       deleted: json['deleted'],
       synced: json['synced'],
       syncFailed: json['syncFailed'],
@@ -131,13 +125,13 @@ class DataFormSubmission extends SyncableEntity {
       'code': code,
       'name': name,
       // 'version': version,
-      'form': form,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
-
       'formData': jsonEncode(formData),
 
       /// Syncable
+      'form': form,
+      'version': version,
       'deleted': this.deleted,
       'synced': this.synced,
       'syncFailed': this.syncFailed,
@@ -165,21 +159,7 @@ class DataFormSubmission extends SyncableEntity {
 
     syncableToUpload.addAll({
       'formData': jsonEncode(formData),
-      // "version": this.version,
-      "form": this.form,
     });
-
-    // if (form != null) {
-    //   if (form.runtimeType == String) {
-    //     syncableToUpload['form'] = <String, dynamic>{
-    //       'uid': form
-    //     };
-    //   } else {
-    //     syncableToUpload['form'] = <String, dynamic>{
-    //       'uid': form['id']
-    //     };
-    //   }
-    // }
 
     return syncableToUpload;
   }

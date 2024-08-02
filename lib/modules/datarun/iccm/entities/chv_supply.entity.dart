@@ -45,6 +45,8 @@ class ChvSupply extends SyncableEntity {
       this.comment,
 
       /// Syncable
+        required dynamic form,
+        required int version,
       bool? deleted,
       bool? synced,
       bool? syncFailed,
@@ -67,6 +69,8 @@ class ChvSupply extends SyncableEntity {
             lastModifiedDate: lastModifiedDate,
 
             /// Syncable
+      form: form,
+      version: version,
             deleted: deleted,
             synced: synced,
             syncFailed: syncFailed,
@@ -115,6 +119,8 @@ class ChvSupply extends SyncableEntity {
         name: json['name'],
 
         /// Syncable
+        form: json['form'],
+        version: json['version'],
         deleted: json['deleted'],
         synced: json['synced'],
         syncFailed: json['syncFailed'],
@@ -152,6 +158,8 @@ class ChvSupply extends SyncableEntity {
     data['comment'] = this.comment;
 
     /// Syncable
+    data['form'] = this.form;
+    data['version'] = this.version;
     data['deleted'] = this.deleted;
     data['synced'] = this.synced;
     data['syncFailed'] = this.syncFailed;
