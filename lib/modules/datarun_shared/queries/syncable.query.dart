@@ -15,6 +15,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   SyncableQuery({Database? database}) : super(database: database);
   String? activity;
   String? team;
+  String? form;
   int? version;
 
   T fromJsonInstance(Map<String, dynamic> entityMap) {
@@ -41,26 +42,30 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
     return this;
   }
 
-  Future createSubmission(String form, int version);
+  SyncableQuery<T> byForm(String form) {
+    this.form = form;
+    this.where(attribute: 'form', value: form);
+    return this;
+  }
 
   /// Not Synced to server at all, no available on server
   /// State = to_post
   /// withNotSyncedState
-  SyncableQuery withCompleteState() {
+  SyncableQuery<T> withCompleteState() {
     this.filters?.removeWhere((element) => element.attribute == 'syncFailed');
     this.where(attribute: 'status', value: 'COMPLETED');
     return this;
   }
 
   /// Synced to server with updates to be synced, State = to_update
-  SyncableQuery withActiveState() {
+  SyncableQuery<T> withActiveState() {
     this.filters?.removeWhere((element) => element.attribute == 'syncFailed');
     this.where(attribute: 'status', value: 'ACTIVE');
     return this;
   }
 
   /// Synced to server with No Updates to be synced
-  SyncableQuery withSyncedState() {
+  SyncableQuery<T> withSyncedState() {
     this.filters?.removeWhere((element) => element.attribute == 'syncFailed');
     this.where(attribute: 'synced', value: true);
     return this;
@@ -68,7 +73,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
 
   /// Not Synced to server at all, Couldn't be synced
   /// State = to_post but have errors
-  SyncableQuery withSyncErrorState() {
+  SyncableQuery<T> withSyncErrorState() {
     this
         .where(attribute: 'dirty', value: true)
         .where(attribute: 'syncFailed', value: true);

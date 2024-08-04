@@ -16,13 +16,13 @@ class ChvSupplyQuery extends SyncableQuery<ChvSupply> {
   }
 
   @override
-  Future createSubmission(String form, int version) async {
+  Future create() async {
     ChvSupply event = ChvSupply(
         activity: this.activity,
         team: this.team,
         status: 'ACTIVE',
         form: form,
-        version: version,
+        version: version!,
         dirty: true,
         synced: false,
         deleted: false,

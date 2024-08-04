@@ -16,13 +16,13 @@ class ItnsVillageQuery extends SyncableQuery<ItnsVillage> {
   }
 
   @override
-  Future createSubmission(String form, int version) async {
+  Future create() async {
     ItnsVillage event = ItnsVillage(
         activity: this.activity!,
         team: this.team!,
         status: 'ACTIVE',
         form: form,
-        version: version,
+        version: version!,
         dirty: true,
         synced: false,
         deleted: false,

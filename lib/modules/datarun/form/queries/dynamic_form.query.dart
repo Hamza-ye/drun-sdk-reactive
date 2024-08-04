@@ -15,15 +15,18 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
   DynamicFormQuery({Database? database}) : super(database: database);
   int? version;
 
-  DynamicFormQuery byVersion(int version) {
+  DynamicFormQuery byVersion(int? version) {
     this.version = version;
-    return this.where(attribute: 'version', value: version);
+
+    return version != null
+        ? this.where(attribute: 'version', value: version)
+        : this;
   }
 
   DynamicFormQuery withFormDefinitions() {
     final formDefinition = Repository<FormDefinition>();
     final Column? relationColumn = formDefinition.columns.firstWhere((column) =>
-    column.relation?.referencedEntity?.tableName == this.tableName);
+        column.relation?.referencedEntity?.tableName == this.tableName);
 
     if (relationColumn != null) {
       ColumnRelation relation = ColumnRelation(

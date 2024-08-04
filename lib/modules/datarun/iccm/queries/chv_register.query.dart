@@ -16,13 +16,13 @@ class ChvRegisterQuery extends SyncableQuery<ChvRegister> {
   }
 
   @override
-  Future createSubmission(String form, int version) async {
+  Future create() async {
     ChvRegister event = ChvRegister(
         activity: this.activity,
         team: this.team,
         status: 'ACTIVE',
         form: form,
-        version: version,
+        version: version!,
         dirty: true,
         synced: false,
         deleted: false,

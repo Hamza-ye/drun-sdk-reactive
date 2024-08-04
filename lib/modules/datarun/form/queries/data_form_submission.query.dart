@@ -16,13 +16,14 @@ class DataFormSubmissionQuery extends SyncableQuery<DataFormSubmission> {
   }
 
   @override
-  Future createSubmission(String form, int version) async {
+  Future create() async {
     DataFormSubmission event = DataFormSubmission(
         activity: this.activity,
         team: this.team,
         status: 'ACTIVE',
         form: form,
-        version: version,
+        version: version!,
+        formData: {},
         dirty: true,
         synced: false,
         deleted: false,

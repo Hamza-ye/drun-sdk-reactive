@@ -10,15 +10,15 @@ import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 @AnnotationReflectable
 @Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmissions')
 class DataFormSubmission extends SyncableEntity {
-  @Column(nullable: false, type: ColumnType.TEXT)
-  final Map<String, dynamic> formData;
+  @Column(nullable: true, type: ColumnType.TEXT)
+  Map<String, dynamic>? formData;
 
   DataFormSubmission({
     String? id,
     String? uid,
     String? name,
     String? code,
-    required this.formData,
+    this.formData,
     String? createdDate,
     String? lastModifiedDate,
 
@@ -81,6 +81,14 @@ class DataFormSubmission extends SyncableEntity {
             : json["geometry"])
         : null;
 
+    Map<String, dynamic>? parseFormData(dynamic data) {
+      if (data == null || (data is String && data.isEmpty)) {
+        return null;
+      }
+      return Map<String, dynamic>.from(
+          data is String ? jsonDecode(data) : data);
+    }
+
     return DataFormSubmission(
       id: json['id'].toString(),
       uid: json['uid'],
@@ -89,9 +97,10 @@ class DataFormSubmission extends SyncableEntity {
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
 
-      formData: Map<String, String>.from(json['formData'] is String
-          ? jsonDecode(json['formData'])
-          : json['formData'] ?? {}),
+      // formData: Map<String, dynamic>.from(json['formData'] is String
+      //     ? jsonDecode(json['formData'])
+      //     : json['formData']),
+      formData: parseFormData(json['formData']),
 
       /// Syncable
       form: json['form'],
@@ -158,7 +167,7 @@ class DataFormSubmission extends SyncableEntity {
     Map<String, dynamic> syncableToUpload = super.toUpload();
 
     syncableToUpload.addAll({
-      'formData': jsonEncode(formData),
+      'formData': formData,
     });
 
     return syncableToUpload;

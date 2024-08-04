@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
