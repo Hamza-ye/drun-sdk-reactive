@@ -1,16 +1,19 @@
 import 'dart:convert';
 
 class FormOption {
-  final Map<String, String> label;
+  // final String uid;
   final String name;
   final String listName;
-  final String? description;
+  final Map<String, String> label;
+  final int sortOrder;
 
   FormOption(
       {required this.label,
       required this.listName,
-      this.description,
-      required this.name});
+      required this.sortOrder,
+      required this.name,
+      // required this.uid
+      });
 
   factory FormOption.fromJson(Map<String, dynamic> json) {
     return FormOption(
@@ -18,16 +21,18 @@ class FormOption {
           json['label'] is String ? jsonDecode(json['label']) : json['label']),
       name: json['name'],
       listName: json['listName'],
-      description: json['description'],
+      // uid: json['uid'],
+      sortOrder: json['sortOrder'] ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'label': jsonEncode(label),
+      // 'uid': uid,
       'name': name,
       'listName': listName,
-      'description': description,
+      'sortOrder': sortOrder,
     };
   }
 }

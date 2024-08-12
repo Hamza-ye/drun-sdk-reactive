@@ -1,12 +1,10 @@
 import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.dart';
-import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.entity.dart';
-import 'package:d2_remote/modules/metadatarun/assignment/queries/d_assignment.query.dart';
+import 'package:d2_remote/modules/metadatarun/project/entities/d_project.entity.dart';
 import 'package:d2_remote/modules/metadatarun/project/queries/d_project.query.dart';
-import 'package:d2_remote/modules/metadatarun/teams/queries/d_team.query.dart';
-import 'package:d2_remote/modules/metadatarun/warehouse/queries/warehouse.query.dart';
+import 'package:d2_remote/modules/metadatarun/org_unit/entities/org_unit.entity.dart';
+import 'package:d2_remote/modules/metadatarun/org_unit/queries/org_unit.query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../sample/all_samples.dart';
-import 'team_query_test.reflectable.dart';
+import 'project_sync_test.reflectable.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,31 +28,31 @@ void main() async {
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
 
-  final dio = Dio(BaseOptions());
-  final dioAdapter = DioAdapter(dio: dio);
-
+  DUserQuery userQuery = DUserQuery(database: db);
   userData['password'] = 'district';
   userData['isLoggedIn'] = true;
   userData['login'] = 'admin';
   userData['baseUrl'] = 'http://localhost:8080';
-  DUserQuery userQuery = DUserQuery(database: db);
-
   final user = DUser.fromApi(userData);
   await userQuery.setData(user).save();
 
+  final dio = Dio(BaseOptions());
+  final dioAdapter = DioAdapter(dio: dio);
+
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/assignments?paging=false&eagerload=true',
-    (server) => server.reply(200, sampleAssignments),
+    'http://localhost:8080/api/custom/orgUnits?paging=false&eagerload=true',
+    (server) => server.reply(200, sampleOrgUnits),
   );
-  final assignmentQuery = DAssignmentQuery(database: db);
-  await assignmentQuery.download((progress, complete) {
+
+  OrgUnitQuery orgUnitQuery = OrgUnitQuery(database: db);
+  await orgUnitQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DAssignment> assignments =
-      await D2Remote.assignmentModuleD.assignment.get();
+  List<OrgUnit> projects =
+      await D2Remote.organisationUnitModuleD.orgUnit.get();
 
-  test('should store all incoming assignments metadata', () {
-    expect(assignments.length, 2);
+  test('should store all incoming orgUnits metadata', () {
+    expect(projects.length, 2);
   });
 }

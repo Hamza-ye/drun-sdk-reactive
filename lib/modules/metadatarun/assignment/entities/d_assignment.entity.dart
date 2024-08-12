@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
@@ -17,48 +19,18 @@ class DAssignment extends IdentifiableEntity {
   // @ManyToOne(table: DOrganisationUnit, joinColumnName: 'organisationUnit')
   // dynamic organisationUnit;
   @Column(nullable: true)
-  String? organisationUnit;
+  String? orgUnit;
 
   // @ManyToOne(table: Warehouse, joinColumnName: 'warehouse')
   // dynamic warehouse;
   @Column(nullable: true)
   String? warehouse;
 
-  @Column(type: ColumnType.BOOLEAN)
-  bool activated;
-
-  @Column(nullable: true)
-  String? startDate;
-
   @Column(type: ColumnType.TEXT, nullable: true)
   String? status;
 
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? targetSource;
-
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? startPeriod;
-
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? period;
-
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? periodType;
-
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? gov;
-
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? district;
-
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? subdistrict;
-
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? village;
-
-  @Column(type: ColumnType.TEXT, nullable: true)
-  String? subvillage;
+  @Column(nullable: true, type: ColumnType.TEXT)
+  Map<String, String>? properties;
 
   DAssignment(
       {String? id,
@@ -67,21 +39,12 @@ class DAssignment extends IdentifiableEntity {
       String? lastModifiedDate,
       String? name,
       String? code,
-      this.activated = true,
+      this.properties,
       this.warehouse,
       this.activity,
-      this.organisationUnit,
+      this.orgUnit,
       this.team,
-      this.startDate,
       this.status,
-      this.startPeriod,
-      this.period,
-      this.periodType,
-      this.gov,
-      this.district,
-      this.subdistrict,
-      this.village,
-      this.subvillage,
       required dirty})
       : super(
             id: id,
@@ -103,7 +66,11 @@ class DAssignment extends IdentifiableEntity {
         uid: json['uid'],
         name: json['name'] ??
             '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
-        activated: json['activated'] ?? true,
+        properties: json['properties'] != null
+            ? Map<String, String>.from(json['properties'] is String
+                ? jsonDecode(json['properties'])
+                : json['properties'])
+            : null,
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
         code: json['code'],
@@ -112,10 +79,10 @@ class DAssignment extends IdentifiableEntity {
                 ? json['activity']
                 : json['activity']['uid']
             : null,
-        organisationUnit: json['organisationUnit'] != null
-            ? json['organisationUnit'] is String
-                ? json['organisationUnit']
-                : json['organisationUnit']['uid']
+        orgUnit: json['orgUnit'] != null
+            ? json['orgUnit'] is String
+                ? json['orgUnit']
+                : json['orgUnit']['uid']
             : null,
         warehouse: json['warehouse'] != null
             ? json['warehouse'] is String
@@ -129,16 +96,7 @@ class DAssignment extends IdentifiableEntity {
             : null,
 
         //warehouse,
-        startDate: json['startDate'],
         status: json['status'],
-        startPeriod: json['startPeriod'],
-        period: json['period'],
-        periodType: json['periodType'],
-        gov: json['gov'],
-        district: json['district'],
-        subdistrict: json['subdistrict'],
-        village: json['village'],
-        subvillage: json['subvillage'],
         dirty: json['dirty']);
   }
 
@@ -147,24 +105,14 @@ class DAssignment extends IdentifiableEntity {
     data['id'] = this.id;
     data['uid'] = this.uid;
     data['name'] = this.name;
-    data['activated'] = this.activated;
-    data['shortName'] = this.shortName;
     data['code'] = this.code;
     data['displayName'] = this.displayName;
     data['activity'] = this.activity;
-    data['organisationUnit'] = this.organisationUnit;
+    data['orgUnit'] = this.orgUnit;
     data['team'] = this.team;
-    data['warehouse'] = this.warehouse;
-    data['startDate'] = this.startDate;
     data['status'] = this.status;
-    data['startPeriod'] = this.startPeriod;
-    data['period'] = this.period;
-    data['periodType'] = this.periodType;
-    data['gov'] = this.gov;
-    data['district'] = this.district;
-    data['subdistrict'] = this.subdistrict;
-    data['village'] = this.village;
-    data['subvillage'] = this.subvillage;
+    data['properties'] = this.properties;
+    data['warehouse'] = this.warehouse;
     data['createdDate'] = this.createdDate;
     data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;

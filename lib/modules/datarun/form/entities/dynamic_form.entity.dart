@@ -47,8 +47,8 @@ class DynamicForm extends IdentifiableEntity {
       formDefinitions: List<dynamic>.from(json['formDefinitions'] ?? [])
           .map((definition) => FormDefinition.fromJson({
                 ...definition,
-                'id': '${definition['uid']}_${json['version']}}',
-                'uid': '${definition['uid']}_${json['version']}}',
+                'id': '${definition['uid']}_${json['version']}',
+                'uid': '${definition['uid']}_${json['version']}',
                 'form': json['uid'],
                 'dirty': false
               }))

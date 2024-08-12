@@ -5,6 +5,7 @@ import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_org_unit.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
@@ -17,33 +18,37 @@ class FormDefinition extends IdentifiableEntity {
   @ManyToOne(table: DynamicForm, joinColumnName: 'form')
   dynamic form;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
-  final List<DynamicFormField>? mainFields;
+  // @Column(nullable: true, type: ColumnType.TEXT)
+  // List<DynamicFormField>? mainFields;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  final List<DynamicFormField>? fields;
+  List<DynamicFormField>? fields;
+
+  // @OneToMany(table: FormOption)
+  @Column(nullable: true, type: ColumnType.TEXT)
+  List<FormOption>? options;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  final List<FormOption>? options;
-
-  @Column(nullable: true, type: ColumnType.TEXT)
-  final List<Rule>? rules;
+  List<Rule>? rules;
 
   @Column(nullable: false, type: ColumnType.TEXT)
-  final Map<String, String> label;
+  Map<String, String> label;
 
   @Column(nullable: false, type: ColumnType.TEXT)
-  final String defaultLocal;
+  String defaultLocal;
 
   @Column(nullable: false, type: ColumnType.INTEGER)
-  final int version;
+  int version;
+
+  @OneToMany(table: FormOrgUnit)
+  List<FormOrgUnit>? formOrgUnits; // Store JSON string in SQLite
 
   FormDefinition({
     String? id,
     String? uid,
     String? name,
     String? code,
-    this.mainFields,
+    // this.mainFields,
     String? createdDate,
     String? lastModifiedDate,
     this.fields,
@@ -53,6 +58,7 @@ class FormDefinition extends IdentifiableEntity {
     required this.label,
     required this.defaultLocal,
     this.rules,
+    required this.formOrgUnits,
     required dirty,
   }) : super(
           id: id,
@@ -64,13 +70,12 @@ class FormDefinition extends IdentifiableEntity {
           dirty: dirty,
         );
 
-  // From JSON string (Database and API)
   factory FormDefinition.fromJson(Map<String, dynamic> json) {
-    final mainFields = json['mainFields'] != null
-        ? (parseDynamicList(json['mainFields']) as List)
-            .map((mainField) => DynamicFormField.fromJson(mainField))
-            .toList()
-        : null;
+    // final mainFields = json['mainFields'] != null
+    //     ? (parseDynamicList(json['mainFields']) as List)
+    //         .map((mainField) => DynamicFormField.fromJson(mainField))
+    //         .toList()
+    //     : null;
 
     final fields = json['fields'] != null
         ? (parseDynamicList(json['fields']) as List)
@@ -103,9 +108,28 @@ class FormDefinition extends IdentifiableEntity {
               : json['label'])
           : {"en": json['name']},
       defaultLocal: json['defaultLocal'] ?? 'en',
-      mainFields: mainFields,
+      // mainFields: mainFields,
       fields: fields,
+      // options: List<dynamic>.from(options ?? [])
+      //     .map((option) => FormOption.fromJson({
+      //           ...option,
+      //           'uid': '${json['uid']}_${option['listName']}_${option['name']}',
+      //         }))
+      //     .toList(),
       options: options,
+      formOrgUnits: json['orgUnits']
+          .map<FormOrgUnit>((orgUnit) => FormOrgUnit(
+          id: '${json['uid']}_${orgUnit['uid']}',
+          name: '${json['uid']}_${orgUnit['uid']}',
+          orgUnit: orgUnit['uid'],
+          formDefinition: json['uid'],
+          dirty: json['dirty'] ?? false))
+          .toList(),
+      //
+      // orgUnits: List<dynamic>.from(json['orgUnits'] ?? [])
+      //     .map((orgUnit) => DOrganisationUnit.fromJson(
+      //         {...orgUnit, 'formDefinition': json['uid'], 'dirty': false}))
+      //     .toList(),
       rules: rules,
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
@@ -113,7 +137,6 @@ class FormDefinition extends IdentifiableEntity {
     );
   }
 
-  /// To JSON string for Database and API
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -124,18 +147,14 @@ class FormDefinition extends IdentifiableEntity {
       'form': form,
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
-      'mainFields': mainFields != null
-          ? jsonEncode(mainFields!.map((field) => field.toJson()).toList())
-          : null,
+      'formOrgUnits': formOrgUnits,
       'fields': fields != null
           ? jsonEncode(fields!.map((field) => field.toJson()).toList())
           : null,
       'rules': rules != null
           ? jsonEncode(rules!.map((rule) => rule.toJson()).toList())
           : null,
-      'options': options != null
-          ? jsonEncode(options!.map((choice) => choice.toJson()).toList())
-          : null,
+      'options': options,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'dirty': dirty,
