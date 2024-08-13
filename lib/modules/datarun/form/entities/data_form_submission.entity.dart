@@ -35,6 +35,7 @@ class DataFormSubmission extends SyncableEntity {
     String? finishedEntryTime,
     dynamic activity,
     dynamic team,
+    required String orgUnit,
     required String status,
     Geometry? geometry,
     required dirty,
@@ -59,6 +60,7 @@ class DataFormSubmission extends SyncableEntity {
           finishedEntryTime: finishedEntryTime,
           activity: activity,
           team: team,
+          orgUnit: orgUnit,
           status: status,
           geometry: geometry,
           dirty: dirty,
@@ -120,6 +122,8 @@ class DataFormSubmission extends SyncableEntity {
               : json['team']['uid']
           : null,
       status: json['status'],
+      orgUnit:
+          json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']['uid'],
       geometry: geometry,
 
       dirty: json['dirty'] ?? false,
@@ -133,7 +137,6 @@ class DataFormSubmission extends SyncableEntity {
       'uid': uid,
       'code': code,
       'name': name,
-      // 'version': version,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'formData': jsonEncode(formData),
@@ -154,6 +157,7 @@ class DataFormSubmission extends SyncableEntity {
       'finishedEntryTime': this.finishedEntryTime,
       'activity': activity,
       'team': team,
+      'orgUnit': orgUnit,
       'status': this.status,
       'geometry': this.geometry != null
           ? jsonEncode(this.geometry?.geometryData)

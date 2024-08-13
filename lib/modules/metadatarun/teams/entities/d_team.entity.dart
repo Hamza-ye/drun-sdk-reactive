@@ -57,7 +57,7 @@ class DTeam extends IdentifiableEntity {
                 : json['activity']['uid']
             : null,
         mobile: json['mobile'],
-        disabled: json['disabled'] ?? true,
+        disabled: json['disabled'] ?? false,
         teamType: json['teamType'],
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
@@ -73,7 +73,7 @@ class DTeam extends IdentifiableEntity {
         code: jsonData['code'],
         displayName: jsonData['displayName'] ?? jsonData['name'],
         activity: jsonData['activity'],
-        disabled: jsonData['disabled'] ?? true,
+        disabled: jsonData['disabled'] ?? false,
         mobile: jsonData['mobile'],
         teamType: jsonData['teamType'],
         createdDate: jsonData['createdDate'],

@@ -37,6 +37,9 @@ class FormDefinition extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.TEXT)
   String defaultLocal;
 
+  @Column(nullable: false)
+  String activity;
+
   @Column(nullable: false, type: ColumnType.INTEGER)
   int version;
 
@@ -51,6 +54,7 @@ class FormDefinition extends IdentifiableEntity {
     // this.mainFields,
     String? createdDate,
     String? lastModifiedDate,
+    required this.activity,
     this.fields,
     this.options,
     this.form,
@@ -100,6 +104,7 @@ class FormDefinition extends IdentifiableEntity {
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
+      activity: json['activity'],
       version: json['version'],
       form: json['form'],
       label: json['label'] != null
@@ -119,11 +124,11 @@ class FormDefinition extends IdentifiableEntity {
       options: options,
       formOrgUnits: json['orgUnits']
           .map<FormOrgUnit>((orgUnit) => FormOrgUnit(
-          id: '${json['uid']}_${orgUnit['uid']}',
-          name: '${json['uid']}_${orgUnit['uid']}',
-          orgUnit: orgUnit['uid'],
-          formDefinition: json['uid'],
-          dirty: json['dirty'] ?? false))
+              id: '${json['uid']}_${orgUnit['uid']}',
+              name: '${json['uid']}_${orgUnit['uid']}',
+              orgUnit: orgUnit['uid'],
+              formDefinition: json['uid'],
+              dirty: json['dirty'] ?? false))
           .toList(),
       //
       // orgUnits: List<dynamic>.from(json['orgUnits'] ?? [])
@@ -143,6 +148,7 @@ class FormDefinition extends IdentifiableEntity {
       'uid': uid,
       'code': code,
       'name': name,
+      'activity': activity,
       'version': version,
       'form': form,
       'label': jsonEncode(label),

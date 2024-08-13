@@ -1,4 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/active_status.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:sqflite/sqflite.dart';
@@ -7,64 +8,26 @@ import 'package:sqflite/sqflite.dart';
 @Query(type: QueryType.METADATA)
 class DTeamQuery extends BaseQuery<DTeam> {
   DTeamQuery({Database? database}) : super(database: database);
+  String? activity;
+  ActiveStatus? activeStatus;
 
-  DTeamQuery activated() {
-    this.where(attribute: 'activated', value: true);
+  DTeamQuery byActivity(String activity) {
+    this.where(attribute: 'activity', value: activity);
+    this.activity = activity;
     return this;
   }
 
-// @override
-// Future<List<DTeam>?> download(Function(RequestProgress, bool) callback,
-//     {Dio? dioTestClient}) async {
-//   callback(
-//       RequestProgress(
-//           resourceName: this.apiResourceName as String,
-//           message: 'Fetching user assigned Teams....',
-//           status: '',
-//           percentage: 0),
-//       false);
-//
-//   final dhisUrl = await this.dataRunUrl();
-//
-//   final response = await HttpClient.get(dhisUrl,
-//       database: this.database, dioTestClient: dioTestClient);
-//
-//   List data = response.body[this.apiResourceName]?.toList();
-//
-//   callback(
-//       RequestProgress(
-//           resourceName: this.apiResourceName as String,
-//           message:
-//               '${data.length} ${this.apiResourceName?.toLowerCase()} downloaded successfully',
-//           status: '',
-//           percentage: 50),
-//       false);
-//
-//   this.data = data.map((dataItem) {
-//     dataItem['dirty'] = false;
-//     return DTeam.fromJson(dataItem);
-//   }).toList();
-//
-//   callback(
-//       RequestProgress(
-//           resourceName: this.apiResourceName as String,
-//           message:
-//               'Saving ${data.length} ${this.apiResourceName?.toLowerCase()} into phone database...',
-//           status: '',
-//           percentage: 51),
-//       false);
-//
-//   await this.save();
-//
-//   callback(
-//       RequestProgress(
-//           resourceName: this.apiResourceName as String,
-//           message:
-//               '${data.length} ${this.apiResourceName?.toLowerCase()} successfully saved into the database',
-//           status: '',
-//           percentage: 100),
-//       true);
-//
-//   return this.data;
-// }
+  DTeamQuery byActivityStatus(ActiveStatus activeStatus) {
+    this.activeStatus = activeStatus;
+    switch (activeStatus) {
+      case ActiveStatus.EnabledOnly:
+        this.where(attribute: 'disabled', value: false);
+        return this;
+      case ActiveStatus.DisabledOnly:
+        this.where(attribute: 'disabled', value: true);
+        return this;
+      default:
+        return this;
+    }
+  }
 }

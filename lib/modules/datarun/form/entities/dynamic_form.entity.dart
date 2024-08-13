@@ -1,4 +1,3 @@
-
 import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
@@ -42,6 +41,9 @@ class DynamicForm extends IdentifiableEntity {
 
   // From JSON string (Database and API)
   factory DynamicForm.fromJson(Map<String, dynamic> json) {
+    final activity =
+        json['activity'] is String ? json['activity'] : json['activity']['uid'];
+
     return DynamicForm(
       id: json['id'],
       formDefinitions: List<dynamic>.from(json['formDefinitions'] ?? [])
@@ -50,15 +52,14 @@ class DynamicForm extends IdentifiableEntity {
                 'id': '${definition['uid']}_${json['version']}',
                 'uid': '${definition['uid']}_${json['version']}',
                 'form': json['uid'],
+                'activity': activity,
                 'dirty': false
               }))
           .toList(),
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
-      activity: json['activity'] is String
-          ? json['activity']
-          : json['activity']['uid'],
+      activity: activity,
       version: json['version'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],

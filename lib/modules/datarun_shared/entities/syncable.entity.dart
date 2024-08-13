@@ -61,6 +61,9 @@ class SyncableEntity extends BaseEntity {
   @ManyToOne(table: DynamicForm, joinColumnName: 'form')
   dynamic form;
 
+  @Column(nullable: true)
+  String? orgUnit;
+
   SyncableEntity(
       {String? id,
       String? uid,
@@ -68,6 +71,7 @@ class SyncableEntity extends BaseEntity {
       this.code,
       String? lastModifiedDate,
       String? createdDate,
+      required this.orgUnit,
       required this.form,
       this.deleted,
       this.synced,
@@ -115,6 +119,7 @@ class SyncableEntity extends BaseEntity {
       "finishedEntryTime": this.finishedEntryTime,
       "activity": this.activity,
       "team": this.team,
+      "orgUnit": this.orgUnit,
       "status": this.status,
       "geometry": this.geometry != null ? this.geometry?.toJson() : null,
       "dirty": this.dirty,

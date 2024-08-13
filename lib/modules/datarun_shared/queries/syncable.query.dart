@@ -15,6 +15,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   SyncableQuery({Database? database}) : super(database: database);
   String? activity;
   String? team;
+  String? orgUnit;
   String? form;
   int? version;
 
@@ -33,6 +34,12 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   SyncableQuery<T> byTeam(String team) {
     this.where(attribute: 'team', value: team);
     this.team = team;
+    return this;
+  }
+
+  SyncableQuery<T> byOrgUnit(String orgUnit) {
+    this.where(attribute: 'orgUnit', value: orgUnit);
+    this.orgUnit = orgUnit;
     return this;
   }
 
