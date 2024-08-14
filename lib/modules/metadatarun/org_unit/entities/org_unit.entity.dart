@@ -59,9 +59,6 @@ class OrgUnit extends IdentifiableEntity {
   factory OrgUnit.fromJson(Map<String, dynamic> json) {
     final parent = json['parent'];
 
-    final jsonEncoder = JsonEncoder();
-    // final ancestors = jsonEncoder.convert(json['ancestors'] ?? []);
-
     final ancestors = json['ancestors'] != null
         ? (parseDynamicList(json['ancestors']) as List)
             .map((ancestor) => OrgUnit.fromJson(ancestor))
