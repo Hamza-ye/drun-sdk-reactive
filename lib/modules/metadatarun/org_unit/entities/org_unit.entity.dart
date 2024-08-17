@@ -4,22 +4,22 @@ import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
-import 'package:d2_remote/shared/entities/identifiable.entity.dart';
+import 'package:d2_remote/shared/entities/identifiable_tree_node.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'orgUnit', apiResourceName: 'orgUnits')
-class OrgUnit extends IdentifiableEntity {
-  @Column(nullable: true)
-  String? path;
+class OrgUnit extends IdentifiableTreeNode {
+  // @Column(nullable: true)
+  // String? path;
 
-  @Column(nullable: true)
-  String? parentUid;
+  // @Column(nullable: true)
+  // String? parentUid;
 
-  @Column(nullable: true, type: ColumnType.INTEGER)
-  int? level;
+  // @Column(nullable: true, type: ColumnType.INTEGER)
+  // int? level;
 
-  @Column(nullable: false, type: ColumnType.TEXT)
-  Map<String, String> label;
+  // @Column(nullable: false, type: ColumnType.TEXT)
+  // Map<String, String> label;
 
   // @Column(nullable: true, type: ColumnType.TEXT)
   // Geometry? geometry;
@@ -27,33 +27,39 @@ class OrgUnit extends IdentifiableEntity {
   @Column(nullable: true)
   Object? geometry;
 
-  @Column(name: 'parent', nullable: true)
-  Object? parent;
-
-  // NMC
-  @Column(nullable: true, type: ColumnType.TEXT)
-  List<OrgUnit>? ancestors;
+  // @Column(name: 'parent', nullable: true)
+  // String? parent;
+  //
+  // // NMC
+  // @Column(nullable: true, type: ColumnType.TEXT)
+  // List<OrgUnit>? ancestors;
 
   OrgUnit(
       {required String id,
       required String uid,
       required String name,
       String? displayName,
-      required this.path,
-      this.parentUid,
-      this.geometry,
-      required this.label,
-      required this.level,
-      this.parent,
-      this.ancestors,
       String? code,
+      required String? path,
+      String? parent,
+      required Map<String, String> label,
+      List<OrgUnit>? ancestors,
+      String? lastModifiedDate,
+      String? createdDate,
+      this.geometry,
       required dirty})
       : super(
-            uid: uid,
             id: id,
+            uid: uid,
+            code: code,
             name: name,
             displayName: displayName,
-            code: code,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
+            label: label,
+            ancestors: ancestors,
+            path: path,
+            parent: parent,
             dirty: dirty);
 
   factory OrgUnit.fromJson(Map<String, dynamic> json) {
@@ -72,12 +78,11 @@ class OrgUnit extends IdentifiableEntity {
         name: json['name'],
         path: json['path'],
         displayName: json['displayName'],
-        parentUid: json['parentUid'],
         ancestors: ancestors,
         parent: parent != null
             ? parent is String
                 ? parent
-                : parent['uid'] ?? parent
+                : parent['uid']
             : null,
         label: json['label'] != null
             ? Map<String, String>.from(json['label'] is String
@@ -86,7 +91,8 @@ class OrgUnit extends IdentifiableEntity {
             : {"en": json['name']},
         // geometry: geometry,
         geometry: json['geometry']?.toString() ?? null,
-        level: json['level'],
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
         dirty: json['dirty'] ?? false);
   }
 
@@ -97,6 +103,9 @@ class OrgUnit extends IdentifiableEntity {
       'code': code,
       'name': name,
       'path': path,
+      'parent': parent,
+      'createdDate': createdDate,
+      'lastModifiedDate': lastModifiedDate,
       'displayName': displayName,
       'label': jsonEncode(label),
       // 'ancestors': this.ancestors,
@@ -108,7 +117,6 @@ class OrgUnit extends IdentifiableEntity {
       // 'geometry': this.geometry != null
       //     ? jsonEncode(this.geometry?.geometryData)
       //     : null,
-      'level': level,
       'dirty': dirty,
     };
 

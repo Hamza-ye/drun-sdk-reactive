@@ -53,6 +53,6 @@ void main() async {
       await D2Remote.organisationUnitModuleD.orgUnit.get();
 
   test('should store all incoming orgUnits metadata', () {
-    expect(projects.length, 2);
+    expect(projects.length, 7);
   });
 }
