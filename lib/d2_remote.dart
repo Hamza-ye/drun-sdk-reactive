@@ -25,7 +25,6 @@ import 'package:d2_remote/modules/metadatarun/assignment/d_assignment.module.dar
 import 'package:d2_remote/modules/metadatarun/project/d_project.module.dart';
 import 'package:d2_remote/modules/metadatarun/teams/d_team.module.dart';
 import 'package:d2_remote/modules/metadatarun/org_unit/org_unit.module.dart';
-import 'package:d2_remote/modules/metadatarun/warehouse/warehouse.module.dart';
 import 'package:d2_remote/modules/notification/notification.module.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
 import 'package:dio/dio.dart';
@@ -47,7 +46,7 @@ class D2Remote {
 
       await DatabaseManager.instance.database;
       await DUserModule.createTables();
-      await WarehouseModule.createTables();
+      // await WarehouseModule.createTables();
       await OrgUnitModule.createTables();
       await DProjectModule.createTables();
       await DActivityModule.createTables();
@@ -270,7 +269,7 @@ class D2Remote {
   /////// Data Run
   static DUserModule userModule = DUserModule();
 
-  static WarehouseModule warehouseModule = WarehouseModule();
+  // static WarehouseModule warehouseModule = WarehouseModule();
 
   static OrgUnitModule organisationUnitModuleD =
       OrgUnitModule();

@@ -28,13 +28,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "SelectOne",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": "amdtypes",
-          "label": {
-            "en": "Stock Item",
-            "ar": "الصنف"
-          }
+          "label": {"en": "Stock Item", "ar": "الصنف"}
         },
         {
           "uid": "iEA6iJdQUJ8",
@@ -44,13 +40,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Date",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Report Month",
-            "ar": "الشهر"
-          }
+          "label": {"en": "Report Month", "ar": "الشهر"}
         },
         {
           "uid": "AMpSRxuug7w",
@@ -60,8 +52,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Integer",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Start Of Month Quantity",
@@ -76,8 +67,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Integer",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Quantity received this month",
@@ -92,13 +82,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Integer",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Quantity consumed",
-            "ar": "الاستهلاك للشهر الحالي"
-          }
+          "label": {"en": "Quantity consumed", "ar": "الاستهلاك للشهر الحالي"}
         },
         {
           "uid": "NokdPawIDWd",
@@ -108,13 +94,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Date",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Last supply date",
-            "ar": "تاريخ اخر عمليةامداد"
-          }
+          "label": {"en": "Last supply date", "ar": "تاريخ اخر عمليةامداد"}
         },
         {
           "uid": "vARZDwXniJ1",
@@ -124,8 +106,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Integer",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Quantity Delivered To CHV",
@@ -140,8 +121,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Integer",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Redistributed Quantity",
@@ -156,13 +136,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Integer",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Expired Quantity",
-            "ar": "الكمية المنتهية"
-          }
+          "label": {"en": "Expired Quantity", "ar": "الكمية المنتهية"}
         },
         {
           "uid": "c6s45IJiq8s",
@@ -172,8 +148,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Integer",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "End Of Month Quantity",
@@ -188,13 +163,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Date",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Expiry date",
-            "ar": "تاريخ صلاحية الكمية المتوفرة"
-          }
+          "label": {"en": "Expiry date", "ar": "تاريخ صلاحية الكمية المتوفرة"}
         },
         {
           "uid": "vlx9IBSIJt1",
@@ -204,13 +175,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "LongText",
           "mandatory": false,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "comment",
-            "ar": "ملاحظات"
-          }
+          "label": {"en": "comment", "ar": "ملاحظات"}
         },
         {
           "uid": "nwp4Aprs3EN",
@@ -220,13 +187,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Integer",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Stockout days",
-            "ar": "فترة انقطاع الصنف بالايام"
-          }
+          "label": {"en": "Stockout days", "ar": "فترة انقطاع الصنف بالايام"}
         }
       ],
       "options": [
@@ -249,10 +212,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "ACT20",
           "description": null,
           "order": null,
-          "label": {
-            "en": "Coartem 20 mg",
-            "ar": "كوارتم_20"
-          }
+          "label": {"en": "Coartem 20 mg", "ar": "كوارتم_20"}
         },
         {
           "uid": "JgZo2ii9kg5",
@@ -261,10 +221,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "ACT40",
           "description": null,
           "order": null,
-          "label": {
-            "en": "Coartem 40 mg",
-            "ar": "كوارتم_40"
-          }
+          "label": {"en": "Coartem 40 mg", "ar": "كوارتم_40"}
         },
         {
           "uid": "k0yxKoKTXK0",
@@ -273,10 +230,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "ACT60",
           "description": null,
           "order": null,
-          "label": {
-            "en": "Coartem 60 mg",
-            "ar": "كوارتم_60"
-          }
+          "label": {"en": "Coartem 60 mg", "ar": "كوارتم_60"}
         },
         {
           "uid": "F3JoOvUc3sV",
@@ -285,10 +239,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "ACT80",
           "description": null,
           "order": null,
-          "label": {
-            "en": "Coartem 80 mg",
-            "ar": "كوارتم_80"
-          }
+          "label": {"en": "Coartem 80 mg", "ar": "كوارتم_80"}
         },
         {
           "uid": "IwUG1WYm1iY",
@@ -339,20 +290,7 @@ final Map<String, dynamic> dSampleAllForms = {
           }
         }
       ],
-      "orgUnits": [
-        {
-          "uid": "tdcUYMUA6B9",
-          "code": "1117002",
-          "name": "المركز الصحي الافيوش",
-          "path": ",gBsSQR1DZSU,OzyNUU2aEWp,DlOU1TMdZNA,tdcUYMUA6B9,",
-          "parent": "DlOU1TMdZNA",
-          "level": 5,
-          "label": {
-            "ar": "المركز الصحي الافيوش",
-            "en": "المركز الصحي الافيوش"
-          }
-        }
-      ],
+      "orgUnits": ["awgKZaDoWLA", "yZCm1nwslVu", "UW2up6bUmbG"],
       "label": {
         "en": "Health Facility Monthly Stock Report",
         "ar": "التقرير الشهري للمرافق الصحية"
@@ -382,13 +320,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Text",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Village Name",
-            "ar": "اسم القرية"
-          }
+          "label": {"en": "Village Name", "ar": "اسم القرية"}
         },
         {
           "uid": "cD7eF8gH9I0",
@@ -412,10 +346,7 @@ final Map<String, dynamic> dSampleAllForms = {
             }
           ],
           "listName": null,
-          "label": {
-            "en": "Patient name",
-            "ar": "اسم المريض"
-          }
+          "label": {"en": "Patient name", "ar": "اسم المريض"}
         },
         {
           "uid": "vW3xY4zA5B6",
@@ -425,13 +356,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Date",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Visit Date",
-            "ar": "تاريخ الزيارة"
-          }
+          "label": {"en": "Visit Date", "ar": "تاريخ الزيارة"}
         },
         {
           "uid": "jK1lM2nO3P4",
@@ -455,10 +382,7 @@ final Map<String, dynamic> dSampleAllForms = {
             }
           ],
           "listName": null,
-          "label": {
-            "en": "Age",
-            "ar": "العمر"
-          }
+          "label": {"en": "Age", "ar": "العمر"}
         },
         {
           "uid": "xY9zA0bC1D2",
@@ -468,13 +392,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "SelectOne",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": "genders",
-          "label": {
-            "en": "Gender",
-            "ar": "الجنس"
-          }
+          "label": {"en": "Gender", "ar": "الجنس"}
         },
         {
           "uid": "eF3gH4iJ5K6",
@@ -495,10 +415,7 @@ final Map<String, dynamic> dSampleAllForms = {
             }
           ],
           "listName": null,
-          "label": {
-            "en": "Is pregnant?",
-            "ar": "هل هي حامل؟"
-          }
+          "label": {"en": "Is pregnant?", "ar": "هل هي حامل؟"}
         },
         {
           "uid": "lM7nO8pQ9R0",
@@ -508,13 +425,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "SelectOne",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": "testResults",
-          "label": {
-            "en": "Test Result",
-            "ar": "نتيجة الفحص"
-          }
+          "label": {"en": "Test Result", "ar": "نتيجة الفحص"}
         },
         {
           "uid": "z33bC6dE7F8",
@@ -528,17 +441,15 @@ final Map<String, dynamic> dSampleAllForms = {
             {
               "uid": "eF3gH8iJ5K9",
               "field": "detectionType",
-              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
+              "expression":
+                  "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
               "action": "Show",
               "message": null,
               "filterInfo": null
             }
           ],
           "listName": "detectionTypes",
-          "label": {
-            "en": "Detection Type",
-            "ar": "نوع الاكتشاف"
-          }
+          "label": {"en": "Detection Type", "ar": "نوع الاكتشاف"}
         },
         {
           "uid": "zA5bDDdE7F8",
@@ -552,17 +463,15 @@ final Map<String, dynamic> dSampleAllForms = {
             {
               "uid": "eF9gH8iJ5K9",
               "field": "severity",
-              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
+              "expression":
+                  "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
               "action": "Show",
               "message": null,
               "filterInfo": null
             }
           ],
           "listName": "severities",
-          "label": {
-            "en": "Severity",
-            "ar": "تصنيف الحالة"
-          }
+          "label": {"en": "Severity", "ar": "تصنيف الحالة"}
         },
         {
           "uid": "gH9iJ0kL1M2",
@@ -576,7 +485,8 @@ final Map<String, dynamic> dSampleAllForms = {
             {
               "uid": "gH99J1kL1M2",
               "field": "treatment",
-              "expression": "pregnant && (testResult == 'PF' || testResult == 'PV' || testResult == 'MIX')",
+              "expression":
+                  "pregnant && (testResult == 'PF' || testResult == 'PV' || testResult == 'MIX')",
               "action": "Filter",
               "message": null,
               "filterInfo": {
@@ -598,26 +508,21 @@ final Map<String, dynamic> dSampleAllForms = {
               "filterInfo": {
                 "fieldToFilter": "treatment",
                 "optionsToHide": null,
-                "optionsToShow": [
-                  "FIRST_DOSE_REFERRAL",
-                  "REFERRAL"
-                ]
+                "optionsToShow": ["FIRST_DOSE_REFERRAL", "REFERRAL"]
               }
             },
             {
               "uid": "gH10J1kL1M2",
               "field": "treatment",
-              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
+              "expression":
+                  "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
               "action": "Show",
               "message": null,
               "filterInfo": null
             }
           ],
           "listName": "treatments",
-          "label": {
-            "en": "Treatment",
-            "ar": "تدبير الحالة"
-          }
+          "label": {"en": "Treatment", "ar": "تدبير الحالة"}
         },
         {
           "uid": "nO3pQ4rS5T6",
@@ -627,13 +532,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "LongText",
           "mandatory": null,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Comments",
-            "ar": "ملاحظات وتعليقات"
-          }
+          "label": {"en": "Comments", "ar": "ملاحظات وتعليقات"}
         }
       ],
       "options": [
@@ -644,10 +545,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "FEMALE",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Female",
-            "ar": "أنثى"
-          }
+          "label": {"en": "Female", "ar": "أنثى"}
         },
         {
           "uid": "5Y1200dC5D1",
@@ -656,10 +554,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "MALE",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Male",
-            "ar": "ذكر"
-          }
+          "label": {"en": "Male", "ar": "ذكر"}
         },
         {
           "uid": "688888BC7D1",
@@ -668,10 +563,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "INVALID",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Invalid",
-            "ar": "غير صالح"
-          }
+          "label": {"en": "Invalid", "ar": "غير صالح"}
         },
         {
           "uid": "6Y1288dC5D1",
@@ -680,10 +572,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "NEGATIVE",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Negative",
-            "ar": "سلبي"
-          }
+          "label": {"en": "Negative", "ar": "سلبي"}
         },
         {
           "uid": "6Y3338dC5D1",
@@ -704,10 +593,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "ACTIVE",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Active",
-            "ar": "بحث نشط"
-          }
+          "label": {"en": "Active", "ar": "بحث نشط"}
         },
         {
           "uid": "555288dC5D1",
@@ -716,10 +602,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "PV",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Plasmodium vivax",
-            "ar": "بلاسموديوم فيفاكس"
-          }
+          "label": {"en": "Plasmodium vivax", "ar": "بلاسموديوم فيفاكس"}
         },
         {
           "uid": "1CD8FEBC7D1",
@@ -728,10 +611,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "TREATED",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Treated",
-            "ar": "معالج"
-          }
+          "label": {"en": "Treated", "ar": "معالج"}
         },
         {
           "uid": "10CDF8BC7D1",
@@ -740,10 +620,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "SEVERE",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Severe",
-            "ar": "وخيمة"
-          }
+          "label": {"en": "Severe", "ar": "وخيمة"}
         },
         {
           "uid": "9CC8F8BC7D1",
@@ -752,10 +629,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "SIMPLE",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Simple",
-            "ar": "بسيطة"
-          }
+          "label": {"en": "Simple", "ar": "بسيطة"}
         },
         {
           "uid": "666288dC5D1",
@@ -764,10 +638,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "MIX",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Mixed",
-            "ar": "مختلط"
-          }
+          "label": {"en": "Mixed", "ar": "مختلط"}
         },
         {
           "uid": "9CC8F66C7D1",
@@ -776,10 +647,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "REACTIVE",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Reactive",
-            "ar": "زيارة روتينية"
-          }
+          "label": {"en": "Reactive", "ar": "زيارة روتينية"}
         },
         {
           "uid": "ECDYFEBC8D1",
@@ -788,10 +656,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "FIRST_DOSE",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "First Dose",
-            "ar": "الجرعة الأولى"
-          }
+          "label": {"en": "First Dose", "ar": "الجرعة الأولى"}
         },
         {
           "uid": "ECDYF9628D1",
@@ -800,10 +665,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "FIRST_DOSE_REFERRAL",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "First Dose & Referral",
-            "ar": "الجرعة الأولى وإحالة"
-          }
+          "label": {"en": "First Dose & Referral", "ar": "الجرعة الأولى وإحالة"}
         },
         {
           "uid": "9RD8FEFC7D0",
@@ -812,18 +674,11 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "REFERRAL",
           "description": null,
           "order": 0,
-          "label": {
-            "en": "Referral",
-            "ar": "إحالة"
-          }
+          "label": {"en": "Referral", "ar": "إحالة"}
         }
       ],
-      "orgUnits": [
-      ],
-      "label": {
-        "en": "chv cases register",
-        "ar": "تسجيل حالات chv"
-      },
+      "orgUnits": ["awgKZaDoWLA", "yZCm1nwslVu", "UW2up6bUmbG"],
+      "label": {"en": "chv cases register", "ar": "تسجيل حالات chv"},
       "displayName": "استمارة تدبير حالات الملاريا"
     },
     {
@@ -849,13 +704,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Date",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Date",
-            "ar": "التاريخ"
-          }
+          "label": {"en": "Date", "ar": "التاريخ"}
         },
         {
           "uid": "o199339mA9n",
@@ -865,8 +716,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "IntegerZeroOrPositive",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Number of Beneficiaries ITNs",
@@ -881,8 +731,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "IntegerZeroOrPositive",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Number of Beneficiaries BreadingSite",
@@ -897,8 +746,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "IntegerZeroOrPositive",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Number of Beneficiaries",
@@ -914,10 +762,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "ITNs",
           "description": null,
           "order": null,
-          "label": {
-            "en": "ITNs",
-            "ar": "النموسيات المعالجة"
-          }
+          "label": {"en": "ITNs", "ar": "النموسيات المعالجة"}
         },
         {
           "uid": "oBne889mA9n",
@@ -926,10 +771,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "BreadingSite",
           "description": null,
           "order": null,
-          "label": {
-            "en": "Breading Site",
-            "ar": "مواقع التوالد"
-          }
+          "label": {"en": "Breading Site", "ar": "مواقع التوالد"}
         },
         {
           "uid": "oBne111mA9n",
@@ -944,8 +786,7 @@ final Map<String, dynamic> dSampleAllForms = {
           }
         }
       ],
-      "orgUnits": [
-      ],
+      "orgUnits": [],
       "label": {
         "en": "Community Awareness Sessions",
         "ar": "جلسات التثقيف المجتمعي"
@@ -975,13 +816,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "SelectOne",
           "mandatory": true,
           "mainField": true,
-          "rules": [
-          ],
+          "rules": [],
           "listName": "drugsTypes",
-          "label": {
-            "en": "Supplay Item",
-            "ar": "نوع العلاج"
-          }
+          "label": {"en": "Supplay Item", "ar": "نوع العلاج"}
         },
         {
           "uid": "q444T6uV7W8",
@@ -991,8 +828,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "IntegerZeroOrPositive",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Balance from Pre.Month",
@@ -1007,13 +843,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "IntegerZeroOrPositive",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "New Supply",
-            "ar": "تموين جديد"
-          }
+          "label": {"en": "New Supply", "ar": "تموين جديد"}
         },
         {
           "uid": "jK1l666O3P4",
@@ -1023,8 +855,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "IntegerZeroOrPositive",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
           "label": {
             "en": "Consumed during this month",
@@ -1039,13 +870,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "IntegerZeroOrPositive",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Corrupt or Lost",
-            "ar": "تالف أو مفقود"
-          }
+          "label": {"en": "Corrupt or Lost", "ar": "تالف أو مفقود"}
         },
         {
           "uid": "eF3334iJ5K6",
@@ -1055,13 +882,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "IntegerZeroOrPositive",
           "mandatory": true,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Remaining",
-            "ar": "متبقي نهاية الشهر"
-          }
+          "label": {"en": "Remaining", "ar": "متبقي نهاية الشهر"}
         },
         {
           "uid": "xBCEEDbC1D2",
@@ -1071,13 +894,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "LongText",
           "mandatory": null,
           "mainField": false,
-          "rules": [
-          ],
+          "rules": [],
           "listName": null,
-          "label": {
-            "en": "Comments",
-            "ar": "ملاحظات وتعليقات إن وجدت"
-          }
+          "label": {"en": "Comments", "ar": "ملاحظات وتعليقات إن وجدت"}
         }
       ],
       "options": [
@@ -1088,10 +907,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "MRDT",
           "description": null,
           "order": null,
-          "label": {
-            "en": "Malaria RDT",
-            "ar": "اشرطة الفحص السريع"
-          }
+          "label": {"en": "Malaria RDT", "ar": "اشرطة الفحص السريع"}
         },
         {
           "uid": "xBCD10bC1D2",
@@ -1100,10 +916,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "MDrugs",
           "description": null,
           "order": null,
-          "label": {
-            "en": "Malaria Drugs",
-            "ar": "أدوية الملاريا"
-          }
+          "label": {"en": "Malaria Drugs", "ar": "أدوية الملاريا"}
         },
         {
           "uid": "xBCDDDbC1D2",
@@ -1112,13 +925,13 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "ARTSUPP",
           "description": null,
           "order": null,
-          "label": {
-            "en": "ArtisunatSupp",
-            "ar": "تحاميل أرتيسونات"
-          }
+          "label": {"en": "ArtisunatSupp", "ar": "تحاميل أرتيسونات"}
         }
       ],
       "orgUnits": [
+        "awgKZaDoWLA",
+        "yZCm1nwslVu",
+        "UW2up6bUmbG"
       ],
       "label": {
         "en": "Malaria Supply Data",

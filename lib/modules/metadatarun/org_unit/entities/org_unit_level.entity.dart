@@ -14,7 +14,9 @@ class OrgUnitLevel extends IdentifiableEntity {
 
   OrgUnitLevel(
       {required String id,
+      required String uid,
       String? created,
+      String? code,
       String? lastUpdated,
       required String name,
       String? displayName,
@@ -22,7 +24,9 @@ class OrgUnitLevel extends IdentifiableEntity {
       this.offlineLevels,
       required dirty})
       : super(
-            uid: id,
+            id: id,
+            uid: uid,
+            code: code,
             name: name,
             displayName: displayName,
             createdDate: created,
@@ -31,10 +35,13 @@ class OrgUnitLevel extends IdentifiableEntity {
 
   factory OrgUnitLevel.fromJson(Map<String, dynamic> json) {
     return OrgUnitLevel(
-        id: json['id'],
+        id: json['uid'],
+        uid: json['uid'],
+        code: json['code'],
         name: json['name'],
         level: json['level'],
-        created: json['created'],
+        created: json['createdDate'],
+        lastUpdated: json['lastModifiedDate'],
         offlineLevels: json['offlineLevels'],
         displayName: json['displayName'],
         dirty: json['dirty']);
@@ -43,10 +50,12 @@ class OrgUnitLevel extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastModifiedDate'] = this.lastModifiedDate;
-    data['id'] = this.id;
-    data['uid'] = this.id;
+    data['id'] = this.uid;
+    data['uid'] = this.uid;
+    data['code'] = this.code;
     data['level'] = this.level;
-    data['created'] = this.createdDate;
+    data['createdDate'] = this.createdDate;
+    data['lastModifiedDate'] = this.lastModifiedDate;
     data['name'] = this.name;
     data['offlineLevels'] = this.offlineLevels;
     data['displayName'] = this.displayName;

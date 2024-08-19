@@ -9,12 +9,6 @@ class DTeam extends IdentifiableEntity {
   @Column(nullable: true)
   String? activity;
 
-  @Column(nullable: true)
-  final String? mobile;
-
-  @Column(nullable: true, type: ColumnType.TEXT)
-  String teamType;
-
   @Column(type: ColumnType.BOOLEAN)
   bool disabled;
 
@@ -27,10 +21,8 @@ class DTeam extends IdentifiableEntity {
       String? shortName,
       String? code,
       String? displayName,
-      this.mobile,
       this.activity,
       this.disabled = true,
-      required this.teamType,
       required dirty})
       : super(
             uid: uid,
@@ -56,9 +48,7 @@ class DTeam extends IdentifiableEntity {
                 ? json['activity']
                 : json['activity']['uid']
             : null,
-        mobile: json['mobile'],
         disabled: json['disabled'] ?? false,
-        teamType: json['teamType'],
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
         dirty: json['dirty']);
@@ -74,8 +64,7 @@ class DTeam extends IdentifiableEntity {
         displayName: jsonData['displayName'] ?? jsonData['name'],
         activity: jsonData['activity'],
         disabled: jsonData['disabled'] ?? false,
-        mobile: jsonData['mobile'],
-        teamType: jsonData['teamType'],
+        // teamType: jsonData['teamType'],
         createdDate: jsonData['createdDate'],
         lastModifiedDate: jsonData['lastModifiedDate'],
         dirty: jsonData['dirty'] ?? false);
@@ -91,8 +80,6 @@ class DTeam extends IdentifiableEntity {
     data['displayName'] = this.displayName;
     data['activity'] = this.activity;
     data['disabled'] = this.disabled;
-    data['mobile'] = this.mobile;
-    data['teamType'] = this.teamType;
     data['createdDate'] = this.createdDate;
     data['lastModifiedDate'] = this.lastModifiedDate;
     data['dirty'] = this.dirty;

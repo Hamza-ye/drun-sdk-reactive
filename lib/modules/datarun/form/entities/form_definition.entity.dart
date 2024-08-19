@@ -5,7 +5,6 @@ import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
-import 'package:d2_remote/modules/datarun/form/entities/form_org_unit.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
@@ -43,15 +42,14 @@ class FormDefinition extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.INTEGER)
   int version;
 
-  @OneToMany(table: FormOrgUnit)
-  List<FormOrgUnit>? formOrgUnits; // Store JSON string in SQLite
+  @Column(nullable: true, type: ColumnType.TEXT)
+  List<String>? orgUnits; // Store JSON string in SQLite
 
   FormDefinition({
     String? id,
     String? uid,
     String? name,
     String? code,
-    // this.mainFields,
     String? createdDate,
     String? lastModifiedDate,
     required this.activity,
@@ -62,7 +60,7 @@ class FormDefinition extends IdentifiableEntity {
     required this.label,
     required this.defaultLocal,
     this.rules,
-    required this.formOrgUnits,
+    required this.orgUnits,
     required dirty,
   }) : super(
           id: id,
@@ -75,11 +73,11 @@ class FormDefinition extends IdentifiableEntity {
         );
 
   factory FormDefinition.fromJson(Map<String, dynamic> json) {
-    // final mainFields = json['mainFields'] != null
-    //     ? (parseDynamicList(json['mainFields']) as List)
-    //         .map((mainField) => DynamicFormField.fromJson(mainField))
-    //         .toList()
-    //     : null;
+    final orgUnits = json['orgUnits'] != null
+        ? json['orgUnits'].runtimeType == String
+            ? jsonDecode(json['orgUnits']).cast<String>()
+            : json['orgUnits'].cast<String>()
+        : null;
 
     final fields = json['fields'] != null
         ? (parseDynamicList(json['fields']) as List)
@@ -95,7 +93,7 @@ class FormDefinition extends IdentifiableEntity {
 
     final options = json['options'] != null
         ? (parseDynamicList(json['options']) as List)
-            .map((ruleField) => FormOption.fromJson(ruleField))
+            .map((option) => FormOption.fromJson(option))
             .toList()
         : null;
 
@@ -113,28 +111,9 @@ class FormDefinition extends IdentifiableEntity {
               : json['label'])
           : {"en": json['name']},
       defaultLocal: json['defaultLocal'] ?? 'en',
-      // mainFields: mainFields,
       fields: fields,
-      // options: List<dynamic>.from(options ?? [])
-      //     .map((option) => FormOption.fromJson({
-      //           ...option,
-      //           'uid': '${json['uid']}_${option['listName']}_${option['name']}',
-      //         }))
-      //     .toList(),
       options: options,
-      formOrgUnits: json['orgUnits']
-          .map<FormOrgUnit>((orgUnit) => FormOrgUnit(
-              id: '${json['uid']}_${orgUnit['uid']}',
-              name: '${json['uid']}_${orgUnit['uid']}',
-              orgUnit: orgUnit['uid'],
-              formDefinition: json['uid'],
-              dirty: json['dirty'] ?? false))
-          .toList(),
-      //
-      // orgUnits: List<dynamic>.from(json['orgUnits'] ?? [])
-      //     .map((orgUnit) => DOrganisationUnit.fromJson(
-      //         {...orgUnit, 'formDefinition': json['uid'], 'dirty': false}))
-      //     .toList(),
+      orgUnits: orgUnits,
       rules: rules,
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
@@ -153,14 +132,16 @@ class FormDefinition extends IdentifiableEntity {
       'form': form,
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
-      'formOrgUnits': formOrgUnits,
+      'orgUnits': orgUnits != null ? jsonEncode(orgUnits) : null,
       'fields': fields != null
           ? jsonEncode(fields!.map((field) => field.toJson()).toList())
           : null,
       'rules': rules != null
           ? jsonEncode(rules!.map((rule) => rule.toJson()).toList())
           : null,
-      'options': options,
+      'options': options != null
+          ? jsonEncode(options!.map((option) => option.toJson()).toList())
+          : null,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'dirty': dirty,

@@ -45,7 +45,7 @@ class DynamicForm extends IdentifiableEntity {
         json['activity'] is String ? json['activity'] : json['activity']['uid'];
 
     return DynamicForm(
-      id: json['id'],
+      id: json['uid'],
       formDefinitions: List<dynamic>.from(json['formDefinitions'] ?? [])
           .map((definition) => FormDefinition.fromJson({
                 ...definition,
