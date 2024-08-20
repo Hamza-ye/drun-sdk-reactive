@@ -35,7 +35,7 @@ class DataFormSubmission extends SyncableEntity {
     String? finishedEntryTime,
     dynamic activity,
     dynamic team,
-    required String orgUnit,
+    required String? orgUnit,
     required String status,
     Geometry? geometry,
     required dirty,
@@ -123,7 +123,7 @@ class DataFormSubmission extends SyncableEntity {
           : null,
       status: json['status'],
       orgUnit:
-          json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']['uid'],
+          json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
       geometry: geometry,
 
       dirty: json['dirty'] ?? false,
