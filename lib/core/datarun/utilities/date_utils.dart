@@ -63,6 +63,14 @@ class DateUtils {
     return DateFormat(TIME_12H_EXPRESSION, 'en_US');
   }
 
+  static String? format(String? inputString) {
+    if (inputString != null &&
+        databaseDateFormat().tryParse(inputString) != null) {
+      return uiDateFormat().format(databaseDateFormat().tryParse(inputString)!);
+    }
+    return inputString;
+  }
+
   /// FORMAT REGION
   String formatDate(DateTime dateToFormat) {
     return uiDateFormat().format(dateToFormat);
