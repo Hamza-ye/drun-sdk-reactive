@@ -50,6 +50,6 @@ void main() async {
   List<DynamicForm> activities = await D2Remote.formModule.form.get();
 
   test('should store all incoming activities metadata', () {
-    expect(activities.length, 4);
+    expect(activities.length, 5);
   });
 }
