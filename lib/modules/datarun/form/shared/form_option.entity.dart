@@ -17,7 +17,7 @@ class FormOption {
 
   factory FormOption.fromJson(Map<String, dynamic> json) {
     final properties = json['properties'] != null
-        ? Map<String, String>.from(json['properties'] is String
+        ? Map<String, dynamic>.from(json['properties'] is String
             ? jsonDecode(json['properties'])
             : json['properties'])
         : null;

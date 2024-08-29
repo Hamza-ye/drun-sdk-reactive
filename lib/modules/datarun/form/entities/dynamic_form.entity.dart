@@ -13,7 +13,7 @@ class DynamicForm extends IdentifiableEntity {
   final int version;
 
   @OneToMany(table: FormDefinition)
-  final List<FormDefinition> formDefinitions; // Store JSON string in SQLite
+  final List<FormDefinition> formInstances; // Store JSON string in SQLite
 
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
@@ -26,7 +26,7 @@ class DynamicForm extends IdentifiableEntity {
     String? createdDate,
     String? lastModifiedDate,
     required this.version,
-    required this.formDefinitions,
+    required this.formInstances,
     this.activity,
     required dirty,
   }) : super(
@@ -46,7 +46,7 @@ class DynamicForm extends IdentifiableEntity {
 
     return DynamicForm(
       id: json['uid'],
-      formDefinitions: List<dynamic>.from(json['formDefinitions'] ?? [])
+      formInstances: List<dynamic>.from(json['formInstances'] ?? [])
           .map((definition) => FormDefinition.fromJson({
                 ...definition,
                 'id': '${definition['uid']}_${json['version']}',
@@ -76,7 +76,7 @@ class DynamicForm extends IdentifiableEntity {
       'name': name,
       'version': version,
       'activity': activity,
-      'formDefinitions': formDefinitions,
+      'formInstances': formInstances,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'dirty': dirty,

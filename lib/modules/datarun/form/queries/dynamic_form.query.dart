@@ -31,7 +31,7 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
     if (relationColumn != null) {
       ColumnRelation relation = ColumnRelation(
           referencedColumn: relationColumn.relation?.attributeName,
-          attributeName: 'formDefinitions',
+          attributeName: 'formInstances',
           primaryKey: this.primaryKey?.name,
           relationType: RelationType.OneToMany,
           referencedEntity: Entity.getEntityDefinition(
@@ -76,8 +76,9 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
     List<Map<String, dynamic>> forms = [];
 
     for (final item in data) {
-      if (item['formDefinitions'] == null) {
-        item['formDefinitions'] = [item];
+      if (item['formInstances'] == null ||
+          (item['formInstances'] as List).isEmpty) {
+        item['formInstances'] = [item];
       }
 
       forms.add(item);

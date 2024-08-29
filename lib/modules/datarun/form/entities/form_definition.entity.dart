@@ -12,18 +12,14 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'formDefinition', apiResourceName: 'formDefinitions')
+@Entity(tableName: 'formDefinition', apiResourceName: 'formInstances')
 class FormDefinition extends IdentifiableEntity {
   @ManyToOne(table: DynamicForm, joinColumnName: 'form')
   dynamic form;
 
-  // @Column(nullable: true, type: ColumnType.TEXT)
-  // List<DynamicFormField>? mainFields;
-
   @Column(nullable: true, type: ColumnType.TEXT)
   List<DynamicFormField>? fields;
 
-  // @OneToMany(table: FormOption)
   @Column(nullable: true, type: ColumnType.TEXT)
   List<FormOption>? options;
 

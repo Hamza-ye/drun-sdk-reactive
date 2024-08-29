@@ -1,16 +1,17 @@
 import 'dart:convert';
 
 class Rule {
-  final String id;
-  final String field;
+  // final String id;
+  // final String field;
   final String? expression;
   final String? action;
   final Map<String, String>? message;
   final FilterInfo? filterInfo;
 
   Rule(
-      {required this.id,
-      required this.field,
+      {
+        // required this.id,
+      // required this.field,
       this.expression,
       this.action,
       this.message,
@@ -18,8 +19,8 @@ class Rule {
 
   factory Rule.fromJson(Map<String, dynamic> json) {
     return Rule(
-        id: json['uid'],
-        field: json['field'],
+        // id: json['uid'],
+        // field: json['field'],
         expression: json['expression'],
         action: json['action'],
         message: json['message'] != null
@@ -36,9 +37,9 @@ class Rule {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'uid': id,
-      'field': field,
+      // 'id': id,
+      // 'uid': id,
+      // 'field': field,
       'expression': expression,
       'action': action,
       'message': message != null ? jsonEncode(message) : null,
@@ -48,12 +49,12 @@ class Rule {
 }
 
 class FilterInfo {
-  final String fieldToFilter;
+  // final String fieldToFilter;
   final List<String>? optionsToHide;
   final List<String>? optionsToShow;
 
   FilterInfo({
-    required this.fieldToFilter,
+    // required this.fieldToFilter,
     required this.optionsToHide,
     required this.optionsToShow,
   });
@@ -72,7 +73,7 @@ class FilterInfo {
         : null;
 
     return FilterInfo(
-      fieldToFilter: json['fieldToFilter'],
+      // fieldToFilter: json['fieldToFilter'],
       optionsToHide: optionsToHide,
       optionsToShow: optionsToShow,
     );
@@ -80,7 +81,7 @@ class FilterInfo {
 
   Map<String, dynamic> toJson() {
     return {
-      'fieldToFilter': fieldToFilter,
+      // 'fieldToFilter': fieldToFilter,
       'optionsToHide': optionsToHide != null ? jsonEncode(optionsToHide) : null,
       'optionsToShow': optionsToShow != null ? jsonEncode(optionsToShow) : null,
     };
