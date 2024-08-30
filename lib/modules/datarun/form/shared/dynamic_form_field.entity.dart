@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:d2_remote/modules/datarun/form/shared/reference_field_info.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
+import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 
 class DynamicFormField {
-  final String type;
+  final ValueType type;
   final Map<String, String> label;
   final String name;
   final int order;
@@ -20,8 +21,9 @@ class DynamicFormField {
   final String? calculation;
   final String? defaultValue;
 
-  /// uid of section field including this as a child
+  /// name of section field including this as a child
   final String? section;
+  final String path;
 
   DynamicFormField(
       {required this.label,
@@ -38,7 +40,9 @@ class DynamicFormField {
       this.fields,
       this.defaultValue,
       this.calculation,
-      this.section});
+      this.section,
+        required this.path
+      });
 
   factory DynamicFormField.fromJson(Map<String, dynamic> json) {
     final rules = json['rules'] != null
@@ -60,7 +64,8 @@ class DynamicFormField {
         : null;
 
     return DynamicFormField(
-        type: json['type'],
+        // type: json['type'],
+        type: ValueType.getValueType(json['type']),
         label: Map<String, String>.from(json['label'] is String
             ? jsonDecode(json['label'])
             : json['label']),
@@ -79,12 +84,13 @@ class DynamicFormField {
         fieldValueRenderingType: json['fieldValueRenderingType'],
         fields: fields,
         defaultValue: json['defaultValue'],
+        path: json['path'],
         calculation: json['calculation']);
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'type': type,
+      'type': type.name,
       'label': jsonEncode(label),
       'order': order,
       'name': name,
@@ -100,12 +106,14 @@ class DynamicFormField {
       'choiceFilter': choiceFilter,
       'defaultValue': defaultValue,
       'calculation': calculation,
-      'fields': fields != null && fields?.isNotEmpty == true
-          ? jsonEncode(fields!.map((field) => field.toJson()).toList())
-          : null,
       'referenceField':
           referenceInfo != null ? jsonEncode(referenceInfo!.toJson()) : null,
       'fieldValueRenderingType': fieldValueRenderingType,
+      'fields': fields != null && fields?.isNotEmpty == true
+          ? jsonEncode(fields!.map((field) => field.toJson()).toList())
+          : null,
+      'section': section,
+      'path': path
     };
   }
 }
