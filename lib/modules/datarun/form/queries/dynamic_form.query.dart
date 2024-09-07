@@ -75,13 +75,14 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
 
     List<Map<String, dynamic>> forms = [];
 
-    for (final item in data) {
-      if (item['formInstances'] == null ||
-          (item['formInstances'] as List).isEmpty) {
-        item['formInstances'] = [item];
+    for (final form in data) {
+      final formInstance = {};
+      formInstance.addAll(form);
+      if (form['formInstances'] == null ||
+          (form['formInstances'] as List).isEmpty) {
+        form['formInstances'] = [formInstance];
       }
-
-      forms.add(item);
+      forms.add(form);
     }
 
     this.data = forms.map((dataItem) {

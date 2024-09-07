@@ -66,7 +66,7 @@ class OrgUnit extends IdentifiableTreeNode {
     final parent = json['parent'];
 
     final ancestors = json['ancestors'] != null
-        ? (parseDynamicList(json['ancestors']) as List)
+        ? (parseDynamicJson(json['ancestors']) as List)
             .map((ancestor) => OrgUnit.fromJson(ancestor))
             .toList()
         : null;

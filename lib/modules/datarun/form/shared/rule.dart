@@ -1,28 +1,37 @@
 import 'dart:convert';
 
+import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/rule_action.dart';
+
 class Rule {
-  // final String id;
-  // final String field;
+  final String field;
+
   final String? expression;
-  final String? action;
+
+  final Action? action;
   final Map<String, String>? message;
   final FilterInfo? filterInfo;
+  final dynamic assignedValue;
+  final List<String> dependencies;
 
   Rule(
-      {
-        // required this.id,
-      // required this.field,
+      {required this.field,
       this.expression,
       this.action,
       this.message,
-      this.filterInfo});
+      List<String> dependencies = const [],
+      this.filterInfo,
+      this.assignedValue})
+      : this.dependencies = []..addAll(dependencies) {}
 
   factory Rule.fromJson(Map<String, dynamic> json) {
     return Rule(
-        // id: json['uid'],
-        // field: json['field'],
+        field: json['field'],
+        action: Action.getAction(json['action']),
+        // action: json['action'],
+        dependencies: parseDependencies(json['expression']),
         expression: json['expression'],
-        action: json['action'],
+        //removePlaceholders(expression),
         message: json['message'] != null
             ? Map<String, String>.from(json['message'] is String
                 ? jsonDecode(json['message'])
@@ -37,24 +46,23 @@ class Rule {
 
   Map<String, dynamic> toJson() {
     return {
-      // 'id': id,
-      // 'uid': id,
-      // 'field': field,
+      'field': field,
       'expression': expression,
-      'action': action,
+      'action': action?.name,
+      // 'action': action,
+      'dependencies': jsonEncode(dependencies),
       'message': message != null ? jsonEncode(message) : null,
+      'assignedValue': assignedValue,
       'filterInfo': filterInfo != null ? filterInfo!.toJson() : null,
     };
   }
 }
 
 class FilterInfo {
-  // final String fieldToFilter;
   final List<String>? optionsToHide;
   final List<String>? optionsToShow;
 
   FilterInfo({
-    // required this.fieldToFilter,
     required this.optionsToHide,
     required this.optionsToShow,
   });
@@ -73,7 +81,6 @@ class FilterInfo {
         : null;
 
     return FilterInfo(
-      // fieldToFilter: json['fieldToFilter'],
       optionsToHide: optionsToHide,
       optionsToShow: optionsToShow,
     );
@@ -81,7 +88,6 @@ class FilterInfo {
 
   Map<String, dynamic> toJson() {
     return {
-      // 'fieldToFilter': fieldToFilter,
       'optionsToHide': optionsToHide != null ? jsonEncode(optionsToHide) : null,
       'optionsToShow': optionsToShow != null ? jsonEncode(optionsToShow) : null,
     };

@@ -7,7 +7,6 @@ import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
@@ -22,9 +21,9 @@ class FormDefinition extends IdentifiableEntity {
 
   @Column(nullable: true, type: ColumnType.TEXT)
   List<FormOption>? options;
-
-  @Column(nullable: true, type: ColumnType.TEXT)
-  List<Rule>? rules;
+  //
+  // @Column(nullable: true, type: ColumnType.TEXT)
+  // List<Rule>? rules;
 
   @Column(nullable: false, type: ColumnType.TEXT)
   Map<String, String> label;
@@ -55,7 +54,7 @@ class FormDefinition extends IdentifiableEntity {
     required this.version,
     required this.label,
     required this.defaultLocal,
-    this.rules,
+    // this.rules,
     required this.orgUnits,
     required dirty,
   }) : super(
@@ -76,19 +75,19 @@ class FormDefinition extends IdentifiableEntity {
         : null;
 
     final fields = json['fields'] != null
-        ? (parseDynamicList(json['fields']) as List)
+        ? (parseDynamicJson(json['fields']) as List)
             .map((field) => DynamicFormField.fromJson(field))
             .toList()
         : null;
 
-    final rules = json['rules'] != null
-        ? (parseDynamicList(json['rules']) as List)
-            .map((ruleField) => Rule.fromJson(ruleField))
-            .toList()
-        : null;
+    // final rules = json['rules'] != null
+    //     ? (parseDynamicJson(json['rules']) as List)
+    //         .map((ruleField) => Rule.fromJson(ruleField))
+    //         .toList()
+    //     : null;
 
     final options = json['options'] != null
-        ? (parseDynamicList(json['options']) as List)
+        ? (parseDynamicJson(json['options']) as List)
             .map((option) => FormOption.fromJson(option))
             .toList()
         : null;
@@ -110,7 +109,7 @@ class FormDefinition extends IdentifiableEntity {
       fields: fields,
       options: options,
       orgUnits: orgUnits,
-      rules: rules,
+      // rules: rules,
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
       dirty: json['dirty'] ?? false,
@@ -132,9 +131,9 @@ class FormDefinition extends IdentifiableEntity {
       'fields': fields != null
           ? jsonEncode(fields!.map((field) => field.toJson()).toList())
           : null,
-      'rules': rules != null
-          ? jsonEncode(rules!.map((rule) => rule.toJson()).toList())
-          : null,
+      // 'rules': rules != null
+      //     ? jsonEncode(rules!.map((rule) => rule.toJson()).toList())
+      //     : null,
       'options': options != null
           ? jsonEncode(options!.map((option) => option.toJson()).toList())
           : null,
