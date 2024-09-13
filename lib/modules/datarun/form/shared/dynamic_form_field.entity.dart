@@ -5,7 +5,12 @@ import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 
-class DynamicFormField {
+mixin ElementAttributesMixin {
+  ValueType get type;
+  bool get mandatory;
+}
+
+class FieldTemplate with ElementAttributesMixin {
   final ValueType type;
   final String name;
   final int order;
@@ -16,19 +21,19 @@ class DynamicFormField {
   final ReferenceInfo? referenceInfo;
   final String? choiceFilter;
   final String? calculation;
-  final String? defaultValue;
+  final dynamic defaultValue;
 
   /// name of section field including this as a child
   final String? section;
   final String path;
 
-  final List<DynamicFormField> fields = [];
+  final List<FieldTemplate> fields = [];
   final Map<String, String> label = {};
   final List<Rule> rules = [];
 
   final List<String> dependencies;
 
-  DynamicFormField({
+  FieldTemplate({
     required this.mandatory,
     required this.mainField,
     this.order = 0,
@@ -42,7 +47,7 @@ class DynamicFormField {
     this.calculation,
     this.section,
     required this.path,
-    List<DynamicFormField> fields = const [],
+    List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
     List<String> dependencies = const [],
     Map<String, String> label = const {},
@@ -52,7 +57,7 @@ class DynamicFormField {
     this.label.addAll(label);
   }
 
-  factory DynamicFormField.fromJson(Map<String, dynamic> json) {
+  factory FieldTemplate.fromJson(Map<String, dynamic> json) {
     final rules = json['rules'] != null
         ? (parseDynamicJson(json['rules']) as List)
             .map<Rule>((ruleField) =>
@@ -70,14 +75,14 @@ class DynamicFormField {
 
     final fields = json['fields'] != null
         ? (parseDynamicJson(json['fields']) as List)
-            .map<DynamicFormField>((field) => DynamicFormField.fromJson({
+            .map<FieldTemplate>((field) => FieldTemplate.fromJson({
                   ...field,
                   "section": json['name'],
                 }))
             .toList()
-        : <DynamicFormField>[];
+        : <FieldTemplate>[];
 
-    return DynamicFormField(
+    return FieldTemplate(
         // type: json['type'],
         type: ValueType.getValueType(json['type']),
         name: json['name'],

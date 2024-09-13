@@ -17,16 +17,17 @@ class FormDefinition extends IdentifiableEntity {
   dynamic form;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  List<DynamicFormField>? fields;
+  List<FieldTemplate> fields = [];
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  List<FormOption>? options;
+  List<FormOption> options = [];
+
   //
   // @Column(nullable: true, type: ColumnType.TEXT)
   // List<Rule>? rules;
 
   @Column(nullable: false, type: ColumnType.TEXT)
-  Map<String, String> label;
+  Map<String, String> label = {};
 
   @Column(nullable: false, type: ColumnType.TEXT)
   String defaultLocal;
@@ -38,7 +39,7 @@ class FormDefinition extends IdentifiableEntity {
   int version;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  List<String>? orgUnits; // Store JSON string in SQLite
+  List<String> orgUnits = []; // Store JSON string in SQLite
 
   FormDefinition({
     String? id,
@@ -48,14 +49,14 @@ class FormDefinition extends IdentifiableEntity {
     String? createdDate,
     String? lastModifiedDate,
     required this.activity,
-    this.fields,
-    this.options,
     this.form,
     required this.version,
-    required this.label,
     required this.defaultLocal,
     // this.rules,
-    required this.orgUnits,
+    List<FieldTemplate> fields = const [],
+    List<FormOption> options = const [],
+    Map<String, String> label = const {},
+    List<String> orgUnits = const [],
     required dirty,
   }) : super(
           id: id,
@@ -65,20 +66,25 @@ class FormDefinition extends IdentifiableEntity {
           createdDate: createdDate,
           lastModifiedDate: lastModifiedDate,
           dirty: dirty,
-        );
+        ) {
+    this.fields.addAll(fields);
+    this.options.addAll(options);
+    this.label.addAll(label);
+    this.orgUnits.addAll(orgUnits);
+  }
 
   factory FormDefinition.fromJson(Map<String, dynamic> json) {
     final orgUnits = json['orgUnits'] != null
         ? json['orgUnits'].runtimeType == String
             ? jsonDecode(json['orgUnits']).cast<String>()
             : json['orgUnits'].cast<String>()
-        : null;
+        : <String>[];
 
     final fields = json['fields'] != null
         ? (parseDynamicJson(json['fields']) as List)
-            .map((field) => DynamicFormField.fromJson(field))
+            .map((field) => FieldTemplate.fromJson(field))
             .toList()
-        : null;
+        : <FieldTemplate>[];
 
     // final rules = json['rules'] != null
     //     ? (parseDynamicJson(json['rules']) as List)
@@ -90,7 +96,7 @@ class FormDefinition extends IdentifiableEntity {
         ? (parseDynamicJson(json['options']) as List)
             .map((option) => FormOption.fromJson(option))
             .toList()
-        : null;
+        : <FormOption>[];
 
     return FormDefinition(
       id: json['id'],
@@ -127,16 +133,12 @@ class FormDefinition extends IdentifiableEntity {
       'form': form,
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
-      'orgUnits': orgUnits != null ? jsonEncode(orgUnits) : null,
-      'fields': fields != null
-          ? jsonEncode(fields!.map((field) => field.toJson()).toList())
-          : null,
+      'orgUnits': jsonEncode(orgUnits),
+      'fields': jsonEncode(fields.map((field) => field.toJson()).toList()),
       // 'rules': rules != null
       //     ? jsonEncode(rules!.map((rule) => rule.toJson()).toList())
       //     : null,
-      'options': options != null
-          ? jsonEncode(options!.map((option) => option.toJson()).toList())
-          : null,
+      'options': jsonEncode(options.map((option) => option.toJson()).toList()),
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'dirty': dirty,
