@@ -51,6 +51,20 @@ enum ValueType {
         Percentage
       ];
 
+  static List<ValueType> get BASIC_TYPES => <ValueType>[
+        Text,
+        LongText,
+        Letter,
+        Time,
+        Integer,
+        Number,
+        IntegerPositive,
+        IntegerNegative,
+        IntegerZeroOrPositive,
+        UnitInterval,
+        Percentage
+      ];
+
   static List<ValueType> get SECTION_TYPES =>
       <ValueType>[Section, RepeatableSection];
 
@@ -66,11 +80,18 @@ enum ValueType {
 
   static List<ValueType> get FILE_TYPES => <ValueType>[Image, FileResource];
 
+  bool get isBasicType => BASIC_TYPES.contains(this);
+
   bool get isInteger => INTEGER_TYPES.contains(this);
 
-  bool get isSection => SECTION_TYPES.contains(this);
+  bool get isSectionType => SECTION_TYPES.contains(this);
 
-  bool get isWithOptions => WITH_OPTIONS_TYPES.contains(this);
+  bool get isSection => this == ValueType.Section;
+
+  bool get isRepeatSection => this == ValueType.RepeatableSection;
+
+  bool get selectTypes => WITH_OPTIONS_TYPES.contains(this);
+  bool get isSelectType => WITH_OPTIONS_TYPES.contains(this);
 
   bool get isNumeric => NUMERIC_TYPES.contains(this);
 
