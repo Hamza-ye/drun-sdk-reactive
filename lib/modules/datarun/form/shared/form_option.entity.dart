@@ -4,13 +4,13 @@ class FormOption {
   final String name;
   final String listName;
   final Map<String, String> label;
-  final int sortOrder;
+  final int order;
   final Map<String, dynamic>? properties;
 
   FormOption({
     required this.label,
     required this.listName,
-    required this.sortOrder,
+    required this.order,
     required this.name,
     this.properties,
   });
@@ -28,7 +28,7 @@ class FormOption {
       name: json['name'],
       listName: json['listName'],
       properties: properties,
-      sortOrder: json['order'] ?? 0,
+      order: json['order'] ?? 0,
     );
   }
 
@@ -38,7 +38,7 @@ class FormOption {
       'name': name,
       'listName': listName,
       'properties': jsonEncode(properties),
-      'sortOrder': sortOrder,
+      'order': order,
     };
   }
 
@@ -48,7 +48,7 @@ class FormOption {
       'name': name,
       'listName': listName,
       ...?properties,
-      'sortOrder': sortOrder,
+      'order': order,
     };
   }
 }
