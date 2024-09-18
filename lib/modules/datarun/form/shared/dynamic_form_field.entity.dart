@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/reference_field_info.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
@@ -7,6 +8,7 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 
 mixin ElementAttributesMixin {
   ValueType get type;
+
   bool get mandatory;
 }
 
@@ -25,11 +27,13 @@ class FieldTemplate with ElementAttributesMixin {
 
   /// name of section field including this as a child
   final String? section;
-  final String path;
+
+  // final String path;
 
   final List<FieldTemplate> fields = [];
   final Map<String, String> label = {};
   final List<Rule> rules = [];
+  final Set<FormOption> options = Set();
 
   final List<String> dependencies;
 
@@ -46,15 +50,17 @@ class FieldTemplate with ElementAttributesMixin {
     this.defaultValue,
     this.calculation,
     this.section,
-    required this.path,
+    // required this.path,
     List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
+    List<FormOption> options = const [],
     List<String> dependencies = const [],
     Map<String, String> label = const {},
   }) : this.dependencies = []..addAll(dependencies) {
     this.fields.addAll(fields);
     this.rules.addAll(rules);
     this.label.addAll(label);
+    this.options.addAll(options);
   }
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
@@ -108,7 +114,7 @@ class FieldTemplate with ElementAttributesMixin {
                 ? json['defaultValue']
                 : json['defaultValue'] as String
             : null,
-        path: json['path'],
+        // path: json['path'],
         calculation: json['calculation']);
   }
 
@@ -131,7 +137,7 @@ class FieldTemplate with ElementAttributesMixin {
       'dependencies': jsonEncode(dependencies),
       'label': jsonEncode(label),
       'section': section,
-      'path': path
+      // 'path': path
     };
   }
 }

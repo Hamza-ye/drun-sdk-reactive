@@ -145,7 +145,6 @@ final Map<String, dynamic> dSampleAllForms = {
         "en": "Community Awareness Sessions",
         "ar": "جلسات التثقيف المجتمعي"
       },
-      "formInstances": [],
       "displayName": "جلسات التثقيف المجتمعي",
       "translations": []
     },
@@ -352,7 +351,6 @@ final Map<String, dynamic> dSampleAllForms = {
         "en": "Malaria Supply Data",
         "ar": "استخدام الادوية والفحص السريع"
       },
-      "formInstances": [],
       "displayName": "استخدام الادوية والفحص السريع",
       "translations": []
     },
@@ -1994,511 +1992,7 @@ final Map<String, dynamic> dSampleAllForms = {
         "en": "Health Facility Monthly Stock Report",
         "ar": "التقرير الشهري للمرافق الصحية"
       },
-      "formInstances": [],
       "displayName": "التقرير الشهري للمرافق الصحية",
-      "translations": []
-    },
-    {
-      "createdBy": null,
-      "createdDate": "2024-08-30T21:42:50.113Z",
-      "lastModifiedBy": "admin",
-      "lastModifiedDate": "2024-08-30T21:42:52.750Z",
-      "id": "66ca3d066ce8a30565e03599",
-      "uid": "KcsA3KETRbY",
-      "code": "CHV_PATIENTS_FORM",
-      "name": "استمارة تدبير حالات الملاريا",
-      "description": "CHV cases registering form",
-      "disabled": false,
-      "activity": "oBne891mA9n",
-      "version": 13,
-      "defaultLocal": "en",
-      "fields": [
-        {
-          "order": 0,
-          "name": "name",
-          "description": "Name of the patient",
-          "type": "FullName",
-          "mandatory": true,
-          "mainField": true,
-          "rules": [
-            {
-              "expression": "name.length >= 9",
-              "action": "Error",
-              "message": {
-                "en": "Name is not complete",
-                "ar": "ادخل الاسم الرباعي"
-              },
-              "filterInfo": null
-            }
-          ],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Patient name",
-            "ar": "اسم المريض"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "name",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "visitDate",
-          "description": null,
-          "type": "Date",
-          "mandatory": true,
-          "mainField": false,
-          "rules": [],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Visit Date",
-            "ar": "تاريخ الزيارة"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "visitDate",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "age",
-          "description": "Age in Years and (months for age less than 1 year)",
-          "type": "Age",
-          "mandatory": true,
-          "mainField": false,
-          "rules": [
-            {
-              "expression": "age <= 0 || age > 100",
-              "action": "Error",
-              "message": {
-                "en": "Age is greater than normal",
-                "ar": "العمر كبير جدا تأكد"
-              },
-              "filterInfo": null
-            }
-          ],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Age",
-            "ar": "العمر"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "age",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "gender",
-          "description": null,
-          "type": "SelectOne",
-          "mandatory": true,
-          "mainField": false,
-          "rules": [],
-          "listName": "genders",
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Gender",
-            "ar": "الجنس"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "gender",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "pregnant",
-          "description": null,
-          "type": "Boolean",
-          "mandatory": true,
-          "mainField": false,
-          "rules": [
-            {
-              "expression": "gender == 'FEMALE' && age >= 14",
-              "action": "Show",
-              "message": {
-                "en": "Error"
-              },
-              "filterInfo": null
-            }
-          ],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Is pregnant?",
-            "ar": "هل هي حامل؟"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "pregnant",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "testResult",
-          "description": null,
-          "type": "SelectOne",
-          "mandatory": true,
-          "mainField": false,
-          "rules": [],
-          "listName": "testResults",
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Test Result",
-            "ar": "نتيجة الفحص"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "testResult",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "detectionType",
-          "description": null,
-          "type": "SelectOne",
-          "mandatory": true,
-          "mainField": false,
-          "rules": [
-            {
-              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
-              "action": "Show",
-              "message": {
-                "en": "Error"
-              },
-              "filterInfo": null
-            }
-          ],
-          "listName": "detectionTypes",
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Detection Type",
-            "ar": "نوع الاكتشاف"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "detectionType",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "severity",
-          "description": null,
-          "type": "SelectOne",
-          "mandatory": true,
-          "mainField": false,
-          "rules": [
-            {
-              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
-              "action": "Show",
-              "message": {
-                "en": "Error"
-              },
-              "filterInfo": null
-            }
-          ],
-          "listName": "severities",
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Severity",
-            "ar": "تصنيف الحالة"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "severity",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "treatment",
-          "description": null,
-          "type": "SelectOne",
-          "mandatory": true,
-          "mainField": false,
-          "rules": [
-            {
-              "expression": "severity == 'SEVERE'",
-              "action": "Filter",
-              "message": {
-                "en": "Error"
-              },
-              "filterInfo": {
-                "optionsToHide": null,
-                "optionsToShow": [
-                  "FIRST_DOSE_REFERRAL",
-                  "REFERRAL"
-                ]
-              }
-            },
-            {
-              "expression": "pregnant && (testResult == 'PF' || testResult == 'PV' || testResult == 'MIX')",
-              "action": "Filter",
-              "message": {
-                "en": "Error"
-              },
-              "filterInfo": {
-                "optionsToHide": null,
-                "optionsToShow": [
-                  "REFERRAL"
-                ]
-              }
-            },
-            {
-              "expression": "testResult == 'PF' || testResult == 'PV' || testResult == 'MIX'",
-              "action": "Show",
-              "message": {
-                "en": "Error"
-              },
-              "filterInfo": null
-            }
-          ],
-          "listName": "treatments",
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Treatment",
-            "ar": "تدبير الحالة"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "treatment",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "comment",
-          "description": null,
-          "type": "LongText",
-          "mandatory": null,
-          "mainField": false,
-          "rules": [],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Comments",
-            "ar": "ملاحظات وتعليقات"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "comment",
-          "fields": []
-        }
-      ],
-      "options": [
-        {
-          "listName": "genders",
-          "name": "FEMALE",
-          "order": 0,
-          "label": {
-            "ar": "أنثى",
-            "en": "Female"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "testResults",
-          "name": "INVALID",
-          "order": 0,
-          "label": {
-            "ar": "غير صالح",
-            "en": "Invalid"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "genders",
-          "name": "MALE",
-          "order": 0,
-          "label": {
-            "ar": "ذكر",
-            "en": "Male"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "testResults",
-          "name": "NEGATIVE",
-          "order": 0,
-          "label": {
-            "ar": "سلبي",
-            "en": "Negative"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "treatments",
-          "name": "TREATED",
-          "order": 0,
-          "label": {
-            "ar": "معالج",
-            "en": "Treated"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "testResults",
-          "name": "PF",
-          "order": 0,
-          "label": {
-            "ar": "بلاسموديوم فالسيباروم",
-            "en": "Plasmodium falciparum"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "testResults",
-          "name": "MIX",
-          "order": 0,
-          "label": {
-            "ar": "مختلط",
-            "en": "Mixed"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "severities",
-          "name": "SEVERE",
-          "order": 0,
-          "label": {
-            "ar": "وخيمة",
-            "en": "Severe"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "detectionTypes",
-          "name": "ACTIVE",
-          "order": 0,
-          "label": {
-            "ar": "بحث نشط",
-            "en": "Active"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "treatments",
-          "name": "REFERRAL",
-          "order": 0,
-          "label": {
-            "ar": "إحالة",
-            "en": "Referral"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "detectionTypes",
-          "name": "REACTIVE",
-          "order": 0,
-          "label": {
-            "ar": "زيارة روتينية",
-            "en": "Reactive"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "treatments",
-          "name": "FIRST_DOSE_REFERRAL",
-          "order": 0,
-          "label": {
-            "ar": "الجرعة الأولى وإحالة",
-            "en": "First Dose & Referral"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "testResults",
-          "name": "PV",
-          "order": 0,
-          "label": {
-            "ar": "بلاسموديوم فيفاكس",
-            "en": "Plasmodium vivax"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "treatments",
-          "name": "FIRST_DOSE",
-          "order": 0,
-          "label": {
-            "ar": "الجرعة الأولى",
-            "en": "First Dose"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        },
-        {
-          "listName": "severities",
-          "name": "SIMPLE",
-          "order": 0,
-          "label": {
-            "ar": "بسيطة",
-            "en": "Simple"
-          },
-          "properties": {
-            "properties": "{}"
-          }
-        }
-      ],
-      "orgUnits": [
-        "awgKZaDoWLA",
-        "UW2up6bUmbG"
-      ],
-      "label": {
-        "en": "chv cases register",
-        "ar": "تسجيل حالات chv"
-      },
-      "formInstances": [],
-      "displayName": "استمارة تدبير حالات الملاريا",
       "translations": []
     },
     {
@@ -2547,7 +2041,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "rules": [],
           "listName": "countries",
           "referenceInfo": null,
-          "choiceFilter": "continentFilter == continentQ",
+          "choiceFilter": "continentFilter == #{continentQ}",
           "label": {
             "en": "Country",
             "ar": "الدولة"
@@ -2568,7 +2062,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "rules": [],
           "listName": "cities",
           "referenceInfo": null,
-          "choiceFilter": "countryFilter == countryQ",
+          "choiceFilter": "countryFilter == #{countryQ}",
           "label": {
             "en": "City",
             "ar": "المدينة"
@@ -2783,7 +2277,6 @@ final Map<String, dynamic> dSampleAllForms = {
         "en": "Test form",
         "ar": "استمارة تجريبية"
       },
-      "formInstances": [],
       "displayName": "test form",
       "translations": []
     },
@@ -2873,7 +2366,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": true,
               "rules": [
                 {
-                  "expression": "transaction == 'supply' || transaction == 'dispense' || transaction == 'return'",
+                  "expression": "#{transaction} == 'supply' || #{transaction} == 'dispense' || #{transaction} == 'return'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -2901,7 +2394,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": true,
               "rules": [
                 {
-                  "expression": "transaction == 'supply' || transaction == 'dispense' || transaction == 'return'",
+                  "expression": "#{transaction} == 'supply' || #{transaction} == 'dispense' || #{transaction} == 'return'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -2957,7 +2450,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": true,
               "rules": [
                 {
-                  "expression": "transaction == 'dispense' || transaction == 'return'",
+                  "expression": "#{transaction} == 'dispense' || #{transaction} == 'return'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -2985,7 +2478,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": true,
               "rules": [
                 {
-                  "expression": "transaction == 'dispense'",
+                  "expression": "#{transaction} == 'dispense'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3035,7 +2528,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'supply'",
+                  "expression": "#{transaction} == 'supply'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3084,7 +2577,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'supply'",
+                  "expression": "#{transaction} == 'supply'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3112,7 +2605,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "amount > 0",
+                  "expression": "#{amount} > 0",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3140,7 +2633,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'inventory'",
+                  "expression": "#{transaction} == 'inventory'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3168,7 +2661,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'supply'",
+                  "expression": "#{transaction} == 'supply'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3196,7 +2689,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'dispense'",
+                  "expression": "#{transaction} == 'dispense'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3224,7 +2717,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'supply'",
+                  "expression": "#{transaction} == 'supply'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3252,7 +2745,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'return'",
+                  "expression": "#{transaction} == 'return'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3280,7 +2773,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'expiry'",
+                  "expression": "#{transaction} == 'expiry'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3329,7 +2822,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "amount > 0",
+                  "expression": "#{amount} > 0",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3357,7 +2850,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [
                 {
-                  "expression": "transaction == 'supply'",
+                  "expression": "#{transaction} == 'supply'",
                   "action": "Show",
                   "message": null,
                   "filterInfo": null
@@ -3734,8 +3227,509 @@ final Map<String, dynamic> dSampleAllForms = {
         "YCEyRUYxMTo"
       ],
       "label": {},
-      "formInstances": [],
       "displayName": "bookkeeping",
+      "translations": []
+    },
+    {
+      "createdBy": null,
+      "createdDate": "2024-08-30T21:42:50.113Z",
+      "lastModifiedBy": "admin",
+      "lastModifiedDate": "2024-08-30T21:42:52.750Z",
+      "id": "66ca3d066ce8a30565e03599",
+      "uid": "KcsA3KETRbY",
+      "code": "CHV_PATIENTS_FORM",
+      "name": "استمارة تدبير حالات الملاريا",
+      "description": "CHV cases registering form",
+      "disabled": false,
+      "activity": "oBne891mA9n",
+      "version": 13,
+      "defaultLocal": "en",
+      "fields": [
+        {
+          "order": 0,
+          "name": "name",
+          "description": "Name of the patient",
+          "type": "FullName",
+          "mandatory": true,
+          "mainField": true,
+          "rules": [
+            {
+              "expression": "#{name.length} >= 9",
+              "action": "Error",
+              "message": {
+                "en": "Name is not complete",
+                "ar": "ادخل الاسم الرباعي"
+              },
+              "filterInfo": null
+            }
+          ],
+          "listName": null,
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Patient name",
+            "ar": "اسم المريض"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "name",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "visitDate",
+          "description": null,
+          "type": "Date",
+          "mandatory": true,
+          "mainField": false,
+          "rules": [],
+          "listName": null,
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Visit Date",
+            "ar": "تاريخ الزيارة"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "visitDate",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "age",
+          "description": "Age in Years and (months for age less than 1 year)",
+          "type": "Age",
+          "mandatory": true,
+          "mainField": false,
+          "rules": [
+            {
+              "expression": "#{age} <= 0 || #{age} > 100",
+              "action": "Error",
+              "message": {
+                "en": "Age is greater than normal",
+                "ar": "العمر كبير جدا تأكد"
+              },
+              "filterInfo": null
+            }
+          ],
+          "listName": null,
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Age",
+            "ar": "العمر"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "age",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "gender",
+          "description": null,
+          "type": "SelectOne",
+          "mandatory": true,
+          "mainField": false,
+          "rules": [],
+          "listName": "genders",
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Gender",
+            "ar": "الجنس"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "gender",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "pregnant",
+          "description": null,
+          "type": "Boolean",
+          "mandatory": true,
+          "mainField": false,
+          "rules": [
+            {
+              "expression": "#{gender} == 'FEMALE' && #{age} >= 14",
+              "action": "Show",
+              "message": {
+                "en": "Error"
+              },
+              "filterInfo": null
+            }
+          ],
+          "listName": null,
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Is pregnant?",
+            "ar": "هل هي حامل؟"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "pregnant",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "testResult",
+          "description": null,
+          "type": "SelectOne",
+          "mandatory": true,
+          "mainField": false,
+          "rules": [],
+          "listName": "testResults",
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Test Result",
+            "ar": "نتيجة الفحص"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "testResult",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "detectionType",
+          "description": null,
+          "type": "SelectOne",
+          "mandatory": true,
+          "mainField": false,
+          "rules": [
+            {
+              "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+              "action": "Show",
+              "message": {
+                "en": "Error"
+              },
+              "filterInfo": null
+            }
+          ],
+          "listName": "detectionTypes",
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Detection Type",
+            "ar": "نوع الاكتشاف"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "detectionType",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "severity",
+          "description": null,
+          "type": "SelectOne",
+          "mandatory": true,
+          "mainField": false,
+          "rules": [
+            {
+              "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+              "action": "Show",
+              "message": {
+                "en": "Error"
+              },
+              "filterInfo": null
+            }
+          ],
+          "listName": "severities",
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Severity",
+            "ar": "تصنيف الحالة"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "severity",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "treatment",
+          "description": null,
+          "type": "SelectOne",
+          "mandatory": true,
+          "mainField": false,
+          "rules": [
+            {
+              "expression": "#{severity} == 'SEVERE'",
+              "action": "Filter",
+              "message": {
+                "en": "Error"
+              },
+              "filterInfo": {
+                "optionsToHide": null,
+                "optionsToShow": [
+                  "FIRST_DOSE_REFERRAL",
+                  "REFERRAL"
+                ]
+              }
+            },
+            {
+              "expression": "#{pregnant} && (#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX')",
+              "action": "Filter",
+              "message": {
+                "en": "Error"
+              },
+              "filterInfo": {
+                "optionsToHide": null,
+                "optionsToShow": [
+                  "REFERRAL"
+                ]
+              }
+            },
+            {
+              "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+              "action": "Show",
+              "message": {
+                "en": "Error"
+              },
+              "filterInfo": null
+            }
+          ],
+          "listName": "treatments",
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Treatment",
+            "ar": "تدبير الحالة"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "treatment",
+          "fields": []
+        },
+        {
+          "order": 0,
+          "name": "comment",
+          "description": null,
+          "type": "LongText",
+          "mandatory": null,
+          "mainField": false,
+          "rules": [],
+          "listName": null,
+          "referenceInfo": null,
+          "choiceFilter": null,
+          "label": {
+            "en": "Comments",
+            "ar": "ملاحظات وتعليقات"
+          },
+          "calculation": null,
+          "defaultValue": null,
+          "section": null,
+          "path": "comment",
+          "fields": []
+        }
+      ],
+      "options": [
+        {
+          "listName": "genders",
+          "name": "FEMALE",
+          "order": 0,
+          "label": {
+            "ar": "أنثى",
+            "en": "Female"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "testResults",
+          "name": "INVALID",
+          "order": 0,
+          "label": {
+            "ar": "غير صالح",
+            "en": "Invalid"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "genders",
+          "name": "MALE",
+          "order": 0,
+          "label": {
+            "ar": "ذكر",
+            "en": "Male"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "testResults",
+          "name": "NEGATIVE",
+          "order": 0,
+          "label": {
+            "ar": "سلبي",
+            "en": "Negative"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "treatments",
+          "name": "TREATED",
+          "order": 0,
+          "label": {
+            "ar": "معالج",
+            "en": "Treated"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "testResults",
+          "name": "PF",
+          "order": 0,
+          "label": {
+            "ar": "بلاسموديوم فالسيباروم",
+            "en": "Plasmodium falciparum"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "testResults",
+          "name": "MIX",
+          "order": 0,
+          "label": {
+            "ar": "مختلط",
+            "en": "Mixed"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "severities",
+          "name": "SEVERE",
+          "order": 0,
+          "label": {
+            "ar": "وخيمة",
+            "en": "Severe"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "detectionTypes",
+          "name": "ACTIVE",
+          "order": 0,
+          "label": {
+            "ar": "بحث نشط",
+            "en": "Active"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "treatments",
+          "name": "REFERRAL",
+          "order": 0,
+          "label": {
+            "ar": "إحالة",
+            "en": "Referral"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "detectionTypes",
+          "name": "REACTIVE",
+          "order": 0,
+          "label": {
+            "ar": "زيارة روتينية",
+            "en": "Reactive"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "treatments",
+          "name": "FIRST_DOSE_REFERRAL",
+          "order": 0,
+          "label": {
+            "ar": "الجرعة الأولى وإحالة",
+            "en": "First Dose & Referral"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "testResults",
+          "name": "PV",
+          "order": 0,
+          "label": {
+            "ar": "بلاسموديوم فيفاكس",
+            "en": "Plasmodium vivax"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "treatments",
+          "name": "FIRST_DOSE",
+          "order": 0,
+          "label": {
+            "ar": "الجرعة الأولى",
+            "en": "First Dose"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        },
+        {
+          "listName": "severities",
+          "name": "SIMPLE",
+          "order": 0,
+          "label": {
+            "ar": "بسيطة",
+            "en": "Simple"
+          },
+          "properties": {
+            "properties": "{}"
+          }
+        }
+      ],
+      "orgUnits": [
+        "awgKZaDoWLA",
+        "UW2up6bUmbG"
+      ],
+      "label": {
+        "en": "chv cases register",
+        "ar": "تسجيل حالات chv"
+      },
+      "displayName": "استمارة تدبير حالات الملاريا",
       "translations": []
     }
   ]

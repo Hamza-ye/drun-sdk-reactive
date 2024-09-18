@@ -13,7 +13,6 @@ import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/modules/data/aggregate/aggregate.module.dart';
 import 'package:d2_remote/modules/data/tracker/tracked_entity_instance.module.dart';
 import 'package:d2_remote/modules/datarun/form/form.module.dart';
-import 'package:d2_remote/modules/datarun/form_data/form_data.module.dart';
 import 'package:d2_remote/modules/file_resource/file_resource.module.dart';
 import 'package:d2_remote/modules/metadata/dashboard/dashboard.module.dart';
 import 'package:d2_remote/modules/metadata/data_element/data_element.module.dart';
@@ -53,7 +52,7 @@ class D2Remote {
       await DActivityModule.createTables();
       await DTeamModule.createTables();
       await DAssignmentModule.createTables();
-      await FormInstanceModule.createTables();
+      // await FormInstanceModule.createTables();
       await FormModule.createTables();
 
       await OrganisationUnitModule.createTables();
@@ -284,7 +283,7 @@ class D2Remote {
 
   static FormModule formModule = FormModule();
 
-  static FormInstanceModule formInstanceModule = FormInstanceModule();
+  // static FormInstanceModule formInstanceModule = FormInstanceModule();
 
   static DTeamModule teamModuleD = DTeamModule();
 }

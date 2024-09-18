@@ -17,7 +17,7 @@ class DTeam extends IdentifiableEntity {
       required String uid,
       String? createdDate,
       String? lastModifiedDate,
-      required String name,
+      String? name,
       String? shortName,
       String? code,
       String? displayName,

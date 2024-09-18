@@ -71,6 +71,14 @@ class DateUtils {
     return inputString;
   }
 
+  static String? formatForDb(String? inputString) {
+    if (inputString != null &&
+        uiDateFormat().tryParse(inputString) != null) {
+      return databaseDateFormat().format(uiDateFormat().tryParse(inputString)!);
+    }
+    return inputString;
+  }
+
   /// FORMAT REGION
   String formatDate(DateTime dateToFormat) {
     return uiDateFormat().format(dateToFormat);
