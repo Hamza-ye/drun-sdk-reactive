@@ -11,10 +11,10 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'formVersion', apiResourceName: 'formInstances')
+@Entity(tableName: 'formVersion', apiResourceName: 'formVersions')
 class FormVersion extends IdentifiableEntity {
   @ManyToOne(table: FormTemplate, joinColumnName: 'formTemplate')
-  dynamic form;
+  dynamic formTemplate;
 
   @Column(nullable: true, type: ColumnType.TEXT)
   List<FieldTemplate> fields = [];
@@ -49,7 +49,7 @@ class FormVersion extends IdentifiableEntity {
     String? createdDate,
     String? lastModifiedDate,
     required this.activity,
-    this.form,
+    this.formTemplate,
     required this.version,
     required this.defaultLocal,
     // this.rules,
@@ -105,7 +105,7 @@ class FormVersion extends IdentifiableEntity {
       name: json['name'],
       activity: json['activity'],
       version: json['version'],
-      form: json['form'],
+      formTemplate: json['formTemplate'],
       label: json['label'] != null
           ? Map<String, String>.from(json['label'] is String
               ? jsonDecode(json['label'])
@@ -130,7 +130,7 @@ class FormVersion extends IdentifiableEntity {
       'name': name,
       'activity': activity,
       'version': version,
-      'form': form,
+      'formTemplate': formTemplate,
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
       'orgUnits': jsonEncode(orgUnits),

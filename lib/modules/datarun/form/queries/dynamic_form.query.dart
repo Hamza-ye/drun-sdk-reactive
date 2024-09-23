@@ -31,7 +31,7 @@ class FormTemplateQuery extends BaseQuery<FormTemplate> {
     if (relationColumn != null) {
       ColumnRelation relation = ColumnRelation(
           referencedColumn: relationColumn.relation?.attributeName,
-          attributeName: 'formInstances',
+          attributeName: 'formVersions',
           primaryKey: this.primaryKey?.name,
           relationType: RelationType.OneToMany,
           referencedEntity: Entity.getEntityDefinition(
@@ -78,9 +78,9 @@ class FormTemplateQuery extends BaseQuery<FormTemplate> {
     for (final form in data) {
       final formInstance = {};
       formInstance.addAll(form);
-      if (form['formInstances'] == null ||
-          (form['formInstances'] as List).isEmpty) {
-        form['formInstances'] = [formInstance];
+      if (form['formVersions'] == null ||
+          (form['formVersions'] as List).isEmpty) {
+        form['formVersions'] = [formInstance];
       }
       forms.add(form);
     }

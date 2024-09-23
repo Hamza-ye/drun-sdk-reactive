@@ -10,7 +10,7 @@ class FormModule {
     // await FormOrgUnitQuery().createTable();
   }
 
-  FormTemplateQuery get form => FormTemplateQuery();
+  FormTemplateQuery get formTemplate => FormTemplateQuery();
 
   // FormOrgUnitQuery get formOrgUnit => FormOrgUnitQuery();
 

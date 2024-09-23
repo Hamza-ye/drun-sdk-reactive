@@ -47,7 +47,7 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<FormTemplate> activities = await D2Remote.formModule.form.withFormVersions().get();
+  List<FormTemplate> activities = await D2Remote.formModule.formTemplate.withFormVersions().get();
 
   test('should store all incoming activities metadata', () {
     expect(activities.length, 6);

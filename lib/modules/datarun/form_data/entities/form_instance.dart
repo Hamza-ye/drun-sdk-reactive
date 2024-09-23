@@ -14,7 +14,7 @@
 // import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 //
 // @AnnotationReflectable
-// @Entity(tableName: 'formInstance', apiResourceName: 'formInstances')
+// @Entity(tableName: 'formInstance', apiResourceName: 'formVersions')
 // class FormInstance extends SyncableEntity {
 //   /// can be a list of [FieldInstance], [SectionInstance], or [RepeatableSectionInstance]
 //   @Column(nullable: true, type: ColumnType.TEXT)

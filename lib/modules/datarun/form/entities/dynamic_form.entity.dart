@@ -13,7 +13,7 @@ class FormTemplate extends IdentifiableEntity {
   final int version;
 
   @OneToMany(table: FormVersion)
-  final List<FormVersion> formInstances; // Store JSON string in SQLite
+  final List<FormVersion> formVersions; // Store JSON string in SQLite
 
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
@@ -26,7 +26,7 @@ class FormTemplate extends IdentifiableEntity {
     String? createdDate,
     String? lastModifiedDate,
     required this.version,
-    required this.formInstances,
+    required this.formVersions,
     this.activity,
     required dirty,
   }) : super(
@@ -46,12 +46,12 @@ class FormTemplate extends IdentifiableEntity {
 
     return FormTemplate(
       id: json['uid'],
-      formInstances: List<dynamic>.from(json['formInstances'] ?? [])
+      formVersions: List<dynamic>.from(json['formVersions'] ?? [])
           .map((definition) => FormVersion.fromJson({
                 ...definition,
                 'id': '${definition['uid']}_${json['version']}',
                 'uid': '${definition['uid']}_${json['version']}',
-                'form': json['uid'],
+                'formTemplate': json['uid'],
                 'activity': activity,
                 'dirty': false
               }))
@@ -76,7 +76,7 @@ class FormTemplate extends IdentifiableEntity {
       'name': name,
       'version': version,
       'activity': activity,
-      'formInstances': formInstances,
+      'formVersions': formVersions,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'dirty': dirty,
