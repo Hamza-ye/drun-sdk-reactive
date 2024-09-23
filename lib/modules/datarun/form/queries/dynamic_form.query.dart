@@ -11,11 +11,11 @@ import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
-class DynamicFormQuery extends BaseQuery<DynamicForm> {
-  DynamicFormQuery({Database? database}) : super(database: database);
+class FormTemplateQuery extends BaseQuery<FormTemplate> {
+  FormTemplateQuery({Database? database}) : super(database: database);
   int? version;
 
-  DynamicFormQuery byVersion(int? version) {
+  FormTemplateQuery byVersion(int? version) {
     this.version = version;
 
     return version != null
@@ -23,9 +23,9 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
         : this;
   }
 
-  DynamicFormQuery withFormDefinitions() {
-    final formDefinition = Repository<FormDefinition>();
-    final Column? relationColumn = formDefinition.columns.firstWhere((column) =>
+  FormTemplateQuery withFormVersions() {
+    final formVersion = Repository<FormVersion>();
+    final Column? relationColumn = formVersion.columns.firstWhere((column) =>
         column.relation?.referencedEntity?.tableName == this.tableName);
 
     if (relationColumn != null) {
@@ -35,9 +35,9 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
           primaryKey: this.primaryKey?.name,
           relationType: RelationType.OneToMany,
           referencedEntity: Entity.getEntityDefinition(
-              AnnotationReflectable.reflectType(FormDefinition) as ClassMirror),
+              AnnotationReflectable.reflectType(FormVersion) as ClassMirror),
           referencedEntityColumns: Entity.getEntityColumns(
-              AnnotationReflectable.reflectType(FormDefinition) as ClassMirror,
+              AnnotationReflectable.reflectType(FormVersion) as ClassMirror,
               false));
       this.relations.add(relation);
     }
@@ -46,7 +46,7 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
   }
 
   @override
-  Future<List<DynamicForm>?> download(Function(RequestProgress, bool) callback,
+  Future<List<FormTemplate>?> download(Function(RequestProgress, bool) callback,
       {Dio? dioTestClient}) async {
     callback(
         RequestProgress(
@@ -87,7 +87,7 @@ class DynamicFormQuery extends BaseQuery<DynamicForm> {
 
     this.data = forms.map((dataItem) {
       dataItem['dirty'] = false;
-      return DynamicForm.fromJson(dataItem);
+      return FormTemplate.fromJson(dataItem);
     }).toList();
 
     callback(

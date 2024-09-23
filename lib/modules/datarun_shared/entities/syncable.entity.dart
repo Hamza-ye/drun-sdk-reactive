@@ -58,7 +58,7 @@ class SyncableEntity extends BaseEntity {
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
 
-  @ManyToOne(table: DynamicForm, joinColumnName: 'form')
+  @ManyToOne(table: FormTemplate, joinColumnName: 'form')
   dynamic form;
 
   @Column(nullable: true)

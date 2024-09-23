@@ -42,12 +42,12 @@ void main() async {
     'http://localhost:8080/api/custom/dataForms?paging=false&eagerload=true',
     (server) => server.reply(200, sampleAllForms),
   );
-  final dynamicFormQuery = DynamicFormQuery(database: db);
-  await dynamicFormQuery.download((progress, complete) {
+  final formTemplateQuery = FormTemplateQuery(database: db);
+  await formTemplateQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DynamicForm> activities = await D2Remote.formModule.form.withFormDefinitions().get();
+  List<FormTemplate> activities = await D2Remote.formModule.form.withFormVersions().get();
 
   test('should store all incoming activities metadata', () {
     expect(activities.length, 6);

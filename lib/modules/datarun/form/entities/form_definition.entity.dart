@@ -11,9 +11,9 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'formDefinition', apiResourceName: 'formInstances')
-class FormDefinition extends IdentifiableEntity {
-  @ManyToOne(table: DynamicForm, joinColumnName: 'form')
+@Entity(tableName: 'formVersion', apiResourceName: 'formInstances')
+class FormVersion extends IdentifiableEntity {
+  @ManyToOne(table: FormTemplate, joinColumnName: 'formTemplate')
   dynamic form;
 
   @Column(nullable: true, type: ColumnType.TEXT)
@@ -41,7 +41,7 @@ class FormDefinition extends IdentifiableEntity {
   @Column(nullable: true, type: ColumnType.TEXT)
   List<String> orgUnits = []; // Store JSON string in SQLite
 
-  FormDefinition({
+  FormVersion({
     String? id,
     String? uid,
     String? name,
@@ -73,7 +73,7 @@ class FormDefinition extends IdentifiableEntity {
     this.orgUnits.addAll(orgUnits);
   }
 
-  factory FormDefinition.fromJson(Map<String, dynamic> json) {
+  factory FormVersion.fromJson(Map<String, dynamic> json) {
     final orgUnits = json['orgUnits'] != null
         ? json['orgUnits'].runtimeType == String
             ? jsonDecode(json['orgUnits']).cast<String>()
@@ -98,7 +98,7 @@ class FormDefinition extends IdentifiableEntity {
             .toList()
         : <FormOption>[];
 
-    return FormDefinition(
+    return FormVersion(
       id: json['id'],
       uid: json['uid'],
       code: json['code'],

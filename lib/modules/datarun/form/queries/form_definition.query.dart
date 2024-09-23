@@ -4,9 +4,9 @@ import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-class FormDefinitionQuery extends BaseQuery<FormDefinition> {
-  FormDefinitionQuery({Database? database}) : super(database: database);
-  // FormDefinitionQuery withOrganisationUnit() {
+class FormVersionQuery extends BaseQuery<FormVersion> {
+  FormVersionQuery({Database? database}) : super(database: database);
+  // FormVersionQuery withOrganisationUnit() {
   //   final formOrgUnit = Repository<FormOrgUnit>();
   //   final Column? relationColumn = formOrgUnit.columns.firstWhere(
   //           (column) =>
@@ -34,12 +34,12 @@ class FormDefinitionQuery extends BaseQuery<FormDefinition> {
   int? version;
   String? form;
 
-  FormDefinitionQuery byVersion(int version) {
+  FormVersionQuery byVersion(int version) {
     this.version = version;
     return this.where(attribute: 'version', value: version);
   }
 
-  FormDefinitionQuery byForm(String form) {
+  FormVersionQuery byForm(String form) {
     this.form = form;
     return this.where(attribute: 'form', value: form);
   }

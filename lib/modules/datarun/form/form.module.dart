@@ -4,17 +4,17 @@ import 'package:d2_remote/modules/datarun/form/queries/form_definition.query.dar
 
 class FormModule {
   static createTables() async {
-    await DynamicFormQuery().createTable();
-    await FormDefinitionQuery().createTable();
+    await FormTemplateQuery().createTable();
+    await FormVersionQuery().createTable();
     await DataFormSubmissionQuery().createTable();
     // await FormOrgUnitQuery().createTable();
   }
 
-  DynamicFormQuery get form => DynamicFormQuery();
+  FormTemplateQuery get form => FormTemplateQuery();
 
   // FormOrgUnitQuery get formOrgUnit => FormOrgUnitQuery();
 
-  FormDefinitionQuery get formDefinition => FormDefinitionQuery();
+  FormVersionQuery get formVersion => FormVersionQuery();
 
   DataFormSubmissionQuery get formSubmission => DataFormSubmissionQuery();
 }

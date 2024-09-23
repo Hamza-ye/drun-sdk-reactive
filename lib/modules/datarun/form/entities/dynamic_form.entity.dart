@@ -7,18 +7,18 @@ import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entit
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'dynamicForm', apiResourceName: 'dataForms')
-class DynamicForm extends IdentifiableEntity {
+@Entity(tableName: 'formTemplate', apiResourceName: 'dataForms')
+class FormTemplate extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.INTEGER)
   final int version;
 
-  @OneToMany(table: FormDefinition)
-  final List<FormDefinition> formInstances; // Store JSON string in SQLite
+  @OneToMany(table: FormVersion)
+  final List<FormVersion> formInstances; // Store JSON string in SQLite
 
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
 
-  DynamicForm({
+  FormTemplate({
     String? id,
     String? uid,
     String? name,
@@ -40,14 +40,14 @@ class DynamicForm extends IdentifiableEntity {
         );
 
   // From JSON string (Database and API)
-  factory DynamicForm.fromJson(Map<String, dynamic> json) {
+  factory FormTemplate.fromJson(Map<String, dynamic> json) {
     final activity =
         json['activity'] is String ? json['activity'] : json['activity']['uid'];
 
-    return DynamicForm(
+    return FormTemplate(
       id: json['uid'],
       formInstances: List<dynamic>.from(json['formInstances'] ?? [])
-          .map((definition) => FormDefinition.fromJson({
+          .map((definition) => FormVersion.fromJson({
                 ...definition,
                 'id': '${definition['uid']}_${json['version']}',
                 'uid': '${definition['uid']}_${json['version']}',
