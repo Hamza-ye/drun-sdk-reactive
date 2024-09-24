@@ -12,8 +12,8 @@ class FormTemplate extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.INTEGER)
   final int version;
 
-  @OneToMany(table: FormVersion)
-  final List<FormVersion> formVersions; // Store JSON string in SQLite
+  @OneToMany(table: FormTemplateV)
+  final List<FormTemplateV> formVersions; // Store JSON string in SQLite
 
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
@@ -46,8 +46,8 @@ class FormTemplate extends IdentifiableEntity {
 
     return FormTemplate(
       id: json['uid'],
-      formVersions: List<dynamic>.from(json['formVersions'] ?? [])
-          .map((definition) => FormVersion.fromJson({
+      formVersions: List<dynamic>.from(json['formTemplateVersions'] ?? [])
+          .map((definition) => FormTemplateV.fromJson({
                 ...definition,
                 'id': '${definition['uid']}_${json['version']}',
                 'uid': '${definition['uid']}_${json['version']}',

@@ -5,7 +5,7 @@ import 'package:d2_remote/modules/datarun/form/queries/form_definition.query.dar
 class FormModule {
   static createTables() async {
     await FormTemplateQuery().createTable();
-    await FormVersionQuery().createTable();
+    await FormTemplateVQuery().createTable();
     await DataFormSubmissionQuery().createTable();
     // await FormOrgUnitQuery().createTable();
   }
@@ -14,7 +14,7 @@ class FormModule {
 
   // FormOrgUnitQuery get formOrgUnit => FormOrgUnitQuery();
 
-  FormVersionQuery get formVersion => FormVersionQuery();
+  FormTemplateVQuery get formTemplateV => FormTemplateVQuery();
 
   DataFormSubmissionQuery get formSubmission => DataFormSubmissionQuery();
 }

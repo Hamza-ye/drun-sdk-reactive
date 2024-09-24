@@ -4,18 +4,18 @@ import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
-class FormVersionQuery extends BaseQuery<FormVersion> {
-  FormVersionQuery({Database? database}) : super(database: database);
+class FormTemplateVQuery extends BaseQuery<FormTemplateV> {
+  FormTemplateVQuery({Database? database}) : super(database: database);
 
   int? version;
   String? formTemplate;
 
-  FormVersionQuery byVersion(int version) {
+  FormTemplateVQuery byVersion(int version) {
     this.version = version;
     return this.where(attribute: 'version', value: version);
   }
 
-  FormVersionQuery byFormTemplate(String formTemplate) {
+  FormTemplateVQuery byFormTemplate(String formTemplate) {
     this.formTemplate = formTemplate;
     return this.where(attribute: 'formTemplate', value: formTemplate);
   }

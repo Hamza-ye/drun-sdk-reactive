@@ -15,16 +15,16 @@ class FormTemplateQuery extends BaseQuery<FormTemplate> {
   FormTemplateQuery({Database? database}) : super(database: database);
   int? version;
 
-  FormTemplateQuery byVersion(int? version) {
-    this.version = version;
-
-    return version != null
-        ? this.where(attribute: 'version', value: version)
-        : this;
-  }
+  // FormTemplateQuery byVersion(int? version) {
+  //   this.version = version;
+  //
+  //   return version != null
+  //       ? this.where(attribute: 'version', value: version)
+  //       : this;
+  // }
 
   FormTemplateQuery withFormVersions() {
-    final formVersion = Repository<FormVersion>();
+    final formVersion = Repository<FormTemplateV>();
     final Column? relationColumn = formVersion.columns.firstWhere((column) =>
         column.relation?.referencedEntity?.tableName == this.tableName);
 
@@ -35,9 +35,9 @@ class FormTemplateQuery extends BaseQuery<FormTemplate> {
           primaryKey: this.primaryKey?.name,
           relationType: RelationType.OneToMany,
           referencedEntity: Entity.getEntityDefinition(
-              AnnotationReflectable.reflectType(FormVersion) as ClassMirror),
+              AnnotationReflectable.reflectType(FormTemplateV) as ClassMirror),
           referencedEntityColumns: Entity.getEntityColumns(
-              AnnotationReflectable.reflectType(FormVersion) as ClassMirror,
+              AnnotationReflectable.reflectType(FormTemplateV) as ClassMirror,
               false));
       this.relations.add(relation);
     }
@@ -78,9 +78,9 @@ class FormTemplateQuery extends BaseQuery<FormTemplate> {
     for (final form in data) {
       final formInstance = {};
       formInstance.addAll(form);
-      if (form['formVersions'] == null ||
-          (form['formVersions'] as List).isEmpty) {
-        form['formVersions'] = [formInstance];
+      if (form['formTemplateVersions'] == null ||
+          (form['formTemplateVersions'] as List).isEmpty) {
+        form['formTemplateVersions'] = [formInstance];
       }
       forms.add(form);
     }
