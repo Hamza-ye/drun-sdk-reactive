@@ -1,6 +1,7 @@
 enum ValueType {
   Section,
   RepeatableSection,
+  Attribute,
   Text,
   LongText,
   Letter,
@@ -177,9 +178,11 @@ enum ValueType {
         return ValueType.YesNo;
       case 'geojson':
         return ValueType.GeoJson;
+      case 'attribute':
+        return ValueType.Attribute;
       default:
         return ValueType.Unknown;
-      // throw ArgumentError('Invalid value type: $valueType');
+      // throw ArgumentError('Invalid value type: $valueType'); Attribute
     }
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
@@ -11,6 +13,9 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 class FormTemplate extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.INTEGER)
   final int version;
+
+  @Column(nullable: false, type: ColumnType.TEXT)
+  Map<String, String> label = {};
 
   @OneToMany(table: FormTemplateV)
   final List<FormTemplateV> formVersions; // Store JSON string in SQLite
@@ -28,6 +33,7 @@ class FormTemplate extends IdentifiableEntity {
     required this.version,
     required this.formVersions,
     this.activity,
+    Map<String, String> label = const {},
     required dirty,
   }) : super(
           id: id,
@@ -37,7 +43,9 @@ class FormTemplate extends IdentifiableEntity {
           createdDate: createdDate,
           lastModifiedDate: lastModifiedDate,
           dirty: dirty,
-        );
+        ) {
+    label.addAll(label);
+  }
 
   // From JSON string (Database and API)
   factory FormTemplate.fromJson(Map<String, dynamic> json) {
@@ -59,6 +67,11 @@ class FormTemplate extends IdentifiableEntity {
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
+      label: json['label'] != null
+          ? Map<String, String>.from(json['label'] is String
+              ? jsonDecode(json['label'])
+              : json['label'])
+          : {"en": json['name']},
       activity: activity,
       version: json['version'],
       createdDate: json['createdDate'],
@@ -76,6 +89,7 @@ class FormTemplate extends IdentifiableEntity {
       'name': name,
       'version': version,
       'activity': activity,
+      'label': jsonEncode(label),
       'formVersions': formVersions,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,

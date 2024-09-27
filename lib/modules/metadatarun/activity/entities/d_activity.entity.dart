@@ -23,6 +23,9 @@ class DActivity extends IdentifiableEntity {
   @Column(nullable: true)
   final String? organisationUnits;
 
+  @Column(nullable: true)
+  final String? description;
+
   DActivity(
       {String? id,
       required String uid,
@@ -38,6 +41,7 @@ class DActivity extends IdentifiableEntity {
       required this.disabled,
       this.programs,
       this.organisationUnits,
+      this.description,
       required dirty})
       : super(
             id: id,
@@ -58,6 +62,7 @@ class DActivity extends IdentifiableEntity {
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
         shortName: json['shortName'],
+        description: json['description'],
         code: json['code'],
         displayName: json['displayName'],
         startDate: json['startDate'],
@@ -83,6 +88,7 @@ class DActivity extends IdentifiableEntity {
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;
+    data['description'] = this.description;
     data['displayName'] = this.displayName;
     data['startDate'] = this.startDate;
     data['endDate'] = this.endDate;

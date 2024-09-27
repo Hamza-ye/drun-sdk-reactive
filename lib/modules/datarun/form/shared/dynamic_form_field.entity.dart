@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:d2_remote/modules/datarun/form/shared/attribute_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/reference_field_info.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
@@ -8,6 +9,8 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 
 mixin ElementAttributesMixin {
   ValueType get type;
+
+  AttributeType? get attributeType => null;
 
   bool get mandatory;
 }
@@ -37,6 +40,8 @@ class FieldTemplate with ElementAttributesMixin {
 
   final List<String> dependencies;
 
+  final AttributeType? attributeType;
+
   FieldTemplate({
     required this.mandatory,
     required this.mainField,
@@ -50,6 +55,7 @@ class FieldTemplate with ElementAttributesMixin {
     this.defaultValue,
     this.calculation,
     this.section,
+    this.attributeType,
     // required this.path,
     List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
@@ -91,6 +97,7 @@ class FieldTemplate with ElementAttributesMixin {
     return FieldTemplate(
         // type: json['type'],
         type: ValueType.getValueType(json['type']),
+        attributeType: AttributeType.getAttributeType(json['attributeType']),
         name: json['name'],
         order: json['order'] ?? 0,
         mandatory: json['mandatory'] ?? false,

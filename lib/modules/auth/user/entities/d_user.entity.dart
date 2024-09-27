@@ -107,7 +107,7 @@ class DUser extends IdentifiableEntity {
         tokenExpiry: jsonData['tokenExpiry'],
         authType: jsonData['authType'],
         name: jsonData['name'],
-        phoneNumber: jsonData['phoneNumber'],
+        phoneNumber: jsonData['mobile'],
         baseUrl: jsonData['baseUrl'],
         authorities: (jsonData['authorities'] ?? [])
             .map<DUserAuthority>((authority) => DUserAuthority(
@@ -177,7 +177,7 @@ class DUser extends IdentifiableEntity {
     data['token'] = this.token;
     data['tokenType'] = this.tokenType;
     data['refreshToken'] = this.refreshToken;
-    data['phoneNumber'] = this.phoneNumber;
+    data['mobile'] = this.phoneNumber;
     data['tokenExpiry'] = this.tokenExpiry;
     data['authType'] = this.authType;
     data['authorities'] = this.authorities;
