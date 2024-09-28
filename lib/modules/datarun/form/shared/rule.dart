@@ -12,24 +12,20 @@ class Rule {
   final Map<String, String>? message;
   final FilterInfo? filterInfo;
   final dynamic assignedValue;
-  final List<String> dependencies;
 
-  Rule(
-      {required this.field,
+  Rule({required this.field,
       this.expression,
       this.action,
       this.message,
-      List<String> dependencies = const [],
       this.filterInfo,
-      this.assignedValue})
-      : this.dependencies = []..addAll(dependencies) {}
+      this.assignedValue});
 
   factory Rule.fromJson(Map<String, dynamic> json) {
     return Rule(
         field: json['field'],
         action: Action.getAction(json['action']),
         // action: json['action'],
-        dependencies: parseDependencies(json['expression']),
+        // dependencies: parseDependencies(json['expression']),
         expression: json['expression'],
         //removePlaceholders(expression),
         message: json['message'] != null
@@ -49,8 +45,6 @@ class Rule {
       'field': field,
       'expression': expression,
       'action': action?.name,
-      // 'action': action,
-      'dependencies': jsonEncode(dependencies),
       'message': message != null ? jsonEncode(message) : null,
       'assignedValue': assignedValue,
       'filterInfo': filterInfo != null ? filterInfo!.toJson() : null,

@@ -7,6 +7,7 @@ import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
@@ -22,9 +23,8 @@ class FormTemplateV extends IdentifiableEntity {
   @Column(nullable: true, type: ColumnType.TEXT)
   List<FormOption> options = [];
 
-  //
-  // @Column(nullable: true, type: ColumnType.TEXT)
-  // List<Rule>? rules;
+  @Column(nullable: true, type: ColumnType.TEXT)
+  List<DOptionSet> optionSets = [];
 
   @Column(nullable: false, type: ColumnType.TEXT)
   Map<String, String> label = {};
@@ -39,7 +39,7 @@ class FormTemplateV extends IdentifiableEntity {
   int version;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  List<String> orgUnits = []; // Store JSON string in SQLite
+  List<String> orgUnits = [];
 
   FormTemplateV({
     String? id,
@@ -52,9 +52,9 @@ class FormTemplateV extends IdentifiableEntity {
     this.formTemplate,
     required this.version,
     required this.defaultLocal,
-    // this.rules,
     List<FieldTemplate> fields = const [],
     List<FormOption> options = const [],
+    List<DOptionSet> optionSets = const [],
     Map<String, String> label = const {},
     List<String> orgUnits = const [],
     required dirty,
@@ -69,6 +69,7 @@ class FormTemplateV extends IdentifiableEntity {
         ) {
     this.fields.addAll(fields);
     this.options.addAll(options);
+    this.optionSets.addAll(optionSets);
     this.label.addAll(label);
     this.orgUnits.addAll(orgUnits);
   }
@@ -86,17 +87,17 @@ class FormTemplateV extends IdentifiableEntity {
             .toList()
         : <FieldTemplate>[];
 
-    // final rules = json['rules'] != null
-    //     ? (parseDynamicJson(json['rules']) as List)
-    //         .map((ruleField) => Rule.fromJson(ruleField))
-    //         .toList()
-    //     : null;
-
     final options = json['options'] != null
         ? (parseDynamicJson(json['options']) as List)
             .map((option) => FormOption.fromJson(option))
             .toList()
         : <FormOption>[];
+
+    final optionSets = json['optionSets'] != null
+        ? (parseDynamicJson(json['optionSets']) as List)
+            .map((optionSet) => DOptionSet.fromJson(optionSet))
+            .toList()
+        : <DOptionSet>[];
 
     return FormTemplateV(
       id: json['id'],
@@ -114,8 +115,8 @@ class FormTemplateV extends IdentifiableEntity {
       defaultLocal: json['defaultLocal'] ?? 'en',
       fields: fields,
       options: options,
+      optionSets: optionSets,
       orgUnits: orgUnits,
-      // rules: rules,
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
       dirty: json['dirty'] ?? false,
@@ -135,10 +136,9 @@ class FormTemplateV extends IdentifiableEntity {
       'defaultLocal': defaultLocal,
       'orgUnits': jsonEncode(orgUnits),
       'fields': jsonEncode(fields.map((field) => field.toJson()).toList()),
-      // 'rules': rules != null
-      //     ? jsonEncode(rules!.map((rule) => rule.toJson()).toList())
-      //     : null,
       'options': jsonEncode(options.map((option) => option.toJson()).toList()),
+      'optionSets': jsonEncode(
+          optionSets.map((optionSet) => optionSet.toJson()).toList()),
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'dirty': dirty,

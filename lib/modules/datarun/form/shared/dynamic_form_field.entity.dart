@@ -27,18 +27,12 @@ class FieldTemplate with ElementAttributesMixin {
   final String? choiceFilter;
   final String? calculation;
   final dynamic defaultValue;
-
-  /// name of section field including this as a child
   final String? section;
-
-  // final String path;
 
   final List<FieldTemplate> fields = [];
   final Map<String, String> label = {};
   final List<Rule> rules = [];
   final Set<FormOption> options = Set();
-
-  final List<String> dependencies;
 
   final AttributeType? attributeType;
 
@@ -56,13 +50,11 @@ class FieldTemplate with ElementAttributesMixin {
     this.calculation,
     this.section,
     this.attributeType,
-    // required this.path,
     List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
     List<FormOption> options = const [],
-    List<String> dependencies = const [],
     Map<String, String> label = const {},
-  }) : this.dependencies = []..addAll(dependencies) {
+  }) {
     this.fields.addAll(fields);
     this.rules.addAll(rules);
     this.label.addAll(label);
@@ -77,14 +69,6 @@ class FieldTemplate with ElementAttributesMixin {
             .toList()
         : <Rule>[];
 
-    // final choiceFilter = json['choiceFilter'];
-    // final List<String> dependencies = rules
-    //     .map((rule) => rule.expression)
-    //     .expand((expression) => parseDependencies(expression))
-    //     .toList()
-    //   ..addAll(parseDependencies(choiceFilter))
-    //   ..toSet().toList();
-
     final fields = json['fields'] != null
         ? (parseDynamicJson(json['fields']) as List)
             .map<FieldTemplate>((field) => FieldTemplate.fromJson({
@@ -95,7 +79,6 @@ class FieldTemplate with ElementAttributesMixin {
         : <FieldTemplate>[];
 
     return FieldTemplate(
-        // type: json['type'],
         type: ValueType.getValueType(json['type']),
         attributeType: AttributeType.getAttributeType(json['attributeType']),
         name: json['name'],
@@ -104,7 +87,6 @@ class FieldTemplate with ElementAttributesMixin {
         mainField: json['mainField'] ?? false,
         listName: json['listName'],
         fields: fields,
-        dependencies: parseDependencies(json['choiceFilter']),
         choiceFilter: json['choiceFilter'],
         rules: rules,
         label: Map<String, String>.from(json['label'] is String
@@ -121,7 +103,6 @@ class FieldTemplate with ElementAttributesMixin {
                 ? json['defaultValue']
                 : json['defaultValue'] as String
             : null,
-        // path: json['path'],
         calculation: json['calculation']);
   }
 
@@ -141,37 +122,8 @@ class FieldTemplate with ElementAttributesMixin {
       'fieldValueRenderingType': fieldValueRenderingType,
       'fields': jsonEncode(fields.map((field) => field.toJson()).toList()),
       'rules': jsonEncode(rules.map((rule) => rule.toJson()).toList()),
-      'dependencies': jsonEncode(dependencies),
       'label': jsonEncode(label),
       'section': section,
-      // 'path': path
     };
   }
-}
-
-List<String> parseDependencies(String? expression) {
-  if (expression != null) {
-    // final fieldPattern = RegExp(r'#\{(\w+)\}');
-    final fieldPattern = RegExp(r'#\{(.*?)\}');
-    // final fieldPattern = RegExp(r'#\{([\w\.]+)\}');
-
-    return fieldPattern
-        .allMatches(expression)
-        .map((match) => match.group(1)!)
-        .toSet()
-        .toList();
-  }
-  return [];
-}
-
-String? removePlaceholders(String? expression) {
-  if (expression != null) {
-    // final fieldPattern = RegExp(r'#\{(\w+)\}');
-    final fieldPattern = RegExp(r'#\{(.*?)\}');
-    // final fieldPattern = RegExp(r'#\{([\w\.]+)\}');
-    return expression.replaceAllMapped(
-        fieldPattern, (match) => match.group(1)!);
-  }
-
-  return null;
 }
