@@ -1,20 +1,24 @@
 import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
 
+/// Field Template inside A form template fields can
+/// FieldTemplate is an element configuration, A FieldInstance,
+/// a SectionInstance, or repeatedSectionInstance all hold their configuration as
+/// a FieldTemplate.
 extension FieldTemplateDependencies on FieldTemplate {
+  /// parse the rule expression dependencies `field names` from the rules expressions
+  /// i.e #{transactionQuestion} = 'supply' && #{itemType} = 'ACT80'
+  /// dependencies will be ['transactionQuestion', 'itemType']
   List<String> get dependencies {
     List<String> dependencySet = [];
-    final fieldPattern = RegExp(r'#\{(.*?)\}');
-
     for (final rule in rules) {
-      // if (rule.expression != null) {
         final ruleDependencies = rule.dependencies;
         dependencySet.addAll(ruleDependencies);
-      // }
     }
     return dependencySet.toSet().toList();
   }
 
+  /// parse the dependencies names from the choiceFilter expression
   List<String> get filterDependencies {
     List<String> dependencyList = [];
     final fieldPattern = RegExp(r'#\{(.*?)\}');

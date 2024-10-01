@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule_action.dart';
 
 class Rule {
