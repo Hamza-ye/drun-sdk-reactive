@@ -1,20 +1,24 @@
 import 'dart:convert';
 
-import 'package:d2_remote/modules/datarun/form/shared/rule_action.dart';
+import 'package:d2_remote/modules/datarun/form/shared/rule/action.dart';
+import 'package:d2_remote/modules/datarun/form/shared/rule/rule_action.dart';
 
 class Rule {
   final String field;
 
-  final String? expression;
+  final String expression;
 
-  final Action? action;
+  final ActionType? action;
+  final RuleAction ruleAction;
   final Map<String, String>? message;
   final FilterInfo? filterInfo;
   final dynamic assignedValue;
 
-  Rule({required this.field,
-      this.expression,
+  Rule(
+      {required this.field,
+      required this.expression,
       this.action,
+      required this.ruleAction,
       this.message,
       this.filterInfo,
       this.assignedValue});
@@ -22,16 +26,22 @@ class Rule {
   factory Rule.fromJson(Map<String, dynamic> json) {
     return Rule(
         field: json['field'],
-        action: Action.getAction(json['action']),
-        // action: json['action'],
-        // dependencies: parseDependencies(json['expression']),
+        action: ActionType.getAction(json['action']),
+        ruleAction: RuleAction.fromJson({
+          'action': json['action'],
+          'assignedValue': json['assignedValue'],
+          'message': json['message'] != null
+              ? Map<String, String>.from(json['message'] is String
+                  ? jsonDecode(json['message'])
+                  : json['message'])
+              : {},
+        }),
         expression: json['expression'],
-        //removePlaceholders(expression),
         message: json['message'] != null
             ? Map<String, String>.from(json['message'] is String
                 ? jsonDecode(json['message'])
                 : json['message'])
-            : null,
+            : {},
         filterInfo: json['filterInfo'] != null
             ? FilterInfo.fromJson(json['filterInfo'] is String
                 ? jsonDecode(json['filterInfo'])
@@ -44,6 +54,7 @@ class Rule {
       'field': field,
       'expression': expression,
       'action': action?.name,
+      'ruleAction': ruleAction.toJson(),
       'message': message != null ? jsonEncode(message) : null,
       'assignedValue': assignedValue,
       'filterInfo': filterInfo != null ? filterInfo!.toJson() : null,

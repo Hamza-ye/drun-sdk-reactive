@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:d2_remote/modules/datarun/form/shared/attribute_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/reference_field_info.dart';
-import 'package:d2_remote/modules/datarun/form/shared/rule.dart';
+import 'package:d2_remote/modules/datarun/form/shared/rule/rule.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 
@@ -32,7 +32,7 @@ class FieldTemplate with ElementAttributesMixin {
   final List<FieldTemplate> fields = [];
   final Map<String, String> label = {};
   final List<Rule> rules = [];
-  final Set<FormOption> options = Set();
+  final List<FormOption> options = [];
 
   final AttributeType? attributeType;
 

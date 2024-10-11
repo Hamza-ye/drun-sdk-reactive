@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-class FormOption {
+import 'package:equatable/equatable.dart';
+
+class FormOption with EquatableMixin {
   final String name;
   final String listName;
   final Map<String, String> label;
@@ -51,4 +53,7 @@ class FormOption {
       'order': order,
     };
   }
+
+  @override
+  List<Object?> get props => [label, listName, order, name, properties];
 }

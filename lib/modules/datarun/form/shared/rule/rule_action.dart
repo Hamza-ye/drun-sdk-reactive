@@ -1,4 +1,4 @@
-enum Action {
+enum ActionType {
   // Expression must be logical (true, false)
   Visibility,
   Show, // deprecated, use Visibility
@@ -17,35 +17,35 @@ enum Action {
   Assign,
   Unknown;
 
-  static List<Action> get VISIBILITY_ACTIONS =>
-      <Action>[Visibility, Show];
+  static List<ActionType> get VISIBILITY_ACTIONS =>
+      <ActionType>[Visibility, Show];
 
   bool get isVisibility => VISIBILITY_ACTIONS.contains(this);
 
-  static Action getAction(String? action) {
+  static ActionType getAction(String? action) {
     switch (action?.toLowerCase()) {
       case 'visibility':
-        return Action.Visibility;
-      case 'Show':
-        return Action.Show;
+        return ActionType.Visibility;
+      case 'show':
+        return ActionType.Show;
       case 'hide':
-        return Action.Hide;
+        return ActionType.Hide;
       case 'error':
-        return Action.Error;
+        return ActionType.Error;
       case 'warning':
-        return Action.Warning;
+        return ActionType.Warning;
       case 'filter':
-        return Action.Filter;
+        return ActionType.Filter;
       case 'stopRepeat':
-        return Action.StopRepeat;
+        return ActionType.StopRepeat;
       case 'mandatory':
-        return Action.Mandatory;
+        return ActionType.Mandatory;
       case 'count':
-        return Action.Count;
+        return ActionType.Count;
       case 'assign':
-        return Action.Assign;
+        return ActionType.Assign;
       default:
-        return Action.Unknown;
+        return ActionType.Unknown;
       // throw ArgumentError('Invalid value type: $valueType');
     }
   }
