@@ -1,8 +1,10 @@
 import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
-import 'package:d2_remote/modules/datarun/form/queries/dynamic_form.query.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
+import 'package:d2_remote/modules/datarun/form/queries/form_template.query.dart';
+import 'package:d2_remote/modules/datarun/form/queries/form_version.query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -47,9 +49,14 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<FormTemplate> activities = await D2Remote.formModule.formTemplate.withFormVersions().get();
+  List<FormTemplate> formTemplates =
+      await D2Remote.formModule.formTemplate.withFormVersions().get();
 
-  test('should store all incoming activities metadata', () {
-    expect(activities.length, 3);
+  List<FormVersion> formVersions =
+      await D2Remote.formModule.formTemplateV.get();
+
+  test('should store all incoming formTemplates and formVersions metadata', () {
+    expect(formTemplates.length, 3);
+    expect(formVersions.length, 3);
   });
 }

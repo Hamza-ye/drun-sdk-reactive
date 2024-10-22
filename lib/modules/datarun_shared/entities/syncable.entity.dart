@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
 import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
-import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
@@ -58,8 +58,11 @@ class SyncableEntity extends BaseEntity {
   @ManyToOne(table: DActivity, joinColumnName: 'activity')
   dynamic activity;
 
-  @ManyToOne(table: FormTemplate, joinColumnName: 'form')
-  dynamic form;
+  @Column(nullable: true, type: ColumnType.TEXT)
+  final String? form;
+
+  @ManyToOne(table: FormVersion, joinColumnName: 'formVersion')
+  dynamic formVersion;
 
   @Column(nullable: true)
   String? orgUnit;
@@ -72,7 +75,8 @@ class SyncableEntity extends BaseEntity {
       String? lastModifiedDate,
       String? createdDate,
       required this.orgUnit,
-      required this.form,
+      this.form,
+      required this.formVersion,
       this.deleted,
       this.synced,
       this.syncFailed,
@@ -99,7 +103,8 @@ class SyncableEntity extends BaseEntity {
       // "id": this.id,
       "uid": this.uid,
       "code": this.code,
-      "form": this.form,
+      "formVersion": this.formVersion,
+      "form": form,
       "name": this.name,
       "createdDate": this.createdDate,
       "lastModifiedDate": this.lastModifiedDate,
@@ -133,17 +138,15 @@ class SyncableEntity extends BaseEntity {
       syncableToUpload['team'] = team['uid'];
     }
 
-    if (form != null && form.runtimeType != String) {
-      syncableToUpload['form'] = form['uid'];
+    if (form != null) {
+      syncableToUpload['form'] = form;
+    } else if (formVersion != null && formVersion.runtimeType != String) {
+      // make formVersion['uid'];
+      syncableToUpload['form'] = formVersion['formTemplate'];
+    } else {
+      final formAndVersion = (formVersion as String).split('_');
+      syncableToUpload['form'] = formAndVersion[0];
     }
-
-    // if (team != null) {
-    //   if (team.runtimeType == String) {
-    //     syncableToUpload['team'] = <String, dynamic>{'uid': team};
-    //   } else {
-    //     syncableToUpload['team'] = <String, dynamic>{'uid': team['id']};
-    //   }
-    // }
 
     return syncableToUpload;
   }

@@ -7,7 +7,6 @@ import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
 import 'package:dio/dio.dart';
 import 'package:queue/queue.dart';
-import 'package:reflectable/mirrors.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
@@ -16,44 +15,13 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   String? activity;
   String? team;
   String? orgUnit;
-  String? form;
-  int? version;
+  String? formVersion;
 
-  T fromJsonInstance(Map<String, dynamic> entityMap) {
-    ClassMirror classMirror =
-        AnnotationReflectable.reflectType(T) as ClassMirror;
-    return classMirror.newInstance('fromJson', [entityMap]) as T;
-  }
-
-  SyncableQuery<T> byActivity(String activity) {
-    this.where(attribute: 'activity', value: activity);
-    this.activity = activity;
-    return this;
-  }
-
-  SyncableQuery<T> byTeam(String team) {
-    this.where(attribute: 'team', value: team);
-    this.team = team;
-    return this;
-  }
-
-  SyncableQuery<T> byOrgUnit(String orgUnit) {
-    this.where(attribute: 'orgUnit', value: orgUnit);
-    this.orgUnit = orgUnit;
-    return this;
-  }
-
-  SyncableQuery<T> byVersion(int version) {
-    this.where(attribute: 'version', value: version);
-    this.version = version;
-    return this;
-  }
-
-  SyncableQuery<T> byForm(String form) {
-    this.form = form;
-    this.where(attribute: 'form', value: form);
-    return this;
-  }
+  // T fromJsonInstance(Map<String, dynamic> entityMap) {
+  //   ClassMirror classMirror =
+  //       AnnotationReflectable.reflectType(T) as ClassMirror;
+  //   return classMirror.newInstance('fromJson', [entityMap]) as T;
+  // }
 
   /// Not Synced to server at all, no available on server
   /// State = to_post

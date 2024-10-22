@@ -1,4 +1,6 @@
-class ReferenceInfo {
+import 'package:equatable/equatable.dart';
+
+class ReferenceInfo with EquatableMixin {
   /// A Resource Name: DataForm, Activity, Team...
   final String resource;
 
@@ -20,6 +22,9 @@ class ReferenceInfo {
       this.resourceProperty,
       this.description,
       this.type});
+
+  @override
+  List<Object?> get props => [resource, resourceId, resourceProperty, type];
 
   factory ReferenceInfo.fromJson(Map<String, dynamic> json) {
     return ReferenceInfo(

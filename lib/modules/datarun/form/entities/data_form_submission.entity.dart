@@ -13,6 +13,7 @@ class DataFormSubmission extends SyncableEntity {
   @Column(nullable: true, type: ColumnType.TEXT)
   final Map<String, dynamic> formData = {};
 
+
   DataFormSubmission({
     String? id,
     String? uid,
@@ -24,7 +25,8 @@ class DataFormSubmission extends SyncableEntity {
 
     /// Syncable
     required int version,
-    required dynamic form,
+    String? form,
+    required dynamic formVersion,
     bool? deleted,
     bool? synced,
     bool? syncFailed,
@@ -48,7 +50,7 @@ class DataFormSubmission extends SyncableEntity {
           lastModifiedDate: lastModifiedDate,
 
           /// Syncable
-          form: form,
+          formVersion: formVersion,
           version: version,
           deleted: deleted,
           synced: synced,
@@ -103,6 +105,8 @@ class DataFormSubmission extends SyncableEntity {
       formData: parseFormData(json['formData']),
 
       /// Syncable
+      // formVersion: '${json['form']}_${json['version']}',
+      formVersion: json['formVersion'],
       form: json['form'],
       version: json['version'],
       deleted: json['deleted'],
@@ -140,6 +144,7 @@ class DataFormSubmission extends SyncableEntity {
       'formData': jsonEncode(formData),
 
       /// Syncable
+      'formVersion': formVersion,
       'form': form,
       'version': version,
       'deleted': this.deleted,

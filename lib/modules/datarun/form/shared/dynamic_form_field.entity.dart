@@ -6,16 +6,16 @@ import 'package:d2_remote/modules/datarun/form/shared/reference_field_info.dart'
 import 'package:d2_remote/modules/datarun/form/shared/rule/rule.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
+import 'package:equatable/equatable.dart';
 
 mixin ElementAttributesMixin {
   ValueType get type;
 
-  AttributeType? get attributeType => null;
-
   bool get mandatory;
 }
 
-class FieldTemplate with ElementAttributesMixin {
+class FieldTemplate with ElementAttributesMixin, EquatableMixin {
+  final String? path;
   final ValueType type;
   final String name;
   final int order;
@@ -33,10 +33,12 @@ class FieldTemplate with ElementAttributesMixin {
   final Map<String, String> label = {};
   final List<Rule> rules = [];
   final List<FormOption> options = [];
+  final String? itemTitle;
 
   final AttributeType? attributeType;
 
   FieldTemplate({
+    this.path,
     required this.mandatory,
     required this.mainField,
     this.order = 0,
@@ -50,6 +52,7 @@ class FieldTemplate with ElementAttributesMixin {
     this.calculation,
     this.section,
     this.attributeType,
+    this.itemTitle,
     List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
     List<FormOption> options = const [],
@@ -60,6 +63,22 @@ class FieldTemplate with ElementAttributesMixin {
     this.label.addAll(label);
     this.options.addAll(options);
   }
+
+  @override
+  List<Object?> get props => [
+        name,
+        section,
+        type,
+        order,
+        rules,
+        label,
+        listName,
+        referenceInfo,
+        choiceFilter,
+        calculation,
+        defaultValue,
+        itemTitle,
+      ];
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
     final rules = json['rules'] != null
@@ -74,6 +93,7 @@ class FieldTemplate with ElementAttributesMixin {
             .map<FieldTemplate>((field) => FieldTemplate.fromJson({
                   ...field,
                   "section": json['name'],
+                  "path": json['path'],
                 }))
             .toList()
         : <FieldTemplate>[];
@@ -82,11 +102,13 @@ class FieldTemplate with ElementAttributesMixin {
         type: ValueType.getValueType(json['type']),
         attributeType: AttributeType.getAttributeType(json['attributeType']),
         name: json['name'],
+        path: json['path'],
         order: json['order'] ?? 0,
         mandatory: json['mandatory'] ?? false,
         mainField: json['mainField'] ?? false,
         listName: json['listName'],
         fields: fields,
+        itemTitle: json['itemTitle'],
         choiceFilter: json['choiceFilter'],
         rules: rules,
         label: Map<String, String>.from(json['label'] is String
@@ -110,10 +132,12 @@ class FieldTemplate with ElementAttributesMixin {
     return {
       'type': type.name,
       'order': order,
+      'path': path,
       'name': name,
       'mandatory': mandatory,
       'mainField': mainField,
       'listName': listName,
+      'itemTitle': itemTitle,
       'choiceFilter': choiceFilter,
       'defaultValue': defaultValue,
       'calculation': calculation,

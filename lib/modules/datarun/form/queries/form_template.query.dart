@@ -1,7 +1,7 @@
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
-import 'package:d2_remote/modules/datarun/form/entities/dynamic_form.entity.dart';
-import 'package:d2_remote/modules/datarun/form/entities/form_definition.entity.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
@@ -24,7 +24,7 @@ class FormTemplateQuery extends BaseQuery<FormTemplate> {
   // }
 
   FormTemplateQuery withFormVersions() {
-    final formVersion = Repository<FormTemplateV>();
+    final formVersion = Repository<FormVersion>();
     final Column? relationColumn = formVersion.columns.firstWhere((column) =>
         column.relation?.referencedEntity?.tableName == this.tableName);
 
@@ -35,9 +35,9 @@ class FormTemplateQuery extends BaseQuery<FormTemplate> {
           primaryKey: this.primaryKey?.name,
           relationType: RelationType.OneToMany,
           referencedEntity: Entity.getEntityDefinition(
-              AnnotationReflectable.reflectType(FormTemplateV) as ClassMirror),
+              AnnotationReflectable.reflectType(FormVersion) as ClassMirror),
           referencedEntityColumns: Entity.getEntityColumns(
-              AnnotationReflectable.reflectType(FormTemplateV) as ClassMirror,
+              AnnotationReflectable.reflectType(FormVersion) as ClassMirror,
               false));
       this.relations.add(relation);
     }
@@ -76,18 +76,18 @@ class FormTemplateQuery extends BaseQuery<FormTemplate> {
     List<Map<String, dynamic>> forms = [];
 
     for (final form in data) {
-      final formInstance = {};
-      formInstance.addAll(form);
-      if (form['formTemplateVersions'] == null ||
-          (form['formTemplateVersions'] as List).isEmpty) {
-        form['formTemplateVersions'] = [formInstance];
+      final formVersion = {};
+      formVersion.addAll(form);
+      if (form['formVersions'] == null ||
+          (form['formVersions'] as List).isEmpty) {
+        form['formVersions'] = [formVersion];
       }
       forms.add(form);
     }
 
     this.data = forms.map((dataItem) {
       dataItem['dirty'] = false;
-      return FormTemplate.fromJson(dataItem);
+      return FormTemplate.fromApi(dataItem);
     }).toList();
 
     callback(

@@ -29,6 +29,7 @@ class Rule {
         action: ActionType.getAction(json['action']),
         ruleAction: RuleAction.fromJson({
           'action': json['action'],
+          'expression': json['expression'],
           'assignedValue': json['assignedValue'],
           'message': json['message'] != null
               ? Map<String, String>.from(json['message'] is String

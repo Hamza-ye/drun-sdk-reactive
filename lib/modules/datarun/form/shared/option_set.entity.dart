@@ -8,7 +8,7 @@ class DOptionSet {
   final List<FormOption> options = [];
 
   DOptionSet({required this.listName, List<FormOption> options = const []}) {
-    this.options.addAll(options);
+    this.options.addAll(options..sort((a, b) => (a.order).compareTo(b.order)));
   }
 
   factory DOptionSet.fromJson(Map<String, dynamic> json) {
@@ -19,7 +19,9 @@ class DOptionSet {
             .toList()
         : <FormOption>[];
 
-    return DOptionSet(options: options, listName: json['listName']);
+    return DOptionSet(
+        options: options..sort((a, b) => (a.order).compareTo(b.order)),
+        listName: json['listName']);
   }
 
   Map<String, dynamic> toJson() {
