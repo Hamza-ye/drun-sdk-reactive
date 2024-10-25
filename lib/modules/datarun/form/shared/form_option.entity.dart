@@ -55,5 +55,6 @@ class FormOption with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [label, listName, order, name, properties];
+  List<Object?> get props =>
+      [...label.values, listName, order, name, ...?properties?.values];
 }

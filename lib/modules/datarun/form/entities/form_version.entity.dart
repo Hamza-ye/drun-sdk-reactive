@@ -85,17 +85,17 @@ class FormVersion extends IdentifiableEntity {
             : json['orgUnits'].cast<String>()
         : <String>[];
 
-    final fields = json['fields'] != null
-        ? (parseDynamicJson(json['fields']) as List)
-            .map((field) => FieldTemplate.fromJson(field))
-            .toList()
-        : <FieldTemplate>[];
-
     final options = json['options'] != null
         ? (parseDynamicJson(json['options']) as List)
             .map((option) => FormOption.fromJson(option))
             .toList()
         : <FormOption>[];
+
+    final fields = json['fields'] != null
+        ? (parseDynamicJson(json['fields']) as List)
+            .map((field) => FieldTemplate.fromJson(field))
+            .toList()
+        : <FieldTemplate>[];
 
     final optionSets = json['optionSets'] != null
         ? (parseDynamicJson(json['optionSets']) as List)
@@ -129,30 +129,36 @@ class FormVersion extends IdentifiableEntity {
 
   factory FormVersion.fromApi(Map<String, dynamic> json) {
     final activity =
-    json['activity'] is String ? json['activity'] : json['activity']['uid'];
+        json['activity'] is String ? json['activity'] : json['activity']['uid'];
 
     final orgUnits = json['orgUnits'] != null
         ? json['orgUnits'].runtimeType == String
-        ? jsonDecode(json['orgUnits']).cast<String>()
-        : json['orgUnits'].cast<String>()
+            ? jsonDecode(json['orgUnits']).cast<String>()
+            : json['orgUnits'].cast<String>()
         : <String>[];
 
     final fields = json['fields'] != null
         ? (parseDynamicJson(json['fields']) as List)
-        .map((field) => FieldTemplate.fromJson(field))
-        .toList()
+            .map((field) => FieldTemplate.fromJson(field))
+            .toList()
         : <FieldTemplate>[];
 
     final options = json['options'] != null
         ? (parseDynamicJson(json['options']) as List)
-        .map((option) => FormOption.fromJson(option))
-        .toList()
+            .map((option) => FormOption.fromJson(option))
+            .toList()
         : <FormOption>[];
+
+    // final fieldsWithOptions = fields
+    //     .map((field) => field
+    //       ..options.addAll(
+    //           options.where((option) => option.listName == field.listName)))
+    //     .toList();
 
     final optionSets = json['optionSets'] != null
         ? (parseDynamicJson(json['optionSets']) as List)
-        .map((optionSet) => DOptionSet.fromJson(optionSet))
-        .toList()
+            .map((optionSet) => DOptionSet.fromJson(optionSet))
+            .toList()
         : <DOptionSet>[];
 
     return FormVersion(
@@ -165,8 +171,8 @@ class FormVersion extends IdentifiableEntity {
       formTemplate: json['formTemplate'],
       label: json['label'] != null
           ? Map<String, String>.from(json['label'] is String
-          ? jsonDecode(json['label'])
-          : json['label'])
+              ? jsonDecode(json['label'])
+              : json['label'])
           : {"en": json['name']},
       defaultLocal: json['defaultLocal'] ?? 'en',
       fields: fields,

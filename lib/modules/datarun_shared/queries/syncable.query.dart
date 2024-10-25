@@ -15,13 +15,21 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   String? activity;
   String? team;
   String? orgUnit;
-  String? formVersion;
+  String? form;
+  int? version;
 
   // T fromJsonInstance(Map<String, dynamic> entityMap) {
   //   ClassMirror classMirror =
   //       AnnotationReflectable.reflectType(T) as ClassMirror;
   //   return classMirror.newInstance('fromJson', [entityMap]) as T;
   // }
+
+  SyncableQuery<T> byFormTemplate(String form, [int? version]) {
+    this.form = form;
+    this.version = version;
+    final value = '${form}${version != null ? '_$version' : ''}%';
+    return this.like(attribute: 'formVersion', value: value);
+  }
 
   /// Not Synced to server at all, no available on server
   /// State = to_post

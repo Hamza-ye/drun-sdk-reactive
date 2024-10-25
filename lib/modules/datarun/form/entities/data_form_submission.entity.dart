@@ -13,7 +13,6 @@ class DataFormSubmission extends SyncableEntity {
   @Column(nullable: true, type: ColumnType.TEXT)
   final Map<String, dynamic> formData = {};
 
-
   DataFormSubmission({
     String? id,
     String? uid,
@@ -95,6 +94,11 @@ class DataFormSubmission extends SyncableEntity {
           data is String ? jsonDecode(data) : data);
     }
 
+    final formVersion = json['formVersion'];
+    final List<String> formAndVersion = formVersion is String
+        ? formVersion.split('_')
+        : json['formVersion']['uid'].split('_');
+
     return DataFormSubmission(
       id: json['id'].toString(),
       uid: json['uid'],
@@ -105,8 +109,67 @@ class DataFormSubmission extends SyncableEntity {
       formData: parseFormData(json['formData']),
 
       /// Syncable
-      // formVersion: '${json['form']}_${json['version']}',
       formVersion: json['formVersion'],
+      form: formAndVersion[0],
+      version: int.tryParse(formAndVersion[1])!,
+      deleted: json['deleted'],
+      synced: json['synced'],
+      syncFailed: json['syncFailed'],
+      lastSyncSummary: lastSyncSummary,
+      lastSyncDate: json['lastSyncDate'],
+      lastSyncMessage: json['lastSyncMessage'],
+      startEntryTime: json['startEntryTime'],
+      finishedEntryTime: json['finishedEntryTime'],
+      activity: activity,
+      team: json['team'] != null
+          ? json['team'] is String
+              ? json['team']
+              : json['team']['uid']
+          : null,
+      status: json['status'],
+      orgUnit:
+          json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
+      geometry: geometry,
+
+      dirty: json['dirty'] ?? false,
+    );
+  }
+
+  factory DataFormSubmission.fromApi(Map<String, dynamic> json) {
+    final dynamic lastSyncSummary = json['lastSyncSummary'] != null
+        ? EventImportSummary.fromJson(jsonDecode(json['lastSyncSummary']))
+        : null;
+    final activity = json['activity'] != null
+        ? json['activity'] is String
+            ? json['activity']
+            : json['activity']['uid']
+        : null;
+
+    final Geometry? geometry = json["geometry"] != null
+        ? Geometry.fromJson(json["geometry"].runtimeType == String
+            ? jsonDecode(json["geometry"])
+            : json["geometry"])
+        : null;
+
+    Map<String, dynamic> parseFormData(dynamic data) {
+      if (data == null || (data is String && data.isEmpty)) {
+        return {};
+      }
+      return Map<String, dynamic>.from(
+          data is String ? jsonDecode(data) : data);
+    }
+
+    return DataFormSubmission(
+      id: json['id'].toString(),
+      uid: json['uid'],
+      code: json['code'],
+      name: json['name'],
+      createdDate: json['createdDate'],
+      lastModifiedDate: json['lastModifiedDate'],
+      formData: parseFormData(json['formData']),
+
+      /// Syncable
+      formVersion: '${json['form']}_${json['version']}',
       form: json['form'],
       version: json['version'],
       deleted: json['deleted'],

@@ -7,7 +7,6 @@ enum AttributeType {
   deviceId,
   deviceModel,
   form,
-  orgUnit,
   team,
   activity,
   version;
@@ -30,8 +29,6 @@ enum AttributeType {
         return AttributeType.deviceModel;
       case 'form':
         return AttributeType.form;
-      case 'orgunit':
-        return AttributeType.orgUnit;
       case 'team':
         return AttributeType.team;
       case 'activity':

@@ -5,7 +5,7 @@ extension FieldTemplateDependencies on FieldTemplate {
   List<String> get dependencies {
     List<String> dependencySet = [];
     for (final rule in rules) {
-      final ruleDependencies = rule.dependencies;
+      final ruleDependencies = rule.ruleAction.dependencies;
       dependencySet.addAll(ruleDependencies);
     }
     return dependencySet.toSet().toList();
@@ -34,24 +34,24 @@ extension FieldTemplateDependencies on FieldTemplate {
   String? get evalChoiceFilterExpression =>
       choiceFilter?.replaceAll("#{", "").replaceAll("}", "");
 }
-
-extension RuleDependencies on Rule {
-  List<String> get dependencies {
-    if (expression != null) {
-      final fieldPattern = RegExp(r'#\{(.*?)\}');
-
-      return fieldPattern
-          .allMatches(expression!)
-          .map((match) => match.group(1)!)
-          .toSet()
-          .toList();
-    }
-    return [];
-  }
-
-  String? get evalExpression =>
-      expression.replaceAll("#{", "").replaceAll("}", "");
-}
+//
+// extension RuleDependencies on Rule {
+//   List<String> get dependencies {
+//     if (expression != null) {
+//       final fieldPattern = RegExp(r'#\{(.*?)\}');
+//
+//       return fieldPattern
+//           .allMatches(expression!)
+//           .map((match) => match.group(1)!)
+//           .toSet()
+//           .toList();
+//     }
+//     return [];
+//   }
+//
+//   String? get evalExpression =>
+//       expression.replaceAll("#{", "").replaceAll("}", "");
+// }
 
 ///////
 

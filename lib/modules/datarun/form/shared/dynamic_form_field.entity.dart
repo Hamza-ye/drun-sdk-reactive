@@ -24,6 +24,8 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   final bool mainField;
   final String? fieldValueRenderingType;
   final ReferenceInfo? referenceInfo;
+
+  // final String? choiceFilter;
   final String? choiceFilter;
   final String? calculation;
   final dynamic defaultValue;
@@ -98,10 +100,17 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
             .toList()
         : <FieldTemplate>[];
 
+    final options = json['options'] != null
+        ? (parseDynamicJson(json['options']) as List)
+            .map<FormOption>((option) => FormOption.fromJson({...option}))
+            .toList()
+        : <FormOption>[];
+
     return FieldTemplate(
         type: ValueType.getValueType(json['type']),
         attributeType: AttributeType.getAttributeType(json['attributeType']),
         name: json['name'],
+        options: options,
         path: json['path'],
         order: json['order'] ?? 0,
         mandatory: json['mandatory'] ?? false,
@@ -134,6 +143,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
       'order': order,
       'path': path,
       'name': name,
+      'options': jsonEncode(options.map((option) => option.toJson()).toList()),
       'mandatory': mandatory,
       'mainField': mainField,
       'listName': listName,

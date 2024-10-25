@@ -1,7 +1,10 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/utilities/repository.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/active_status.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
@@ -10,6 +13,28 @@ class DActivityQuery extends BaseQuery<DActivity> {
   DActivityQuery({Database? database}) : super(database: database);
   String? project;
   ActiveStatus? activeStatus;
+
+  DActivityQuery withFormTemplates() {
+    final formTemplate = Repository<FormTemplate>();
+    final Column? relationColumn = formTemplate.columns.firstWhere((column) =>
+        column.relation?.referencedEntity?.tableName == this.tableName);
+
+    if (relationColumn != null) {
+      ColumnRelation relation = ColumnRelation(
+          referencedColumn: relationColumn.relation?.attributeName,
+          attributeName: 'formTemplates',
+          primaryKey: this.primaryKey?.name,
+          relationType: RelationType.OneToMany,
+          referencedEntity: Entity.getEntityDefinition(
+              AnnotationReflectable.reflectType(FormTemplate) as ClassMirror),
+          referencedEntityColumns: Entity.getEntityColumns(
+              AnnotationReflectable.reflectType(FormTemplate) as ClassMirror,
+              false));
+      this.relations.add(relation);
+    }
+
+    return this;
+  }
 
   DActivityQuery byProject(String project) {
     this.project = project;

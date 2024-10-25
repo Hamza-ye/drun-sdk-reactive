@@ -15,34 +15,30 @@ class DataFormSubmissionQuery extends SyncableQuery<DataFormSubmission> {
     return DataFormSubmissionQuery().setData(data).save();
   }
 
-  @override
-  Future create() async {
-    late final int version;
-    try {
-      version = int.tryParse(this.formVersion!.split('_')[1])!;
-    } catch (e) {
-      throw Exception(
-          'un-parsable form version from formVersion id, formVersion: $formVersion');
-    }
-
-    DataFormSubmission event = DataFormSubmission(
-        status: 'ACTIVE',
-        formVersion: this.formVersion,
-        version: version,
-        activity: this.activity,
-        team: this.team,
-        orgUnit: this.orgUnit!,
-        formData: {},
-        dirty: true,
-        synced: false,
-        deleted: false,
-        startEntryTime:
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
-
-    this.data = event;
-
-    await this.save();
-
-    return event;
-  }
+//
+// @override
+// Future create() async {
+//   final formVersion = '${form}_$version';
+//
+//   DataFormSubmission event = DataFormSubmission(
+//       status: 'ACTIVE',
+//       formVersion: formVersion,
+//       version: this.version!,
+//       form: this.form!,
+//       activity: this.activity,
+//       team: this.team,
+//       orgUnit: this.orgUnit!,
+//       formData: {},
+//       dirty: true,
+//       synced: false,
+//       deleted: false,
+//       startEntryTime:
+//           DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
+//
+//   this.data = event;
+//
+//   await this.save();
+//
+//   return event;
+// }
 }

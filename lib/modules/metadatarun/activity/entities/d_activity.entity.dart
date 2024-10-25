@@ -1,4 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
 import 'package:d2_remote/modules/metadatarun/project/entities/d_project.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
@@ -26,6 +27,9 @@ class DActivity extends IdentifiableEntity {
   @Column(nullable: true)
   final String? description;
 
+  @OneToMany(table: FormTemplate)
+  List<FormTemplate>? formTemplates;
+
   DActivity(
       {String? id,
       required String uid,
@@ -39,6 +43,7 @@ class DActivity extends IdentifiableEntity {
       this.startDate,
       this.endDate,
       required this.disabled,
+      this.formTemplates,
       this.programs,
       this.organisationUnits,
       this.description,
@@ -74,6 +79,10 @@ class DActivity extends IdentifiableEntity {
             : null,
         disabled: json['disabled'] ?? true,
         programs: json['programs'] != null ? json['programs'].toString() : null,
+        formTemplates: (json['assignments'] ?? [])
+            .map<FormTemplate>((formTemplate) => FormTemplate.fromJson(
+                {...formTemplate, 'activity': json['uid'], 'dirty': false}))
+            .toList(),
         organisationUnits: json['organisationUnits'] != null
             ? json['organisationUnits'].toString()
             : null,
@@ -93,6 +102,7 @@ class DActivity extends IdentifiableEntity {
     data['startDate'] = this.startDate;
     data['endDate'] = this.endDate;
     data['project'] = this.project;
+    data['formTemplates'] = this.formTemplates;
     data['programs'] = this.programs;
     data['disabled'] = this.disabled;
     data['createdDate'] = this.createdDate;
