@@ -8,10 +8,8 @@ import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
-import 'package:d2_remote/modules/metadata/option_set/entities/option_set.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'formTemplate', apiResourceName: 'dataForms')

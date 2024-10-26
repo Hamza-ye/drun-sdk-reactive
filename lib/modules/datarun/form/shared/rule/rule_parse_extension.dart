@@ -1,5 +1,4 @@
 import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/rule/rule.dart';
 
 extension FieldTemplateDependencies on FieldTemplate {
   List<String> get dependencies {
