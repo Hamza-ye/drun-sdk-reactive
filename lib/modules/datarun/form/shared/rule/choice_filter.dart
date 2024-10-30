@@ -20,8 +20,6 @@ class ChoiceFilter
       return options;
     }
 
-    final optionsContext = options.map((option) => option.toContext()).toList();
-
     List<FormOption> result = options
         .where((option) =>
             evaluator.eval(getExpression(), option.toContext()..addAll(context ?? {})))
