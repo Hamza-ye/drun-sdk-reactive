@@ -72,6 +72,28 @@ class D2Remote {
     }
   }
 
+  static Future<DUser?> authenticatedUser(
+      {Future<SharedPreferences>? sharedPreferenceInstance,
+      bool? inMemory,
+      DatabaseFactory? databaseFactory}) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    final databaseName = await D2Remote.getDatabaseName(
+        sharedPreferenceInstance: sharedPreferenceInstance);
+
+    if (databaseName == null) {
+      return null;
+    }
+
+    await D2Remote.initialize(
+        databaseName: databaseName,
+        inMemory: inMemory,
+        databaseFactory: databaseFactory);
+
+    DUser? user = await D2Remote.userModule.user.getOne();
+
+    return user;
+  }
+
   static Future<bool> isAuthenticated(
       {Future<SharedPreferences>? sharedPreferenceInstance,
       bool? inMemory,
@@ -159,7 +181,9 @@ class D2Remote {
     userData['dirty'] = true;
 
     final user = DUser.fromApi(userData);
-    await userQuery.setData(user).save();
+    await userQuery
+        .setData(user)
+        .save();
 
     return LoginResponseStatus.ONLINE_LOGIN_SUCCESS;
   }
@@ -272,8 +296,7 @@ class D2Remote {
 
   // static WarehouseModule warehouseModule = WarehouseModule();
 
-  static OrgUnitModule organisationUnitModuleD =
-      OrgUnitModule();
+  static OrgUnitModule organisationUnitModuleD = OrgUnitModule();
 
   static DProjectModule projectModuleD = DProjectModule();
 
