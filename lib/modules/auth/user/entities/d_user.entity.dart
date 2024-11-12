@@ -136,20 +136,20 @@ class DUser extends IdentifiableEntity {
 
   factory DUser.fromApi(Map<String, dynamic> jsonData) {
     return DUser(
-        id: jsonData['id'].toString(),
+        id: jsonData['id'],
         uid: jsonData['uid'],
         username: jsonData['username'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
         surname: jsonData['lastName'],
-        name: jsonData['username'],
-        phoneNumber: jsonData['phoneNumber'],
-        baseUrl: jsonData['baseUrl'],
         token: jsonData['token'],
         tokenType: jsonData['tokenType'],
         refreshToken: jsonData['refreshToken'],
         tokenExpiry: jsonData['tokenExpiry'],
         authType: jsonData['authType'],
+        name: jsonData['name'],
+        phoneNumber: jsonData['mobile'],
+        baseUrl: jsonData['baseUrl'],
         authorities: (jsonData['authorities'] ?? [])
             .map<DUserAuthority>((authority) => DUserAuthority(
                 uid: '${jsonData['uid']}_$authority',
@@ -159,14 +159,14 @@ class DUser extends IdentifiableEntity {
                 user: jsonData['uid'].toString(),
                 dirty: jsonData['dirty'] ?? false))
             .toList(),
+        isLoggedIn: jsonData['isLoggedIn'],
         email: jsonData['email'],
         activated: jsonData['activated'],
         imageUrl: jsonData['imageUrl'],
         langKey: jsonData['langKey'],
-        isLoggedIn: jsonData['isLoggedIn'],
         createdDate: jsonData['createdDate'],
         lastModifiedDate:
-            jsonData['checkWithServerTime'] ?? jsonData['lastModifiedDate'],
+        jsonData['checkWithServerTime'] ?? jsonData['lastModifiedDate'],
         checkWithServerTime: jsonData['checkWithServerTime'],
         dirty: jsonData['dirty'] ?? false);
   }
