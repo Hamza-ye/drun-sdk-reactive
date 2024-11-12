@@ -65,8 +65,8 @@ class DateUtils {
 
   static String? format(String? inputString) {
     if (inputString != null &&
-        databaseDateFormat().tryParse(inputString) != null) {
-      return uiDateFormat().format(databaseDateFormat().tryParse(inputString)!);
+        databaseDateFormatNoZone().tryParse(inputString) != null) {
+      return uiDateFormat().format(databaseDateFormatNoZone().tryParse(inputString)!);
     }
     return inputString;
   }

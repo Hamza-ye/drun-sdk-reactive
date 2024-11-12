@@ -1,9 +1,10 @@
+
 class RequestProgress {
   String resourceName;
   String message;
   String? serverMessage;
   String status;
-  num percentage;
+  int percentage;
 
   RequestProgress(
       {required this.resourceName,

@@ -1,14 +1,27 @@
-// DH Value Class
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+
+enum WorkInfoState {
+  ENQUEUED,
+  RUNNING,
+  SUCCEEDED,
+  FAILED,
+  BLOCKED,
+  CANCELLED;
+
+  bool isFinished() {
+    return this == SUCCEEDED || this == FAILED || this == CANCELLED;
+  }
+}
 
 class D2Progress with EquatableMixin {
   D2Progress({
     String? message,
     String? serverMessage,
+    this.progressState = WorkInfoState.ENQUEUED,
     bool? isComplete,
     this.totalCalls,
-    num? percentage,
+    int? percentage,
     IList<String>? doneCalls,
   })  : message = message ?? '',
         serverMessage = serverMessage ?? '',
@@ -21,6 +34,7 @@ class D2Progress with EquatableMixin {
       throw ArgumentError('Negative total calls');
     }
     return D2Progress(
+      progressState: WorkInfoState.CANCELLED,
         isComplete: totalCalls != null && totalCalls == 0,
         totalCalls: totalCalls,
         doneCalls: IList());
@@ -28,20 +42,23 @@ class D2Progress with EquatableMixin {
 
   final String? message;
   final String? serverMessage;
+  WorkInfoState progressState;
   final bool? isComplete;
   final int? totalCalls;
   final IList<String>? doneCalls;
 
   D2Progress copyWith({
     String? message,
+    WorkInfoState? progressState,
     String? serverMessage,
     bool? isComplete,
     int? totalCalls,
-    num? percentage,
+    int? percentage,
     IList<String>? doneCalls,
   }) {
     return D2Progress(
         message: message ?? this.message,
+        progressState: progressState ?? this.progressState,
         serverMessage: serverMessage ?? this.serverMessage,
         isComplete: isComplete ?? this.isComplete,
         totalCalls: totalCalls ?? this.totalCalls,
@@ -56,9 +73,16 @@ class D2Progress with EquatableMixin {
     return null;
   }
 
-  final num percentage;
+  final int percentage;
 
   @override
-  List<Object?> get props =>
-      [message, serverMessage, isComplete, totalCalls, doneCalls, percentage];
+  List<Object?> get props => [
+        message,
+        serverMessage,
+        progressState,
+        isComplete,
+        totalCalls,
+        doneCalls,
+        percentage
+      ];
 }

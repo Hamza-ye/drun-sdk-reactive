@@ -1,6 +1,11 @@
 library d2_remote;
 
+import 'dart:async';
+
 import 'package:d2_remote/core/database/database_manager.dart';
+import 'package:d2_remote/core/datarun/exception/exception.dart';
+import 'package:d2_remote/core/datarun/logging/logging.dart';
+import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/modules/activity_management/activity/activity.module.dart';
 import 'package:d2_remote/modules/activity_management/assignment/assignment.module.dart';
 import 'package:d2_remote/modules/activity_management/project/project.module.dart';
@@ -13,6 +18,7 @@ import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/modules/data/aggregate/aggregate.module.dart';
 import 'package:d2_remote/modules/data/tracker/tracked_entity_instance.module.dart';
 import 'package:d2_remote/modules/datarun/form/form.module.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/authenticated_user.dart';
 import 'package:d2_remote/modules/file_resource/file_resource.module.dart';
 import 'package:d2_remote/modules/metadata/dashboard/dashboard.module.dart';
 import 'package:d2_remote/modules/metadata/data_element/data_element.module.dart';
@@ -33,6 +39,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class D2Remote {
+  static const String currentDatabaseNameKey = 'databaseName';
+
+  ///
   static Future<void> initialize(
       {String? databaseName,
       bool? inMemory,
@@ -46,13 +55,11 @@ class D2Remote {
 
       await DatabaseManager.instance.database;
       await DUserModule.createTables();
-      // await WarehouseModule.createTables();
       await OrgUnitModule.createTables();
       await DProjectModule.createTables();
       await DActivityModule.createTables();
       await DTeamModule.createTables();
       await DAssignmentModule.createTables();
-      // await FormInstanceModule.createTables();
       await FormModule.createTables();
 
       await OrganisationUnitModule.createTables();
@@ -70,28 +77,6 @@ class D2Remote {
       await NotificationModule.createTables();
       await FileResourceModule.createTables();
     }
-  }
-
-  static Future<DUser?> authenticatedUser(
-      {Future<SharedPreferences>? sharedPreferenceInstance,
-      bool? inMemory,
-      DatabaseFactory? databaseFactory}) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    final databaseName = await D2Remote.getDatabaseName(
-        sharedPreferenceInstance: sharedPreferenceInstance);
-
-    if (databaseName == null) {
-      return null;
-    }
-
-    await D2Remote.initialize(
-        databaseName: databaseName,
-        inMemory: inMemory,
-        databaseFactory: databaseFactory);
-
-    DUser? user = await D2Remote.userModule.user.getOne();
-
-    return user;
   }
 
   static Future<bool> isAuthenticated(
@@ -121,74 +106,105 @@ class D2Remote {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences prefs =
         await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
-    return prefs.getString('databaseName');
+    return prefs.getString(currentDatabaseNameKey);
   }
 
+  /// set the database name for the current user, which the app will
+  /// use to store data until the user logs out.
   static Future<bool> setDatabaseName(
       {required String databaseName,
       Future<SharedPreferences>? sharedPreferenceInstance}) async {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences prefs =
         await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
-    return prefs.setString('databaseName', databaseName);
+    return prefs.setString(currentDatabaseNameKey, databaseName);
   }
 
-  static Future<LoginResponseStatus> logInDataRun(
+  static Future<AuthenticationResult> authenticate(
       {required String username,
       required String password,
       required String url,
       Future<SharedPreferences>? sharedPreferenceInstance,
+      Duration? timeout,
       bool? inMemory,
       DatabaseFactory? databaseFactory,
       Dio? dioTestClient}) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    HttpResponse? userResponse;
+    try {
+      final timeoutDuration = timeout ?? Duration(seconds: 40);
 
-    HttpResponse userResponse = await HttpClient.get('me',
-        baseUrl: url,
-        username: username,
-        password: password,
-        dioTestClient: dioTestClient);
+      userResponse = await HttpClient.get('me',
+              baseUrl: url,
+              username: username,
+              password: password,
+              dioTestClient: dioTestClient)
+          .timeout(timeoutDuration, onTimeout: () {
+        throw TimeoutException('timeout connecting to $url', timeoutDuration);
+      });
 
-    if (userResponse.statusCode == 401) {
-      return LoginResponseStatus.WRONG_CREDENTIALS;
+      if (userResponse.statusCode == 401) {
+        throw AuthenticationException('Invalid Credentials',
+            url: url,
+            errorCode: DErrorCode.authInvalidCredentials,
+            httpErrorCode: 401);
+      }
+
+      if (userResponse.statusCode == 500) {
+        throw AuthenticationException(
+            'AuthenticationException: ${userResponse.body.toString().substring(0, 255)}',
+            username: username,
+            url: url,
+            errorCode: DErrorCode.apiError,
+            stackTrace: StackTrace.current,
+            httpErrorCode: userResponse.statusCode);
+      }
+
+      final uri = Uri.parse(url).host;
+      final String databaseName = '${username}_$uri';
+
+      await D2Remote.initialize(
+          databaseName: databaseName,
+          inMemory: inMemory,
+          databaseFactory: databaseFactory);
+
+      await D2Remote.setDatabaseName(
+          databaseName: databaseName,
+          sharedPreferenceInstance:
+              sharedPreferenceInstance ?? SharedPreferences.getInstance());
+
+      DUserQuery userQuery = DUserQuery();
+
+      Map<String, dynamic> userData = userResponse.body;
+      userData['password'] = password;
+      userData['isLoggedIn'] = true;
+      userData['checkWithServerTime'] =
+          DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+      userData['username'] = username;
+      userData['baseUrl'] = url;
+      userData['authTye'] = 'basic';
+      userData['dirty'] = true;
+
+      final user = DUser.fromApi(userData);
+      await userQuery.setData(user).save();
+
+      return AuthenticationResult(success: true, sessionUser: user);
+    } on TimeoutException catch (timeoutException) {
+      throw AuthenticationException(
+          'Authentication Timeout connecting to server',
+          username: username,
+          cause: timeoutException,
+          url: url,
+          errorCode: DErrorCode.networkTimeout,
+          stackTrace: StackTrace.current,
+          httpErrorCode: userResponse?.statusCode);
+    } catch (e) {
+      logError(info: '$e', runtimeType: D2Remote);
+      rethrow;
     }
-
-    if (userResponse.statusCode == 500) {
-      return LoginResponseStatus.SERVER_ERROR;
-    }
-
-    final uri = Uri.parse(url).host;
-    final String databaseName = '${username}_$uri';
-
-    await D2Remote.initialize(
-        databaseName: databaseName,
-        inMemory: inMemory,
-        databaseFactory: databaseFactory);
-
-    await D2Remote.setDatabaseName(
-        databaseName: databaseName,
-        sharedPreferenceInstance:
-            sharedPreferenceInstance ?? SharedPreferences.getInstance());
-
-    DUserQuery userQuery = DUserQuery();
-
-    Map<String, dynamic> userData = userResponse.body;
-    userData['password'] = password;
-    userData['isLoggedIn'] = true;
-    userData['username'] = username;
-    userData['baseUrl'] = url;
-    userData['authTye'] = 'basic';
-    userData['dirty'] = true;
-
-    final user = DUser.fromApi(userData);
-    await userQuery
-        .setData(user)
-        .save();
-
-    return LoginResponseStatus.ONLINE_LOGIN_SUCCESS;
   }
 
-  static Future<bool> logOut() async {
+  static Future<bool> logOut(
+      {Future<SharedPreferences>? sharedPreferenceInstance}) async {
     WidgetsFlutterBinding.ensureInitialized();
     bool logOutSuccess = false;
     try {
@@ -199,6 +215,13 @@ class D2Remote {
 
       await D2Remote.userModule.user.setData(currentUser).save();
 
+      // nmc
+      SharedPreferences prefs =
+      await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
+      prefs.remove(currentDatabaseNameKey);
+      await DatabaseManager.instance.closeDatabase();
+
+      // DatabaseManager
       logOutSuccess = true;
     } catch (e) {}
     return logOutSuccess;
@@ -227,14 +250,6 @@ class D2Remote {
     AuthToken token = AuthToken.fromJson(tokenObject);
 
     List<dynamic> authorities = [];
-
-    // userObject['userRoles'].forEach((role) {
-    //   List<dynamic> authoritiesToAdd = role["authorities"].map((auth) {
-    //     return auth as String;
-    //   }).toList();
-    //
-    //   authorities.addAll(authoritiesToAdd);
-    // });
 
     userObject['token'] = token.accessToken;
     userObject['tokenType'] = token.tokenType;
@@ -291,10 +306,7 @@ class D2Remote {
 
   static FileResourceModule fileResourceModule = FileResourceModule();
 
-  /////// Data Run
   static DUserModule userModule = DUserModule();
-
-  // static WarehouseModule warehouseModule = WarehouseModule();
 
   static OrgUnitModule organisationUnitModuleD = OrgUnitModule();
 
@@ -305,8 +317,6 @@ class D2Remote {
   static DAssignmentModule assignmentModuleD = DAssignmentModule();
 
   static FormModule formModule = FormModule();
-
-  // static FormInstanceModule formInstanceModule = FormInstanceModule();
 
   static DTeamModule teamModuleD = DTeamModule();
 }

@@ -13,10 +13,11 @@ class SyncMetadata {
   late bool metadataSyncInProgress;
 
   Future<void> download({Function(D2Progress? progress)? callback}) async {
+    D2Progress progress = D2Progress(progressState: WorkInfoState.ENQUEUED);
     if (!metadataSyncInProgress) {
       metadataSyncInProgress = true;
     }
-    // try {
+
     final Iterable<ClassMirror> annotatedClasses =
         AnnotationReflectable.annotatedClasses;
 
@@ -34,7 +35,8 @@ class SyncMetadata {
         .toList()
         .lock;
     IList<D2Progress> requestProgresses = queryMetadataItems
-        .map((queryResource) => D2Progress(
+        .map((queryResource) => progress.copyWith(
+
             message:
                 'Downloading ${queryResource.simpleName.toUpperCase()} from the server',
             isComplete: false,
@@ -77,7 +79,8 @@ class SyncMetadata {
       // } else {
       queue.add(() => metadataEntityQuery
               .download((RequestProgress requestProgress, bool isComplete) {
-            callback?.call(D2Progress(
+            callback?.call(progress.copyWith(
+              progressState: WorkInfoState.RUNNING,
                 message: requestProgress.message,
                 percentage: requestProgress.percentage));
           }));
@@ -86,7 +89,8 @@ class SyncMetadata {
 
     await queue.onComplete;
 
-    callback?.call(D2Progress(message: 'All Synced', percentage: 100));
+    // try {
+
     // } catch (e) {
     // callback?.call(null);
     // }

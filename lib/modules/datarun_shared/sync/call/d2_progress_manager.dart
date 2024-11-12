@@ -25,7 +25,7 @@ class D2ProgressManager {
       {required String resourceName,
       required bool isComplete,
       String? message,
-      num? percentage}) {
+        int? percentage}) {
     _progress = _progress.copyWith(
         doneCalls: _progress.doneCalls?.add(resourceName),
         isComplete: isComplete,

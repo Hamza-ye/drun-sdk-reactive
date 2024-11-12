@@ -57,6 +57,9 @@ class DUser extends IdentifiableEntity {
   @Column(nullable: true)
   final String? imageUrl;
 
+  @Column(nullable: true)
+  String? checkWithServerTime;
+
   DUser(
       {required String? id,
       String? uid,
@@ -84,6 +87,7 @@ class DUser extends IdentifiableEntity {
       this.activated,
       this.imageUrl,
       this.langKey,
+      this.checkWithServerTime,
       required bool dirty})
       : super(
             id: id,
@@ -124,7 +128,9 @@ class DUser extends IdentifiableEntity {
         imageUrl: jsonData['imageUrl'],
         langKey: jsonData['langKey'],
         createdDate: jsonData['createdDate'],
-        lastModifiedDate: jsonData['lastModifiedDate'],
+        lastModifiedDate:
+            jsonData['checkWithServerTime'] ?? jsonData['lastModifiedDate'],
+        checkWithServerTime: jsonData['checkWithServerTime'],
         dirty: jsonData['dirty']);
   }
 
@@ -159,7 +165,9 @@ class DUser extends IdentifiableEntity {
         langKey: jsonData['langKey'],
         isLoggedIn: jsonData['isLoggedIn'],
         createdDate: jsonData['createdDate'],
-        lastModifiedDate: jsonData['lastModifiedDate'],
+        lastModifiedDate:
+            jsonData['checkWithServerTime'] ?? jsonData['lastModifiedDate'],
+        checkWithServerTime: jsonData['checkWithServerTime'],
         dirty: jsonData['dirty'] ?? false);
   }
 
@@ -190,6 +198,7 @@ class DUser extends IdentifiableEntity {
     data['langKey'] = this.langKey;
     data['createdDate'] = this.createdDate;
     data['lastModifiedDate'] = this.lastModifiedDate;
+    data['checkWithServerTime'] = this.checkWithServerTime;
 
     data['dirty'] = this.dirty;
 
