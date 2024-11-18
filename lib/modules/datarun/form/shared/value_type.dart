@@ -74,8 +74,20 @@ enum ValueType {
 
   static List<ValueType> get BOOLEAN_TYPES => <ValueType>[Boolean, TrueOnly];
 
-  static List<ValueType> get TEXT_TYPES =>
-      <ValueType>[Text, LongText, Letter, Coordinate, Time, FullName];
+  static List<ValueType> get TEXT_TYPES => <ValueType>[
+        Text,
+        LongText,
+        Letter,
+        Coordinate,
+        FullName,
+        Integer,
+        Number,
+        IntegerPositive,
+        IntegerNegative,
+        IntegerZeroOrPositive,
+        UnitInterval,
+        Percentage
+      ];
 
   static List<ValueType> get DATE_TYPES => <ValueType>[Date, DateTime];
 
@@ -92,6 +104,7 @@ enum ValueType {
   bool get isRepeatSection => this == ValueType.RepeatableSection;
 
   bool get selectTypes => WITH_OPTIONS_TYPES.contains(this);
+
   bool get isSelectType => WITH_OPTIONS_TYPES.contains(this);
 
   bool get isNumeric => NUMERIC_TYPES.contains(this);

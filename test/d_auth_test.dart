@@ -62,7 +62,7 @@ void main() async {
     (server) => server.reply(200, userData),
   );
 
-  final onlineLogIn = await D2Remote.logInDataRun(
+  final onlineLogIn = await D2Remote.authenticate(
       username: 'admin',
       password: 'district',
       url: 'http://localhost:8080',
@@ -73,7 +73,7 @@ void main() async {
   final user2 = await D2Remote.userModule.user.getOne();
 
   test('should successfully authenticate user on online login', () {
-    expect(onlineLogIn, LoginResponseStatus.ONLINE_LOGIN_SUCCESS);
+    expect(onlineLogIn.success, true);
   });
 
   test('should return appropriate user roles for a user', () {

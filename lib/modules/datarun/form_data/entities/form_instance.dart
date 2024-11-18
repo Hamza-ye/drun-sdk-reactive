@@ -31,7 +31,8 @@
 //
 //     /// Syncable
 //     required int version,
-//     required dynamic form,
+//     String? form,
+//     required dynamic formVersion,
 //     bool? deleted,
 //     bool? synced,
 //     bool? syncFailed,
@@ -47,39 +48,54 @@
 //     Geometry? geometry,
 //     required dirty,
 //   }) : super(
-//           id: id,
-//           uid: uid,
-//           name: name,
-//           code: code,
-//           createdDate: createdDate,
-//           lastModifiedDate: lastModifiedDate,
-//
-//           /// Syncable
-//           form: form,
-//           version: version,
-//           deleted: deleted,
-//           synced: synced,
-//           syncFailed: syncFailed,
-//           lastSyncDate: lastSyncDate,
-//           lastSyncMessage: lastSyncMessage,
-//           lastSyncSummary: lastSyncSummary,
-//           startEntryTime: startEntryTime,
-//           finishedEntryTime: finishedEntryTime,
-//           activity: activity,
-//           team: team,
-//           orgUnit: orgUnit,
-//           status: status,
-//           geometry: geometry,
-//           dirty: dirty,
-//         );
+//     id: id,
+//     uid: uid,
+//     name: name,
+//     code: code,
+//     createdDate: createdDate,
+//     lastModifiedDate: lastModifiedDate,
+//     /// Syncable
+//     formVersion: formVersion,
+//     version: version,
+//     deleted: deleted,
+//     synced: synced,
+//     syncFailed: syncFailed,
+//     lastSyncDate: lastSyncDate,
+//     lastSyncMessage: lastSyncMessage,
+//     lastSyncSummary: lastSyncSummary,
+//     startEntryTime: startEntryTime,
+//     finishedEntryTime: finishedEntryTime,
+//     activity: activity,
+//     team: team,
+//     orgUnit: orgUnit,
+//     status: status,
+//     geometry: geometry,
+//     dirty: dirty,
+//   );
 //
 //   // From JSON string (Database and API)
 //   factory FormInstance.fromJson(Map<String, dynamic> json) {
 //     final activity = json['activity'] != null
 //         ? json['activity'] is String
-//             ? json['activity']
-//             : json['activity']['uid']
+//         ? json['activity']
+//         : json['activity']['uid']
 //         : null;
+//
+//     final dynamic lastSyncSummary = json['lastSyncSummary'] != null
+//         ? EventImportSummary.fromJson(jsonDecode(json['lastSyncSummary']))
+//         : null;
+//
+//     final Geometry? geometry = json["geometry"] != null
+//         ? Geometry.fromJson(json["geometry"].runtimeType == String
+//         ? jsonDecode(json["geometry"])
+//         : json["geometry"])
+//         : null;
+//
+//     final formVersion = json['formVersion'];
+//     final List<String> formAndVersion = formVersion is String
+//         ? formVersion.split('_')
+//         : json['formVersion']['uid'].split('_');
+//
 //
 //     return FormInstance(
 //       id: json['id'].toString(),
@@ -90,15 +106,17 @@
 //       lastModifiedDate: json['lastModifiedDate'],
 //       fields: (parseDynamicJson(json['fields']) as List)
 //           .map((value) =>
-//               fromJsonFactory({...value, 'formInstance': json['uid']}))
+//           fromJsonFactory({...value, 'formInstance': json['uid']}))
 //           .toList(),
 //
-//       /// SynFormElementInstance json['form'],
-//       form: json['form'],
-//       version: json['version'],
+//       /// Syncable
+//       formVersion: json['formVersion'],
+//       form: formAndVersion[0],
+//       version: int.tryParse(formAndVersion[1])!,
 //       deleted: json['deleted'],
 //       synced: json['synced'],
 //       syncFailed: json['syncFailed'],
+//       lastSyncSummary: lastSyncSummary,
 //       lastSyncDate: json['lastSyncDate'],
 //       lastSyncMessage: json['lastSyncMessage'],
 //       startEntryTime: json['startEntryTime'],
@@ -106,12 +124,14 @@
 //       activity: activity,
 //       team: json['team'] != null
 //           ? json['team'] is String
-//               ? json['team']
-//               : json['team']['uid']
+//           ? json['team']
+//           : json['team']['uid']
 //           : null,
 //       status: json['status'],
 //       orgUnit:
-//           json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
+//       json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
+//       geometry: geometry,
+//
 //       dirty: json['dirty'] ?? false,
 //     );
 //   }
@@ -128,113 +148,79 @@
 //       'fields': fields != null
 //           ? jsonEncode(fields!.map((field) => toJsonFactory(field)).toList())
 //           : null,
-//
-//       /// Syncable
-//       'form': form,
-//       'version': version,
-//       'deleted': this.deleted,
-//       'synced': this.synced,
-//       'syncFailed': this.syncFailed,
-//       'lastSyncSummary': this.lastSyncSummary != null
-//           ? jsonEncode(
-//               (this.lastSyncSummary as EventImportSummary).responseSummary)
-//           : null,
-//       'lastSyncDate': this.lastSyncDate,
-//       'lastSyncMessage': this.lastSyncMessage,
-//       'startEntryTime': this.startEntryTime,
-//       'finishedEntryTime': this.finishedEntryTime,
-//       'activity': activity,
-//       'team': team,
-//       'orgUnit': orgUnit,
-//       'status': this.status,
-//       'geometry': this.geometry != null
-//           ? jsonEncode(this.geometry?.geometryData)
-//           : null,
 //       'dirty': this.dirty,
 //     };
 //   }
 //
-//   @override
-//   Map<String, dynamic> toUpload() {
-//     Map<String, dynamic> syncableToUpload = super.toUpload();
+//   static FormElementInstance fromJsonFactory(Map<String, dynamic> json) {
+//     final type = json['type'] as String?;
+//     final valueType = ValueType.getValueType(type);
 //
-//     syncableToUpload.addAll({
-//       'formData': fields,
-//     });
+//     switch (valueType) {
+//       case ValueType.Section:
+//         return SectionInstance.fromJson(json);
+//       case ValueType.RepeatableSection:
+//         return RepeatableSectionInstance.fromJson(json);
+//       case ValueType.Integer:
+//       case ValueType.Text:
+//       case ValueType.DateTime:
+//       case ValueType.Boolean:
+//         return FieldInstance.fromJson(json);
 //
-//     return syncableToUpload;
-//   }
-// }
-//
-// FormElementInstance fromJsonFactory(Map<String, dynamic> json) {
-//   final type = json['type'] as String?;
-//   final valueType = ValueType.getValueType(type);
-//
-//   switch (valueType) {
-//     case ValueType.Section:
-//       return SectionInstance.fromJson(json);
-//     case ValueType.RepeatableSection:
-//       return RepeatableSectionInstance.fromJson(json);
-//     case ValueType.Integer:
-//     case ValueType.Text:
-//     case ValueType.DateTime:
-//     case ValueType.Boolean:
-//       return FieldInstance.fromJson(json);
-//
-//     default:
-//       throw Exception('Unknown type');
-//   }
-// }
-//
-// Map<String, dynamic> toJsonFactory(FormElementInstance field) {
-//   switch (field.type) {
-//     case ValueType.Section:
-//       return (field as SectionInstance).toJson();
-//     case ValueType.RepeatableSection:
-//       return (field as RepeatableSectionInstance).toJson();
-//     case ValueType.Integer:
-//     case ValueType.Text:
-//     case ValueType.DateTime:
-//     case ValueType.Boolean:
-//       return (field as FieldInstance).toJson();
-//     default:
-//       throw Exception('Unknown type');
-//   }
-// }
-//
-// Map<String, dynamic> extractRawValues(FormInstance formInstance) {
-//   Map<String, dynamic> rawValues = {};
-//
-//   for (var field in formInstance.fields ?? []) {
-//     rawValues.addAll(extractElementValue(field));
-//   }
-//
-//   return rawValues;
-// }
-//
-// Map<String, dynamic> extractElementValue(FormElementInstance element) {
-//   Map<String, dynamic> result = {};
-//
-//   if (element is FieldInstance) {
-//     // Direct value mapping
-//     result[element.name!] = element.value;
-//   } else if (element is SectionInstance) {
-//     // Flatten section fields without including the section name
-//     for (var field in element.value?.values.toList() ?? []) {
-//       result.addAll(extractElementValue(field));
+//       default:
+//         throw Exception('Unknown type');
 //     }
-//   } else if (element is RepeatableSectionInstance) {
-//     // Repeatable section with multiple sections
-//     List<Map<String, dynamic>> repeatedValues = [];
-//     for (var section in element.value ?? []) {
-//       repeatedValues.add(extractElementValue(section));
-//     }
-//     result[element.name!] = repeatedValues;
 //   }
 //
-//   return result;
-// }
+//   Map<String, dynamic> toJsonFactory(FormElementInstance field) {
+//     switch (field.type) {
+//       case ValueType.Section:
+//         return (field as SectionInstance).toJson();
+//       case ValueType.RepeatableSection:
+//         return (field as RepeatableSectionInstance).toJson();
+//       case ValueType.Integer:
+//       case ValueType.Text:
+//       case ValueType.DateTime:
+//       case ValueType.Boolean:
+//         return (field as FieldInstance).toJson();
+//       default:
+//         throw Exception('Unknown type');
+//     }
+//   }
 //
+//   static Map<String, dynamic> extractRawValues(FormInstance formInstance) {
+//     Map<String, dynamic> rawValues = {};
+//
+//     for (var field in formInstance.fields ?? []) {
+//       rawValues.addAll(extractElementValue(field));
+//     }
+//
+//     return rawValues;
+//   }
+//
+//   static Map<String, dynamic> extractElementValue(FormElementInstance element) {
+//     Map<String, dynamic> result = {};
+//
+//     if (element is FieldInstance) {
+//       // Direct value mapping
+//       result[element.name!] = element.value;
+//     } else if (element is SectionInstance) {
+//       // Flatten section fields without including the section name
+//       for (var field in element.value?.values.toList() ?? []) {
+//         result.addAll(extractElementValue(field));
+//       }
+//     } else if (element is RepeatableSectionInstance) {
+//       // Repeatable section with multiple sections
+//       List<Map<String, dynamic>> repeatedValues = [];
+//       for (var section in element.value ?? []) {
+//         repeatedValues.add(extractElementValue(section));
+//       }
+//       result[element.name!] = repeatedValues;
+//     }
+//
+//     return result;
+//   }
+// }
 // // Map<String, dynamic> extractElementValue(FormElementInstance element) {
 // //   Map<String, dynamic> result = {};
 // //

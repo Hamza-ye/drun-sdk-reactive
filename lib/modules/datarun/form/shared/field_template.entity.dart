@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:d2_remote/modules/datarun/form/shared/attribute_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/reference_field_info.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule/rule.dart';
+import 'package:d2_remote/modules/datarun/form/shared/tree_node/tree_node_mixin/tree_node_mixin.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:equatable/equatable.dart';
@@ -14,11 +14,14 @@ mixin ElementAttributesMixin {
   bool get mandatory;
 }
 
-class FieldTemplate with ElementAttributesMixin, EquatableMixin {
+class FieldTemplate
+    with ElementAttributesMixin, EquatableMixin, TreeNodeGroupMixin {
   final String? path;
-  final ValueType type;
-  final String name;
+
+  final String? name;
   final int order;
+
+  final ValueType type;
   final String? listName;
   final bool mandatory;
   final bool mainField;
@@ -37,23 +40,20 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   final List<FormOption> options = [];
   final String? itemTitle;
 
-  final AttributeType? attributeType;
-
   FieldTemplate({
     this.path,
     required this.mandatory,
-    required this.mainField,
+    this.mainField = false,
     this.order = 0,
     this.listName,
     required this.type,
-    required this.name,
+    this.name,
     this.fieldValueRenderingType,
     this.referenceInfo,
     this.choiceFilter,
     this.defaultValue,
     this.calculation,
     this.section,
-    this.attributeType,
     this.itemTitle,
     List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
@@ -83,6 +83,8 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
       ];
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
+    final valueType = ValueType.getValueType(json['type']);
+
     final rules = json['rules'] != null
         ? (parseDynamicJson(json['rules']) as List)
             .map<Rule>((ruleField) =>
@@ -94,8 +96,11 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         ? (parseDynamicJson(json['fields']) as List)
             .map<FieldTemplate>((field) => FieldTemplate.fromJson({
                   ...field,
-                  "section": json['name'],
-                  "path": json['path'],
+                  // "section": json['name'],
+                  // "path": json['path'],
+                  "parent": valueType.isRepeatSection
+                      ? '${json['path']}.{key}'
+                      : json['path'],
                 }))
             .toList()
         : <FieldTemplate>[];
@@ -107,8 +112,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         : <FormOption>[];
 
     return FieldTemplate(
-        type: ValueType.getValueType(json['type']),
-        attributeType: AttributeType.getAttributeType(json['attributeType']),
+        type: valueType,
         name: json['name'],
         options: options,
         path: json['path'],
@@ -160,4 +164,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
       'section': section,
     };
   }
+
+  @override
+  List<TreeNodeMixin> get children => fields;
 }

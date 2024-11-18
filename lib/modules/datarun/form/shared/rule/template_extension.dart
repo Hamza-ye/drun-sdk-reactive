@@ -1,7 +1,6 @@
 import 'package:d2_remote/modules/datarun/form/shared/field_template.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/template_extensions/field_template_extension.dart';
 
-extension FieldTemplateDependencies on FieldTemplate {
+extension TemplateRuleDependencies on FieldTemplate {
   List<String> get dependencies {
     List<String> dependencySet = [];
     for (final rule in rules) {
@@ -10,14 +9,16 @@ extension FieldTemplateDependencies on FieldTemplate {
     }
     return dependencySet.toSet().toList();
   }
+}
 
+extension TemplateFilterDependencies on FieldTemplate {
   /// from the choiceFilter expression
-  List<String> get filterDependencies {
+  List<String> get choicesDependencies {
     List<String> dependencyList = [];
     final fieldPattern = RegExp(r'#\{(.*?)\}');
 
-    if (isSelectType) {
-      if (withChoiceFilter) {
+    if (type.isSelectType) {
+      if (this.choiceFilter != null) {
         final filterDependencies = fieldPattern
             .allMatches(choiceFilter!)
             .map((match) => match.group(1)!)
@@ -32,25 +33,5 @@ extension FieldTemplateDependencies on FieldTemplate {
   }
 
   String? get evalChoiceFilterExpression =>
-      choiceFilter?.replaceAll("#{", "").replaceAll("}", "");
+      choiceFilter?.replaceAll('#{', '').replaceAll('}', '');
 }
-//
-// extension RuleDependencies on Rule {
-//   List<String> get dependencies {
-//     if (expression != null) {
-//       final fieldPattern = RegExp(r'#\{(.*?)\}');
-//
-//       return fieldPattern
-//           .allMatches(expression!)
-//           .map((match) => match.group(1)!)
-//           .toSet()
-//           .toList();
-//     }
-//     return [];
-//   }
-//
-//   String? get evalExpression =>
-//       expression.replaceAll("#{", "").replaceAll("}", "");
-// }
-
-///////

@@ -5,15 +5,19 @@ import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/dynamic_form_field.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/form_tree/form_node.dart';
+import 'package:d2_remote/modules/datarun/form/shared/form_tree/form_tree_template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/tree_node/tree_node_mixin/tree_node_mixin.dart';
+import 'package:d2_remote/modules/datarun/form/shared/tree_node/utils/traverse.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'formVersion', apiResourceName: 'formVersions')
-class FormVersion extends IdentifiableEntity {
+class FormVersion extends IdentifiableEntity with TreeNodeGroupMixin {
   @ManyToOne(table: FormTemplate, joinColumnName: 'formTemplate')
   dynamic formTemplate;
 
@@ -206,4 +210,16 @@ class FormVersion extends IdentifiableEntity {
       'dirty': dirty,
     };
   }
+
+  // FormTreeTemplate build() {
+  //   var root = GroupNode(path: null, name: null)..setChildren(fields);
+  //   depthFirstTraversal(this, (node) => node.children);
+  //   return FormTreeTemplate(root);
+  // }
+
+  @override
+  List<TreeNodeMixin> get children => fields;
+
+  @override
+  String? get path => null;
 }
