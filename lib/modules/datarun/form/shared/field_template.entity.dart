@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:d2_remote/modules/datarun/form/shared/attribute_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/reference_field_info.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule/rule.dart';
-import 'package:d2_remote/modules/datarun/form/shared/tree_node/tree_node_mixin/tree_node_mixin.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:equatable/equatable.dart';
@@ -14,8 +14,7 @@ mixin ElementAttributesMixin {
   bool get mandatory;
 }
 
-class FieldTemplate
-    with ElementAttributesMixin, EquatableMixin, TreeNodeGroupMixin {
+class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   final String? path;
 
   final String? name;
@@ -40,6 +39,8 @@ class FieldTemplate
   final List<FormOption> options = [];
   final String? itemTitle;
 
+  final AttributeType? attributeType;
+
   FieldTemplate({
     this.path,
     required this.mandatory,
@@ -54,6 +55,7 @@ class FieldTemplate
     this.defaultValue,
     this.calculation,
     this.section,
+    this.attributeType,
     this.itemTitle,
     List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
@@ -113,6 +115,7 @@ class FieldTemplate
 
     return FieldTemplate(
         type: valueType,
+        attributeType: AttributeType.getAttributeType(json['attributeType']),
         name: json['name'],
         options: options,
         path: json['path'],
@@ -165,6 +168,11 @@ class FieldTemplate
     };
   }
 
-  @override
-  List<TreeNodeMixin> get children => fields;
+//
+// Iterable<FieldTemplate> depthFirstTraversal() sync* {
+//   yield this; // Start with the root node
+//   for (final child in children ) {
+//     yield* child.depthFirstTraversal();
+//   }
+// }
 }

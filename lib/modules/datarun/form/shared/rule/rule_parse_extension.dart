@@ -1,5 +1,5 @@
 import 'package:d2_remote/modules/datarun/form/shared/field_template.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/template_extensions/field_template_extension.dart';
+import 'package:d2_remote/modules/datarun/form/shared/template_extensions/form_traverse_extension.dart';
 
 extension FieldTemplateDependencies on FieldTemplate {
   List<String> get dependencies {

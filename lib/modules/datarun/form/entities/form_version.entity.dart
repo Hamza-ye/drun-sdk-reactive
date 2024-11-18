@@ -7,17 +7,13 @@ import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/form_tree/form_node.dart';
-import 'package:d2_remote/modules/datarun/form/shared/form_tree/form_tree_template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/tree_node/tree_node_mixin/tree_node_mixin.dart';
-import 'package:d2_remote/modules/datarun/form/shared/tree_node/utils/traverse.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'formVersion', apiResourceName: 'formVersions')
-class FormVersion extends IdentifiableEntity with TreeNodeGroupMixin {
+class FormVersion extends IdentifiableEntity {
   @ManyToOne(table: FormTemplate, joinColumnName: 'formTemplate')
   dynamic formTemplate;
 
@@ -207,19 +203,19 @@ class FormVersion extends IdentifiableEntity with TreeNodeGroupMixin {
           optionSets.map((optionSet) => optionSet.toJson()).toList()),
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
+      // 'formFieldsMapCache': jsonEncode(formFieldsMapCache
+      //     .map((key, field) => MapEntry(key, field.toJson()))),
       'dirty': dirty,
     };
   }
 
   // FormTreeTemplate build() {
   //   var root = GroupNode(path: null, name: null)..setChildren(fields);
-  //   depthFirstTraversal(this, (node) => node.children);
+  //   depthFirstTraversal();
   //   return FormTreeTemplate(root);
   // }
 
-  @override
-  List<TreeNodeMixin> get children => fields;
-
-  @override
-  String? get path => null;
+  @Column(nullable: true, type: ColumnType.TEXT)
+  Map<String, FieldTemplate> formFieldsMapCache = {};
 }
+
