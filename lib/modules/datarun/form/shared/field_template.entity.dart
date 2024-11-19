@@ -31,13 +31,19 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   final String? choiceFilter;
   final String? calculation;
   final dynamic defaultValue;
-  final String? section;
+  final String? parent;
+
+  // final String? parentPath;
 
   final List<FieldTemplate> fields = [];
   final Map<String, String> label = {};
+
+  final Map<String, dynamic> properties = {};
+
   final List<Rule> rules = [];
   final List<FormOption> options = [];
   final String? itemTitle;
+  final int repeatCount;
 
   final AttributeType? attributeType;
 
@@ -54,24 +60,27 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
     this.choiceFilter,
     this.defaultValue,
     this.calculation,
-    this.section,
+    this.parent,
     this.attributeType,
     this.itemTitle,
+    this.repeatCount = 1,
     List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
     List<FormOption> options = const [],
     Map<String, String> label = const {},
+    Map<String, dynamic> properties = const {},
   }) {
     this.fields.addAll(fields);
     this.rules.addAll(rules);
     this.label.addAll(label);
     this.options.addAll(options);
+    this.properties.addAll(properties);
   }
 
   @override
   List<Object?> get props => [
         name,
-        section,
+        parent,
         type,
         order,
         rules,
@@ -82,6 +91,8 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         calculation,
         defaultValue,
         itemTitle,
+        properties,
+        repeatCount,
       ];
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
@@ -98,8 +109,8 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         ? (parseDynamicJson(json['fields']) as List)
             .map<FieldTemplate>((field) => FieldTemplate.fromJson({
                   ...field,
-                  // "section": json['name'],
-                  // "path": json['path'],
+                  "section": json['name'],
+                  "path": json['path'],
                   "parent": valueType.isRepeatSection
                       ? '${json['path']}.{key}'
                       : json['path'],
@@ -125,11 +136,17 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         listName: json['listName'],
         fields: fields,
         itemTitle: json['itemTitle'],
+        repeatCount: json['repeatCount'] ?? 0,
         choiceFilter: json['choiceFilter'],
         rules: rules,
         label: Map<String, String>.from(json['label'] is String
             ? jsonDecode(json['label'])
             : json['label']),
+        properties: Map<String, dynamic>.from(json['properties'] is String
+            ? jsonDecode(json['properties'])
+            : json['properties'] ?? {}),
+        parent: json['section'],
+        // parentPath: json['parentPath'],
         referenceInfo: json['referenceInfo'] != null
             ? ReferenceInfo.fromJson(json['referenceInfo'] is String
                 ? jsonDecode(json['referenceInfo'])
@@ -164,7 +181,8 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
       'fields': jsonEncode(fields.map((field) => field.toJson()).toList()),
       'rules': jsonEncode(rules.map((rule) => rule.toJson()).toList()),
       'label': jsonEncode(label),
-      'section': section,
+      'properties': jsonEncode(properties),
+      'parent': parent,
     };
   }
 

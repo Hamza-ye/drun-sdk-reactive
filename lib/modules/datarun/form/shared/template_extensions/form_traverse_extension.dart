@@ -93,7 +93,11 @@ extension FieldTemplatePathExtension on FieldTemplate {
     return parentPath!.join('.');
   }
 
-  bool get isSection => type.isSectionType;
+  bool get isSectionType => type.isSelectType;
+
+  bool get isSection => type.isSection;
+
+  bool get isRepeat => type.isRepeatSection;
 
   bool get isSelectType => type.isSelectType;
 
