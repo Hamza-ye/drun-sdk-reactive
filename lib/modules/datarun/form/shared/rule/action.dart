@@ -6,9 +6,7 @@ import 'package:d2_remote/modules/datarun/form/shared/rule/rule_action.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expressions/expressions.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:flutter/cupertino.dart';
 
-@immutable
 class RuleAction
     with EquatableMixin
     implements

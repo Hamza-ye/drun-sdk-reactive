@@ -139,9 +139,9 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         repeatCount: json['repeatCount'] ?? 0,
         choiceFilter: json['choiceFilter'],
         rules: rules,
-        label: Map<String, String>.from(json['label'] is String
+        label: json['label'] != null ? Map<String, String>.from(json['label'] is String
             ? jsonDecode(json['label'])
-            : json['label']),
+            : json['label']) : {},
         properties: Map<String, dynamic>.from(json['properties'] is String
             ? jsonDecode(json['properties'])
             : json['properties'] ?? {}),
