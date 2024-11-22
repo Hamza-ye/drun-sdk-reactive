@@ -23,6 +23,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   final ValueType type;
   final String? listName;
   final bool mandatory;
+  final bool readOnly;
   final bool mainField;
   final String? fieldValueRenderingType;
   final ReferenceInfo? referenceInfo;
@@ -51,6 +52,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
     this.path,
     required this.mandatory,
     this.mainField = false,
+    this.readOnly = false,
     this.order = 0,
     this.listName,
     required this.type,
@@ -81,6 +83,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   List<Object?> get props => [
         name,
         parent,
+        readOnly,
         type,
         order,
         rules,
@@ -133,15 +136,18 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         order: json['order'] ?? 0,
         mandatory: json['mandatory'] ?? false,
         mainField: json['mainField'] ?? false,
+        readOnly: json['readOnly'] ?? false,
         listName: json['listName'],
         fields: fields,
         itemTitle: json['itemTitle'],
         repeatCount: json['repeatCount'] ?? 0,
         choiceFilter: json['choiceFilter'],
         rules: rules,
-        label: json['label'] != null ? Map<String, String>.from(json['label'] is String
-            ? jsonDecode(json['label'])
-            : json['label']) : {},
+        label: json['label'] != null
+            ? Map<String, String>.from(json['label'] is String
+                ? jsonDecode(json['label'])
+                : json['label'])
+            : {},
         properties: Map<String, dynamic>.from(json['properties'] is String
             ? jsonDecode(json['properties'])
             : json['properties'] ?? {}),
@@ -169,6 +175,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
       'name': name,
       'options': jsonEncode(options.map((option) => option.toJson()).toList()),
       'mandatory': mandatory,
+      'readOnly': readOnly,
       'mainField': mainField,
       'listName': listName,
       'itemTitle': itemTitle,
