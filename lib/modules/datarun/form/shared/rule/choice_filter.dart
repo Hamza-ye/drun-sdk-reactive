@@ -21,10 +21,20 @@ class ChoiceFilter
     }
 
     List<FormOption> result = options
-        .where((option) =>
-            evaluator.eval(getExpression(), option.toContext()..addAll(context ?? {})))
+        .where((option) => evaluator.eval(
+            getExpression(), option.toContext()..addAll(context ?? {})))
         .toList();
 
     return result;
+  }
+
+  ChoiceFilter copyWith({
+    List<FormOption>? options,
+    String? expression,
+  }) {
+    return ChoiceFilter(
+      options: options ?? this.options,
+      expression: expression ?? this.expression,
+    );
   }
 }
