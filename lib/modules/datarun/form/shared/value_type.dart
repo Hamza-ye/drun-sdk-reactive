@@ -33,7 +33,7 @@ enum ValueType {
   SelectOne,
   YesNo,
   GeoJson,
-  Barcode,
+  ScannedCode,
   Unknown;
 
   static List<ValueType> get INTEGER_TYPES => <ValueType>[
@@ -128,8 +128,8 @@ enum ValueType {
     switch (valueType?.toLowerCase()) {
       case 'section':
         return ValueType.Section;
-      case 'barcode':
-        return ValueType.Barcode;
+      case 'scannedcode':
+        return ValueType.ScannedCode;
       case 'repeatablesection':
         return ValueType.RepeatableSection;
       case 'text':
