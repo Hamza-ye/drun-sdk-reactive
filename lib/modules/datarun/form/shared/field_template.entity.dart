@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:d2_remote/modules/datarun/form/shared/attribute_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/reference_field_info.dart';
+import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule/rule.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
@@ -26,7 +26,9 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   final bool readOnly;
   final bool mainField;
   final String? fieldValueRenderingType;
-  final ReferenceInfo? referenceInfo;
+
+  final MetadataResourceType? resourceType;
+  final String? resourceMetadataSchema;
 
   // final String? choiceFilter;
   final String? choiceFilter;
@@ -58,7 +60,8 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
     required this.type,
     this.name,
     this.fieldValueRenderingType,
-    this.referenceInfo,
+    this.resourceType,
+    this.resourceMetadataSchema,
     this.choiceFilter,
     this.defaultValue,
     this.calculation,
@@ -89,7 +92,8 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         rules,
         label,
         listName,
-        referenceInfo,
+        resourceType,
+        resourceMetadataSchema,
         choiceFilter,
         calculation,
         defaultValue,
@@ -100,6 +104,10 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
     final valueType = ValueType.getValueType(json['type']);
+
+    final resourceType = json['resourceType'] != null
+        ? MetadataResourceType.getType(json['resourceType'])
+        : null;
 
     final rules = json['rules'] != null
         ? (parseDynamicJson(json['rules']) as List)
@@ -153,11 +161,8 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
             : json['properties'] ?? {}),
         parent: json['section'],
         // parentPath: json['parentPath'],
-        referenceInfo: json['referenceInfo'] != null
-            ? ReferenceInfo.fromJson(json['referenceInfo'] is String
-                ? jsonDecode(json['referenceInfo'])
-                : json['referenceInfo'])
-            : null,
+        resourceType: resourceType,
+        resourceMetadataSchema: json['resourceMetadataSchema'],
         fieldValueRenderingType: json['fieldValueRenderingType'],
         defaultValue: json['defaultValue'] != null
             ? json['defaultValue'] is String
@@ -170,6 +175,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   Map<String, dynamic> toJson() {
     return {
       'type': type.name,
+      'resourceType': resourceType?.name,
       'order': order,
       'path': path,
       'name': name,
@@ -182,8 +188,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
       'choiceFilter': choiceFilter,
       'defaultValue': defaultValue,
       'calculation': calculation,
-      'referenceField':
-          referenceInfo != null ? jsonEncode(referenceInfo!.toJson()) : null,
+      'resourceMetadataSchema': resourceMetadataSchema,
       'fieldValueRenderingType': fieldValueRenderingType,
       'fields': jsonEncode(fields.map((field) => field.toJson()).toList()),
       'rules': jsonEncode(rules.map((rule) => rule.toJson()).toList()),
