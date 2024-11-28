@@ -9,7 +9,7 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 import 'package:equatable/equatable.dart';
 
 mixin ElementAttributesMixin {
-  ValueType get type;
+  ValueType? get type;
 
   bool get mandatory;
 }
@@ -20,7 +20,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   final String? name;
   final int order;
 
-  final ValueType type;
+  final ValueType? type;
   final String? listName;
   final bool mandatory;
   final bool readOnly;
@@ -46,18 +46,17 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
   final List<Rule> rules = [];
   final List<FormOption> options = [];
   final String? itemTitle;
-  final int repeatCount;
 
   final AttributeType? attributeType;
 
   FieldTemplate({
     this.path,
-    required this.mandatory,
+    this.mandatory = false,
     this.mainField = false,
     this.readOnly = false,
     this.order = 0,
     this.listName,
-    required this.type,
+    this.type,
     this.name,
     this.fieldValueRenderingType,
     this.resourceType,
@@ -68,7 +67,6 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
     this.parent,
     this.attributeType,
     this.itemTitle,
-    this.repeatCount = 1,
     List<FieldTemplate> fields = const [],
     List<Rule> rules = const [],
     List<FormOption> options = const [],
@@ -99,7 +97,6 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         defaultValue,
         itemTitle,
         properties,
-        repeatCount,
       ];
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
@@ -148,7 +145,6 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
         listName: json['listName'],
         fields: fields,
         itemTitle: json['itemTitle'],
-        repeatCount: json['repeatCount'] ?? 0,
         choiceFilter: json['choiceFilter'],
         rules: rules,
         label: json['label'] != null
@@ -174,7 +170,7 @@ class FieldTemplate with ElementAttributesMixin, EquatableMixin {
 
   Map<String, dynamic> toJson() {
     return {
-      'type': type.name,
+      'type': type?.name,
       'resourceType': resourceType?.name,
       'order': order,
       'path': path,

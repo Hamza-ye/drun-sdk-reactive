@@ -85,7 +85,6 @@ extension PathMaterializedFormUtil on FormVersion {
   }
 }
 
-
 extension FieldTemplatePathExtension on FieldTemplate {
   String? get parentPath {
     final parentPath = path?.split('.')?..removeLast();
@@ -93,17 +92,19 @@ extension FieldTemplatePathExtension on FieldTemplate {
     return parentPath!.join('.');
   }
 
-  bool get isSectionType => type.isSelectType;
+  bool get isSectionType => (type?.isSelectType ?? false);
 
-  bool get isSection => type.isSection;
+  bool get isSection => (type?.isSection ?? false);
 
-  bool get isRepeat => type.isRepeatSection;
+  bool get isRepeat => (type?.isRepeatSection ?? false);
 
-  bool get isSelectType => type.isSelectType;
+  bool get isSelectType => (type?.isSelectType ?? false);
 
-  bool get isTextType => type.isText;
+  bool get isTextType => (type?.isText ?? false);
 
   bool get withChoiceFilter => choiceFilter != null;
+
+  bool get isNumeric => (type?.isNumeric ?? false);
 
   FieldTemplate? findFieldByPath(String path, [ValueType? valueType]) {
     if (this.path == path) return this;
