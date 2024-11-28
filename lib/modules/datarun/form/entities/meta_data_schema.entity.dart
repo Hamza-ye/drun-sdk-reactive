@@ -94,7 +94,7 @@ class MetadataSchema extends IdentifiableEntity {
 
     return MetadataSchema(
       resourceType: resourceType,
-      id: json['id'],
+      id: json['id'].toString(),
       uid: json['uid'],
       code: json['code'],
       name: json['name'],

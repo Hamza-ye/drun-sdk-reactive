@@ -18,7 +18,7 @@ enum ActionType {
   Unknown;
 
   static List<ActionType> get VISIBILITY_ACTIONS =>
-      <ActionType>[Visibility, Show];
+      <ActionType>[Visibility, Show, Hide];
 
   bool get isVisibility => VISIBILITY_ACTIONS.contains(this);
 

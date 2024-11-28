@@ -74,7 +74,7 @@ class SyncableEntity extends BaseEntity {
       this.code,
       String? lastModifiedDate,
       String? createdDate,
-      required this.orgUnit,
+      this.orgUnit,
       this.form,
       required this.formVersion,
       this.deleted,

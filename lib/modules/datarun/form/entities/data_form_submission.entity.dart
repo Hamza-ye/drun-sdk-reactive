@@ -36,7 +36,7 @@ class DataFormSubmission extends SyncableEntity {
     String? finishedEntryTime,
     dynamic activity,
     dynamic team,
-    required String? orgUnit,
+    String? orgUnit,
     required String status,
     Geometry? geometry,
     required dirty,
