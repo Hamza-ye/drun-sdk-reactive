@@ -2,6 +2,7 @@ enum MetadataResourceType {
   DataFormSubmission,
   Activity,
   Team,
+  User,
   OrgUnit,
   Assignment;
 
@@ -17,6 +18,8 @@ enum MetadataResourceType {
         return MetadataResourceType.OrgUnit;
       case 'assignment':
         return MetadataResourceType.Assignment;
+      case 'user':
+        return MetadataResourceType.User;
 
       default:
         throw ArgumentError('Invalid value type: $valueType');

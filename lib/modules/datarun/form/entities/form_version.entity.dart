@@ -5,7 +5,9 @@ import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/field_template.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/json_factory.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
@@ -18,7 +20,7 @@ class FormVersion extends IdentifiableEntity {
   dynamic formTemplate;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  List<FieldTemplate> fields = [];
+  List<Template> fields = [];
 
   @Column(nullable: true, type: ColumnType.TEXT)
   List<FormOption> options = [];
@@ -53,7 +55,8 @@ class FormVersion extends IdentifiableEntity {
     this.formTemplate,
     required this.version,
     required this.defaultLocal,
-    List<FieldTemplate> fields = const [],
+    List<Template> fields = const [],
+    List<Template> flattenedFields = const [],
     List<FormOption> options = const [],
     List<DOptionSet> optionSets = const [],
     Map<String, String> label = const {},
@@ -91,11 +94,24 @@ class FormVersion extends IdentifiableEntity {
             .toList()
         : <FormOption>[];
 
+    final optionsMap = Map.fromIterable(options,
+        key: (t) => t.listName,
+        value: (t) => options.where((option) => option.listName == t.listName));
+
     final fields = json['fields'] != null
         ? (parseDynamicJson(json['fields']) as List)
-            .map((field) => FieldTemplate.fromJson(field))
+            .map((field) => TemplateJsonFactory.fromJsonFactory(field))
             .toList()
-        : <FieldTemplate>[];
+        : <Template>[];
+
+    final flattenedFieldsList = json['flattenedFields'] != null
+        ? (parseDynamicJson(json['flattenedFields']) as List)
+            .map((field) => TemplateJsonFactory.fromJsonFactory(field))
+            .toList()
+        : <Template>[];
+
+    final flattenedFields = Map.fromIterable(flattenedFieldsList,
+        key: (t) => t.path, value: (t) => t);
 
     final optionSets = json['optionSets'] != null
         ? (parseDynamicJson(json['optionSets']) as List)
@@ -139,7 +155,7 @@ class FormVersion extends IdentifiableEntity {
 
     final fields = json['fields'] != null
         ? (parseDynamicJson(json['fields']) as List)
-            .map((field) => FieldTemplate.fromJson(field))
+            .map((field) => TemplateJsonFactory.fromJsonFactory(field))
             .toList()
         : <FieldTemplate>[];
 
@@ -197,7 +213,9 @@ class FormVersion extends IdentifiableEntity {
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
       'orgUnits': jsonEncode(orgUnits),
-      'fields': jsonEncode(fields.map((field) => field.toJson()).toList()),
+      'fields': jsonEncode(fields
+          .map((field) => TemplateJsonFactory.toJsonFactory(field))
+          .toList()),
       'options': jsonEncode(options.map((option) => option.toJson()).toList()),
       'optionSets': jsonEncode(
           optionSets.map((optionSet) => optionSet.toJson()).toList()),
@@ -216,6 +234,5 @@ class FormVersion extends IdentifiableEntity {
   // }
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  Map<String, FieldTemplate> formFieldsMapCache = {};
+  Map<String, Template> flattenedFields = {};
 }
-

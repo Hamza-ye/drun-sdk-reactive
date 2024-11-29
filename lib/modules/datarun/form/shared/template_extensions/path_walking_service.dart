@@ -1,5 +1,5 @@
 import 'package:d2_remote/core/utilities/list_extensions.dart';
-import 'package:d2_remote/modules/datarun/form/shared/field_template.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
 
 mixin TreeElement {
   String? get path;

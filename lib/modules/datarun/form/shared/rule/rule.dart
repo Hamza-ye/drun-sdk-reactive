@@ -2,17 +2,30 @@ import 'dart:convert';
 
 import 'package:d2_remote/modules/datarun/form/shared/rule/action.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule/rule_action.dart';
+import 'package:equatable/equatable.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-class Rule {
+class Rule with EquatableMixin {
   final String field;
 
   final String expression;
 
   final ActionType? action;
   final RuleAction ruleAction;
-  final Map<String, String>? message;
+  final IMap<String, String>? message;
   final FilterInfo? filterInfo;
   final dynamic assignedValue;
+
+  @override
+  List<Object?> get props => [
+        field,
+        expression,
+        action,
+        ruleAction,
+        message,
+        filterInfo,
+        assignedValue
+      ];
 
   Rule(
       {required this.field,
@@ -24,6 +37,11 @@ class Rule {
       this.assignedValue});
 
   factory Rule.fromJson(Map<String, dynamic> json) {
+    final message = json['message'] != null
+        ? Map<String, String>.from(json['message'] is String
+        ? jsonDecode(json['message'])
+        : json['message'])
+        : <String, String>{};
     return Rule(
         field: json['field'],
         action: ActionType.getAction(json['action']),
@@ -38,11 +56,7 @@ class Rule {
               : {},
         }),
         expression: json['expression'],
-        message: json['message'] != null
-            ? Map<String, String>.from(json['message'] is String
-                ? jsonDecode(json['message'])
-                : json['message'])
-            : {},
+        message: message.lock,
         filterInfo: json['filterInfo'] != null
             ? FilterInfo.fromJson(json['filterInfo'] is String
                 ? jsonDecode(json['filterInfo'])
@@ -56,7 +70,7 @@ class Rule {
       'expression': expression,
       'action': action?.name,
       'ruleAction': ruleAction.toJson(),
-      'message': message != null ? jsonEncode(message) : null,
+      'message': message != null ? jsonEncode(message?.unlock) : null,
       'assignedValue': assignedValue,
       'filterInfo': filterInfo != null ? filterInfo!.toJson() : null,
     };

@@ -33,6 +33,7 @@ enum ValueType {
   SelectOne,
   YesNo,
   GeoJson,
+  Calculated,
   ScannedCode,
   Unknown;
 
@@ -196,6 +197,8 @@ enum ValueType {
         return ValueType.GeoJson;
       case 'attribute':
         return ValueType.Attribute;
+      case 'calculated':
+        return ValueType.Calculated;
       default:
         return ValueType.Unknown;
       // throw ArgumentError('Invalid value type: $valueType'); Attribute

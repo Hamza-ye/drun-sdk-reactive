@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
-import 'package:d2_remote/modules/datarun/form/shared/field_template.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';

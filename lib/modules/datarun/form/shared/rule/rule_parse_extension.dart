@@ -1,11 +1,11 @@
-import 'package:d2_remote/modules/datarun/form/shared/field_template.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/rule/rule_action.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/template_extensions/form_traverse_extension.dart';
 
-extension FieldTemplateDependencies on FieldTemplate {
+extension FieldTemplateDependencies on Template {
   List<String> get dependencies {
     List<String> dependencySet = [];
-    for (final rule in rules) {
+    for (final rule in rules?.unlockView ?? []) {
       final ruleDependencies = rule.ruleAction.dependencies;
       dependencySet.addAll(ruleDependencies);
     }
@@ -14,8 +14,8 @@ extension FieldTemplateDependencies on FieldTemplate {
 
   List<String> get visibilityDependencies {
     List<String> dependencySet = [];
-    for (final rule
-        in rules.where((rule) => rule.ruleAction.action.isVisibility)) {
+    for (final rule in (rules?.unlockView ?? [])
+        .where((rule) => rule.ruleAction.action.isVisibility)) {
       final ruleDependencies = rule.ruleAction.dependencies;
       dependencySet.addAll(ruleDependencies);
     }
@@ -28,9 +28,10 @@ extension FieldTemplateDependencies on FieldTemplate {
     final fieldPattern = RegExp(r'#\{(.*?)\}');
 
     if (isSelectType) {
-      if (withChoiceFilter) {
+      if ((this as FieldTemplate).choiceFilter != null &&
+          (this as FieldTemplate).choiceFilter!.isNotEmpty) {
         final filterDependencies = fieldPattern
-            .allMatches(choiceFilter!)
+            .allMatches((this as FieldTemplate).choiceFilter!)
             .map((match) => match.group(1)!)
             .toList();
         dependencyList.addAll(filterDependencies);
@@ -42,6 +43,13 @@ extension FieldTemplateDependencies on FieldTemplate {
     return [];
   }
 
-  String? get evalChoiceFilterExpression =>
-      choiceFilter?.replaceAll("#{", "").replaceAll("}", "");
+  String? get evalChoiceFilterExpression {
+    if (this.isSelectType) {
+      return (this as FieldTemplate)
+          .choiceFilter
+          ?.replaceAll("#{", "")
+          .replaceAll("}", "");
+    }
+    return null;
+  }
 }
