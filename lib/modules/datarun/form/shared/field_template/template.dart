@@ -21,6 +21,11 @@ abstract class Template with EquatableMixin {
   IMap<String, dynamic>? get properties;
 
   bool get readOnly;
+
+  String? get constraint;
+
+  IMap<String, String>? get constraintMessage;
+
   @override
   List<Object?> get props => [path, name, type, rules, label, properties];
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:d2_remote/modules/datarun/form/shared/attribute_type.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/scanned_code_properties.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
@@ -32,7 +33,6 @@ class FieldTemplate extends Template
   final String? resourceMetadataSchema;
 
   final String? choiceFilter;
-  final String? calculation;
   final dynamic defaultValue;
   final String? parent;
 
@@ -44,7 +44,12 @@ class FieldTemplate extends Template
   final IList<Rule> rules;
   final IList<FormOption> options;
 
+  final String? constraint;
+  final IMap<String, String>? constraintMessage;
+
   final AttributeType? attributeType;
+  final ScannedCodeProperties? scannedCodeProperties;
+  final IList<String> appearance;
 
   FieldTemplate({
     this.path,
@@ -60,26 +65,29 @@ class FieldTemplate extends Template
     this.resourceMetadataSchema,
     this.choiceFilter,
     this.defaultValue,
-    this.calculation,
     this.parent,
     this.attributeType,
     // this.itemTitle,
     Iterable<Rule>? rules,
     Iterable<FormOption>? options,
+    Iterable<String>? appearance,
     // Iterable<FieldTemplate>? fields,
     // List<FieldTemplate> fields = const [],
     // List<FormOption> options = const [],
     this.label = const IMap.empty(),
     this.properties,
-  })
-      : /*this.fields =
+    this.scannedCodeProperties,
+    this.constraint,
+    this.constraintMessage,
+  })  : /*this.fields =
             IList.orNull(fields) ?? const IList<FieldTemplate>.empty(),*/
         this.options = IList.orNull(options) ?? const IList<FormOption>.empty(),
-        this.rules = IList.orNull(rules) ?? const IList<Rule>.empty();
+        this.rules = IList.orNull(rules) ?? const IList<Rule>.empty(),
+        this.appearance =
+            IList.orNull(appearance) ?? const IList<String>.empty();
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         // type,
         // name,
         // order,
@@ -92,8 +100,8 @@ class FieldTemplate extends Template
         resourceType,
         resourceMetadataSchema,
         choiceFilter,
-        calculation,
         defaultValue,
+        appearance
         // itemTitle,
       ];
 
@@ -106,28 +114,15 @@ class FieldTemplate extends Template
 
     final rules = json['rules'] != null
         ? (parseDynamicJson(json['rules']) as List)
-        .map<Rule>((ruleField) =>
-        Rule.fromJson({...ruleField, 'field': json['name']}))
-        .toList()
+            .map<Rule>((ruleField) =>
+                Rule.fromJson({...ruleField, 'field': json['name']}))
+            .toList()
         : <Rule>[];
-
-    // final fields = json['fields'] != null
-    //     ? (parseDynamicJson(json['fields']) as List)
-    //         .map<FieldTemplate>((field) => FieldTemplate.fromJson({
-    //               ...field,
-    //               // "path": json['path'],
-    //               "optionMap": json['optionMap'],
-    //               "parent": valueType.isRepeatSection
-    //                   ? '${json['path']}.{key}'
-    //                   : json['path'],
-    //             }))
-    //         .toList()
-    //     : <FieldTemplate>[];
 
     final optionMap = json['optionMap'] != null
         ? Map<String, List<FormOption>>.from(json['optionMap'] is String
-        ? jsonDecode(json['optionMap'])
-        : json['optionMap'])
+            ? jsonDecode(json['optionMap'])
+            : json['optionMap'])
         : <String, List<FormOption>>{};
 
     final listName = json['listName'];
@@ -136,42 +131,59 @@ class FieldTemplate extends Template
 
     final label = json['label'] != null
         ? Map<String, String>.from(
-        json['label'] is String ? jsonDecode(json['label']) : json['label'])
+            json['label'] is String ? jsonDecode(json['label']) : json['label'])
         : <String, String>{};
 
-    final properties = json['properties'] != null ? Map<String, dynamic>.from(
-        json['properties'] is String
+    final constraintMessage = json['constraintMessage'] != null
+        ? Map<String, String>.from(json['constraintMessage'] is String
+            ? jsonDecode(json['constraintMessage'])
+            : json['constraintMessage'])
+        : <String, String>{};
+
+    final properties = json['properties'] != null
+        ? Map<String, dynamic>.from(json['properties'] is String
             ? jsonDecode(json['properties'])
-            : json['properties']) : <String, dynamic>{};
+            : json['properties'])
+        : <String, dynamic>{};
+
+    final appearance = json['appearance'] != null
+        ? json['appearance'].runtimeType == String
+            ? jsonDecode(json['appearance']).cast<String>()
+            : json['appearance'].cast<String>()
+        : null;
 
     return FieldTemplate(
-        type: valueType,
-        attributeType: AttributeType.getAttributeType(json['attributeType']),
-        name: json['name'],
-        options: options,
-        path: json['path'],
-        order: json['order'] ?? 0,
-        mandatory: json['mandatory'] ?? false,
-        mainField: json['mainField'] ?? false,
-        readOnly: json['readOnly'] ?? false,
-        listName: json['listName'],
-        // fields: fields,
-        // itemTitle: json['itemTitle'],
-        choiceFilter: json['choiceFilter'],
-        rules: rules,
-        label: label.lock,
-        properties: properties?.lock,
-        parent: json['section'],
-        // parentPath: json['parentPath'],
-        resourceType: resourceType,
-        resourceMetadataSchema: json['resourceMetadataSchema'],
-        // fieldValueRenderingType: json['fieldValueRenderingType'],
-        // defaultValue: json['defaultValue'] != null
-        //     ? json['defaultValue'] is String
-        //         ? json['defaultValue']
-        //         : json['defaultValue'] as String
-        //     : null,
-        calculation: json['calculation']);
+      type: valueType,
+      attributeType: AttributeType.getAttributeType(json['attributeType']),
+      name: json['name'],
+      options: options,
+      path: json['path'],
+      order: json['order'] ?? 0,
+      mandatory: json['mandatory'] ?? false,
+      mainField: json['mainField'] ?? false,
+      readOnly: json['readOnly'] ?? false,
+      listName: json['listName'],
+      // fields: fields,
+      // itemTitle: json['itemTitle'],
+      choiceFilter: json['choiceFilter'],
+      rules: rules,
+      label: label.lock,
+      properties: properties.lock,
+      parent: json['section'],
+      // parentPath: json['parentPath'],
+      resourceType: resourceType,
+      resourceMetadataSchema: json['resourceMetadataSchema'],
+      // fieldValueRenderingType: json['fieldValueRenderingType'],
+      defaultValue: json['defaultValue'] != null
+          ? json['defaultValue'] is String
+              ? json['defaultValue']
+              : json['defaultValue'] as String
+          : null,
+      constraint: json['constraint'],
+      constraintMessage: constraintMessage.lock,
+      scannedCodeProperties: json['scannedCodeProperties'],
+      appearance: appearance,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -190,16 +202,23 @@ class FieldTemplate extends Template
       // 'itemTitle': itemTitle,
       'choiceFilter': choiceFilter,
       'defaultValue': defaultValue,
-      'calculation': calculation,
       'resourceMetadataSchema': resourceMetadataSchema,
       // 'fieldValueRenderingType': fieldValueRenderingType,
       // 'fields':
       //     jsonEncode(fields.unlockView.map((field) => field.toJson()).toList()),
       'rules':
-      jsonEncode(rules.unlockView.map((rule) => rule.toJson()).toList()),
+          jsonEncode(rules.unlockView.map((rule) => rule.toJson()).toList()),
       'label': jsonEncode(label.unlockView),
+      'constraint': constraint,
+      'constraintMessage': constraintMessage != null
+          ? jsonEncode(constraintMessage!.unlockView)
+          : null,
       'properties': jsonEncode(properties?.unlockView),
       'parent': parent,
+      'appearance': jsonEncode(appearance.unlockView),
+      'scannedCodeProperties': scannedCodeProperties?.toJson() != null
+          ? jsonEncode(scannedCodeProperties!.toJson())
+          : null,
     };
   }
 }

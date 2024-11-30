@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule/rule.dart';
@@ -7,35 +8,24 @@ import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-class CalculatedTemplate extends Template {
-  final String name;
-  final ValueType type;
-  final int order;
-  final String path;
-  final String? calculation;
-  final dynamic defaultValue;
-  final MetadataResourceType? resourceType;
-  final String? resourceMetadataSchema;
-  final IList<Rule> rules;
-  final IMap<String, String> label;
-  final IMap<String, dynamic>? properties;
-  final String? parent;
+class CalculatedTemplate extends FieldTemplate {
   bool get readOnly => true;
+  final String? calculation;
 
   CalculatedTemplate({
-    required this.path,
-    required this.name,
-    this.order = 0,
-    this.resourceType,
-    this.resourceMetadataSchema,
-    this.defaultValue,
-    this.type = ValueType.Calculated,
+    required super.path,
+    required super.name,
+    super.order = 0,
+    super.resourceType,
+    super.resourceMetadataSchema,
+    super.defaultValue,
+    super.type = ValueType.Calculated,
     this.calculation,
-    this.parent,
-    Iterable<Rule>? rules,
-    this.label = const IMap.empty(),
-    this.properties,
-  }) : this.rules = IList.orNull(rules) ?? const IList<Rule>.empty();
+    super.parent,
+    super.rules,
+    super.label = const IMap.empty(),
+    super.properties,
+  });
 
   @override
   List<Object?> get props => super.props + [calculation];
@@ -59,10 +49,11 @@ class CalculatedTemplate extends Template {
             json['label'] is String ? jsonDecode(json['label']) : json['label'])
         : <String, String>{};
 
-    final properties = json['properties'] != null ? Map<String, dynamic>.from(
-        json['properties'] is String
+    final properties = json['properties'] != null
+        ? Map<String, dynamic>.from(json['properties'] is String
             ? jsonDecode(json['properties'])
-            : json['properties']) : <String, dynamic>{};
+            : json['properties'])
+        : <String, dynamic>{};
 
     ;
     return CalculatedTemplate(
@@ -88,7 +79,7 @@ class CalculatedTemplate extends Template {
     return {
       'path': path,
       'name': name,
-      'type': type.name,
+      'type': type?.name,
       'order': order,
       'defaultValue': defaultValue,
       'calculation': calculation,

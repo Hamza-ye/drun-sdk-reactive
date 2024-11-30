@@ -24,8 +24,13 @@ class SectionTemplate extends Template {
   final IMap<String, dynamic>? properties;
 
   final IList<Rule> rules;
+
+  final String? constraint;
+  final IMap<String, String>? constraintMessage;
   final String? itemTitle;
   final bool readOnly;
+  final int? maxRepeats;
+  final int? minRepeats;
 
   SectionTemplate({
     this.path,
@@ -36,6 +41,10 @@ class SectionTemplate extends Template {
     this.parent,
     this.itemTitle,
     this.readOnly = false,
+    this.maxRepeats,
+    this.minRepeats,
+    this.constraint,
+    this.constraintMessage,
     Iterable<Rule>? rules,
     Iterable<Template>? fields,
     this.label = const IMap.empty(),
@@ -77,16 +86,26 @@ class SectionTemplate extends Template {
             json['label'] is String ? jsonDecode(json['label']) : json['label'])
         : <String, String>{};
 
-    final properties = json['properties'] != null ? Map<String, dynamic>.from(
-        json['properties'] is String
+    final properties = json['properties'] != null
+        ? Map<String, dynamic>.from(json['properties'] is String
             ? jsonDecode(json['properties'])
-            : json['properties']) : <String, dynamic>{};
+            : json['properties'])
+        : <String, dynamic>{};
 
+    final constraintMessage = json['constraintMessage'] != null
+        ? Map<String, String>.from(json['constraintMessage'] is String
+            ? jsonDecode(json['constraintMessage'])
+            : json['constraintMessage'])
+        : <String, String>{};
 
     return SectionTemplate(
         type: valueType,
+        constraint: json['constraint'],
+        constraintMessage: constraintMessage.lock,
         name: json['name'],
         path: json['path'],
+        maxRepeats: json['maxRepeats'],
+        minRepeats: json['minRepeats'],
         readOnly: json['readOnly'] ?? false,
         itemTitle: json['itemTitle'],
         order: json['order'] ?? 0,
@@ -104,6 +123,8 @@ class SectionTemplate extends Template {
       'order': order,
       'path': path,
       'name': name,
+      'maxRepeats': maxRepeats,
+      'minRepeats': minRepeats,
       'fieldValueRenderingType': fieldValueRenderingType,
       'fields': jsonEncode(fields.unlockView
           .map((field) => TemplateJsonFactory.toJsonFactory(field))
@@ -112,6 +133,10 @@ class SectionTemplate extends Template {
           jsonEncode(rules.unlockView.map((rule) => rule.toJson()).toList()),
       'label': jsonEncode(label.unlockView),
       'properties': jsonEncode(properties?.unlockView),
+      'constraint': constraint,
+      'constraintMessage': constraintMessage != null
+          ? jsonEncode(constraintMessage!.unlockView)
+          : null,
       'parent': parent,
     };
   }
