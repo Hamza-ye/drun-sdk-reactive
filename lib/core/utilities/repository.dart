@@ -393,7 +393,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
         } else {
           if (data['dirty'] == 1) {
             data['lastModifiedDate'] =
-                DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+                DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
           }
           saveDataResponse = await db.update(
             columnRelation.referencedEntity?.tableName as String,
@@ -577,7 +577,7 @@ class Repository<T extends BaseEntity> extends BaseRepository<T> {
   @override
   Future<int> updateOne({required T entity, Database? database}) async {
     if (entity.dirty == true) {
-      entity.lastModifiedDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+      entity.lastModifiedDate = DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
     }
     Map<String, dynamic> data = this
         .sanitizeIncomingData(entity: entity.toJson(), columns: this.columns);

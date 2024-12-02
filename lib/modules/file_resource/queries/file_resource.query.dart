@@ -117,7 +117,7 @@ class FileResourceQuery extends BaseQuery<FileResource> {
         fileResource.storageStatus =
             importSummary['response']?['fileResource']?['storageStatus'];
         fileResource.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+            DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         fileResource.lastSyncSummary = importSummary.toString();
         queue.add(() => FileResourceQuery().setData(fileResource).save());
 

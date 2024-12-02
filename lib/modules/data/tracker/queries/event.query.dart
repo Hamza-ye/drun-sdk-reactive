@@ -104,7 +104,7 @@ class EventQuery extends BaseQuery<Event> {
         synced: false,
         programStage: this.programStage,
         eventDate:
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
+            DDateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
 
     this.data = event;
 
@@ -223,7 +223,7 @@ class EventQuery extends BaseQuery<Event> {
         event.dirty = true;
         event.syncFailed = syncFailed;
         event.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+            DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         event.lastSyncSummary = EventImportSummary.fromJson(importSummary);
         await queue.add(() => EventQuery().setData(event).save());
       }

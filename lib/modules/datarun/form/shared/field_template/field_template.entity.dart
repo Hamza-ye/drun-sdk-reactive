@@ -50,6 +50,7 @@ class FieldTemplate extends Template
   final AttributeType? attributeType;
   final ScannedCodeProperties? scannedCodeProperties;
   final IList<String> appearance;
+  final bool gs1Enabled;
 
   FieldTemplate({
     this.path,
@@ -67,6 +68,7 @@ class FieldTemplate extends Template
     this.defaultValue,
     this.parent,
     this.attributeType,
+    this.gs1Enabled = false,
     // this.itemTitle,
     Iterable<Rule>? rules,
     Iterable<FormOption>? options,
@@ -162,6 +164,7 @@ class FieldTemplate extends Template
       mandatory: json['mandatory'] ?? false,
       mainField: json['mainField'] ?? false,
       readOnly: json['readOnly'] ?? false,
+      gs1Enabled: json['gs1Enabled'] ?? false,
       listName: json['listName'],
       // fields: fields,
       // itemTitle: json['itemTitle'],

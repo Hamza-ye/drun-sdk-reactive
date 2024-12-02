@@ -178,7 +178,7 @@ class D2Remote {
       userData['password'] = password;
       userData['isLoggedIn'] = true;
       userData['checkWithServerTime'] =
-          DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+          DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
       userData['username'] = username;
       userData['baseUrl'] = url;
       userData['authTye'] = 'basic';

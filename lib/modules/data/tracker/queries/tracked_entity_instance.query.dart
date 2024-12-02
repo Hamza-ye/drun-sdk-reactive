@@ -457,7 +457,7 @@ class TrackedEntityInstanceQuery extends BaseQuery<TrackedEntityInstance> {
         trackedEntityInstance.dirty = true;
         trackedEntityInstance.syncFailed = syncFailed;
         trackedEntityInstance.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+            DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
 
         trackedEntityInstance.lastSyncSummary =
             TrackedEntityInstanceImportSummary.fromJson(importSummary);

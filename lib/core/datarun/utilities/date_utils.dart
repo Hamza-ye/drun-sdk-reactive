@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-class DateUtils {
+class DDateUtils {
   static const String DATABASE_FORMAT_EXPRESSION =
       "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
   static const String DATABASE_FORMAT_EXPRESSION_No_Zone =

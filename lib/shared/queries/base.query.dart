@@ -242,7 +242,7 @@ class BaseQuery<T extends BaseEntity> {
           saveOptions: saveOptions);
     }
     if (this.data != null && this.data.lastModifiedDate == null) {
-      this.data.lastModifiedDate = DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+      this.data.lastModifiedDate = DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
     }
 
     return this.repository.saveOne(

@@ -185,7 +185,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
         syncableEntity.dirty = false;
         syncableEntity.syncFailed = false;
         syncableEntity.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+            DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         syncableEntity.lastSyncMessage = null;
         availableItemCount++;
       } else if (syncFailed) {
@@ -193,7 +193,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
         syncableEntity.dirty = true;
         syncableEntity.syncFailed = true;
         syncableEntity.lastSyncDate =
-            DateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+            DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
         syncableEntity.lastSyncMessage = summary.failed[syncableEntity.id];
         availableItemCount++;
       }

@@ -9,6 +9,8 @@ abstract class Template with EquatableMixin {
   int get order;
 
   String? get name;
+  
+  bool get mainField => false;
 
   IList<Rule>? get rules;
 

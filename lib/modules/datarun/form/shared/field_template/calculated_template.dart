@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
-import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
 import 'package:d2_remote/modules/datarun/form/shared/rule/rule.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';

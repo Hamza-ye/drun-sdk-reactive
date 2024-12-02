@@ -9,6 +9,7 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class ScannedCodeTemplate extends FieldTemplate {
+  final bool gs1Enabled;
   final ScannedCodeProperties? scannedCodeProperties;
 
   ScannedCodeTemplate({
@@ -28,6 +29,7 @@ class ScannedCodeTemplate extends FieldTemplate {
     super.constraint,
     super.constraintMessage,
     this.scannedCodeProperties,
+    this.gs1Enabled = false,
   });
 
   @override
@@ -65,26 +67,28 @@ class ScannedCodeTemplate extends FieldTemplate {
         : <String, String>{};
 
     return ScannedCodeTemplate(
-        type: valueType,
-        name: json['name'],
-        path: json['path'],
-        order: json['order'] ?? 0,
-        mandatory: json['mandatory'] ?? false,
-        mainField: json['mainField'] ?? false,
-        rules: rules,
-        label: label.lock,
-        properties: properties?.lock,
-        parent: json['section'],
-        resourceType: resourceType,
-        resourceMetadataSchema: json['resourceMetadataSchema'],
-        scannedCodeProperties: json['scannedCodeProperties'],
-        defaultValue: json['defaultValue'] != null
-            ? json['defaultValue'] is String
-                ? json['defaultValue']
-                : json['defaultValue'] as String
-            : null,
-        constraint: json['constraint'],
-        constraintMessage: constraintMessage.lock);
+      type: valueType,
+      name: json['name'],
+      path: json['path'],
+      order: json['order'] ?? 0,
+      mandatory: json['mandatory'] ?? false,
+      mainField: json['mainField'] ?? false,
+      rules: rules,
+      label: label.lock,
+      properties: properties.lock,
+      parent: json['section'],
+      resourceType: resourceType,
+      resourceMetadataSchema: json['resourceMetadataSchema'],
+      scannedCodeProperties: json['scannedCodeProperties'],
+      defaultValue: json['defaultValue'] != null
+          ? json['defaultValue'] is String
+              ? json['defaultValue']
+              : json['defaultValue'] as String
+          : null,
+      constraint: json['constraint'],
+      constraintMessage: constraintMessage.lock,
+      gs1Enabled: json['gs1Enabled'] ?? false,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -107,6 +111,7 @@ class ScannedCodeTemplate extends FieldTemplate {
       'constraintMessage': constraintMessage != null
           ? jsonEncode(constraintMessage!.unlockView)
           : null,
+      'gs1Enabled': gs1Enabled,
     };
   }
 }
