@@ -94,24 +94,20 @@ class FormVersion extends IdentifiableEntity {
             .toList()
         : <FormOption>[];
 
-    final optionsMap = Map.fromIterable(options,
-        key: (t) => t.listName,
-        value: (t) => options.where((option) => option.listName == t.listName));
-
     final fields = json['fields'] != null
         ? (parseDynamicJson(json['fields']) as List)
             .map((field) => TemplateJsonFactory.fromJsonFactory(field))
             .toList()
         : <Template>[];
 
-    final flattenedFieldsList = json['flattenedFields'] != null
-        ? (parseDynamicJson(json['flattenedFields']) as List)
-            .map((field) => TemplateJsonFactory.fromJsonFactory(field))
-            .toList()
-        : <Template>[];
+    // final flattenedFieldsList = json['flattenedFields'] != null
+    //     ? (parseDynamicJson(json['flattenedFields']) as List)
+    //         .map((field) => TemplateJsonFactory.fromJsonFactory(field))
+    //         .toList()
+    //     : <Template>[];
 
-    final flattenedFields = Map.fromIterable(flattenedFieldsList,
-        key: (t) => t.path, value: (t) => t);
+    // final flattenedFields = Map.fromIterable(flattenedFieldsList,
+    //     key: (t) => t.path, value: (t) => t);
 
     final optionSets = json['optionSets'] != null
         ? (parseDynamicJson(json['optionSets']) as List)

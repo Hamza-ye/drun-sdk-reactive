@@ -112,7 +112,7 @@ class SectionTemplate extends Template {
         fields: fields,
         rules: rules,
         label: label.lock,
-        properties: properties?.lock,
+        properties: properties.lock,
         parent: json['section'],
         fieldValueRenderingType: json['fieldValueRenderingType']);
   }

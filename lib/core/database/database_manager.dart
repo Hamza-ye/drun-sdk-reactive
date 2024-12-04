@@ -77,6 +77,4 @@ class DatabaseManager {
       await _database!.close();
     }
   }
-
-  void _createDatabase(Database database, int version) async {}
 }

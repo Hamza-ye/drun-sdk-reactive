@@ -63,7 +63,7 @@ class CalculatedTemplate extends FieldTemplate {
         parent: json['parent'],
         rules: rules,
         label: label.lock,
-        properties: properties?.lock,
+        properties: properties.lock,
         resourceType: resourceType,
         resourceMetadataSchema: json['resourceMetadataSchema'],
         defaultValue: json['defaultValue'] != null

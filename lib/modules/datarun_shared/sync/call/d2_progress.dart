@@ -42,7 +42,7 @@ class D2Progress with EquatableMixin {
 
   final String? message;
   final String? serverMessage;
-  WorkInfoState progressState;
+  final WorkInfoState progressState;
   final bool? isComplete;
   final int? totalCalls;
   final IList<String>? doneCalls;
