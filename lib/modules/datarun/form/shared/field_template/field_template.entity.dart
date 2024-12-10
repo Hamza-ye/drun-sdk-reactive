@@ -37,7 +37,7 @@ class FieldTemplate extends Template
   final String? parent;
 
   // final IList<FieldTemplate> fields;
-  final IMap<String, String> label;
+  final IMap<String, String?> label;
 
   final IMap<String, dynamic>? properties;
 
@@ -132,9 +132,9 @@ class FieldTemplate extends Template
     final options = optionMap[listName] ?? [];
 
     final label = json['label'] != null
-        ? Map<String, String>.from(
+        ? Map<String, String?>.from(
             json['label'] is String ? jsonDecode(json['label']) : json['label'])
-        : <String, String>{};
+        : <String, String?>{};
 
     final constraintMessage = json['constraintMessage'] != null
         ? Map<String, String>.from(json['constraintMessage'] is String

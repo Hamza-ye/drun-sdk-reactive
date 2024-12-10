@@ -44,9 +44,9 @@ class CalculatedTemplate extends FieldTemplate {
         : <Rule>[];
 
     final label = json['label'] != null
-        ? Map<String, String>.from(
+        ? Map<String, String?>.from(
             json['label'] is String ? jsonDecode(json['label']) : json['label'])
-        : <String, String>{};
+        : <String, String?>{};
 
     final properties = json['properties'] != null
         ? Map<String, dynamic>.from(json['properties'] is String

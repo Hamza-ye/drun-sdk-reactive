@@ -18,7 +18,7 @@ abstract class Template with EquatableMixin {
 
   ValueType? get type;
 
-  IMap<String, String> get label;
+  IMap<String, dynamic> get label;
 
   IMap<String, dynamic>? get properties;
 
