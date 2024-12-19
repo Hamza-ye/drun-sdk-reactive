@@ -69,7 +69,7 @@ void main() async {
   // }, dioTestClient: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/teams?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/teams?paged=false&eagerload=true',
     (server) => server.reply(200, sampleTeams),
   );
   final teamQuery = DTeamQuery(database: db);

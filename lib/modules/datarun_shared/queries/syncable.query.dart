@@ -151,9 +151,9 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
       syncableTeamIds.add(event.team);
     });
 
-    // List<DActivity> activities =
-    //     await DActivityQuery().byIds(syncableActivityIds).get();
-    //
+    // List<MetadataSubmissionUpdate>? houses = await MetadataSubmissionUpdateQuery().upload(syncableActivityIds);
+
+
     // List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
 
     final uploadPayload = syncableEntities.map((event) {

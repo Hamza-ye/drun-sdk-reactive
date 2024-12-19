@@ -2,6 +2,7 @@ enum AttributeType {
   uuid,
   today,
   username,
+  userUid,
   phoneNumber,
   userInfo,
   deviceId,
@@ -19,6 +20,8 @@ enum AttributeType {
         return AttributeType.today;
       case 'username':
         return AttributeType.username;
+      case 'useruid':
+        return AttributeType.userUid;
       case 'userinfo':
         return AttributeType.userInfo;
       case 'phonenumber':

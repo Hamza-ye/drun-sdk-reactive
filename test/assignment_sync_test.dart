@@ -43,7 +43,7 @@ void main() async {
   await userQuery.setData(user).save();
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/assignments?paging=false&eagerload=true',
+    'http://localhost:8080/api/custom/assignments?paged=false&eagerload=true',
     (server) => server.reply(200, sampleAssignments),
   );
   final assignmentQuery = DAssignmentQuery(database: db);

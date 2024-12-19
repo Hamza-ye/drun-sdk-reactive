@@ -14,6 +14,6 @@ class ProjectQuery extends BaseQuery<Project> {
 //   final apiFilter =
 //   QueryFilter.getApiFilters(this.repository.columns, this.filters);
 //   return Future.value(
-//       'projects.json${apiFilter != null ? '?$apiFilter&' : '?'}fields=id,name,displayName,shortName,lastUpdated,created,code,dirty,description,activities[id,name,displayName,created,lastUpdated,programs,startDate,endDate,inactive,organisationUnits,assignments[id,name,displayName,created,lastUpdated,activity,team,organisationUnit,startDate,status,targetSource,startPeriod,period,periodType]]&paging=false');
+//       'projects.json${apiFilter != null ? '?$apiFilter&' : '?'}fields=id,name,displayName,shortName,lastUpdated,created,code,dirty,description,activities[id,name,displayName,created,lastUpdated,programs,startDate,endDate,inactive,organisationUnits,assignments[id,name,displayName,created,lastUpdated,activity,team,organisationUnit,startDate,status,targetSource,startPeriod,period,periodType]]&paged=false');
 // }
 }

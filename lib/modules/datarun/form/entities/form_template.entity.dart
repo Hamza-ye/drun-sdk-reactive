@@ -12,7 +12,7 @@ import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entit
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'formTemplate', apiResourceName: 'dataForms')
+@Entity(tableName: 'formTemplate', apiResourceName: 'dataForm')
 class FormTemplate extends IdentifiableEntity {
   /// template latest Version
   @Column(nullable: false, type: ColumnType.INTEGER)

@@ -15,16 +15,33 @@ class MetadataSubmission extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.TEXT)
   final String metadataSchema;
 
+  @Column(nullable: false, type: ColumnType.INTEGER)
+  final int serialNumber;
+
+  @Column(nullable: false, type: ColumnType.INTEGER)
+  final int version;
+
   @Column(nullable: false, type: ColumnType.TEXT)
   final String resourceId;
 
   @Column(nullable: true, type: ColumnType.TEXT)
   final Map<String, dynamic> formData = {};
 
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  final String? createdBy;
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  final String? lastModifiedBy;
+
   MetadataSubmission({
     required this.resourceType,
     required this.metadataSchema,
     required this.resourceId,
+    required this.serialNumber,
+    required this.version,
+    this.lastModifiedBy,
+    this.createdBy,
     String? id,
     String? uid,
     String? name,
@@ -57,17 +74,39 @@ class MetadataSubmission extends IdentifiableEntity {
           data is String ? jsonDecode(data) : data);
     }
 
+    final formData = parseFormData(json['formData']);
+    // final metadataSubmissionUpdates = List<dynamic>.from(
+    //         (formData['households'] is String
+    //                 ? jsonDecode(formData['households'])
+    //                 : formData['households']) ??
+    //             [])
+    //     .map((metadataSubmission) => MetadataSubmissionUpdate.fromJson({
+    //           ...metadataSubmission,
+    //           'resourceId': json['resourceId'],
+    //           'resourceType': json['resourceType'],
+    //           'metadataSubmission': json['id'],
+    //         }))
+    //     .toList();
+
+    // metadataSubmission: json['metadataSubmission'],
+    // resourceId: json['resourceId'],
+    // resourceType: resourceType,
     return MetadataSubmission(
       resourceType: resourceType,
       metadataSchema: json['metadataSchema'],
       resourceId: json['resourceId'],
-      id: json['id'].toString(),
+      serialNumber: json['serialNumber'],
+      version: json['version'],
+      id: json['id'],
+      // metadataSubmissionUpdates: metadataSubmissionUpdates,
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
-      formData: parseFormData(json['formData']),
+      lastModifiedBy: json['lastModifiedBy'],
+      createdBy: json['createdBy'],
+      formData: formData,
       dirty: json['dirty'] ?? false,
     );
   }
@@ -83,17 +122,38 @@ class MetadataSubmission extends IdentifiableEntity {
           data is String ? jsonDecode(data) : data);
     }
 
+    final formData = parseFormData(json['formData']);
+    // final metadataSubmissionUpdates = List<dynamic>.from(
+    //         (formData['households'] is String
+    //                 ? jsonDecode(formData['households'])
+    //                 : formData['households']) ??
+    //             [])
+    //     .map((metadataSubmission) => MetadataSubmissionUpdate.fromApi({
+    //           ...metadataSubmission,
+    //           'resourceId': json['resourceId'],
+    //           'resourceType': json['resourceType'],
+    //           'id': metadataSubmission['_id']!,
+    //           'parentId': metadataSubmission['_parentId']!,
+    //           'metadataSubmission': json['id']!,
+    //         }))
+    //     .toList();
+
     return MetadataSubmission(
       resourceType: resourceType,
       metadataSchema: json['metadataSchema'],
       resourceId: json['resourceId'],
-      id: json['id'].toString(),
+      id: json['id'],
       uid: json['uid'],
       code: json['code'],
+      serialNumber: json['serialNumber'],
+      version: json['version'],
       name: json['name'],
+      lastModifiedBy: json['lastModifiedBy'],
+      createdBy: json['createdBy'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
-      formData: parseFormData(json['formData']),
+      // metadataSubmissionUpdates: metadataSubmissionUpdates,
+      formData: formData,
       dirty: json['dirty'] ?? false,
     );
   }
@@ -105,12 +165,27 @@ class MetadataSubmission extends IdentifiableEntity {
       'uid': uid,
       'code': code,
       'name': name,
+      'version': version,
+      'serialNumber': serialNumber,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'formData': jsonEncode(formData),
       'resourceType': resourceType.name,
       'metadataSchema': metadataSchema,
       'resourceId': resourceId,
+      'dirty': this.dirty,
+    };
+  }
+
+  Map<String, dynamic> toContext() {
+    return {
+      'metadataSubmission': uid,
+      'createdDate': createdDate,
+      'lastModifiedDate': lastModifiedDate,
+      'metadataSchema': metadataSchema,
+      'resourceType': resourceType.name,
+      'resourceId': resourceId,
+      'households': formData['households'],
       'dirty': this.dirty,
     };
   }

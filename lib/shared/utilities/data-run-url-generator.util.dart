@@ -14,7 +14,7 @@ class DataRunUrlGenerator {
 
     // final apiFields = DataRunUrlGenerator.getApiFields(query.columns);
 
-    return '${query.resourceName}?paging=false&eagerload=true';
+    return '${query.resourceName}?paged=false';
   }
 
   static List<String> getApiFields(List<Column> columns) {

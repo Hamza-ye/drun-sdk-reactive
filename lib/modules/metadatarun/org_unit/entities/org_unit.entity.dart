@@ -33,6 +33,9 @@ class OrgUnit extends IdentifiableTreeNode {
   // // NMC
   // @Column(nullable: true, type: ColumnType.TEXT)
   // List<OrgUnit>? ancestors;
+  // @OneToMany(table: OrgUnit)
+  // final List<OrgUnit>? ancestors;
+
 
   OrgUnit(
       {required String id,

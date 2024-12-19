@@ -8,7 +8,7 @@ import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 
 @AnnotationReflectable
-@Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmissions')
+@Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmission')
 class DataFormSubmission extends SyncableEntity {
   @Column(nullable: true, type: ColumnType.TEXT)
   final Map<String, dynamic> formData = {};

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:d2_remote/modules/datarun/form/shared/attribute_type.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/allowed_action.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/scanned_code_properties.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
@@ -29,13 +30,9 @@ class FieldTemplate extends Template
   final bool mandatory;
   final bool readOnly;
   final bool mainField;
-  final MetadataResourceType? resourceType;
-  final String? resourceMetadataSchema;
-
   final String? choiceFilter;
   final dynamic defaultValue;
   final String? parent;
-
   // final IList<FieldTemplate> fields;
   final IMap<String, String?> label;
 
@@ -51,6 +48,12 @@ class FieldTemplate extends Template
   final ScannedCodeProperties? scannedCodeProperties;
   final IList<String> appearance;
   final bool gs1Enabled;
+
+  /// references to other entities
+  final MetadataResourceType? resourceType;
+  final String? resourceMetadataSchema;
+  final IList<String> displayAttributes;
+  final IList<AllowedAction> allowedActions;
 
   FieldTemplate({
     this.path,
@@ -73,6 +76,8 @@ class FieldTemplate extends Template
     Iterable<Rule>? rules,
     Iterable<FormOption>? options,
     Iterable<String>? appearance,
+    Iterable<String>? displayAttributes,
+    Iterable<AllowedAction>? allowedActions,
     // Iterable<FieldTemplate>? fields,
     // List<FieldTemplate> fields = const [],
     // List<FormOption> options = const [],
@@ -86,7 +91,11 @@ class FieldTemplate extends Template
         this.options = IList.orNull(options) ?? const IList<FormOption>.empty(),
         this.rules = IList.orNull(rules) ?? const IList<Rule>.empty(),
         this.appearance =
-            IList.orNull(appearance) ?? const IList<String>.empty();
+            IList.orNull(appearance) ?? const IList<String>.empty(),
+        this.displayAttributes =
+            IList.orNull(displayAttributes) ?? const IList<String>.empty(),
+        this.allowedActions =
+            IList.orNull(allowedActions) ?? const IList<AllowedAction>.empty();
 
   @override
   List<Object?> get props => [
@@ -121,6 +130,13 @@ class FieldTemplate extends Template
             .toList()
         : <Rule>[];
 
+    final allowedActions = json['allowedActions'] != null
+        ? (parseDynamicJson(json['allowedActions']) as List)
+        .map<AllowedAction>((action) =>
+        AllowedAction.getValueType(action))
+        .toList()
+        : <AllowedAction>[];
+
     final optionMap = json['optionMap'] != null
         ? Map<String, List<FormOption>>.from(json['optionMap'] is String
             ? jsonDecode(json['optionMap'])
@@ -154,11 +170,19 @@ class FieldTemplate extends Template
             : json['appearance'].cast<String>()
         : null;
 
+    final displayAttributes = json['displayAttributes'] != null
+        ? json['displayAttributes'].runtimeType == String
+        ? jsonDecode(json['displayAttributes']).cast<String>()
+        : json['displayAttributes'].cast<String>()
+        : null;
+
     return FieldTemplate(
       type: valueType,
       attributeType: AttributeType.getAttributeType(json['attributeType']),
       name: json['name'],
       options: options,
+      allowedActions: allowedActions,
+      displayAttributes: displayAttributes,
       path: json['path'],
       order: json['order'] ?? 0,
       mandatory: json['mandatory'] ?? false,
