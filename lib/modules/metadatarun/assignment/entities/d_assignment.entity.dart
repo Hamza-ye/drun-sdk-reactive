@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/entity_scope.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
@@ -21,16 +22,26 @@ class DAssignment extends IdentifiableEntity {
   @Column(nullable: true)
   String? orgUnit;
 
-  // @ManyToOne(table: Warehouse, joinColumnName: 'warehouse')
-  // dynamic warehouse;
   @Column(nullable: true)
-  String? warehouse;
+  String? parent;
+
+  @Column(nullable: true)
+  String? startDay;
+
+  @Column(nullable: true)
+  String? startDate;
 
   @Column(type: ColumnType.TEXT, nullable: true)
   String? status;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  Map<String, String>? properties;
+  Map<String, Object?> properties = {};
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  List<String> forms = [];
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  EntityScope? scope;
 
   DAssignment(
       {String? id,
@@ -39,12 +50,16 @@ class DAssignment extends IdentifiableEntity {
       String? lastModifiedDate,
       String? name,
       String? code,
-      this.properties,
-      this.warehouse,
+      List<String> forms = const [],
+      Map<String, Object?> properties = const {},
+      this.parent,
       this.activity,
       this.orgUnit,
       this.team,
       this.status,
+      this.startDay,
+      this.startDate,
+      this.scope,
       required dirty})
       : super(
             id: id,
@@ -53,24 +68,33 @@ class DAssignment extends IdentifiableEntity {
             code: code,
             createdDate: createdDate,
             lastModifiedDate: lastModifiedDate,
-            dirty: dirty);
+            dirty: dirty) {
+    this.forms.addAll(forms);
+    this.properties.addAll(properties);
+  }
 
   factory DAssignment.fromJson(Map<String, dynamic> json) {
     // final team = json['team'] is int ? json['team'] : json['team']['id'];
     // final activity = json['activity'] is int ? json['activity'] : json['activity']['id'];
     // // final organisationUnit = json['organisationUnit'] is int ? json['organisationUnit'] : json['organisationUnit']['id'];
     // final warehouse = json['warehouse'] is int ? json['warehouse'] : json['warehouse']['id'];
+    final scope = EntityScope.getType(json['entityScope']);
+
+    final forms = json['forms'] != null
+        ? json['forms'].runtimeType == String
+            ? jsonDecode(json['forms']).cast<String>()
+            : json['forms'].cast<String>()
+        : <String>[];
 
     return DAssignment(
         id: json['id'].toString(),
         uid: json['uid'],
-        name: json['name'] ??
-            '${json['subvillage'] != null ? json['subvillage'] : json['village']}',
-        properties: json['properties'] != null
-            ? Map<String, String>.from(json['properties'] is String
-                ? jsonDecode(json['properties'])
-                : json['properties'])
-            : null,
+        name: json['name'] ?? json['orgUnit']?['name'],
+        properties: json['resourceAllocated'] != null
+            ? Map<String, Object?>.from(json['resourceAllocated'] is String
+                ? jsonDecode(json['resourceAllocated'])
+                : json['resourceAllocated'])
+            : {},
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
         code: json['code'],
@@ -84,10 +108,10 @@ class DAssignment extends IdentifiableEntity {
                 ? json['orgUnit']
                 : json['orgUnit']['uid']
             : null,
-        warehouse: json['warehouse'] != null
-            ? json['warehouse'] is String
-                ? json['warehouse']
-                : json['warehouse']['uid']
+        parent: json['parent'] != null
+            ? json['parent'] is String
+                ? json['parent']
+                : json['parent']['uid']
             : null,
         team: json['team'] != null
             ? json['team'] is String
@@ -97,6 +121,10 @@ class DAssignment extends IdentifiableEntity {
 
         //warehouse,
         status: json['status'],
+        startDay: json['startDay'],
+        startDate: json['startDate'],
+        forms: forms,
+        scope: scope,
         dirty: json['dirty']);
   }
 
@@ -112,9 +140,13 @@ class DAssignment extends IdentifiableEntity {
     data['team'] = this.team;
     data['status'] = this.status;
     data['properties'] = this.properties;
-    data['warehouse'] = this.warehouse;
+    data['parent'] = this.parent;
     data['createdDate'] = this.createdDate;
     data['lastModifiedDate'] = this.lastModifiedDate;
+    data['startDay'] = this.startDay;
+    data['startDate'] = this.startDate;
+    data['forms'] = this.forms;
+    data['scope'] = this.scope?.name;
     data['dirty'] = this.dirty;
     return data;
   }

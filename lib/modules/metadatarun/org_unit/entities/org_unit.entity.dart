@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/entity_scope.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable_tree_node.entity.dart';
 
@@ -36,6 +37,8 @@ class OrgUnit extends IdentifiableTreeNode {
   // @OneToMany(table: OrgUnit)
   // final List<OrgUnit>? ancestors;
 
+  @Column(nullable: true, type: ColumnType.TEXT)
+  EntityScope? scope;
 
   OrgUnit(
       {required String id,
@@ -49,6 +52,7 @@ class OrgUnit extends IdentifiableTreeNode {
       List<OrgUnit>? ancestors,
       String? lastModifiedDate,
       String? createdDate,
+      this.scope,
       this.geometry,
       required dirty})
       : super(
@@ -66,6 +70,8 @@ class OrgUnit extends IdentifiableTreeNode {
             dirty: dirty);
 
   factory OrgUnit.fromJson(Map<String, dynamic> json) {
+    final scope = EntityScope.getType(json['entityScope']);
+
     final parent = json['parent'];
 
     final ancestors = json['ancestors'] != null
@@ -96,6 +102,7 @@ class OrgUnit extends IdentifiableTreeNode {
         geometry: json['geometry']?.toString() ?? null,
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
+        scope: scope,
         dirty: json['dirty'] ?? false);
   }
 
@@ -116,6 +123,7 @@ class OrgUnit extends IdentifiableTreeNode {
           ? jsonEncode(ancestors!.map((ancestor) => ancestor.toJson()).toList())
           : null,
 
+      'scope': this.scope?.name,
       'geometry': this.geometry,
       // 'geometry': this.geometry != null
       //     ? jsonEncode(this.geometry?.geometryData)

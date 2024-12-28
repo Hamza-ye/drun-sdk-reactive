@@ -203,7 +203,7 @@ class FormVersion extends IdentifiableEntity {
       'uid': uid,
       'code': code,
       'name': name,
-      'activity': activity,
+      // 'activity': activity,
       'version': version,
       'formTemplate': formTemplate,
       'label': jsonEncode(label),

@@ -1,7 +1,13 @@
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/active_status.dart';
+import 'package:d2_remote/modules/datarun_shared/utilities/entity_scope.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
+import 'package:d2_remote/modules/metadatarun/teams/entities/managed_team.entity.dart';
+import 'package:d2_remote/modules/metadatarun/teams/queries/managed_team.query.dart';
+import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
+import 'package:d2_remote/shared/utilities/http_client.util.dart';
+import 'package:dio/dio.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
@@ -29,5 +35,101 @@ class DTeamQuery extends BaseQuery<DTeam> {
       default:
         return this;
     }
+  }
+
+  Future<List<DTeam>>? getManagedTeams() async {
+    return this.where(attribute: 'scope', value: 'Managed');
+  }
+
+  @override
+  Future<List<DTeam>?> download(Function(RequestProgress, bool) callback,
+      {Dio? dioTestClient}) async {
+    callback(
+        RequestProgress(
+            resourceName: this.apiResourceName as String,
+            message: 'Fetching user assigned Teams....',
+            status: '',
+            percentage: 0),
+        false);
+
+    final dataRunUrl = await this.dataRunUrl();
+
+    final response = await HttpClient.get(dataRunUrl,
+        database: this.database, dioTestClient: dioTestClient);
+
+    List data = response.body[this.apiResourceName]?.toList();
+
+    callback(
+        RequestProgress(
+            resourceName: this.apiResourceName as String,
+            message:
+                '${data.length} ${this.apiResourceName?.toLowerCase()} downloaded successfully',
+            status: '',
+            percentage: 40),
+        false);
+
+    this.data = data.map((dataItem) {
+      dataItem['dirty'] = false;
+      dataItem['scope'] = EntityScope.Assigned.name;
+      return DTeam.fromApi(dataItem);
+    }).toList();
+
+    callback(
+        RequestProgress(
+            resourceName: this.apiResourceName as String,
+            message:
+                'Saving ${data.length} ${this.apiResourceName?.toLowerCase()} into phone database...',
+            status: '',
+            percentage: 50),
+        false);
+
+    await this.save();
+
+    final String managedTeamsUrl = '${dataRunUrl}/managed?paged=false';
+
+    final managedTeamsResponse = await HttpClient.get(managedTeamsUrl,
+        database: this.database, dioTestClient: dioTestClient);
+
+    List managedData =
+        managedTeamsResponse.body[this.apiResourceName]?.toList();
+
+    callback(
+        RequestProgress(
+            resourceName: this.apiResourceName as String,
+            message:
+                '${managedData.length} ${"managedTeams".toLowerCase()} downloaded successfully',
+            status: '',
+            percentage: 70),
+        false);
+
+    final managedTeams = managedData.map((dataItem) {
+      dataItem['dirty'] = false;
+      dataItem['scope'] = EntityScope.Managed.name;
+      return DTeam.fromApi(dataItem);
+    }).toList();
+
+    callback(
+        RequestProgress(
+            resourceName: this.apiResourceName as String,
+            message:
+                '${managedData.length} ${"managedTeams".toLowerCase()} downloaded successfully',
+            status: '',
+            percentage: 90),
+        false);
+
+    setData(managedTeams);
+
+    await this.save();
+
+    callback(
+        RequestProgress(
+            resourceName: this.apiResourceName as String,
+            message:
+                '${data.length} ${this.apiResourceName?.toLowerCase()} successfully saved into the database',
+            status: '',
+            percentage: 100),
+        true);
+
+    return this.data;
   }
 }

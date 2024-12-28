@@ -9,24 +9,13 @@ class DAssignmentQuery extends BaseQuery<DAssignment> {
   String? activity;
   String? warehouse;
   String? team;
-  String? organisationUnit;
+  String? orgUnit;
 
   DAssignmentQuery({Database? database}) : super(database: database);
-
-  DAssignmentQuery activated() {
-    this.where(attribute: 'activated', value: true);
-    return this;
-  }
 
   DAssignmentQuery byActivity(String activity) {
     this.activity = activity;
     this.where(attribute: 'activity', value: activity);
-    return this;
-  }
-
-  DAssignmentQuery byWarehouse(String warehouse) {
-    this.warehouse = warehouse;
-    this.where(attribute: 'warehouse', value: warehouse);
     return this;
   }
 
@@ -36,9 +25,19 @@ class DAssignmentQuery extends BaseQuery<DAssignment> {
     return this;
   }
 
-  DAssignmentQuery byOrgUnit(String organisationUnit) {
-    this.organisationUnit = organisationUnit;
-    this.where(attribute: 'organisationUnit', value: organisationUnit);
+  DAssignmentQuery byOrgUnit(String orgUnit) {
+    this.orgUnit = orgUnit;
+    this.where(attribute: 'orgUnit', value: orgUnit);
+    return this;
+  }
+
+  DAssignmentQuery assigned() {
+    this.where(attribute: 'scope', value: 'Assigned');
+    return this;
+  }
+
+  DAssignmentQuery managed() {
+    this.where(attribute: 'scope', value: 'Managed');
     return this;
   }
 }

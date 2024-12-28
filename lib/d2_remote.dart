@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:d2_remote/core/database/database_manager.dart';
 import 'package:d2_remote/core/datarun/exception/exception.dart';
 import 'package:d2_remote/core/datarun/logging/logging.dart';
+import 'package:d2_remote/core/datarun/logging/new_app_logging.dart';
 import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/modules/activity_management/activity/activity.module.dart';
 import 'package:d2_remote/modules/activity_management/assignment/assignment.module.dart';
@@ -198,7 +199,7 @@ class D2Remote {
           stackTrace: StackTrace.current,
           httpErrorCode: userResponse?.statusCode);
     } catch (e) {
-      logError(info: '$e', runtimeType: D2Remote);
+      logError( '$e', data: {"username": username, "url": url});
       rethrow;
     }
   }
