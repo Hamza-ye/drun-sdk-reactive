@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
-import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
-import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
+import 'package:d2_remote/modules/datarun/form/models/geometry.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
+import 'package:d2_remote/shared/enumeration/assignment_status.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmission')
@@ -31,13 +31,14 @@ class DataFormSubmission extends SyncableEntity {
     bool? syncFailed,
     String? lastSyncDate,
     String? lastSyncMessage,
-    EventImportSummary? lastSyncSummary,
     String? startEntryTime,
     String? finishedEntryTime,
     dynamic activity,
     dynamic team,
     String? orgUnit,
-    required String status,
+    AssignmentStatus? status,
+    bool isFinal = false,
+    String? rescheduledDate,
     Geometry? geometry,
     required dirty,
   }) : super(
@@ -56,14 +57,15 @@ class DataFormSubmission extends SyncableEntity {
           syncFailed: syncFailed,
           lastSyncDate: lastSyncDate,
           lastSyncMessage: lastSyncMessage,
-          lastSyncSummary: lastSyncSummary,
           startEntryTime: startEntryTime,
           finishedEntryTime: finishedEntryTime,
           activity: activity,
           team: team,
-          orgUnit: orgUnit,
+          assignment: orgUnit,
           status: status,
+          rescheduledDate: rescheduledDate,
           geometry: geometry,
+          isFinal: isFinal,
           dirty: dirty,
         ) {
     this.formData.addAll(formData);
@@ -71,9 +73,8 @@ class DataFormSubmission extends SyncableEntity {
 
   // From JSON string (Database and API)
   factory DataFormSubmission.fromJson(Map<String, dynamic> json) {
-    final dynamic lastSyncSummary = json['lastSyncSummary'] != null
-        ? EventImportSummary.fromJson(jsonDecode(json['lastSyncSummary']))
-        : null;
+    final status = AssignmentStatus.fromString(json['status']);
+
     final activity = json['activity'] != null
         ? json['activity'] is String
             ? json['activity']
@@ -114,19 +115,20 @@ class DataFormSubmission extends SyncableEntity {
       version: int.tryParse(formAndVersion[1])!,
       deleted: json['deleted'],
       synced: json['synced'],
+      isFinal: json['isFinal'] ?? true,
       syncFailed: json['syncFailed'],
-      lastSyncSummary: lastSyncSummary,
       lastSyncDate: json['lastSyncDate'],
       lastSyncMessage: json['lastSyncMessage'],
       startEntryTime: json['startEntryTime'],
       finishedEntryTime: json['finishedEntryTime'],
+      rescheduledDate: json['rescheduledDate'],
       activity: activity,
       team: json['team'] != null
           ? json['team'] is String
               ? json['team']
               : json['team']['uid']
           : null,
-      status: json['status'],
+      status: status,
       orgUnit:
           json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
       geometry: geometry,
@@ -136,9 +138,8 @@ class DataFormSubmission extends SyncableEntity {
   }
 
   factory DataFormSubmission.fromApi(Map<String, dynamic> json) {
-    final dynamic lastSyncSummary = json['lastSyncSummary'] != null
-        ? EventImportSummary.fromJson(jsonDecode(json['lastSyncSummary']))
-        : null;
+    final status = AssignmentStatus.fromString(json['status']);
+
     final activity = json['activity'] != null
         ? json['activity'] is String
             ? json['activity']
@@ -175,7 +176,6 @@ class DataFormSubmission extends SyncableEntity {
       deleted: json['deleted'],
       synced: json['synced'],
       syncFailed: json['syncFailed'],
-      lastSyncSummary: lastSyncSummary,
       lastSyncDate: json['lastSyncDate'],
       lastSyncMessage: json['lastSyncMessage'],
       startEntryTime: json['startEntryTime'],
@@ -186,7 +186,8 @@ class DataFormSubmission extends SyncableEntity {
               ? json['team']
               : json['team']['uid']
           : null,
-      status: json['status'],
+      status: status,
+      rescheduledDate: json['rescheduledDate'],
       orgUnit:
           json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
       geometry: geometry,
@@ -213,18 +214,15 @@ class DataFormSubmission extends SyncableEntity {
       'deleted': this.deleted,
       'synced': this.synced,
       'syncFailed': this.syncFailed,
-      'lastSyncSummary': this.lastSyncSummary != null
-          ? jsonEncode(
-              (this.lastSyncSummary as EventImportSummary).responseSummary)
-          : null,
       'lastSyncDate': this.lastSyncDate,
       'lastSyncMessage': this.lastSyncMessage,
       'startEntryTime': this.startEntryTime,
       'finishedEntryTime': this.finishedEntryTime,
       'activity': activity,
       'team': team,
-      'orgUnit': orgUnit,
-      'status': this.status,
+      'orgUnit': assignment,
+      'status': this.status?.name,
+      'isFinal': this.isFinal,
       'geometry': this.geometry != null
           ? jsonEncode(this.geometry?.geometryData)
           : null,

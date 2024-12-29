@@ -1,12 +1,11 @@
-import 'dart:convert';
 
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/modules/data/tracker/models/event_import_summary.dart';
-import 'package:d2_remote/modules/data/tracker/models/geometry.dart';
+import 'package:d2_remote/modules/datarun/form/models/geometry.dart';
 import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
+import 'package:d2_remote/shared/enumeration/assignment_status.dart';
 
 @AnnotationReflectable
 class SyncableEntity extends BaseEntity {
@@ -25,8 +24,8 @@ class SyncableEntity extends BaseEntity {
   @Column(nullable: true)
   bool? syncFailed;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
-  EventImportSummary? lastSyncSummary;
+  @Column(nullable: true)
+  bool isFinal;
 
   @Column(nullable: true)
   String? lastSyncDate;
@@ -40,9 +39,12 @@ class SyncableEntity extends BaseEntity {
   @Column(nullable: true)
   String? finishedEntryTime;
 
-  /// Active, Completed
-  @Column()
-  String status;
+  /// Active=IN_PROGRESS, Completed=COMPLETED
+  @Column(type: ColumnType.TEXT, nullable: true)
+  AssignmentStatus? status;
+
+  @Column(nullable: true)
+  String? rescheduledDate;
 
   /// Active, Completed
   @Column(nullable: false, type: ColumnType.INTEGER)
@@ -64,8 +66,9 @@ class SyncableEntity extends BaseEntity {
   @ManyToOne(table: FormVersion, joinColumnName: 'formVersion')
   dynamic formVersion;
 
+  /// assignment id or null if form is not assigned
   @Column(nullable: true)
-  String? orgUnit;
+  String? assignment;
 
   SyncableEntity(
       {String? id,
@@ -74,22 +77,23 @@ class SyncableEntity extends BaseEntity {
       this.code,
       String? lastModifiedDate,
       String? createdDate,
-      this.orgUnit,
+      this.assignment,
       this.form,
       required this.formVersion,
       this.deleted,
       this.synced,
       this.syncFailed,
       this.lastSyncDate,
-      this.lastSyncSummary,
       this.startEntryTime,
       this.finishedEntryTime,
       this.team,
       this.lastSyncMessage,
+      this.isFinal = false,
       required this.activity,
       this.geometry,
-      required this.status,
+      this.status,
       required this.version,
+      this.rescheduledDate,
       required bool dirty})
       : super(
             id: uid,
@@ -115,17 +119,15 @@ class SyncableEntity extends BaseEntity {
       "synced": this.synced,
       "lastSyncMassage": this.lastSyncMessage,
       "syncFailed": this.syncFailed,
-      "lastSyncSummary": this.lastSyncSummary != null
-          ? jsonEncode(
-              (this.lastSyncSummary as EventImportSummary).responseSummary)
-          : null,
       "lastSyncDate": this.lastSyncDate,
       "startEntryTime": this.startEntryTime,
       "finishedEntryTime": this.finishedEntryTime,
+      "rescheduledDate": this.rescheduledDate,
       "activity": this.activity,
       "team": this.team,
-      "orgUnit": this.orgUnit,
-      "status": this.status,
+      "orgUnit": this.assignment,
+      "status": this.status?.name,
+      "isFinal": this.isFinal,
       "geometry": this.geometry != null ? this.geometry?.toJson() : null,
       "dirty": this.dirty,
     };

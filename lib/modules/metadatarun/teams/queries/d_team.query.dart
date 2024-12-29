@@ -2,8 +2,6 @@ import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/active_status.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/entity_scope.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
-import 'package:d2_remote/modules/metadatarun/teams/entities/managed_team.entity.dart';
-import 'package:d2_remote/modules/metadatarun/teams/queries/managed_team.query.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';

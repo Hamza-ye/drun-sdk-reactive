@@ -1,1 +1,1 @@
-enum ProgramRuleActionType { SHOWWARNING }
+// enum ProgramRuleActionType { SHOWWARNING }

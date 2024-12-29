@@ -4,35 +4,20 @@ import 'dart:async';
 
 import 'package:d2_remote/core/database/database_manager.dart';
 import 'package:d2_remote/core/datarun/exception/exception.dart';
-import 'package:d2_remote/core/datarun/logging/logging.dart';
 import 'package:d2_remote/core/datarun/logging/new_app_logging.dart';
 import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
-import 'package:d2_remote/modules/activity_management/activity/activity.module.dart';
-import 'package:d2_remote/modules/activity_management/assignment/assignment.module.dart';
-import 'package:d2_remote/modules/activity_management/project/project.module.dart';
-import 'package:d2_remote/modules/activity_management/team/team.module.dart';
 import 'package:d2_remote/modules/auth/user/d_user.module.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/models/auth-token.model.dart';
 import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
-import 'package:d2_remote/modules/data/aggregate/aggregate.module.dart';
-import 'package:d2_remote/modules/data/tracker/tracked_entity_instance.module.dart';
 import 'package:d2_remote/modules/datarun/form/form.module.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/authenticated_user.dart';
-import 'package:d2_remote/modules/file_resource/file_resource.module.dart';
-import 'package:d2_remote/modules/metadata/dashboard/dashboard.module.dart';
-import 'package:d2_remote/modules/metadata/data_element/data_element.module.dart';
-import 'package:d2_remote/modules/metadata/dataset/data_set.module.dart';
-import 'package:d2_remote/modules/metadata/option_set/option.module.dart';
-import 'package:d2_remote/modules/metadata/organisation_unit/organisation_unit.module.dart';
-import 'package:d2_remote/modules/metadata/program/program.module.dart';
 import 'package:d2_remote/modules/metadatarun/activity/d_activity.module.dart';
 import 'package:d2_remote/modules/metadatarun/assignment/d_assignment.module.dart';
 import 'package:d2_remote/modules/metadatarun/project/d_project.module.dart';
 import 'package:d2_remote/modules/metadatarun/teams/d_team.module.dart';
 import 'package:d2_remote/modules/metadatarun/org_unit/org_unit.module.dart';
-import 'package:d2_remote/modules/notification/notification.module.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,21 +47,6 @@ class D2Remote {
       await DTeamModule.createTables();
       await DAssignmentModule.createTables();
       await FormModule.createTables();
-
-      await OrganisationUnitModule.createTables();
-      await DataElementModule.createTables();
-      await DataSetModule.createTables();
-      await ProgramModule.createTables();
-      await ProjectModule.createTables();
-      await ActivityModule.createTables();
-      await TeamModule.createTables();
-      await AssignmentModule.createTables();
-      await DashboardModule.createTables();
-      await TrackedEntityInstanceModule.createTables();
-      await AggregateModule.createTables();
-      await OptionModule.createTables();
-      await NotificationModule.createTables();
-      await FileResourceModule.createTables();
     }
   }
 
@@ -276,36 +246,6 @@ class D2Remote {
 
     return queryResult;
   }
-
-  static OrganisationUnitModule organisationUnitModule =
-      OrganisationUnitModule();
-
-  static DataElementModule dataElementModule = DataElementModule();
-
-  static DataSetModule dataSetModule = DataSetModule();
-
-  static ProjectModule projectModule = ProjectModule();
-
-  static ActivityModule activityModule = ActivityModule();
-
-  static AssignmentModule assignmentModule = AssignmentModule();
-
-  static TeamModule teamModule = TeamModule();
-
-  static ProgramModule programModule = ProgramModule();
-
-  static DashboardModule dashboardModule = DashboardModule();
-
-  static TrackedEntityInstanceModule trackerModule =
-      TrackedEntityInstanceModule();
-
-  static AggregateModule aggregateModule = AggregateModule();
-
-  static NotificationModule notificationModule = NotificationModule();
-
-  static OptionModule optionModule = OptionModule();
-
-  static FileResourceModule fileResourceModule = FileResourceModule();
 
   static DUserModule userModule = DUserModule();
 

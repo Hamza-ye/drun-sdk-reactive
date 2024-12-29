@@ -20,7 +20,7 @@ class FormModule {
 
   FormVersionQuery get formTemplateV => FormVersionQuery();
 
-  DataFormSubmissionQuery get formSubmission => DataFormSubmissionQuery();
+  DataFormSubmissionQuery get dataFormSubmission => DataFormSubmissionQuery();
 
   MetadataSubmissionQuery get metaSubmission => MetadataSubmissionQuery();
 

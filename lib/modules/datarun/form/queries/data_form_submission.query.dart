@@ -13,31 +13,4 @@ class DataFormSubmissionQuery extends SyncableQuery<DataFormSubmission> {
   Future setDataAndSave(DataFormSubmission data) {
     return DataFormSubmissionQuery().setData(data).save();
   }
-
-//
-// @override
-// Future create() async {
-//   final formVersion = '${form}_$version';
-//
-//   DataFormSubmission event = DataFormSubmission(
-//       status: 'ACTIVE',
-//       formVersion: formVersion,
-//       version: this.version!,
-//       form: this.form!,
-//       activity: this.activity,
-//       team: this.team,
-//       orgUnit: this.orgUnit!,
-//       formData: {},
-//       dirty: true,
-//       synced: false,
-//       deleted: false,
-//       startEntryTime:
-//           DateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
-//
-//   this.data = event;
-//
-//   await this.save();
-//
-//   return event;
-// }
 }

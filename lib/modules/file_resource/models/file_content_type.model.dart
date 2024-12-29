@@ -1,7 +1,7 @@
-enum FileContentType { PNG, JPEG, PDF }
-
-class FileContentTypeUtil {
-  static getType() {
-    return '';
-  }
-}
+// enum FileContentType { PNG, JPEG, PDF }
+//
+// class FileContentTypeUtil {
+//   static getType() {
+//     return '';
+//   }
+// }
