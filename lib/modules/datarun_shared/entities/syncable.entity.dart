@@ -1,8 +1,6 @@
-
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/datarun/form/models/geometry.dart';
 import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
-import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
 import 'package:d2_remote/shared/enumeration/assignment_status.dart';
@@ -46,7 +44,9 @@ class SyncableEntity extends BaseEntity {
   @Column(nullable: true)
   String? rescheduledDate;
 
-  /// Active, Completed
+  @Column(nullable: true)
+  String? reassignedToTeam;
+
   @Column(nullable: false, type: ColumnType.INTEGER)
   int version;
 
@@ -57,8 +57,8 @@ class SyncableEntity extends BaseEntity {
   @ManyToOne(table: DTeam, joinColumnName: 'team')
   dynamic team;
 
-  @ManyToOne(table: DActivity, joinColumnName: 'activity')
-  dynamic activity;
+  // @ManyToOne(table: DActivity, joinColumnName: 'activity')
+  // dynamic activity;
 
   @Column(nullable: true, type: ColumnType.TEXT)
   final String? form;
@@ -89,7 +89,8 @@ class SyncableEntity extends BaseEntity {
       this.team,
       this.lastSyncMessage,
       this.isFinal = false,
-      required this.activity,
+      // required this.activity,
+      this.reassignedToTeam,
       this.geometry,
       this.status,
       required this.version,
@@ -123,18 +124,19 @@ class SyncableEntity extends BaseEntity {
       "startEntryTime": this.startEntryTime,
       "finishedEntryTime": this.finishedEntryTime,
       "rescheduledDate": this.rescheduledDate,
-      "activity": this.activity,
+      "reassignedToTeam": this.reassignedToTeam,
+      // "activity": this.activity,
       "team": this.team,
-      "orgUnit": this.assignment,
+      "assignment": this.assignment,
       "status": this.status?.name,
       "isFinal": this.isFinal,
       "geometry": this.geometry != null ? this.geometry?.toJson() : null,
       "dirty": this.dirty,
     };
 
-    if (activity != null && activity.runtimeType != String) {
-      syncableToUpload['activity'] = activity['uid'];
-    }
+    // if (activity != null && activity.runtimeType != String) {
+    //   syncableToUpload['activity'] = activity['uid'];
+    // }
 
     if (team != null && team.runtimeType != String) {
       syncableToUpload['team'] = team['uid'];

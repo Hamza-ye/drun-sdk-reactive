@@ -33,12 +33,13 @@ class DataFormSubmission extends SyncableEntity {
     String? lastSyncMessage,
     String? startEntryTime,
     String? finishedEntryTime,
-    dynamic activity,
+    // dynamic activity,
     dynamic team,
-    String? orgUnit,
+    String? assignment,
     AssignmentStatus? status,
     bool isFinal = false,
     String? rescheduledDate,
+    String? reassignedToTeam,
     Geometry? geometry,
     required dirty,
   }) : super(
@@ -51,6 +52,7 @@ class DataFormSubmission extends SyncableEntity {
 
           /// Syncable
           formVersion: formVersion,
+          form: form,
           version: version,
           deleted: deleted,
           synced: synced,
@@ -59,11 +61,12 @@ class DataFormSubmission extends SyncableEntity {
           lastSyncMessage: lastSyncMessage,
           startEntryTime: startEntryTime,
           finishedEntryTime: finishedEntryTime,
-          activity: activity,
+          // activity: activity,
           team: team,
-          assignment: orgUnit,
+          assignment: assignment,
           status: status,
           rescheduledDate: rescheduledDate,
+          reassignedToTeam: reassignedToTeam,
           geometry: geometry,
           isFinal: isFinal,
           dirty: dirty,
@@ -73,13 +76,13 @@ class DataFormSubmission extends SyncableEntity {
 
   // From JSON string (Database and API)
   factory DataFormSubmission.fromJson(Map<String, dynamic> json) {
-    final status = AssignmentStatus.fromString(json['status']);
+    final status = AssignmentStatus.getType(json['status']);
 
-    final activity = json['activity'] != null
-        ? json['activity'] is String
-            ? json['activity']
-            : json['activity']['uid']
-        : null;
+    // final activity = json['activity'] != null
+    //     ? json['activity'] is String
+    //         ? json['activity']
+    //         : json['activity']['uid']
+    //     : null;
 
     final Geometry? geometry = json["geometry"] != null
         ? Geometry.fromJson(json["geometry"].runtimeType == String
@@ -122,15 +125,17 @@ class DataFormSubmission extends SyncableEntity {
       startEntryTime: json['startEntryTime'],
       finishedEntryTime: json['finishedEntryTime'],
       rescheduledDate: json['rescheduledDate'],
-      activity: activity,
+      reassignedToTeam: json['reassignedToTeam'],
+      assignment: json['assignment'],
+      // activity: activity,
       team: json['team'] != null
           ? json['team'] is String
               ? json['team']
               : json['team']['uid']
           : null,
       status: status,
-      orgUnit:
-          json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
+      // orgUnit:
+      //     json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
       geometry: geometry,
 
       dirty: json['dirty'] ?? false,
@@ -138,13 +143,13 @@ class DataFormSubmission extends SyncableEntity {
   }
 
   factory DataFormSubmission.fromApi(Map<String, dynamic> json) {
-    final status = AssignmentStatus.fromString(json['status']);
+    final status = AssignmentStatus.getType(json['status']);
 
-    final activity = json['activity'] != null
-        ? json['activity'] is String
-            ? json['activity']
-            : json['activity']['uid']
-        : null;
+    // final activity = json['activity'] != null
+    //     ? json['activity'] is String
+    //         ? json['activity']
+    //         : json['activity']['uid']
+    //     : null;
 
     final Geometry? geometry = json["geometry"] != null
         ? Geometry.fromJson(json["geometry"].runtimeType == String
@@ -180,7 +185,7 @@ class DataFormSubmission extends SyncableEntity {
       lastSyncMessage: json['lastSyncMessage'],
       startEntryTime: json['startEntryTime'],
       finishedEntryTime: json['finishedEntryTime'],
-      activity: activity,
+      // activity: activity,
       team: json['team'] != null
           ? json['team'] is String
               ? json['team']
@@ -188,8 +193,8 @@ class DataFormSubmission extends SyncableEntity {
           : null,
       status: status,
       rescheduledDate: json['rescheduledDate'],
-      orgUnit:
-          json['orgUnit'] is String ? json['orgUnit'] : json['orgUnit']?['uid'],
+      reassignedToTeam: json['reassignedToTeam'],
+      assignment: json['assignment'],
       geometry: geometry,
 
       dirty: json['dirty'] ?? false,
@@ -218,9 +223,11 @@ class DataFormSubmission extends SyncableEntity {
       'lastSyncMessage': this.lastSyncMessage,
       'startEntryTime': this.startEntryTime,
       'finishedEntryTime': this.finishedEntryTime,
-      'activity': activity,
+      // 'activity': activity,
       'team': team,
-      'orgUnit': assignment,
+      'rescheduledDate': rescheduledDate,
+      'reassignedToTeam': reassignedToTeam,
+      'assignment': assignment,
       'status': this.status?.name,
       'isFinal': this.isFinal,
       'geometry': this.geometry != null

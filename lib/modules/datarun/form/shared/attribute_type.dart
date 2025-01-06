@@ -4,6 +4,7 @@ enum AttributeType {
   username,
   userUid,
   phoneNumber,
+  scope,
   userInfo,
   deviceId,
   deviceModel,
@@ -34,6 +35,8 @@ enum AttributeType {
         return AttributeType.form;
       case 'team':
         return AttributeType.team;
+      case 'scope':
+        return AttributeType.scope;
       case 'activity':
         return AttributeType.activity;
       case 'version':

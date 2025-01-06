@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/datarun/logging/new_app_logging.dart';
 import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
 import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
@@ -36,14 +39,14 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   /// withNotSyncedState
   SyncableQuery<T> withCompleteState() {
     this.filters?.removeWhere((element) => element.attribute == 'syncFailed');
-    this.where(attribute: 'status', value: 'COMPLETED');
+    this.where(attribute: 'isFinal', value: true);
     return this;
   }
 
   /// Synced to server with updates to be synced, State = to_update
   SyncableQuery<T> withActiveState() {
     this.filters?.removeWhere((element) => element.attribute == 'syncFailed');
-    this.where(attribute: 'status', value: 'ACTIVE');
+    this.where(attribute: 'isFinal', value: false);
     return this;
   }
 
@@ -70,13 +73,15 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
     }
 
     // final authorities = user.authorities;
-    // // final haveChvSuperAuth =
-    // //     authorities?.map((t) => t.authority).contains('ROLE_CHV_SUPERVISOR') ??
-    // //         false;
+    // final haveChvSuperAuth =
+    //     authorities?.map((t) => t.authority).contains('ROLE_CHV_SUPERVISOR') ??
+    //         false;
 
     final entity = await getOne();
+    // final formVersion =
+    //     await FormVersionQuery().byId(entity?.formVersion).getOne();
 
-    return entity?.synced == false /* || haveChvSuperAuth*/;
+    return entity?.synced == false /*|| haveChvSuperAuth*/;
   }
 
   /// **2. Preparing SyncableEntity Data for Upload (51%):**
@@ -132,37 +137,26 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
 
   Future<List<T>?> upload({Dio? dioTestClient}) async {
     List<T> syncableEntities = await this
-        .where(attribute: 'status', value: 'COMPLETED')
+        .where(attribute: 'isFinal', value: true)
         .where(attribute: 'synced', value: false)
         .where(attribute: 'dirty', value: true)
         .get();
 
     List<String> syncableEntityIds = [];
     List<String> syncableTeamIds = [];
-    List<String> syncableActivityIds = [];
+    // List<String> syncableActivityIds = [];
 
     syncableEntities.forEach((event) {
       syncableEntityIds.add(event.id as String);
 
-      syncableActivityIds.removeWhere((id) => id == event.activity);
-      syncableActivityIds.add(event.activity);
+      // syncableActivityIds.removeWhere((id) => id == event.activity);
+      // syncableActivityIds.add(event.activity);
 
       syncableTeamIds.removeWhere((id) => id == event.team);
       syncableTeamIds.add(event.team);
     });
 
-    // List<MetadataSubmissionUpdate>? houses = await MetadataSubmissionUpdateQuery().upload(syncableActivityIds);
-
-
-    // List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
-
     final uploadPayload = syncableEntities.map((event) {
-      // final team = teams.lastWhere((team) => team.id == event.team).toJson();
-      //
-      // final activity = activities
-      //     .lastWhere((activity) => activity.id == event.activity)
-      //     .toJson();
-
       return event.toUpload();
     }).toList();
 
@@ -171,6 +165,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
         database: this.database, dioTestClient: dioTestClient);
 
     SyncSummary summary = SyncSummary.fromJson(response.body);
+    logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});
 
     final queue = Queue(parallel: 50);
     num availableItemCount = 0;

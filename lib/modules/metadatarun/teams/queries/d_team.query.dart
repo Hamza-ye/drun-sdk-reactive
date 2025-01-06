@@ -68,7 +68,7 @@ class DTeamQuery extends BaseQuery<DTeam> {
 
     this.data = data.map((dataItem) {
       dataItem['dirty'] = false;
-      dataItem['scope'] = EntityScope.Assigned.name;
+      dataItem['entityScope'] = EntityScope.Assigned.name;
       return DTeam.fromApi(dataItem);
     }).toList();
 
@@ -83,13 +83,13 @@ class DTeamQuery extends BaseQuery<DTeam> {
 
     await this.save();
 
-    final String managedTeamsUrl = '${dataRunUrl}/managed?paged=false';
+    final String managedTeamsUrl = 'teams/managed?paged=false';
 
     final managedTeamsResponse = await HttpClient.get(managedTeamsUrl,
         database: this.database, dioTestClient: dioTestClient);
 
     List managedData =
-        managedTeamsResponse.body[this.apiResourceName]?.toList();
+        managedTeamsResponse.body[this.apiResourceName]?.toList() ?? [];
 
     callback(
         RequestProgress(
@@ -102,7 +102,7 @@ class DTeamQuery extends BaseQuery<DTeam> {
 
     final managedTeams = managedData.map((dataItem) {
       dataItem['dirty'] = false;
-      dataItem['scope'] = EntityScope.Managed.name;
+      dataItem['entityScope'] = EntityScope.Managed.name;
       return DTeam.fromApi(dataItem);
     }).toList();
 
@@ -115,9 +115,9 @@ class DTeamQuery extends BaseQuery<DTeam> {
             percentage: 90),
         false);
 
-    setData(managedTeams);
+    await DTeamQuery().setData(managedTeams).save();
 
-    await this.save();
+    // await this.save();
 
     callback(
         RequestProgress(

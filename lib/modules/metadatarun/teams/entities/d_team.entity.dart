@@ -61,7 +61,10 @@ class DTeam extends IdentifiableEntity {
   }
 
   factory DTeam.fromJson(Map<String, dynamic> json) {
-    final scope = EntityScope.getType(json['entityScope']);
+    // final activity =
+    //     json['activity'] is String ? json['activity'] : json['activity']['uid'];
+
+    final scope = EntityScope.getType(json['scope']);
 
     final formPermissions = json['formPermissions'] != null
         ? (parseDynamicJson(json['formPermissions']) as List)
@@ -77,7 +80,7 @@ class DTeam extends IdentifiableEntity {
         code: json['code'],
         displayName: json['displayName'] ?? json['name'],
         activity: json['activity'] != null
-            ? json['activity'] is String
+            ? json['activity'] is String?
                 ? json['activity']
                 : json['activity']['uid']
             : null,
@@ -97,6 +100,10 @@ class DTeam extends IdentifiableEntity {
   }
 
   factory DTeam.fromApi(Map<String, dynamic> jsonData) {
+    final activity = jsonData['activity'] is String?
+        ? jsonData['activity']
+        : jsonData['activity']['uid'];
+
     final scope = EntityScope.getType(jsonData['entityScope']);
 
     final formPermissions = jsonData['formPermissions'] != null
@@ -112,7 +119,7 @@ class DTeam extends IdentifiableEntity {
         shortName: jsonData['shortName'],
         code: jsonData['code'],
         displayName: jsonData['displayName'] ?? jsonData['name'],
-        activity: jsonData['activity'],
+        activity: activity,
         disabled: jsonData['disabled'] ?? false,
         deleteClientData: jsonData['deleteClientData'] ?? false,
         properties: jsonData['properties'] != null

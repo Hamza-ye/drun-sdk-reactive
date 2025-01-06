@@ -1,4 +1,6 @@
 enum ValueType {
+  Progress,
+  // Transaction,
   Section,
   RepeatableSection,
   Attribute,
@@ -23,6 +25,7 @@ enum ValueType {
   Username,
   Coordinate,
   OrganisationUnit,
+  Team,
   Reference,
   Age,
   FullName,
@@ -159,6 +162,8 @@ enum ValueType {
         return ValueType.UnitInterval;
       case 'percentage':
         return ValueType.Percentage;
+      case 'progress':
+        return ValueType.Progress;
       case 'integer':
         return ValueType.Integer;
       case 'integerpositive':
@@ -175,6 +180,8 @@ enum ValueType {
         return ValueType.Coordinate;
       case 'organisationunit':
         return ValueType.OrganisationUnit;
+      case 'team':
+        return ValueType.Team;
       case 'reference':
         return ValueType.Reference;
       case 'age':

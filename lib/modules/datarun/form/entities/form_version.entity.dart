@@ -34,15 +34,15 @@ class FormVersion extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.TEXT)
   String defaultLocal;
 
-  @Column(nullable: false)
-  String activity;
+  // @Column(nullable: false)
+  // String activity;
 
   /// current Version
   @Column(nullable: false, type: ColumnType.INTEGER)
   int version;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
-  List<String> orgUnits = [];
+  // @Column(nullable: true, type: ColumnType.TEXT)
+  // List<String> orgUnits = [];
 
   FormVersion({
     String? id,
@@ -51,7 +51,7 @@ class FormVersion extends IdentifiableEntity {
     String? code,
     String? createdDate,
     String? lastModifiedDate,
-    required this.activity,
+    // required this.activity,
     this.formTemplate,
     required this.version,
     required this.defaultLocal,
@@ -75,12 +75,12 @@ class FormVersion extends IdentifiableEntity {
     this.options.addAll(options);
     this.optionSets.addAll(optionSets);
     this.label.addAll(label);
-    this.orgUnits.addAll(orgUnits);
+    // this.orgUnits.addAll(orgUnits);
   }
 
   factory FormVersion.fromJson(Map<String, dynamic> json) {
     final activity =
-        json['activity'] is String ? json['activity'] : json['activity']['uid'];
+        json['activity'] is String ? json['activity'] : json['activity']?['uid'];
 
     final orgUnits = json['orgUnits'] != null
         ? json['orgUnits'].runtimeType == String
@@ -100,15 +100,6 @@ class FormVersion extends IdentifiableEntity {
             .toList()
         : <Template>[];
 
-    // final flattenedFieldsList = json['flattenedFields'] != null
-    //     ? (parseDynamicJson(json['flattenedFields']) as List)
-    //         .map((field) => TemplateJsonFactory.fromJsonFactory(field))
-    //         .toList()
-    //     : <Template>[];
-
-    // final flattenedFields = Map.fromIterable(flattenedFieldsList,
-    //     key: (t) => t.path, value: (t) => t);
-
     final optionSets = json['optionSets'] != null
         ? (parseDynamicJson(json['optionSets']) as List)
             .map((optionSet) => DOptionSet.fromJson(optionSet))
@@ -120,7 +111,7 @@ class FormVersion extends IdentifiableEntity {
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
-      activity: activity,
+      // activity: activity,
       version: json['version'],
       formTemplate: json['formTemplate'],
       label: json['label'] != null
@@ -140,8 +131,8 @@ class FormVersion extends IdentifiableEntity {
   }
 
   factory FormVersion.fromApi(Map<String, dynamic> json) {
-    final activity =
-        json['activity'] is String ? json['activity'] : json['activity']['uid'];
+    // final activity =
+    //     json['activity'] is String ? json['activity'] : json['activity']['uid'];
 
     final orgUnits = json['orgUnits'] != null
         ? json['orgUnits'].runtimeType == String
@@ -174,11 +165,13 @@ class FormVersion extends IdentifiableEntity {
         : <DOptionSet>[];
 
     return FormVersion(
-      id: '${json['uid']}_${json['version']}',
-      uid: '${json['uid']}_${json['version']}',
+      // id: '${json['uid']}_${json['version']}',
+      // uid: '${json['uid']}_${json['version']}',
+      id: json['id'],
+      uid: json['uid'],
       code: json['code'],
       name: json['name'],
-      activity: activity,
+      // activity: activity,
       version: json['version'],
       formTemplate: json['formTemplate'],
       label: json['label'] != null
@@ -208,7 +201,7 @@ class FormVersion extends IdentifiableEntity {
       'formTemplate': formTemplate,
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
-      'orgUnits': jsonEncode(orgUnits),
+      // 'orgUnits': jsonEncode(orgUnits),
       'fields': jsonEncode(fields
           .map((field) => TemplateJsonFactory.toJsonFactory(field))
           .toList()),

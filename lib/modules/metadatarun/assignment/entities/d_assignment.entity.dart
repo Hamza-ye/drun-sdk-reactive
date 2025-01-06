@@ -20,20 +20,11 @@ class DAssignment extends IdentifiableEntity {
   @ManyToOne(table: OrgUnit, joinColumnName: 'orgUnit')
   dynamic orgUnit;
 
-  // @Column(nullable: true)
-  // String? activity;
-  //
-  // @Column(nullable: true)
-  // String? team;
-  //
-  // @Column(nullable: true)
-  // String? orgUnit;
-
   @Column(nullable: true)
   String? parent;
 
   @Column(nullable: true)
-  String? startDay;
+  int? startDay;
 
   @Column(nullable: true)
   String? startDate;
@@ -42,7 +33,7 @@ class DAssignment extends IdentifiableEntity {
   AssignmentStatus status;
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  Map<String, int?> allocatedResources = {};
+  Map<String, Object?> allocatedResources = {};
 
   @Column(nullable: true, type: ColumnType.TEXT)
   List<String> forms = [];
@@ -58,7 +49,7 @@ class DAssignment extends IdentifiableEntity {
       String? name,
       String? code,
       List<String> forms = const [],
-      Map<String, int?> allocatedResources = const {},
+      Map<String, Object?> allocatedResources = const {},
       this.parent,
       this.activity,
       this.orgUnit,
@@ -81,8 +72,8 @@ class DAssignment extends IdentifiableEntity {
   }
 
   factory DAssignment.fromJson(Map<String, dynamic> json) {
-    final scope = EntityScope.getType(json['entityScope']);
-    final status = AssignmentStatus.fromString(json['status']) ??
+    final scope = EntityScope.getType(json['scope']);
+    final status = AssignmentStatus.getType(json['status']) ??
         AssignmentStatus.NOT_STARTED;
 
     final forms = json['forms'] != null
@@ -91,15 +82,21 @@ class DAssignment extends IdentifiableEntity {
             : json['forms'].cast<String>()
         : <String>[];
 
+    // final forms = json['forms'] != null
+    //     ? json['forms'] is String
+    //     ? jsonDecode(json['forms']).cast<String>()
+    //     : json['forms'].map<String>((item) => item.toString()).toList()
+    //     : <String>[];
+
     return DAssignment(
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'] ?? json['orgUnit']?['name'],
         allocatedResources: json['allocatedResources'] != null
-            ? Map<String, int?>.from(json['allocatedResources'] is String
+            ? Map<String, Object?>.from(json['allocatedResources'] is String
                 ? jsonDecode(json['allocatedResources'])
                 : json['allocatedResources'])
-            : {},
+            : <String, Object?>{},
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
         code: json['code'],
@@ -133,6 +130,65 @@ class DAssignment extends IdentifiableEntity {
         dirty: json['dirty']);
   }
 
+  factory DAssignment.fromApi(Map<String, dynamic> json) {
+    final scope = EntityScope.getType(json['entityScope']);
+    final status = AssignmentStatus.getType(json['status']) ??
+        AssignmentStatus.NOT_STARTED;
+
+    final forms = json['forms'] != null
+        ? json['forms'].runtimeType == String
+        ? jsonDecode(json['forms']).cast<String>()
+        : json['forms'].cast<String>()
+        : <String>[];
+
+    // final forms = json['forms'] != null
+    //     ? json['forms'] is String
+    //     ? jsonDecode(json['forms']).cast<String>()
+    //     : json['forms'].map<String>((item) => item.toString()).toList()
+    //     : <String>[];
+
+    return DAssignment(
+        id: json['id'].toString(),
+        uid: json['uid'],
+        name: json['name'] ?? json['orgUnit']?['name'],
+        allocatedResources: json['allocatedResources'] != null
+            ? Map<String, Object?>.from(json['allocatedResources'] is String
+            ? jsonDecode(json['allocatedResources'])
+            : json['allocatedResources'])
+            : <String, Object?>{},
+        createdDate: json['createdDate'],
+        lastModifiedDate: json['lastModifiedDate'],
+        code: json['code'],
+        activity: json['activity'] != null
+            ? json['activity'] is String
+            ? json['activity']
+            : json['activity']['uid']
+            : null,
+        orgUnit: json['orgUnit'] != null
+            ? json['orgUnit'] is String
+            ? json['orgUnit']
+            : json['orgUnit']['uid']
+            : null,
+        parent: json['parent'] != null
+            ? json['parent'] is String
+            ? json['parent']
+            : json['parent']['uid']
+            : null,
+        team: json['team'] != null
+            ? json['team'] is String
+            ? json['team']
+            : json['team']['uid']
+            : null,
+
+        //warehouse,
+        status: status,
+        startDay: json['startDay'],
+        startDate: json['startDate'],
+        forms: forms,
+        scope: scope,
+        dirty: json['dirty']);
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
@@ -144,14 +200,14 @@ class DAssignment extends IdentifiableEntity {
     data['orgUnit'] = this.orgUnit;
     data['team'] = this.team;
     data['status'] = this.status.name;
-    data['allocatedResources'] = this.allocatedResources;
+    data['allocatedResources'] = jsonEncode(this.allocatedResources);
     data['parent'] = this.parent;
     data['createdDate'] = this.createdDate;
     data['lastModifiedDate'] = this.lastModifiedDate;
     data['startDay'] = this.startDay;
     data['startDate'] = this.startDate;
-    data['forms'] = this.forms;
-    data['scope'] = this.scope?.name;
+    data['forms'] = jsonEncode(this.forms);
+    data['scope'] = this.scope!.name;
     data['dirty'] = this.dirty;
     return data;
   }

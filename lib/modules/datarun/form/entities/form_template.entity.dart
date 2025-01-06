@@ -8,7 +8,6 @@ import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
-import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
@@ -24,8 +23,8 @@ class FormTemplate extends IdentifiableEntity {
   @OneToMany(table: FormVersion)
   List<FormVersion>? formVersions;
 
-  @ManyToOne(table: DActivity, joinColumnName: 'activity')
-  dynamic activity;
+  // @ManyToOne(table: DActivity, joinColumnName: 'team')
+  // dynamic team;
 
   FormTemplate({
     String? id,
@@ -36,7 +35,7 @@ class FormTemplate extends IdentifiableEntity {
     String? lastModifiedDate,
     required this.version,
     this.formVersions,
-    this.activity,
+    // this.team,
     Map<String, String> label = const {},
     required dirty,
   }) : super(
@@ -53,8 +52,8 @@ class FormTemplate extends IdentifiableEntity {
 
   // From JSON string (Database and API)
   factory FormTemplate.fromJson(Map<String, dynamic> json) {
-    final activity =
-        json['activity'] is String ? json['activity'] : json['activity']['uid'];
+    // final team =
+    //     json['team'] is String ? json['team'] : json['team']['uid'];
 
     return FormTemplate(
       id: json['uid'],
@@ -74,7 +73,7 @@ class FormTemplate extends IdentifiableEntity {
               ? jsonDecode(json['label'])
               : json['label'])
           : {"en": json['name']},
-      activity: activity,
+      // team: team,
       version: json['version'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
@@ -83,8 +82,7 @@ class FormTemplate extends IdentifiableEntity {
   }
 
   factory FormTemplate.fromApi(Map<String, dynamic> json) {
-    final activity =
-        json['activity'] is String ? json['activity'] : json['activity']['uid'];
+    final team = json['team'] is String ? json['team'] : json['team']?['uid'];
 
     final options = json['options'] != null
         ? (parseDynamicJson(json['options']) as List)
@@ -96,7 +94,8 @@ class FormTemplate extends IdentifiableEntity {
             key: (item) => item.listName,
             value: (item) => options.where((t) => t.listName == item.listName))
         .entries
-        .map((e) => DOptionSet(listName: e.key, options: e.value.toList()).toJson())
+        .map((e) =>
+            DOptionSet(listName: e.key, options: e.value.toList()).toJson())
         .toList();
 
     return FormTemplate(
@@ -104,10 +103,12 @@ class FormTemplate extends IdentifiableEntity {
       formVersions: List<dynamic>.from(json['formVersions'] ?? [])
           .map((formVersion) => FormVersion.fromApi({
                 ...formVersion,
-                // 'id': '${formVersion['uid']}_${json['version']}',
-                // 'uid': '${formVersion['uid']}_${json['version']}',
+                'id': '${formVersion['uid']}_${json['version']}',
+                'uid': '${formVersion['uid']}_${json['version']}',
                 'formTemplate': json['uid'],
-                'activity': formVersion['activity'],
+                'version': json['version'],
+                // 'activity': formVersion['activity'],
+                // 'team': formVersion['team'],
                 'optionSets': optionSets,
                 'dirty': false
               }))
@@ -120,7 +121,7 @@ class FormTemplate extends IdentifiableEntity {
               ? jsonDecode(json['label'])
               : json['label'])
           : {"en": json['name']},
-      activity: activity,
+      // team: team,
       version: json['version'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
@@ -136,7 +137,7 @@ class FormTemplate extends IdentifiableEntity {
       'code': code,
       'name': name,
       'version': version,
-      'activity': activity,
+      // 'team': team,
       'label': jsonEncode(label),
       'formVersions': formVersions,
       'createdDate': createdDate,

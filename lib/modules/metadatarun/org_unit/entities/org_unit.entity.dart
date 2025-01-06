@@ -70,7 +70,7 @@ class OrgUnit extends IdentifiableTreeNode {
             dirty: dirty);
 
   factory OrgUnit.fromJson(Map<String, dynamic> json) {
-    final scope = EntityScope.getType(json['entityScope']);
+    final scope = EntityScope.getType(json['entityScope'] ?? json['scope']);
 
     final parent = json['parent'];
 
