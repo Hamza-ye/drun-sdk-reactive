@@ -1,12 +1,9 @@
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/datarun/form/entities/metadata_submission_update.dart';
-import 'package:d2_remote/modules/datarun_shared/utilities/sync_summary.dart';
 import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:dio/dio.dart';
 import 'package:queue/queue.dart';
 import 'package:sqflite/sqflite.dart';
-
-import '../../../../shared/utilities/http_client.util.dart';
 
 @AnnotationReflectable
 // @Query(type: QueryType.METADATA)
@@ -15,10 +12,6 @@ class MetadataSubmissionUpdateQuery
   MetadataSubmissionUpdateQuery({Database? database})
       : super(database: database);
   Future<List<MetadataSubmissionUpdate>?> upload(List<String> submissionsIds, {Dio? dioTestClient}) async {
-   final updates = await this.whereIn(
-    attribute: 'submissionId',
-    values: submissionsIds,
-    merge: true).get();
 
     List<MetadataSubmissionUpdate> syncableEntities = await this
         .where(attribute: 'dirty', value: true)
@@ -44,21 +37,21 @@ class MetadataSubmissionUpdateQuery
     //
     // List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
 
-    final uploadPayload = syncableEntities.map((event) {
-      // final team = teams.lastWhere((team) => team.id == event.team).toJson();
-      //
-      // final activity = activities
-      //     .lastWhere((activity) => activity.id == event.activity)
-      //     .toJson();
+    // final uploadPayload = syncableEntities.map((event) {
+    //   // final team = teams.lastWhere((team) => team.id == event.team).toJson();
+    //   //
+    //   // final activity = activities
+    //   //     .lastWhere((activity) => activity.id == event.activity)
+    //   //     .toJson();
+    //
+    //   return event.toUpload();
+    // }).toList();
 
-      return event.toUpload();
-    }).toList();
+    // final response = await HttpClient.post(
+    //     '${this.apiResourceName as String}/bulk', uploadPayload,
+    //     database: this.database, dioTestClient: dioTestClient);
 
-    final response = await HttpClient.post(
-        '${this.apiResourceName as String}/bulk', uploadPayload,
-        database: this.database, dioTestClient: dioTestClient);
-
-    SyncSummary summary = SyncSummary.fromJson(response.body);
+    // SyncSummary summary = SyncSummary.fromJson(response.body);
 
     final queue = Queue(parallel: 50);
     num availableItemCount = 0;

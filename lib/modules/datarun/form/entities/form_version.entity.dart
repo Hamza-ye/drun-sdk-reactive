@@ -34,6 +34,8 @@ class FormVersion extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.TEXT)
   String defaultLocal;
 
+  @Column(nullable: true, type: ColumnType.TEXT)
+  String? description;
   // @Column(nullable: false)
   // String activity;
 
@@ -51,6 +53,7 @@ class FormVersion extends IdentifiableEntity {
     String? code,
     String? createdDate,
     String? lastModifiedDate,
+    this.description,
     // required this.activity,
     this.formTemplate,
     required this.version,
@@ -79,9 +82,6 @@ class FormVersion extends IdentifiableEntity {
   }
 
   factory FormVersion.fromJson(Map<String, dynamic> json) {
-    final activity =
-        json['activity'] is String ? json['activity'] : json['activity']?['uid'];
-
     final orgUnits = json['orgUnits'] != null
         ? json['orgUnits'].runtimeType == String
             ? jsonDecode(json['orgUnits']).cast<String>()
@@ -124,6 +124,7 @@ class FormVersion extends IdentifiableEntity {
       options: options,
       optionSets: optionSets,
       orgUnits: orgUnits,
+      description: json['description'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
       dirty: json['dirty'] ?? false,
@@ -184,6 +185,7 @@ class FormVersion extends IdentifiableEntity {
       options: options,
       optionSets: optionSets,
       orgUnits: orgUnits,
+      description: json['description'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
       dirty: json['dirty'] ?? false,
@@ -201,6 +203,7 @@ class FormVersion extends IdentifiableEntity {
       'formTemplate': formTemplate,
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
+      'description': description,
       // 'orgUnits': jsonEncode(orgUnits),
       'fields': jsonEncode(fields
           .map((field) => TemplateJsonFactory.toJsonFactory(field))
