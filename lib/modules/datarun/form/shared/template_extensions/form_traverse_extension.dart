@@ -5,7 +5,7 @@ import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 
 extension FormTraverseExtension on FormVersion {
   Map<String, Template> get formFlatFields {
-    if (flattenedFields.isEmpty) {
+    if (flattenFieldsMap.isEmpty) {
       List<Template> flatFields = [];
       void traverse(Template field) {
         flatFields.add(field);
@@ -15,9 +15,9 @@ extension FormTraverseExtension on FormVersion {
       }
 
       fields.forEach(traverse);
-      flattenedFields = flatFields.asMap().map((k, v) => MapEntry(v.path!, v));
+      flattenFieldsMap = flatFields.asMap().map((k, v) => MapEntry(v.path!, v));
     }
-    return flattenedFields;
+    return flattenFieldsMap;
   }
 
   Template? findFieldByPath(String path) {

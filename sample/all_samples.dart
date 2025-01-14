@@ -46,9 +46,6 @@ final Map<String, dynamic> sampleProjects =
 final Map<String, dynamic> sampleActivities =
     sample_no == 1 ? dSampleActivities : dSampleActivities2;
 
-final Map<String, dynamic> sampleWarehouses =
-    sample_no == 1 ? dSampleWarehouses : dSampleWarehouses2;
-
 final Map<String, dynamic> sampleTeams =
     sample_no == 1 ? dSampleTeams : dSampleTeams2;
 
@@ -57,19 +54,3 @@ final Map<String, dynamic> sampleAssignments =
 
 final Map<String, dynamic> samplePatientInfo =
     sample_no == 1 ? dSamplePatientInfo : dSamplePatientInfo2;
-
-final Map<String, dynamic> sampleItnsVillages =
-    sample_no == 1 ? dSampleItnsVillages : dSampleItnsVillages2;
-
-final Map<String, dynamic> sampleWarehouseItems =
-    sample_no == 1 ? dSampleWarehouseItems : dSampleWarehouseItems2;
-
-final Map<String, dynamic> sampleWarehouseTransactions = sample_no == 1
-    ? dSampleWarehouseTransactions
-    : dSampleWarehouseTransactions2;
-
-final Map<String, dynamic> sampleChvRegisters =
-    sample_no == 1 ? dSampleChvRegisters : dSampleChvRegisters2;
-
-final Map<String, dynamic> sampleChvSessions =
-    sample_no == 1 ? dSampleChvSessions : dSampleChvSessions2;

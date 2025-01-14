@@ -144,13 +144,15 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
 
     List<String> syncableEntityIds = [];
     List<String> syncableTeamIds = [];
-    // List<String> syncableActivityIds = [];
+    List<String> syncableAssignments = [];
 
     syncableEntities.forEach((event) {
       syncableEntityIds.add(event.id as String);
 
-      // syncableActivityIds.removeWhere((id) => id == event.activity);
-      // syncableActivityIds.add(event.activity);
+      syncableAssignments.removeWhere((id) => id == event.assignment);
+      if (event.assignment != null) {
+        syncableAssignments.add(event.assignment!);
+      }
 
       syncableTeamIds.removeWhere((id) => id == event.team);
       syncableTeamIds.add(event.team);

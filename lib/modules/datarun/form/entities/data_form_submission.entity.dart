@@ -78,12 +78,6 @@ class DataFormSubmission extends SyncableEntity {
   factory DataFormSubmission.fromJson(Map<String, dynamic> json) {
     final status = AssignmentStatus.getType(json['status']);
 
-    // final activity = json['activity'] != null
-    //     ? json['activity'] is String
-    //         ? json['activity']
-    //         : json['activity']['uid']
-    //     : null;
-
     final Geometry? geometry = json["geometry"] != null
         ? Geometry.fromJson(json["geometry"].runtimeType == String
             ? jsonDecode(json["geometry"])
@@ -144,12 +138,6 @@ class DataFormSubmission extends SyncableEntity {
 
   factory DataFormSubmission.fromApi(Map<String, dynamic> json) {
     final status = AssignmentStatus.getType(json['status']);
-
-    // final activity = json['activity'] != null
-    //     ? json['activity'] is String
-    //         ? json['activity']
-    //         : json['activity']['uid']
-    //     : null;
 
     final Geometry? geometry = json["geometry"] != null
         ? Geometry.fromJson(json["geometry"].runtimeType == String

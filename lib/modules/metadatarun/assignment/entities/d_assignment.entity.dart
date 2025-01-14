@@ -30,7 +30,7 @@ class DAssignment extends IdentifiableEntity {
   String? startDate;
 
   @Column(type: ColumnType.TEXT, nullable: true)
-  AssignmentStatus status;
+  AssignmentStatus? status;
 
   @Column(nullable: true, type: ColumnType.TEXT)
   Map<String, Object?> allocatedResources = {};
@@ -73,8 +73,7 @@ class DAssignment extends IdentifiableEntity {
 
   factory DAssignment.fromJson(Map<String, dynamic> json) {
     final scope = EntityScope.getType(json['scope']);
-    final status = AssignmentStatus.getType(json['status']) ??
-        AssignmentStatus.NOT_STARTED;
+    final status = AssignmentStatus.getType(json['status']);
 
     final forms = json['forms'] != null
         ? json['forms'].runtimeType == String
@@ -132,8 +131,7 @@ class DAssignment extends IdentifiableEntity {
 
   factory DAssignment.fromApi(Map<String, dynamic> json) {
     final scope = EntityScope.getType(json['entityScope']);
-    final status = AssignmentStatus.getType(json['status']) ??
-        AssignmentStatus.NOT_STARTED;
+    final status = AssignmentStatus.getType(json['status']);
 
     final forms = json['forms'] != null
         ? json['forms'].runtimeType == String
@@ -199,7 +197,7 @@ class DAssignment extends IdentifiableEntity {
     data['activity'] = this.activity;
     data['orgUnit'] = this.orgUnit;
     data['team'] = this.team;
-    data['status'] = this.status.name;
+    data['status'] = this.status?.name;
     data['allocatedResources'] = jsonEncode(this.allocatedResources);
     data['parent'] = this.parent;
     data['createdDate'] = this.createdDate;
