@@ -51,7 +51,7 @@ class MetadataSubmissionQuery extends BaseQuery<MetadataSubmission> {
     final response = await HttpClient.get(dhisUrl,
         database: this.database, dioTestClient: dioTestClient);
 
-    List data = response.body[this.apiResourceName]?.toList();
+    List data = response.body[this.apiResourceName]?.toList() ?? [];
 
     callback(
         RequestProgress(

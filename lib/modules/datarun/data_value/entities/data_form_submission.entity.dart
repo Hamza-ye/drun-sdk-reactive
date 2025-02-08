@@ -10,6 +10,12 @@ import 'package:d2_remote/shared/enumeration/assignment_status.dart';
 @AnnotationReflectable
 @Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmission')
 class DataFormSubmission extends SyncableEntity {
+  // @OneToMany(table: DataValue)
+  // List<DataValue>? dataValues;
+
+  // @OneToMany(table: RepeatInstance)
+  // List<RepeatInstance>? repeatInstances;
+
   @Column(nullable: true, type: ColumnType.TEXT)
   final Map<String, dynamic> formData = {};
 
@@ -21,6 +27,8 @@ class DataFormSubmission extends SyncableEntity {
     Map<String, dynamic> formData = const {},
     String? createdDate,
     String? lastModifiedDate,
+    // this.dataValues,
+    // this.repeatInstances,
 
     /// Syncable
     required int version,
@@ -34,6 +42,7 @@ class DataFormSubmission extends SyncableEntity {
     String? startEntryTime,
     String? finishedEntryTime,
     // dynamic activity,
+    String? orgUnit,
     dynamic team,
     String? assignment,
     AssignmentStatus? status,
@@ -62,6 +71,7 @@ class DataFormSubmission extends SyncableEntity {
           startEntryTime: startEntryTime,
           finishedEntryTime: finishedEntryTime,
           // activity: activity,
+          orgUnit: orgUnit,
           team: team,
           assignment: assignment,
           status: status,
@@ -104,6 +114,20 @@ class DataFormSubmission extends SyncableEntity {
       name: json['name'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
+      // dataValues: (json['dataValues'] ?? [])
+      //     .map<DataValue>((dataValue) => DataValue.fromJson({
+      //           ...dataValue,
+      //           'dataSubmission': json['uid'] ?? json['id'],
+      //           'dirty': false
+      //         }))
+      //     .toList(),
+      // repeatInstances: (json['repeatInstances'] ?? [])
+      //     .map<DataValue>((repeatInstance) => DataValue.fromJson({
+      //           ...repeatInstance,
+      //           'dataSubmission': json['uid'] ?? json['id'],
+      //           'dirty': false
+      //         }))
+      //     .toList(),
       formData: parseFormData(json['formData']),
 
       /// Syncable
@@ -121,6 +145,7 @@ class DataFormSubmission extends SyncableEntity {
       rescheduledDate: json['rescheduledDate'],
       reassignedToTeam: json['reassignedToTeam'],
       assignment: json['assignment'],
+      orgUnit: json['orgUnit'],
       // activity: activity,
       team: json['team'] != null
           ? json['team'] is String
@@ -183,6 +208,7 @@ class DataFormSubmission extends SyncableEntity {
       rescheduledDate: json['rescheduledDate'],
       reassignedToTeam: json['reassignedToTeam'],
       assignment: json['assignment'],
+      orgUnit: json['orgUnit'],
       geometry: geometry,
 
       dirty: json['dirty'] ?? false,
@@ -216,6 +242,7 @@ class DataFormSubmission extends SyncableEntity {
       'rescheduledDate': rescheduledDate,
       'reassignedToTeam': reassignedToTeam,
       'assignment': assignment,
+      'orgUnit': orgUnit,
       'status': this.status?.name,
       'isFinal': this.isFinal,
       'geometry': this.geometry != null

@@ -6,8 +6,8 @@ import 'package:sqflite/sqflite.dart';
 @AnnotationReflectable
 class FormVersionQuery extends BaseQuery<FormVersion> {
   FormVersionQuery({Database? database}) : super(database: database);
-
   String? formTemplate;
+  int? version;
 
   /// returns multiple versions
   FormVersionQuery byFormTemplate(String formTemplate) {

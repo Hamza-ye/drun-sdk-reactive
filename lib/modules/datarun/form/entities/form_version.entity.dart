@@ -7,15 +7,19 @@ import 'package:d2_remote/core/annotations/relation.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/json_factory.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/section_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
+import 'package:d2_remote/modules/datarun/form/shared/template_extensions/form_traverse_extension.dart';
+import 'package:d2_remote/modules/datarun/form/shared/template_extensions/template_path_walking_service.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'formVersion', apiResourceName: 'formVersions')
-class FormVersion extends IdentifiableEntity {
+class FormVersion extends IdentifiableEntity with TemplatePathWalkingService<Template> {
   @ManyToOne(table: FormTemplate, joinColumnName: 'formTemplate')
   dynamic formTemplate;
 
@@ -34,8 +38,14 @@ class FormVersion extends IdentifiableEntity {
   @Column(nullable: false, type: ColumnType.TEXT)
   String defaultLocal;
 
-  // @Column(nullable: true, type: ColumnType.TEXT)
-  // String? description;
+  @Column(nullable: true, type: ColumnType.TEXT)
+  IList<Template> fieldsConf;
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  IList<Template> sections;
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  String? description;
 
   /// current Version
   @Column(nullable: false, type: ColumnType.INTEGER)
@@ -51,18 +61,24 @@ class FormVersion extends IdentifiableEntity {
     String? code,
     String? createdDate,
     String? lastModifiedDate,
-    // this.description,
+    this.description,
     this.formTemplate,
     required this.version,
     required this.defaultLocal,
     List<Template> fields = const [],
-    List<Template> flattenedFields = const [],
+    // List<Template> flattenedFields = const [],
+    // Map<String, Template>? flattenFieldsMap,
     List<FormOption> options = const [],
     List<DOptionSet> optionSets = const [],
     Map<String, String> label = const {},
     List<String> orgUnits = const [],
+    Iterable<Template>? fieldsConf,
+    Iterable<Template>? sections,
     required dirty,
-  }) : super(
+  })  : this.fieldsConf = IList.orNull(fieldsConf) ?? IList(),
+        this.sections = IList.orNull(sections) ?? IList(),
+        // this.flattenFieldsMap = IMap.orNull(flattenFieldsMap) ?? IMap(),
+        super(
           id: id,
           uid: uid,
           name: name,
@@ -75,7 +91,6 @@ class FormVersion extends IdentifiableEntity {
     this.options.addAll(options);
     this.optionSets.addAll(optionSets);
     this.label.addAll(label);
-    // this.flattenedFields.addAll(flattenedFields);
   }
 
   factory FormVersion.fromJson(Map<String, dynamic> json) {
@@ -97,11 +112,23 @@ class FormVersion extends IdentifiableEntity {
             .toList()
         : <Template>[];
 
-    final flattenedFields = json['flattenedFields'] != null
-        ? (parseDynamicJson(json['flattenedFields']) as List)
-            .map((field) => TemplateJsonFactory.fromJsonFactory(field))
+    final fieldsConf = json['fieldsConf'] != null
+        ? (parseDynamicJson(json['fieldsConf']) as List)
+            .map((field) => FieldTemplate.fromJson(field))
             .toList()
         : <Template>[];
+
+    final sections = json['sections'] != null
+        ? (parseDynamicJson(json['sections']) as List)
+            .map((field) => SectionTemplate.fromJson(field))
+            .toList()
+        : <Template>[];
+
+    // final flattenedFields = json['flattenedFields'] != null
+    //     ? (parseDynamicJson(json['flattenedFields']) as List)
+    //         .map((field) => TemplateJsonFactory.fromJsonFactory(field))
+    //         .toList()
+    //     : <Template>[];
 
     final optionSets = json['optionSets'] != null
         ? (parseDynamicJson(json['optionSets']) as List)
@@ -123,11 +150,13 @@ class FormVersion extends IdentifiableEntity {
           : {"en": json['name']},
       defaultLocal: json['defaultLocal'] ?? 'en',
       fields: fields,
-      flattenedFields: flattenedFields,
+      // flattenedFields: flattenedFields,
+      fieldsConf: fieldsConf,
+      sections: sections,
       options: options,
       optionSets: optionSets,
       orgUnits: orgUnits,
-      // description: json['description'],
+      description: json['description'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
       dirty: json['dirty'] ?? false,
@@ -147,11 +176,23 @@ class FormVersion extends IdentifiableEntity {
             .toList()
         : <FieldTemplate>[];
 
-    final flattenedFields = json['flattenedFields'] != null
-        ? (parseDynamicJson(json['flattenedFields']) as List)
+    final fieldsConf = json['fieldsConf'] != null
+        ? (parseDynamicJson(json['fieldsConf']) as List)
             .map((field) => TemplateJsonFactory.fromJsonFactory(field))
             .toList()
-        : <FieldTemplate>[];
+        : <Template>[];
+
+    final sections = json['sections'] != null
+        ? (parseDynamicJson(json['sections']) as List)
+            .map((field) => TemplateJsonFactory.fromJsonFactory(field))
+            .toList()
+        : <Template>[];
+
+    // final flattenedFields = json['flattenedFields'] != null
+    //     ? (parseDynamicJson(json['flattenedFields']) as List)
+    //         .map((field) => TemplateJsonFactory.fromJsonFactory(field))
+    //         .toList()
+    //     : <FieldTemplate>[];
 
     final options = json['options'] != null
         ? (parseDynamicJson(json['options']) as List)
@@ -179,11 +220,13 @@ class FormVersion extends IdentifiableEntity {
           : {"en": json['name']},
       defaultLocal: json['defaultLocal'] ?? 'en',
       fields: fields,
-      flattenedFields: flattenedFields,
+      // flattenedFields: flattenedFields,
+      fieldsConf: fieldsConf,
+      sections: sections,
       options: options,
       optionSets: optionSets,
       orgUnits: orgUnits,
-      // description: json['description'],
+      description: json['description'],
       createdDate: json['createdDate'],
       lastModifiedDate: json['lastModifiedDate'],
       dirty: json['dirty'] ?? false,
@@ -201,7 +244,7 @@ class FormVersion extends IdentifiableEntity {
       'formTemplate': formTemplate,
       'label': jsonEncode(label),
       'defaultLocal': defaultLocal,
-      // 'description': description,
+      'description': description,
       // 'orgUnits': jsonEncode(orgUnits),
       'fields': jsonEncode(fields
           .map((field) => TemplateJsonFactory.toJsonFactory(field))
@@ -209,6 +252,12 @@ class FormVersion extends IdentifiableEntity {
       // 'flattenedFields': jsonEncode(flattenedFields
       //     .map((field) => TemplateJsonFactory.toJsonFactory(field))
       //     .toList()),
+      'fieldsConf': jsonEncode(fieldsConf.unlock
+          .map((field) => TemplateJsonFactory.toJsonFactory(field))
+          .toList()),
+      'sections': jsonEncode(sections.unlock
+          .map((field) => TemplateJsonFactory.toJsonFactory(field))
+          .toList()),
       'options': jsonEncode(options.map((option) => option.toJson()).toList()),
       'optionSets': jsonEncode(
           optionSets.map((optionSet) => optionSet.toJson()).toList()),
@@ -219,5 +268,11 @@ class FormVersion extends IdentifiableEntity {
   }
 
   @Column(nullable: true, type: ColumnType.TEXT)
-  Map<String, Template> flattenFieldsMap = {};
+  IMap<String, Template>? flattenFieldsMap;
+
+  @Column(nullable: true, type: ColumnType.TEXT)
+  IList<Template>? treeFields;
+
+  @override
+  Iterable<Template> get flatFieldsList => formFlatFields.values;
 }

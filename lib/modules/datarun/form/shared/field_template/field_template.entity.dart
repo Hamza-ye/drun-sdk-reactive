@@ -20,21 +20,26 @@ mixin ElementAttributesMixin {
 
 class FieldTemplate extends Template
     with ElementAttributesMixin, EquatableMixin {
+  final String? id;
+  final String? description;
   final String? path;
 
+  final String? code;
   final String? name;
   final int order;
 
   final ValueType? type;
   final String? listName;
+  final String? optionSet;
   final bool mandatory;
   final bool readOnly;
   final bool mainField;
   final String? choiceFilter;
   final dynamic defaultValue;
   final String? parent;
+
   // final IList<FieldTemplate> fields;
-  final IMap<String, String?> label;
+  final IMap<String, dynamic> label;
 
   final IMap<String, dynamic>? properties;
 
@@ -43,6 +48,7 @@ class FieldTemplate extends Template
 
   final String? constraint;
   final IMap<String, String>? constraintMessage;
+  final String? calculation;
 
   final AttributeType? attributeType;
   final ScannedCodeProperties? scannedCodeProperties;
@@ -56,18 +62,23 @@ class FieldTemplate extends Template
   final IList<AllowedAction> allowedActions;
 
   FieldTemplate({
+    this.id,
+    this.code,
+    this.description,
     this.path,
     this.mandatory = false,
     this.mainField = false,
     this.readOnly = false,
     this.order = 0,
     this.listName,
+    this.optionSet,
     this.type,
     this.name,
     // this.fieldValueRenderingType,
     this.resourceType,
     this.resourceMetadataSchema,
     this.choiceFilter,
+    this.calculation,
     this.defaultValue,
     this.parent,
     this.attributeType,
@@ -99,21 +110,16 @@ class FieldTemplate extends Template
 
   @override
   List<Object?> get props => [
-        // type,
-        // name,
-        // order,
-        // label,
-        // rules,
-        // properties,
+        optionSet,
         parent,
         readOnly,
         listName,
+        calculation,
         resourceType,
         resourceMetadataSchema,
         choiceFilter,
         defaultValue,
         appearance
-        // itemTitle,
       ];
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
@@ -132,9 +138,8 @@ class FieldTemplate extends Template
 
     final allowedActions = json['allowedActions'] != null
         ? (parseDynamicJson(json['allowedActions']) as List)
-        .map<AllowedAction>((action) =>
-        AllowedAction.getValueType(action))
-        .toList()
+            .map<AllowedAction>((action) => AllowedAction.getValueType(action))
+            .toList()
         : <AllowedAction>[];
 
     final optionMap = json['optionMap'] != null
@@ -172,14 +177,17 @@ class FieldTemplate extends Template
 
     final displayAttributes = json['displayAttributes'] != null
         ? json['displayAttributes'].runtimeType == String
-        ? jsonDecode(json['displayAttributes']).cast<String>()
-        : json['displayAttributes'].cast<String>()
+            ? jsonDecode(json['displayAttributes']).cast<String>()
+            : json['displayAttributes'].cast<String>()
         : null;
 
     return FieldTemplate(
       type: valueType,
       attributeType: AttributeType.getAttributeType(json['attributeType']),
+      id: json['id'],
       name: json['name'],
+      code: json['code'],
+      description: json['description'],
       options: options,
       allowedActions: allowedActions,
       displayAttributes: displayAttributes,
@@ -190,9 +198,11 @@ class FieldTemplate extends Template
       readOnly: json['readOnly'] ?? false,
       gs1Enabled: json['gs1Enabled'] ?? false,
       listName: json['listName'],
+      optionSet: json['optionSet'],
       // fields: fields,
       // itemTitle: json['itemTitle'],
       choiceFilter: json['choiceFilter'],
+      calculation: json['calculation'],
       rules: rules,
       label: label.lock,
       properties: properties.lock,
@@ -215,19 +225,24 @@ class FieldTemplate extends Template
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
+      'code': code,
       'type': type?.name,
       'resourceType': resourceType?.name,
       'order': order,
       'path': path,
       'name': name,
+      'description': description,
       'options': jsonEncode(
           options.unlockView.map((option) => option.toJson()).toList()),
       'mandatory': mandatory,
       'readOnly': readOnly,
       'mainField': mainField,
       'listName': listName,
+      'optionSet': optionSet,
       // 'itemTitle': itemTitle,
       'choiceFilter': choiceFilter,
+      'calculation': calculation,
       'defaultValue': defaultValue,
       'resourceMetadataSchema': resourceMetadataSchema,
       // 'fieldValueRenderingType': fieldValueRenderingType,
@@ -247,5 +262,76 @@ class FieldTemplate extends Template
           ? jsonEncode(scannedCodeProperties!.toJson())
           : null,
     };
+  }
+
+  @override
+  FieldTemplate copyWith({
+    String? id,
+    String? description,
+    String? path,
+    int? order,
+    String? name,
+    String? code,
+    bool? mainField,
+    Iterable<Rule>? rules,
+    Iterable<Template>? fields,
+    Iterable<Template>? treeFields,
+    ValueType? type,
+    IMap<String, dynamic>? label,
+    IMap<String, dynamic>? properties,
+    bool? readOnly,
+    String? constraint,
+    IMap<String, String>? constraintMessage,
+    String? listName,
+    String? optionSet,
+    bool? mandatory,
+    String? choiceFilter,
+    dynamic defaultValue,
+    String? parent,
+    Iterable<FormOption>? options,
+    String? calculation,
+    AttributeType? attributeType,
+    ScannedCodeProperties? scannedCodeProperties,
+    Iterable<String>? appearance,
+    bool? gs1Enabled,
+    MetadataResourceType? resourceType,
+    String? resourceMetadataSchema,
+    Iterable<String>? displayAttributes,
+    Iterable<AllowedAction>? allowedActions,
+  }) {
+    return FieldTemplate(
+      id: id ?? this.id,
+      description: description ?? this.description,
+      path: path ?? this.path,
+      code: code ?? this.code,
+      name: name ?? this.name,
+      order: order ?? this.order,
+      type: type ?? this.type,
+      listName: listName ?? this.listName,
+      optionSet: optionSet ?? this.optionSet,
+      mandatory: mandatory ?? this.mandatory,
+      readOnly: readOnly ?? this.readOnly,
+      mainField: mainField ?? this.mainField,
+      choiceFilter: choiceFilter ?? this.choiceFilter,
+      defaultValue: defaultValue ?? this.defaultValue,
+      parent: parent ?? this.parent,
+      label: label ?? this.label,
+      properties: properties ?? this.properties,
+      rules: rules ?? this.rules,
+      options: options ?? this.options,
+      constraint: constraint ?? this.constraint,
+      constraintMessage: constraintMessage ?? this.constraintMessage,
+      calculation: calculation ?? this.calculation,
+      attributeType: attributeType ?? this.attributeType,
+      scannedCodeProperties:
+          scannedCodeProperties ?? this.scannedCodeProperties,
+      appearance: appearance ?? this.appearance,
+      gs1Enabled: gs1Enabled ?? this.gs1Enabled,
+      resourceType: resourceType ?? this.resourceType,
+      resourceMetadataSchema:
+          resourceMetadataSchema ?? this.resourceMetadataSchema,
+      displayAttributes: displayAttributes ?? this.displayAttributes,
+      allowedActions: allowedActions ?? this.allowedActions,
+    );
   }
 }

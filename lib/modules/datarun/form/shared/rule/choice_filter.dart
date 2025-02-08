@@ -16,14 +16,18 @@ class ChoiceFilter
 
   @override
   List<FormOption> evaluate([Map<String, dynamic>? context]) {
-    if (expression == null) {
+    List<FormOption> result = options;
+    if (expression != null || options.any((o) => o.filterExpression != null)) {
+      result = options
+          .where((option) => evaluator.eval(
+              option.filterExpression != null
+                  ? Expression.parse(option.evalFilterExpression!)
+                  : getExpression(),
+              option.toContext()..addAll(context ?? {})))
+          .toList();
+    } else {
       return options;
     }
-
-    List<FormOption> result = options
-        .where((option) => evaluator.eval(
-            getExpression(), option.toContext()..addAll(context ?? {})))
-        .toList();
 
     return result;
   }

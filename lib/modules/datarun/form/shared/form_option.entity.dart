@@ -8,6 +8,7 @@ class FormOption with EquatableMixin {
   final String listName;
   final IMap<String, String> label;
   final int order;
+  final String? filterExpression;
   final IMap<String, dynamic>? properties;
 
   FormOption({
@@ -15,6 +16,7 @@ class FormOption with EquatableMixin {
     required this.listName,
     required this.order,
     required this.name,
+    this.filterExpression,
     this.properties,
   });
 
@@ -23,15 +25,18 @@ class FormOption with EquatableMixin {
         ? Map<String, dynamic>.from(json['properties'] is String
             ? jsonDecode(json['properties'])
             : json['properties'])
-        : null;
+        : <String, dynamic>{};
 
-    final label = Map<String, String>.from(
-        json['label'] is String ? jsonDecode(json['label']) : json['label']);
+    final label = json['label'] != null
+        ? Map<String, String>.from(
+            json['label'] is String ? jsonDecode(json['label']) : json['label'])
+        : <String, String>{"ar": json['name']};
     return FormOption(
       label: label.lock,
       name: json['name'],
       listName: json['listName'],
-      properties: properties?.lock,
+      filterExpression: json['filterExpression'],
+      properties: properties.lock,
       order: json['order'] ?? 0,
     );
   }
@@ -41,9 +46,26 @@ class FormOption with EquatableMixin {
       'label': jsonEncode(label.unlockView),
       'name': name,
       'listName': listName,
+      'filterExpression': filterExpression,
       'properties': jsonEncode(properties?.unlockView),
       'order': order,
     };
+  }
+
+  List<String> get filterExpressionDependencies {
+    final fieldPattern = RegExp(r'#\{(.*?)\}');
+
+    return filterExpression != null
+        ? fieldPattern
+            .allMatches(filterExpression!)
+            .map((match) => match.group(1)!)
+            .toSet()
+            .toList()
+        : [];
+  }
+
+  String? get evalFilterExpression {
+    return filterExpression?.replaceAll("#{", "").replaceAll("}", "");
   }
 
   Map<String, dynamic> toContext() {
@@ -52,10 +74,13 @@ class FormOption with EquatableMixin {
       'name': name,
       'listName': listName,
       ...?properties?.unlockView,
+      'filterExpression': evalFilterExpression,
+      'filterExpressionDependencies': filterExpressionDependencies,
       'order': order,
     };
   }
 
   @override
-  List<Object?> get props => [label, listName, order, name, properties];
+  List<Object?> get props =>
+      [label, listName, order, name, filterExpression, properties];
 }

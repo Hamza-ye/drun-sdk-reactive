@@ -70,6 +70,9 @@ class SyncableEntity extends BaseEntity {
   @Column(nullable: true)
   String? assignment;
 
+  @Column(nullable: true)
+  String? orgUnit;
+
   SyncableEntity(
       {String? id,
       String? uid,
@@ -78,6 +81,7 @@ class SyncableEntity extends BaseEntity {
       String? lastModifiedDate,
       String? createdDate,
       this.assignment,
+      this.orgUnit,
       this.form,
       required this.formVersion,
       this.deleted,
@@ -128,6 +132,7 @@ class SyncableEntity extends BaseEntity {
       // "activity": this.activity,
       "team": this.team,
       "assignment": this.assignment,
+      "orgUnit": this.orgUnit,
       "status": this.status?.name,
       "isFinal": this.isFinal,
       "geometry": this.geometry != null ? this.geometry?.toJson() : null,

@@ -1,14 +1,15 @@
 import 'package:d2_remote/modules/datarun_shared/utilities/form_permission.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
+import 'package:equatable/equatable.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-class TeamFormPermission {
+class TeamFormPermission with EquatableMixin {
   final String form;
-  final List<FormPermission> permissions = [];
+  final IList<FormPermission> permissions;
 
   TeamFormPermission(
-      {required this.form, List<FormPermission> permissions = const []}) {
-    this.permissions.addAll(permissions);
-  }
+      {required this.form, Iterable<FormPermission>? permissions})
+      : this.permissions = IList.orNull(permissions) ?? IList([]);
 
   bool hasPermission(FormPermission action) {
     return permissions.any((permission) => permission == action);
@@ -33,4 +34,7 @@ class TeamFormPermission {
       'permissions': permissions.map((permission) => permission.name).toList(),
     };
   }
+
+  @override
+  List<Object?> get props => [form, permissions];
 }

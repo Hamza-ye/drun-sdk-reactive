@@ -1,4 +1,3 @@
-import 'package:d2_remote/modules/datarun/form/shared/field_template/calculated_template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/section_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
@@ -13,8 +12,6 @@ class TemplateJsonFactory {
       case ValueType.Section:
       case ValueType.RepeatableSection:
         return SectionTemplate.fromJson(json);
-      case ValueType.Calculated:
-        return CalculatedTemplate.fromJson(json);
       // case ValueType.ScannedCode:
       //   return ScannedCodeTemplate.fromJson(json);
       default:
@@ -27,10 +24,6 @@ class TemplateJsonFactory {
       case ValueType.Section:
       case ValueType.RepeatableSection:
         return (template as SectionTemplate).toJson();
-      case ValueType.Calculated:
-        return (template as CalculatedTemplate).toJson();
-      // case ValueType.ScannedCode:
-      //   return (template as ScannedCodeTemplate).toJson();
       default:
         return (template as FieldTemplate).toJson();
     }

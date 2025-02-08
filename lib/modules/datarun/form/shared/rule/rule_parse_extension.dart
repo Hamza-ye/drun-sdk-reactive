@@ -35,12 +35,41 @@ extension FieldTemplateDependencies on Template {
             .map((match) => match.group(1)!)
             .toList();
         dependencyList.addAll(filterDependencies);
+      } else {
+
       }
 
       return dependencyList.toSet().toList();
     }
 
     return [];
+  }
+
+  List<String> get calculationDependencies {
+    List<String> dependencyList = [];
+    final fieldPattern = RegExp(r'#\{(.*?)\}');
+
+    if (isCalculate) {
+      if ((this as FieldTemplate).calculation != null &&
+          (this as FieldTemplate).calculation!.isNotEmpty) {
+        final calculationDependencies = fieldPattern
+            .allMatches((this as FieldTemplate).calculation!)
+            .map((match) => match.group(1)!)
+            .toList();
+        dependencyList.addAll(calculationDependencies);
+      }
+
+      return dependencyList.toSet().toList();
+    }
+
+    return [];
+  }
+
+  String? get calculationExpression {
+    return (this as FieldTemplate)
+        .calculation
+        ?.replaceAll("#{", "")
+        .replaceAll("}", "");
   }
 
   String? get evalChoiceFilterExpression {

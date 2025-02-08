@@ -120,6 +120,7 @@ enum ValueType {
 
   bool get isDateTime => DATE_TYPES.contains(this);
 
+  bool get isCalculate => this == ValueType.Calculated;
   bool get isDate => this == ValueType.Date;
 
   bool get isTime => this == ValueType.Time;

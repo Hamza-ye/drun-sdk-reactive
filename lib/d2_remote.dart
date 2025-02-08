@@ -11,6 +11,7 @@ import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/models/auth-token.model.dart';
 import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
+import 'package:d2_remote/modules/datarun/data_value/form_submission.module.dart';
 import 'package:d2_remote/modules/datarun/form/form.module.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/authenticated_user.dart';
 import 'package:d2_remote/modules/metadatarun/activity/d_activity.module.dart';
@@ -47,6 +48,7 @@ class D2Remote {
       await DTeamModule.createTables();
       await DAssignmentModule.createTables();
       await FormModule.createTables();
+      await FormSubmissionModule.createTables();
     }
   }
 
@@ -258,6 +260,8 @@ class D2Remote {
   static DAssignmentModule assignmentModuleD = DAssignmentModule();
 
   static FormModule formModule = FormModule();
+
+  static FormSubmissionModule formSubmissionModule = FormSubmissionModule();
 
   static DTeamModule teamModuleD = DTeamModule();
 }

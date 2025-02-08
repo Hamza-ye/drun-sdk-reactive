@@ -15,7 +15,7 @@ import 'package:sqflite/sqflite.dart';
 @AnnotationReflectable
 abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   SyncableQuery({Database? database}) : super(database: database);
-  String? activity;
+  String? assignment;
   String? team;
   String? orgUnit;
   String? form;
@@ -27,7 +27,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   //   return classMirror.newInstance('fromJson', [entityMap]) as T;
   // }
 
-  SyncableQuery<T> byFormTemplate(String form, [int? version]) {
+  SyncableQuery<T> byFormTemplate(String form) {
     this.form = form;
     this.version = version;
     final value = '${form}${version != null ? '_$version' : ''}%';
