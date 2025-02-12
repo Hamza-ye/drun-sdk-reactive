@@ -44,9 +44,9 @@ class FormSubmissionQuery extends SyncableQuery<DataFormSubmission> {
   //       deleted: false,
   //       isFinal: false,
   //       lastModifiedDate:
-  //       DDateUtils.databaseDateFormat().format(DateTime.now().toUtc()),
+  //       DateHelper.nowUtc(),
   //       startEntryTime:
-  //       DDateUtils.databaseDateFormat().format(DateTime.now().toUtc()));
+  //       DateHelper.nowUtc();
   //
   //   this.data = submission;
   //

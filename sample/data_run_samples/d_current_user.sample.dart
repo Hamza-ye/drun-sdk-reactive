@@ -1,6 +1,6 @@
 Map<String, dynamic> dUserData = {
   "id": 1,
-  "uid": "mcOBS0VPLmw",
+  "uid": "laKeLjqAFIC",
   "login": "admin",
   "firstName": "Administrator",
   "lastName": "Administrator",
@@ -12,8 +12,5 @@ Map<String, dynamic> dUserData = {
   "createdDate": null,
   "lastModifiedBy": "system",
   "lastModifiedDate": null,
-  "authorities": [
-    "ROLE_USER",
-    "ROLE_ADMIN"
-  ]
+  "authorities": ["ROLE_USER", "ROLE_ADMIN"]
 };

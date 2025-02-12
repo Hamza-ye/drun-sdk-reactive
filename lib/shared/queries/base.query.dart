@@ -2,7 +2,7 @@
 /// It is used to perform CRUD operations on entities.
 ///
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
+import 'package:d2_remote/core/datarun/utilities/date_helper.dart';
 import 'package:d2_remote/core/utilities/repository.dart';
 import 'package:d2_remote/shared/utilities/data-run-url-generator.util.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
@@ -242,7 +242,7 @@ class BaseQuery<T extends BaseEntity> {
           saveOptions: saveOptions);
     }
     if (this.data != null && this.data.lastModifiedDate == null) {
-      this.data.lastModifiedDate = DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+      this.data.lastModifiedDate = DateHelper.nowUtc();
     }
 
     return this.repository.saveOne(

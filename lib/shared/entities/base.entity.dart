@@ -1,5 +1,5 @@
 import 'package:d2_remote/core/annotations/index.dart';
-import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
+import 'package:d2_remote/core/datarun/utilities/date_helper.dart';
 import 'package:d2_remote/shared/utilities/dhis_uid_generator.util.dart';
 
 // @AnnotationReflectable
@@ -31,7 +31,7 @@ class BaseEntity {
     this.uid = this.id;
 
     this.createdDate =
-        this.createdDate ?? DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+        this.createdDate ?? DateHelper.nowUtc();
     this.lastModifiedDate = this.lastModifiedDate ?? this.createdDate;
   }
 

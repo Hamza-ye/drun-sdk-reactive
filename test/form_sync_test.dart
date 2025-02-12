@@ -41,7 +41,7 @@ void main() async {
   await userQuery.setData(user).save();
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/dataForms?paged=false&eagerload=true',
+    'http://localhost:8080/api/custom/dataForm?paged=false',
     (server) => server.reply(200, sampleAllForms),
   );
   final formTemplateQuery = FormTemplateQuery(database: db);
@@ -56,7 +56,7 @@ void main() async {
       await D2Remote.formModule.formTemplateV.get();
 
   test('should store all incoming formTemplates and formVersions metadata', () {
-    expect(formTemplates.length, 3);
-    expect(formVersions.length, 3);
+    expect(formTemplates.length, 2);
+    expect(formVersions.length, 2);
   });
 }

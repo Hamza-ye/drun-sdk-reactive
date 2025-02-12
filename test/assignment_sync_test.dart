@@ -6,7 +6,6 @@ import 'package:d2_remote/modules/metadatarun/assignment/entities/d_assignment.e
 import 'package:d2_remote/modules/metadatarun/assignment/queries/d_assignment.query.dart';
 import 'package:d2_remote/modules/metadatarun/project/queries/d_project.query.dart';
 import 'package:d2_remote/modules/metadatarun/teams/queries/d_team.query.dart';
-import 'package:d2_remote/modules/metadatarun/warehouse/queries/warehouse.query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,7 +42,7 @@ void main() async {
   await userQuery.setData(user).save();
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/assignments?paged=false&eagerload=true',
+    'http://localhost:8080/api/custom/assignments?paged=false',
     (server) => server.reply(200, sampleAssignments),
   );
   final assignmentQuery = DAssignmentQuery(database: db);

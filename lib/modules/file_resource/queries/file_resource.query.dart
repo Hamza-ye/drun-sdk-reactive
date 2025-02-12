@@ -117,7 +117,7 @@
 //         fileResource.storageStatus =
 //             importSummary['response']?['fileResource']?['storageStatus'];
 //         fileResource.lastSyncDate =
-//             DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+//             DateHelper.nowUtc();
 //         fileResource.lastSyncSummary = importSummary.toString();
 //         queue.add(() => FileResourceQuery().setData(fileResource).save());
 //

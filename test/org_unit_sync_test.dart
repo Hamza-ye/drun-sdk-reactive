@@ -40,7 +40,7 @@ void main() async {
   final dioAdapter = DioAdapter(dio: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/orgUnits?paged=false&eagerload=true',
+    'http://localhost:8080/api/custom/orgUnits?paged=false',
     (server) => server.reply(200, sampleOrgUnits),
   );
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/core/datarun/logging/new_app_logging.dart';
-import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
+import 'package:d2_remote/core/datarun/utilities/date_helper.dart';
 import 'package:d2_remote/d2_remote.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/sync_summary.dart';
@@ -181,16 +181,14 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
         syncableEntity.synced = true;
         syncableEntity.dirty = false;
         syncableEntity.syncFailed = false;
-        syncableEntity.lastSyncDate =
-            DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+        syncableEntity.lastSyncDate = DateHelper.nowUtc();
         syncableEntity.lastSyncMessage = null;
         availableItemCount++;
       } else if (syncFailed) {
         syncableEntity.synced = false;
         syncableEntity.dirty = true;
         syncableEntity.syncFailed = true;
-        syncableEntity.lastSyncDate =
-            DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+        syncableEntity.lastSyncDate = DateHelper.nowUtc();
         syncableEntity.lastSyncMessage = summary.failed[syncableEntity.id];
         availableItemCount++;
       }

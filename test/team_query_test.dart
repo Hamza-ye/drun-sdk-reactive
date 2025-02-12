@@ -5,7 +5,6 @@ import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.
 import 'package:d2_remote/modules/metadatarun/project/queries/d_project.query.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/queries/d_team.query.dart';
-import 'package:d2_remote/modules/metadatarun/warehouse/queries/warehouse.query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,36 +40,13 @@ void main() async {
   final user = DUser.fromApi(userData);
   await userQuery.setData(user).save();
 
-  // dioAdapter.onGet(
-  //   'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
-  //   (server) => server.reply(200, sampleProjects),
-  // );
-  // DProjectQuery projectQuery = DProjectQuery(database: db);
-  // await projectQuery.download((progress, complete) {
-  //   print(progress.message);
-  // }, dioTestClient: dio);
-  //
-  // dioAdapter.onGet(
-  //   'http://localhost:8080/api/custom/activities?paging=false&eagerload=true',
-  //   (server) => server.reply(200, sampleActivities),
-  // );
-  // final activityQuery = DActivityQuery(database: db);
-  // await activityQuery.download((progress, complete) {
-  //   print(progress.message);
-  // }, dioTestClient: dio);
-  //
-  // dioAdapter.onGet(
-  //   'http://localhost:8080/api/custom/warehouses?paging=false&eagerload=true',
-  //   (server) => server.reply(200, sampleWarehouses),
-  // );
-  // final warehouseQuery = WarehouseQuery(database: db);
-  // await warehouseQuery.download((progress, complete) {
-  //   print(progress.message);
-  // }, dioTestClient: dio);
-
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/teams?paged=false&eagerload=true',
+    'http://localhost:8080/api/custom/teams?paged=false',
     (server) => server.reply(200, sampleTeams),
+  );
+  dioAdapter.onGet(
+    'http://localhost:8080/api/custom/teams/managed?paged=false',
+        (server) => server.reply(200, sampleTeams),
   );
   final teamQuery = DTeamQuery(database: db);
   await teamQuery.download((progress, complete) {

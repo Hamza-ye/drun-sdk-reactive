@@ -38,7 +38,7 @@ void main() async {
   final dioAdapter = DioAdapter(dio: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/projects?paged=false&eagerload=true',
+    'http://localhost:8080/api/custom/projects?paged=false',
     (server) => server.reply(200, sampleProjects),
   );
 

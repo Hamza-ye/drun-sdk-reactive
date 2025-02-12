@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:d2_remote/core/database/database_manager.dart';
 import 'package:d2_remote/core/datarun/exception/exception.dart';
 import 'package:d2_remote/core/datarun/logging/new_app_logging.dart';
-import 'package:d2_remote/core/datarun/utilities/date_utils.dart';
+import 'package:d2_remote/core/datarun/utilities/date_helper.dart';
 import 'package:d2_remote/modules/auth/user/d_user.module.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/modules/auth/user/models/auth-token.model.dart';
@@ -150,8 +150,7 @@ class D2Remote {
       Map<String, dynamic> userData = userResponse.body;
       userData['password'] = password;
       userData['isLoggedIn'] = true;
-      userData['checkWithServerTime'] =
-          DDateUtils.databaseDateFormat().format(DateTime.now().toUtc());
+      userData['checkWithServerTime'] = DateHelper.nowUtc();
       userData['username'] = username;
       userData['baseUrl'] = url;
       userData['authTye'] = 'basic';
@@ -171,7 +170,7 @@ class D2Remote {
           stackTrace: StackTrace.current,
           httpErrorCode: userResponse?.statusCode);
     } catch (e) {
-      logError( '$e', data: {"username": username, "url": url});
+      logError('$e', data: {"username": username, "url": url});
       rethrow;
     }
   }
@@ -190,7 +189,7 @@ class D2Remote {
 
       // nmc
       SharedPreferences prefs =
-      await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
+          await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
       prefs.remove(currentDatabaseNameKey);
       await DatabaseManager.instance.closeDatabase();
 

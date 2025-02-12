@@ -4,2424 +4,1272 @@ final Map<String, dynamic> dSampleAllForms = {
   "pageCount": 1,
   "total": 6,
   "pageSize": 6,
-  "dataForms": [
+  "dataForm": [
     {
-      "createdBy": null,
-      "createdDate": "2024-08-30T21:42:50.119Z",
-      "lastModifiedBy": "admin",
-      "lastModifiedDate": "2024-08-30T21:42:53.197Z",
-      "id": "66ca45535cb4e10a1b88dffd",
-      "uid": "Kcs3346CRbY",
-      "code": "TEST_FORM",
-      "name": "test form",
-      "description": "Test Countries Form",
+      "id": "Tcf3Ks9ZRpB",
+      "uid": "Tcf3Ks9ZRpB",
+      "code": "LLINS_DISTRIBUTION_FORM",
+      "name": "استمارة توزيع الناموسيات | منازل | فريق ميداني",
+      "description": "استمارة ارسال بيانات توزيع الناموسيات على مستوى المنزل، ترسل من قائد الفريق.",
       "disabled": false,
-      "activity": "oBne891mA9n",
-      "version": 3,
+      "deleted": false,
+      "version": 22,
       "defaultLocal": "en",
       "fields": [
         {
-          "order": 0,
-          "name": "continentQ",
-          "description": null,
-          "type": "SelectOne",
-          "mandatory": true,
-          "mainField": true,
-          "rules": [],
-          "listName": "continents",
-          "referenceInfo": null,
-          "choiceFilter": null,
+          "name": "mainSection",
+          "type": "Section",
+          "description": "Main Section.",
           "label": {
-            "en": "Continent",
-            "ar": "القارة"
+            "en": "Work Date and Day",
+            "ar": "بيانات أساسية"
           },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "continentQ",
-          "fields": []
-        },
-        {
-          "order": 0,
-          "name": "countryQ",
-          "description": "Country",
-          "type": "SelectOne",
-          "mandatory": true,
-          "mainField": true,
           "rules": [],
-          "listName": "countries",
-          "referenceInfo": null,
-          "choiceFilter": "continentFilter == #{continentQ}",
-          "label": {
-            "en": "Country",
-            "ar": "الدولة"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "countryQ",
-          "fields": []
-        },
-        {
           "order": 0,
-          "name": "cityQ",
-          "description": null,
-          "type": "SelectOne",
-          "mandatory": true,
+          "mandatory": false,
+          "readOnly": false,
           "mainField": false,
-          "rules": [],
-          "listName": "cities",
-          "referenceInfo": null,
-          "choiceFilter": "countryFilter == #{countryQ}",
+          "fields": [
+            {
+              "name": "workDay",
+              "type": "SelectOne",
+              "description": "Day of work for the campaign.",
+              "label": {
+                "en": "Work Day",
+                "ar": "اليوم"
+              },
+              "rules": [],
+              "calculation": null,
+              "order": 1,
+              "defaultValue": null,
+              "mandatory": true,
+              "readOnly": false,
+              "appearance": null,
+              "constraint": null,
+              "constraintMessage": null,
+              "mainField": true,
+              "listName": "workDays",
+              "choiceFilter": null
+            },
+            {
+              "name": "status",
+              "type": "Progress",
+              "description": "Distribution Status",
+              "label": {
+                "en": "Select status",
+                "ar": "حالة سير عملية التوزيع"
+              },
+              "rules": [],
+              "calculation": null,
+              "order": 2,
+              "defaultValue": null,
+              "mandatory": true,
+              "readOnly": false,
+              "appearance": null,
+              "constraint": null,
+              "constraintMessage": null,
+              "mainField": true,
+              "listName": "status",
+              "choiceFilter": null
+            }
+          ]
+        },
+        {
+          "name": "completion_details",
+          "type": "Section",
+          "description": "Status",
           "label": {
-            "en": "City",
-            "ar": "المدينة"
+            "en": "Completion Details",
+            "ar": "معلومات اكتمال التوزيع"
           },
+          "rules": [
+            {
+              "expression": "#{status} == 'DONE'",
+              "action": "Show"
+            }
+          ],
           "calculation": null,
+          "order": 3,
           "defaultValue": null,
-          "section": null,
-          "path": "cityQ",
-          "fields": []
+          "mandatory": false,
+          "readOnly": false,
+          "appearance": null,
+          "constraint": null,
+          "constraintMessage": null,
+          "mainField": false,
+          "fields": [
+            {
+              "name": "completionStatus",
+              "type": "SelectOne",
+              "description": "Completion Status",
+              "label": {
+                "en": "Completion Status",
+                "ar": "حالة الاكتمال"
+              },
+              "rules": [],
+              "order": 4,
+              "mandatory": true,
+              "readOnly": false,
+              "mainField": false,
+              "listName": "completionStatus"
+            },
+            {
+              "name": "completionPercentage",
+              "type": "IntegerZeroOrPositive",
+              "label": {
+                "en": "Completion Percentage",
+                "ar": "% نسبة الاكتمال"
+              },
+              "rules": [
+                {
+                  "expression": "#{completionStatus} == 'PARTIAL'",
+                  "action": "Show"
+                },
+                {
+                  "expression": "#{completionPercentage} > 100 || #{completionPercentage} == 100",
+                  "action": "Error",
+                  "message": {
+                    "en": "Completion percentage must be between 0 and 100",
+                    "ar": "الجزئي معناه أن يكون نسبة الاكتمال بين 0 و أقل من 100"
+                  }
+                }
+              ],
+              "order": 5,
+              "mandatory": true,
+              "readOnly": false,
+              "mainField": false
+            }
+          ]
+        },
+        {
+          "name": "status_reassigned_details",
+          "type": "Section",
+          "description": "status_reassigned_details",
+          "label": {
+            "en": "Reassigning Details",
+            "ar": "معلومات إعادة تعيين فريق آخر"
+          },
+          "rules": [
+            {
+              "expression": "#{status} == 'REASSIGNED'",
+              "action": "Show"
+            }
+          ],
+          "order": 6,
+          "fields": [
+            {
+              "name": "targetedByOtherTeamName",
+              "type": "Text",
+              "description": null,
+              "label": {
+                "en": "Team name targeted by",
+                "ar": "اسم الفريق الذي قام بالتغطية"
+              },
+              "rules": [],
+              "order": 7,
+              "mainField": false
+            },
+            {
+              "name": "targetedByOtherTeamNum",
+              "type": "Text",
+              "description": null,
+              "label": {
+                "en": "Team No. targeted by",
+                "ar": "رقم الفريق الذي قام بالتغطية"
+              },
+              "rules": [],
+              "calculation": null,
+              "order": 8,
+              "defaultValue": null,
+              "mandatory": true,
+              "readOnly": false,
+              "appearance": null,
+              "constraint": null,
+              "constraintMessage": null,
+              "mainField": false
+            }
+          ]
+        },
+        {
+          "name": "status_cancelled_details",
+          "type": "Section",
+          "description": "cancelling_details",
+          "label": {
+            "en": "Cancelling Details",
+            "ar": "معلومات إلغاء التوزيع"
+          },
+          "rules": [
+            {
+              "expression": "#{status} == 'CANCELLED'",
+              "action": "Show"
+            }
+          ],
+          "order": 9,
+          "mandatory": false,
+          "readOnly": false,
+          "mainField": false,
+          "fields": [
+            {
+              "name": "notargetingReasons",
+              "type": "SelectOne",
+              "label": {
+                "en": "no targeting Reason",
+                "ar": "سبب عدم الاستهداف"
+              },
+              "rules": [],
+              "order": 10,
+              "mandatory": true,
+              "readOnly": false,
+              "mainField": false,
+              "listName": "notargetingReasons"
+            },
+            {
+              "name": "otherReasonForNotargeting",
+              "type": "Text",
+              "label": {
+                "en": "UnTargetting Reason",
+                "ar": "اذكر السبب الاخر"
+              },
+              "rules": [
+                {
+                  "expression": "#{status} == 'CANCELLED' && #{notargetingReasons} == 'OTHER'",
+                  "action": "Show"
+                }
+              ],
+              "order": 11,
+              "mandatory": true,
+              "readOnly": false,
+              "mainField": false
+            }
+          ]
+        },
+        {
+          "name": "status_merged_details",
+          "type": "Section",
+          "description": "location Status Details",
+          "label": {
+            "en": "Status",
+            "ar": "تفاصيل حالة دمج"
+          },
+          "rules": [
+            {
+              "expression": "#{status} == 'MERGED'",
+              "action": "Show"
+            }
+          ],
+          "calculation": null,
+          "order": 12,
+          "defaultValue": null,
+          "readOnly": false,
+          "appearance": null,
+          "constraint": null,
+          "constraintMessage": null,
+          "mainField": false,
+          "fields": [
+            {
+              "name": "mergedWithOtherVillage",
+              "type": "Text",
+              "description": null,
+              "label": {
+                "en": "Merged with village",
+                "ar": "اسم القرية الاخرى التي تم دمجها"
+              },
+              "rules": [],
+              "calculation": null,
+              "order": 13,
+              "defaultValue": null,
+              "readOnly": false,
+              "appearance": null,
+              "mandatory": true,
+              "constraint": null,
+              "constraintMessage": null,
+              "mainField": false
+            }
+          ]
+        },
+        {
+          "name": "status_rescheduled_details",
+          "type": "Section",
+          "description": "status_rescheduled_details",
+          "label": {
+            "en": "Status",
+            "ar": "تفاصيل حالة إعادة جدولة"
+          },
+          "rules": [
+            {
+              "expression": "#{status} == 'RESCHEDULED'",
+              "action": "Show",
+              "message": null,
+              "assignedValue": null
+            }
+          ],
+          "calculation": null,
+          "order": 14,
+          "defaultValue": null,
+          "readOnly": false,
+          "appearance": null,
+          "constraint": null,
+          "constraintMessage": null,
+          "mainField": false,
+          "fields": [
+            {
+              "name": "rescheduledTo",
+              "type": "SelectOne",
+              "label": {
+                "en": "Rescheduled To",
+                "ar": "جدولة إلى يوم:"
+              },
+              "rules": [],
+              "order": 15,
+              "mandatory": true,
+              "readOnly": false,
+              "listName": "workDays",
+              "mainField": false
+            }
+          ]
+        },
+        {
+          "name": "households_information",
+          "type": "Section",
+          "description": null,
+          "order": 16,
+          "label": {
+            "en": "Households Information",
+            "ar": "معلومات المنازل"
+          },
+          "rules": [
+            {
+              "expression": "#{status} == 'IN_PROGRESS' || #{status} == 'DONE'",
+              "action": "Show"
+            }
+          ],
+          "fields": [
+            {
+              "name": "settlement",
+              "type": "SelectOne",
+              "label": {
+                "en": "Setllement Type",
+                "ar": "نوع التجمع"
+              },
+              "rules": [],
+              "order": 17,
+              "mandatory": true,
+              "readOnly": false,
+              "mainField": false,
+              "listName": "settlementType"
+            },
+            {
+              "name": "householdnames",
+              "type": "RepeatableSection",
+              "description": "Repeatable data for each household.",
+              "label": {
+                "en": "Household Data",
+                "ar": "بيانات المنازل"
+              },
+              "rules": [],
+              "order": 18,
+              "mandatory": true,
+              "readOnly": false,
+              "mainField": false,
+              "fields": [
+                {
+                  "name": "householdHeadSerialNumber",
+                  "type": "IntegerPositive",
+                  "description": "Household number or card number.",
+                  "label": {
+                    "en": "Household Number (Card Number)",
+                    "ar": "رقم المنزل"
+                  },
+                  "rules": [],
+                  "order": 19,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": false
+                },
+                {
+                  "name": "inputmethod",
+                  "type": "SelectOne",
+                  "description": null,
+                  "label": {
+                    "en": "inputmethod",
+                    "ar": "طريقة الادخال"
+                  },
+                  "rules": [],
+                  "order": 20,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": false,
+                  "listName": "inputmethods"
+                },
+                {
+                  "name": "householdName",
+                  "type": "FullName",
+                  "description": "Name of the household head.",
+                  "label": {
+                    "en": "Household Name",
+                    "ar": "اسم صاحب المنزل رباعيا"
+                  },
+                  "rules": [
+                    {
+                      "expression": "#{inputmethod} == 'addNew'",
+                      "action": "Show"
+                    }
+                  ],
+                  "order": 21,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": false
+                },
+                {
+                  "name": "householdReference",
+                  "type": "Reference",
+                  "description": "Household Reference.",
+                  "label": {
+                    "en": "Household Reference",
+                    "ar": "مرجع رب المنزل"
+                  },
+                  "rules": [
+                    {
+                      "expression": "#{inputmethod} == 'fromList'",
+                      "action": "Show"
+                    }
+                  ],
+                  "order": 22,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": false,
+                  "resourceType": "OrgUnit",
+                  "resourceMetadataSchema": "yHRk5tsCEK4",
+                  "displayAttributes": [
+                    "householdHeadSerialNumber",
+                    "householdName"
+                  ],
+                  "allowedActions": [
+                    "Add",
+                    "Update",
+                    "SoftDelete"
+                  ]
+                },
+                {
+                  "name": "population",
+                  "type": "IntegerPositive",
+                  "description": "Total population in the household.",
+                  "label": {
+                    "en": "Total Population",
+                    "ar": "عدد السكان"
+                  },
+                  "rules": [
+                    {
+                      "expression": "#{population} != #{femalePopulation} + #{malePopulation}",
+                      "action": "Error",
+                      "message": {
+                        "ar": "مجموع الذكور والإناث يجب أن يساوي عدد السكان الكلي.",
+                        "en": "Males + Females must equal Total Population."
+                      }
+                    }
+                  ],
+                  "order": 23,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": true
+                },
+                {
+                  "name": "malePopulation",
+                  "type": "IntegerZeroOrPositive",
+                  "description": "Number of males in the household.",
+                  "label": {
+                    "en": "Male Population",
+                    "ar": "سكان-ذكور"
+                  },
+                  "rules": [],
+                  "order": 24,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": true
+                },
+                {
+                  "name": "femalePopulation",
+                  "type": "IntegerZeroOrPositive",
+                  "description": "Number of females in the household.",
+                  "label": {
+                    "en": "Female Population",
+                    "ar": "سكان-إناث"
+                  },
+                  "rules": [],
+                  "order": 25,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": true
+                },
+                {
+                  "name": "pregnantWomen",
+                  "type": "IntegerZeroOrPositive",
+                  "description": "Number of pregnant women in the household.",
+                  "label": {
+                    "en": "Pregnant Women",
+                    "ar": "حوامل"
+                  },
+                  "rules": [
+                    {
+                      "expression": "#{pregnantWomen} > #{femalePopulation}",
+                      "action": "Error",
+                      "message": {
+                        "ar": "عدد الحوامل لا يمكن أن يتجاوز عدد الإناث.",
+                        "en": "Pregnant women cannot exceed total females."
+                      }
+                    }
+                  ],
+                  "order": 26,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": true
+                },
+                {
+                  "name": "childrenMaleCount",
+                  "type": "IntegerZeroOrPositive",
+                  "description": "Number of male children.",
+                  "label": {
+                    "en": "Children (Male)",
+                    "ar": "أطفال-ذكور"
+                  },
+                  "rules": [
+                    {
+                      "expression": "#{childrenMaleCount} > #{malePopulation}",
+                      "action": "Error",
+                      "message": {
+                        "ar": "عدد الأطفال الذكور لا يمكن أن يتجاوز عدد الذكور الكلي.",
+                        "en": "Male children cannot exceed total males."
+                      }
+                    }
+                  ],
+                  "order": 27,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": true
+                },
+                {
+                  "name": "childrenFemaleCount",
+                  "type": "IntegerZeroOrPositive",
+                  "description": "Number of female children.",
+                  "label": {
+                    "en": "Children (Female)",
+                    "ar": "أطفال-إناث"
+                  },
+                  "rules": [
+                    {
+                      "expression": "#{childrenFemaleCount} + #{pregnantWomen} > #{femalePopulation}",
+                      "action": "Error",
+                      "message": {
+                        "ar": "عدد الأطفال الإناث والحوامل يجب أن يكون أصغر من أو يساوي عدد الإناث",
+                        "en": "The number of female children and pregnant women must be less than or equal to the female population"
+                      },
+                      "assignedValue": null
+                    }
+                  ],
+                  "calculation": null,
+                  "order": 28,
+                  "defaultValue": null,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "appearance": null,
+                  "constraint": null,
+                  "constraintMessage": null,
+                  "mainField": true
+                },
+                {
+                  "name": "displacedResidentsCount",
+                  "type": "IntegerZeroOrPositive",
+                  "description": "Number of displaced residents in the household, if any.",
+                  "label": {
+                    "en": "Number of Displaced Residents",
+                    "ar": "النازحين"
+                  },
+                  "rules": [
+                    {
+                      "expression": "#{displacedResidentsCount} > #{population}",
+                      "action": "Error",
+                      "message": {
+                        "ar": "عدد النازحين لا يمكن أن يتجاوز عدد السكان الكلي.",
+                        "en": "Displaced residents cannot exceed total population."
+                      },
+                      "assignedValue": null
+                    }
+                  ],
+                  "order": 29,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": true
+                },
+                {
+                  "name": "itns",
+                  "type": "IntegerPositive",
+                  "description": "Number of mosquito nets received.",
+                  "label": {
+                    "en": "Received Nets",
+                    "ar": "الناموسيات"
+                  },
+                  "rules": [
+                    {
+                      "expression": "#{itns} > #{population}",
+                      "action": "Error",
+                      "message": {
+                        "ar": "لايمكن ان يكون عدد الناموسيات اكبر من اجمالي عدد السكان",
+                        "en": "The number of mosquito nets received cannot exceed the total population"
+                      }
+                    },
+                    {
+                      "expression": "((#{itns} > 0 && #{population} > 0) && (#{itns} <= #{population})) && (#{itns} != ((#{population} + (#{population} % 2)) / 2))",
+                      "action": "Warning"
+                    }
+                  ],
+                  "order": 30,
+                  "mandatory": true,
+                  "readOnly": false,
+                  "mainField": true
+                }
+              ],
+              "itemTitle": "معلومات منزل",
+              "maxRepeats": 0,
+              "minRepeats": 0
+            }
+          ]
         }
       ],
       "options": [
         {
-          "listName": "countries",
-          "name": "ca",
+          "listName": "status",
+          "name": "IN_PROGRESS",
           "order": 1,
           "label": {
-            "ar": "كندا",
-            "en": "Canada"
+            "en": "In progress",
+            "ar": "قيد التنفيذ"
           },
-          "properties": {
-            "continentFilter": "na"
-          }
+          "properties": {}
         },
         {
-          "listName": "continents",
-          "name": "as",
+          "listName": "status",
+          "name": "DONE",
           "order": 2,
           "label": {
-            "ar": "آسيا",
-            "en": "Asia"
+            "en": "Completed",
+            "ar": "اكتمل"
           },
           "properties": {}
         },
         {
-          "listName": "continents",
-          "name": "na",
-          "order": 0,
-          "label": {
-            "ar": "أمرسكا الشمالية",
-            "en": "North America"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "continents",
-          "name": "eu",
-          "order": 1,
-          "label": {
-            "ar": "أوروبا",
-            "en": "Europe"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "cities",
-          "name": "ny",
-          "order": 0,
-          "label": {
-            "ar": "نيويورك",
-            "en": "New York"
-          },
-          "properties": {
-            "countryFilter": "us",
-            "anotherFilter": "anotherValue1"
-          }
-        },
-        {
-          "listName": "countries",
-          "name": "cn",
-          "order": 4,
-          "label": {
-            "ar": "الصين",
-            "en": "China"
-          },
-          "properties": {
-            "continentFilter": "as"
-          }
-        },
-        {
-          "listName": "cities",
-          "name": "be",
-          "order": 4,
-          "label": {
-            "ar": "برلين",
-            "en": "Berlin"
-          },
-          "properties": {
-            "countryFilter": "de",
-            "anotherFilter": "null"
-          }
-        },
-        {
-          "listName": "countries",
-          "name": "us",
-          "order": 0,
-          "label": {
-            "ar": "الولايات المتحدة",
-            "en": "United States"
-          },
-          "properties": {
-            "continentFilter": "na"
-          }
-        },
-        {
-          "listName": "cities",
-          "name": "pa",
+          "listName": "status",
+          "name": "REASSIGNED",
           "order": 3,
           "label": {
-            "ar": "باريس",
-            "en": "Paris"
+            "en": "Not Covered for a reason",
+            "ar": "فريق آخر"
           },
-          "properties": {
-            "countryFilter": "fr",
-            "anotherFilter": "anotherValue2"
-          }
+          "properties": {}
         },
         {
-          "listName": "cities",
-          "name": "mu",
+          "listName": "status",
+          "name": "RESCHEDULED",
+          "order": 3,
+          "label": {
+            "en": "Not Covered for a reason",
+            "ar": "جدولة ليوم آخر"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "status",
+          "name": "MERGED",
+          "order": 3,
+          "label": {
+            "en": "Merged With another",
+            "ar": "دمجت مع أخرى"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "status",
+          "name": "CANCELLED",
+          "order": 3,
+          "label": {
+            "en": "Not Covered for a reason",
+            "ar": "لن يتم التوزيع لسبب"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "notargetingReasons",
+          "name": "DOESNOTEXIST",
+          "order": 4,
+          "label": {
+            "en": "No Such Village",
+            "ar": "لاتوجد"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "notargetingReasons",
+          "name": "DESERTED",
+          "order": 1,
+          "label": {
+            "en": "Deserted",
+            "ar": "مهجورة"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "notargetingReasons",
+          "name": "DISPLACED",
+          "order": 0,
+          "label": {
+            "en": "Displaced",
+            "ar": "نزوح الجميع"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "notargetingReasons",
+          "name": "OTHER",
           "order": 6,
           "label": {
-            "ar": "مومباي",
-            "en": "Mumbai"
+            "en": "Other Reason",
+            "ar": "لسبب اخر"
           },
-          "properties": {
-            "countryFilter": "in",
-            "anotherFilter": "null"
-          }
+          "properties": {}
         },
         {
-          "listName": "cities",
-          "name": "sh",
-          "order": 5,
+          "listName": "completionStatus",
+          "name": "FULL",
+          "order": 0,
           "label": {
-            "ar": "شنغهاي",
-            "en": "Shanghai"
+            "en": "Full",
+            "ar": "كلي"
           },
-          "properties": {
-            "countryFilter": "cn",
-            "anotherFilter": "null"
-          }
+          "properties": {}
         },
         {
-          "listName": "cities",
-          "name": "la",
+          "listName": "completionStatus",
+          "name": "PARTIAL",
           "order": 1,
           "label": {
-            "ar": "لوس أنجلوس",
-            "en": "Los Angeles"
+            "en": "Partial",
+            "ar": "جزئي"
           },
-          "properties": {
-            "countryFilter": "us",
-            "anotherFilter": "anotherValue1"
-          }
+          "properties": {}
         },
         {
-          "listName": "cities",
-          "name": "to",
+          "listName": "inputmethods",
+          "name": "fromList",
+          "order": 1,
+          "label": {
+            "en": "from List",
+            "ar": "اختيار من القائمة"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "inputmethods",
+          "name": "addNew",
           "order": 2,
           "label": {
-            "ar": "تورونتو",
-            "en": "Toronto"
+            "en": "Add New",
+            "ar": "اسم جديد"
           },
-          "properties": {
-            "countryFilter": "ca",
-            "anotherFilter": "anotherValue2"
-          }
+          "properties": {}
         },
         {
-          "listName": "countries",
-          "name": "fr",
+          "listName": "workDays",
+          "name": "6",
+          "order": 6,
+          "label": {
+            "en": "Day 6",
+            "ar": "السادس"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "workDays",
+          "name": "2",
           "order": 2,
           "label": {
-            "ar": "فرنسا",
-            "en": "France"
+            "en": "Day 2",
+            "ar": "الثاني"
           },
-          "properties": {
-            "continentFilter": "eu"
-          }
+          "properties": {}
         },
         {
-          "listName": "countries",
-          "name": "in",
+          "listName": "workDays",
+          "name": "5",
           "order": 5,
           "label": {
-            "ar": "الهند",
-            "en": "India"
+            "en": "Day 5",
+            "ar": "الخامس"
           },
-          "properties": {
-            "continentFilter": "as"
-          }
+          "properties": {}
         },
         {
-          "listName": "countries",
-          "name": "de",
+          "listName": "settlementType",
+          "name": "resident",
+          "order": 0,
+          "label": {
+            "en": "Resiedent",
+            "ar": "مقيمين"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "workDays",
+          "name": "3",
           "order": 3,
           "label": {
-            "ar": "ألمانيا",
-            "en": "Germany"
+            "en": "Day 3",
+            "ar": "الثالث"
           },
-          "properties": {
-            "continentFilter": "eu"
-          }
+          "properties": {}
+        },
+        {
+          "listName": "settlementType",
+          "name": "camp",
+          "order": 1,
+          "label": {
+            "en": "camp",
+            "ar": "مخيم نازحين"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "workDays",
+          "name": "1",
+          "order": 1,
+          "label": {
+            "en": "Day 1",
+            "ar": "الأول"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "workDays",
+          "name": "4",
+          "order": 4,
+          "label": {
+            "en": "Day 4",
+            "ar": "الرابع"
+          },
+          "properties": {}
         }
       ],
-      "orgUnits": [
-        "awgKZaDoWLA",
-        "UW2up6bUmbG"
-      ],
+      "optionSets": [],
+      "orgUnits": [],
       "label": {
-        "en": "Test form",
-        "ar": "استمارة تجريبية"
-      },
-      "displayName": "test form",
-      "translations": []
+        "en": "Location's ITNs Distribution Form, Households",
+        "ar": "استمارة توزيع الناموسيات | منازل | فريق ميداني"
+      }
     },
     {
-      "createdBy": null,
-      "createdDate": "2024-08-29T23:12:06.258Z",
-      "lastModifiedBy": "admin",
-      "lastModifiedDate": "2024-08-29T23:13:07.886Z",
-      "id": "66cfb1604ece1975029b7797",
-      "uid": "bo9rJr1TNg1",
-      "code": null,
-      "name": "bookkeeping",
-      "description": null,
+      "id": "KcsA3KETRbY",
+      "uid": "KcsA3KETRbY",
+      "code": "CHV_PATIENTS_FORM",
+      "name": "تسجيل وتدبير حالة ملاريا",
+      "description": "استمارة تدبير حالات الملاريا - متطوعات صحة المجتمع",
       "disabled": false,
-      "activity": "U42up6b3mbG",
-      "version": 1,
-      "defaultLocal": "en",
+      "activity": "oBne891mA9n",
+      "version": 12,
+      "defaultLocal": "ar",
       "fields": [
         {
-          "order": 1,
-          "name": "mainSection",
-          "description": null,
+          "name": "basicInfo",
+          "order": 0,
+          "description": "Patiant Basic Info",
           "type": "Section",
-          "mandatory": null,
-          "mainField": null,
-          "rules": [],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
           "label": {
-            "en": "Main Info",
-            "ar": "بيانات الحركة"
+            "en": "Patient info",
+            "ar": "بيانات المريض"
           },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "mainSection",
           "fields": [
             {
+              "uid": "cD7eF8gH9I0",
+              "name": "name",
               "order": 1,
-              "name": "transaction",
-              "description": null,
-              "type": "SelectOne",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [],
-              "listName": "transactions",
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "transactions",
-                "ar": "نوع الحركة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "mainSection",
-              "path": "mainSection.transaction",
-              "fields": []
-            },
-            {
-              "order": 2,
-              "name": "transactionDate",
-              "description": null,
-              "type": "Date",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "transaction Date",
-                "ar": "تاريخ الحركة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "mainSection",
-              "path": "mainSection.transactionDate",
-              "fields": []
-            },
-            {
-              "order": 3,
-              "name": "voucherId",
-              "description": null,
-              "type": "Integer",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply' || #{transaction} == 'dispense' || #{transaction} == 'return'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "voucherId",
-                "ar": "رقم الفاتورة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "mainSection",
-              "path": "mainSection.voucherId",
-              "fields": []
-            },
-            {
-              "order": 4,
-              "name": "voucherDate",
-              "description": null,
-              "type": "Date",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply' || #{transaction} == 'dispense' || #{transaction} == 'return'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "voucherDate",
-                "ar": "تاريخ الفاتورة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "mainSection",
-              "path": "mainSection.voucherDate",
-              "fields": []
-            },
-            {
-              "order": 5,
-              "name": "supplier",
-              "description": null,
-              "type": "Text",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [
-                {
-                  "expression": "transaction == 'supply'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "supplier",
-                "ar": "المورد"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "mainSection",
-              "path": "mainSection.supplier",
-              "fields": []
-            },
-            {
-              "order": 6,
-              "name": "distinationWarehouse",
-              "description": null,
-              "type": "OrganisationUnit",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'dispense' || #{transaction} == 'return'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "distinationWarehouse",
-                "ar": "الجهة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "mainSection",
-              "path": "mainSection.distinationWarehouse",
-              "fields": []
-            },
-            {
-              "order": 7,
-              "name": "recievedBy",
-              "description": null,
+              "description": "Name of the patient",
               "type": "FullName",
               "mandatory": true,
               "mainField": true,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'dispense'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
               "label": {
-                "en": "recievedBy",
-                "ar": "مستلم الكمية"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "mainSection",
-              "path": "mainSection.recievedBy",
-              "fields": []
-            }
-          ]
-        },
-        {
-          "order": 2,
-          "name": "stockItems",
-          "description": null,
-          "type": "RepeatableSection",
-          "mandatory": null,
-          "mainField": null,
-          "rules": [],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Stock Items Data",
-            "ar": "عناصر الحركة"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "stockItems",
-          "fields": [
-            {
-              "order": 9,
-              "name": "batchNumber",
-              "description": null,
-              "type": "Text",
-              "mandatory": true,
-              "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "batchNumber",
-                "ar": "رقم التشغيلة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.batchNumber",
-              "fields": []
+                "en": "Patient name",
+                "ar": "اسم المريض"
+              }
             },
             {
-              "order": 8,
-              "name": "stockItem",
-              "description": null,
+              "uid": "vW3xY4zA5B6",
+              "name": "visitDate",
+              "order": 2,
+              "type": "Date",
+              "mandatory": true,
+              "mainField": true,
+              "rules": [],
+              "label": {
+                "en": "Visit Date",
+                "ar": "تاريخ الزيارة"
+              }
+            },
+            {
+              "uid": "jK1lM2nO3P4",
+              "name": "age",
+              "order": 3,
+              "description": "Age in Years and (months for age less than 1 year)",
+              "type": "Number",
+              "mandatory": true,
+              "mainField": true,
+              "constraint": "#{age} <= 0 || #{age} > 100",
+              "constraintMessage": {
+                "en": "Age is greater than normal",
+                "ar": "العمر كبير جدا تأكد"
+              },
+              "rules": [
+                {
+                  "field": "age",
+                  "expression": "#{age} <= 0 || #{age} > 100",
+                  "action": "Error",
+                  "message": {
+                    "en": "Age is greater than normal",
+                    "ar": "العمر كبير جدا تأكد"
+                  }
+                }
+              ],
+              "label": {
+                "en": "Age",
+                "ar": "العمر"
+              }
+            },
+            {
+              "uid": "xY9zA0bC1D2",
+              "name": "gender",
+              "order": 4,
               "type": "SelectOne",
               "mandatory": true,
               "mainField": true,
               "rules": [],
-              "listName": "stockItems",
-              "referenceInfo": null,
-              "choiceFilter": null,
+              "listName": "genders",
               "label": {
-                "en": "stockItem",
-                "ar": "الصنف"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.stockItem",
-              "fields": []
+                "en": "Gender",
+                "ar": "الجنس"
+              }
             },
             {
+              "uid": "eF3gH4iJ5K6",
+              "name": "pregnant",
+              "order": 5,
+              "type": "Boolean",
+              "mandatory": true,
+              "mainField": true,
+              "rules": [
+                {
+                  "uid": "eF5gH6iJ5K6",
+                  "field": "pregnant",
+                  "expression": "#{gender} == 'FEMALE' && #{age} >= 14",
+                  "action": "Show"
+                }
+              ],
+              "label": {
+                "en": "Is pregnant?",
+                "ar": "هل هي حامل؟"
+              }
+            }
+          ]
+        },
+        {
+          "name": "testDetails",
+          "order": 6,
+          "description": "Test Details",
+          "type": "Section",
+          "label": {
+            "en": "Test Details",
+            "ar": "معلومات الفحص"
+          },
+          "fields": [
+            {
+              "uid": "lM7nO8pQ9R0",
+              "name": "testResult",
+              "order": 7,
+              "type": "SelectOne",
+              "mandatory": true,
+              "mainField": false,
+              "rules": [],
+              "listName": "testResults",
+              "label": {
+                "en": "Test Result",
+                "ar": "نتيجة الفحص"
+              }
+            },
+            {
+              "uid": "z33bC6dE7F8",
+              "name": "detectionType",
+              "order": 8,
+              "type": "SelectOne",
+              "mandatory": true,
+              "mainField": false,
+              "rules": [
+                {
+                  "uid": "eF3gH8iJ5K9",
+                  "field": "detectionType",
+                  "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+                  "action": "Show"
+                }
+              ],
+              "listName": "detectionTypes",
+              "label": {
+                "en": "Detection Type",
+                "ar": "نوع الاكتشاف"
+              }
+            },
+            {
+              "uid": "zA5bDDdE7F8",
+              "name": "severity",
+              "order": 9,
+              "type": "SelectOne",
+              "mandatory": true,
+              "mainField": false,
+              "rules": [
+                {
+                  "uid": "eF9gH8iJ5K9",
+                  "field": "severity",
+                  "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+                  "action": "Show"
+                }
+              ],
+              "listName": "severities",
+              "label": {
+                "en": "Severity",
+                "ar": "تصنيف الحالة"
+              }
+            },
+            {
+              "uid": "positivity",
+              "name": "positivity",
               "order": 10,
-              "name": "barcode",
-              "description": null,
-              "type": "Text",
-              "mandatory": true,
+              "type": "Calculated",
+              "calculation": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+              "mandatory": false,
               "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
+              "rules": [],
               "label": {
-                "en": "barcode",
-                "ar": "الباركود"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.barcode",
-              "fields": []
+                "en": "positivity",
+                "ar": "إيجابية الحالة"
+              }
             },
             {
-              "order": 19,
-              "name": "currency",
-              "description": null,
-              "type": "SelectOne",
-              "mandatory": true,
-              "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{amount} > 0",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": "currencies",
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "currency",
-                "ar": "العملة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.currency",
-              "fields": []
-            },
-            {
+              "uid": "gH9iJ0kL1M2",
+              "name": "treatment",
               "order": 11,
-              "name": "inventoryQuantity",
-              "description": null,
-              "type": "IntegerPositive",
+              "type": "SelectOne",
               "mandatory": true,
-              "mainField": false,
+              "mainField": true,
+              "choiceFilter": "severityFilter == #{severity} && pregnantFilter == #{pregnant} && positivityFilter == #{positivity}",
               "rules": [
                 {
-                  "expression": "#{transaction} == 'inventory'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
+                  "uid": "gH10J1kL1M2",
+                  "field": "treatment",
+                  "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+                  "action": "Show"
                 }
               ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
+              "listName": "treatments",
               "label": {
-                "en": "inventoryQuantity",
-                "ar": "كمية الجرد"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.inventoryQuantity",
-              "fields": []
+                "en": "Treatment",
+                "ar": "تدبير الحالة"
+              }
             },
             {
+              "uid": "nO3pQ4rS5T6",
+              "name": "comment",
               "order": 12,
-              "name": "recievedQuantity",
-              "description": null,
-              "type": "IntegerPositive",
-              "mandatory": true,
+              "type": "LongText",
               "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "recievedQuantity",
-                "ar": "الكمية المستلمة (الموردة)"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.recievedQuantity",
-              "fields": []
-            },
-            {
-              "order": 13,
-              "name": "deliveredQuantity",
-              "description": null,
-              "type": "IntegerPositive",
-              "mandatory": true,
-              "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'dispense'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "deliveredQuantity",
-                "ar": "الكمية المصروفة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.deliveredQuantity",
-              "fields": []
-            },
-            {
-              "order": 20,
-              "name": "expiryDate",
-              "description": null,
-              "type": "Date",
-              "mandatory": true,
-              "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "expiryDate",
-                "ar": "تاريخ الانتهاء"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.expiryDate",
-              "fields": []
-            },
-            {
-              "order": 14,
-              "name": "returnedQuantity",
-              "description": null,
-              "type": "IntegerPositive",
-              "mandatory": true,
-              "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'return'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "returnedQuantity",
-                "ar": "الكمية المرتجعة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.returnedQuantity",
-              "fields": []
-            },
-            {
-              "order": 15,
-              "name": "expiredQuantity",
-              "description": null,
-              "type": "IntegerPositive",
-              "mandatory": true,
-              "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'expiry'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "expiredQuantity",
-                "ar": "الكمية المنتهية"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.expiredQuantity",
-              "fields": []
-            },
-            {
-              "order": 16,
-              "name": "uom",
-              "description": null,
-              "type": "SelectOne",
-              "mandatory": true,
-              "mainField": false,
+              "mandatory": false,
               "rules": [],
-              "listName": "uoms",
-              "referenceInfo": null,
-              "choiceFilter": null,
               "label": {
-                "en": "uom",
-                "ar": "وحدة القياس"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.uom",
-              "fields": []
-            },
-            {
-              "order": 17,
-              "name": "unitPrice",
-              "description": null,
-              "type": "Number",
-              "mandatory": true,
-              "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{amount} > 0",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "unitPrice",
-                "ar": "سعر الوحدة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.unitPrice",
-              "fields": []
-            },
-            {
-              "order": 18,
-              "name": "amount",
-              "description": null,
-              "type": "Number",
-              "mandatory": true,
-              "mainField": false,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "amount",
-                "ar": "القيمة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.amount",
-              "fields": []
+                "en": "Comments",
+                "ar": "ملاحظات وتعليقات"
+              }
             }
           ]
         }
       ],
       "options": [
         {
-          "listName": "warehouselevel",
-          "name": "CHV",
-          "order": 7,
+          "listName": "genders",
+          "name": "MALE",
+          "order": 0,
           "label": {
-            "en": "CHV",
-            "ar": "متطوعات"
+            "ar": "ذكر",
+            "en": "Male"
           },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
+          "properties": {}
         },
         {
-          "listName": "warehouselevel",
-          "name": "healthFacility",
-          "order": 6,
-          "label": {
-            "en": "Health Facility",
-            "ar": "مرافق صحية"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "warehouselevel",
-          "name": "NMCPCentral",
+          "listName": "genders",
+          "name": "FEMALE",
           "order": 1,
           "label": {
-            "en": "Central",
-            "ar": "المركز الرئيسي"
+            "ar": "أنثى",
+            "en": "Female"
           },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
+          "properties": {}
         },
         {
-          "listName": "warehouselevel",
-          "name": "NMCPRegion",
+          "listName": "testResults",
+          "name": "NEGATIVE",
+          "order": 0,
+          "label": {
+            "ar": "سلبي",
+            "en": "Negative"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "testResults",
+          "name": "PF",
+          "order": 1,
+          "label": {
+            "ar": "بلاسموديوم فالسيباروم",
+            "en": "Plasmodium falciparum"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "testResults",
+          "name": "PV",
           "order": 2,
           "label": {
-            "en": "NMCP Region",
-            "ar": "محاور"
+            "ar": "بلاسموديوم فيفاكس",
+            "en": "Plasmodium vivax"
           },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
+          "properties": {}
         },
         {
-          "listName": "warehouselevel",
-          "name": "NMCPBranch",
+          "listName": "testResults",
+          "name": "MIX",
           "order": 3,
           "label": {
-            "en": "NMCP Branch",
-            "ar": "فروع البرنامج"
+            "ar": "مختلط",
+            "en": "Mixed"
           },
+          "properties": {}
+        },
+        {
+          "listName": "testResults",
+          "name": "INVALID",
+          "order": 0,
+          "label": {
+            "ar": "غير صالح",
+            "en": "Invalid"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "detectionTypes",
+          "name": "ACTIVE",
+          "order": 0,
+          "label": {
+            "ar": "بحث نشط",
+            "en": "Active"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "detectionTypes",
+          "name": "REACTIVE",
+          "order": 1,
+          "label": {
+            "ar": "زيارة روتينية",
+            "en": "Reactive"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "severities",
+          "name": "SIMPLE",
+          "order": 0,
+          "label": {
+            "ar": "بسيطة",
+            "en": "Simple"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "severities",
+          "name": "SEVERE",
+          "order": 1,
+          "label": {
+            "ar": "وخيمة",
+            "en": "Severe"
+          },
+          "properties": {}
+        },
+        {
+          "listName": "treatments",
+          "name": "TREATED",
+          "order": 0,
+          "label": {
+            "ar": "معالج",
+            "en": "Treated"
+          },
+          "filterExpression": "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SIMPLE'",
           "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
+            "severityFilter": "SIMPLE",
+            "positivityFilter": true,
+            "pregnantFilter": false
           }
         },
         {
-          "listName": "uoms",
-          "name": "Ampoule",
-          "order": 0,
+          "listName": "treatments",
+          "name": "FIRST_DOSE",
+          "order": 1,
           "label": {
-            "en": "Ampoule",
-            "ar": "امبولة"
+            "ar": "الجرعة الأولى",
+            "en": "First Dose"
           },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "ACT60MG",
-          "order": 0,
-          "label": {
-            "en": "ACT60MG",
-            "ar": "كوارتم 60"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "transactions",
-          "name": "supply",
-          "order": 0,
-          "label": {
-            "en": "Supply",
-            "ar": "توريد"
-          },
+          "filterExpression": "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SEVERE' && #{pregnant} == false",
           "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
+            "positivityFilter": true,
+            "severityFilter": "SEVERE",
+            "pregnantFilter": false
           }
         },
         {
-          "listName": "transactions",
-          "name": "inventory",
-          "order": 0,
+          "listName": "treatments",
+          "name": "REFERRAL",
+          "order": 2,
           "label": {
-            "en": "Inventory",
-            "ar": "جرد"
+            "ar": "إحالة",
+            "en": "Referral"
           },
+          "filterExpression": "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && (#{pregnant} == true || #{severity} == 'SEVERE')",
           "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
+            "severityFilter": "SEVERE",
+            "positivityFilter": true,
+            "pregnantFilter": true
           }
         },
         {
-          "listName": "stockItems",
-          "name": "PMQ7.5MG",
-          "order": 0,
+          "listName": "treatments",
+          "name": "FIRST_DOSE_REFERRAL",
+          "order": 3,
           "label": {
-            "en": "PMQ7.5MG",
-            "ar": "بريماكوين 7.5 مجم"
+            "ar": "الجرعة الأولى وإحالة",
+            "en": "First Dose & Referral"
           },
-          "properties": {}
-        },
-        {
-          "listName": "uoms",
-          "name": "Tape6Tablets",
-          "order": 0,
-          "label": {
-            "en": "Tape 6 Tablets",
-            "ar": "شريط 6 اقراص"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "DRDT",
-          "order": 0,
-          "label": {
-            "en": "DRDT",
-            "ar": "الفحص السريع للضنك"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "uoms",
-          "name": "Tape10Tablets",
-          "order": 0,
-          "label": {
-            "en": "Tape10Tablets",
-            "ar": "شريط 10 اقراص"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "uoms",
-          "name": "Kit25Test",
-          "order": 0,
-          "label": {
-            "en": "Kit25Test",
-            "ar": "كت 25 شريط"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "currencies",
-          "name": "USD",
-          "order": 0,
-          "label": {
-            "en": "USD",
-            "ar": "دولار"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "warehouselevel",
-          "name": "Districts",
-          "order": 5,
-          "label": {
-            "en": "District",
-            "ar": "مكاتب الصحة في المديريات"
-          },
+          "filterExpression": "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SEVERE'",
           "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
+            "severityFilter": "SEVERE",
+            "positivityFilter": true,
+            "pregnantFilter": true
           }
-        },
-        {
-          "listName": "transactions",
-          "name": "dispense",
-          "order": 0,
-          "label": {
-            "en": "dispense",
-            "ar": "صرف"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "currencies",
-          "name": "YER",
-          "order": 0,
-          "label": {
-            "en": "YER",
-            "ar": "ريال يمني"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "ACT40MG",
-          "order": 0,
-          "label": {
-            "en": "ACT40MG",
-            "ar": "كوارتم 40"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "uoms",
-          "name": "cassette",
-          "order": 0,
-          "label": {
-            "en": "cassette",
-            "ar": "كاست"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "warehouselevel",
-          "name": "NMCPUnit",
-          "order": 4,
-          "label": {
-            "en": "NMCP Unit",
-            "ar": "وحدات محافحة الملاريا"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "stockItems",
-          "name": "MRDT",
-          "order": 0,
-          "label": {
-            "en": "MRDT",
-            "ar": "الفحص السريع للملاريا"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "PMQ15MG",
-          "order": 0,
-          "label": {
-            "en": "PMQ15MG",
-            "ar": "بريماكوين 15 مجم"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "ARTING60MG",
-          "order": 0,
-          "label": {
-            "en": "ARTING60MG",
-            "ar": "ارتيسونات 60 مجم امبول"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "ACT80MG",
-          "order": 0,
-          "label": {
-            "en": "ACT80MG",
-            "ar": "كوارتم 80"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "transactions",
-          "name": "return",
-          "order": 0,
-          "label": {
-            "en": "return",
-            "ar": "مرتجع"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "uoms",
-          "name": "Tablet",
-          "order": 0,
-          "label": {
-            "en": "Tablet",
-            "ar": "قرص"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "uoms",
-          "name": "Kit10Test",
-          "order": 0,
-          "label": {
-            "en": "Kit10Test",
-            "ar": "كت 10 اشرطة"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "transactions",
-          "name": "expiry",
-          "order": 0,
-          "label": {
-            "en": "expiry",
-            "ar": "منتهي"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "stockItems",
-          "name": "ACT20MG",
-          "order": 0,
-          "label": {
-            "en": "ACT20MG",
-            "ar": "كوارتم 20"
-          },
-          "properties": {}
         }
       ],
-      "orgUnits": [
-        "awgKZaDoWLA",
-        "YCEyRUYxMTo"
-      ],
-      "label": {},
-      "displayName": "bookkeeping",
-      "translations": []
-    },
-    {
-      "createdBy": null,
-      "createdDate": "2024-09-27T17:38:17.510Z",
-      "lastModifiedBy": "admin",
-      "lastModifiedDate": "2024-09-27T17:38:17.555Z",
-      "id": "66f6ebb160a4fb56d7c477af",
-      "uid": "H111PfAo8kh",
-      "code": "inventoryForm",
-      "name": "inventoryForm",
-      "description": "inventoryForm description",
-      "disabled": false,
-      "activity": "HZS0PfAo8kh",
-      "version": 2,
-      "defaultLocal": "en",
-      "fields": [
-        {
-          "order": 1,
-          "name": "regionInfo",
-          "description": "regionInfo section description",
-          "type": "Section",
-          "mandatory": true,
-          "mainField": null,
-          "rules": [],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Main Info",
-            "ar": "بيانات الحركة"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "regionInfo",
-          "fields": [
-            {
-              "order": 1,
-              "name": "region",
-              "description": "region description",
-              "type": "SelectOne",
-              "mandatory": true,
-              "mainField": null,
-              "rules": [],
-              "listName": "regions",
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "Region",
-                "ar": "المنطقة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "regionInfo",
-              "path": "regionInfo.region",
-              "fields": []
-            },
-            {
-              "order": 2,
-              "name": "country",
-              "description": "country",
-              "type": "SelectOne",
-              "mandatory": true,
-              "mainField": null,
-              "rules": [],
-              "listName": "countries",
-              "referenceInfo": null,
-              "choiceFilter": "regionFilter == #{region}",
-              "label": {
-                "en": "Country",
-                "ar": "الدولة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "regionInfo",
-              "path": "regionInfo.country",
-              "fields": []
-            }
-          ]
-        },
-        {
-          "order": 2,
-          "name": "warehouse",
-          "description": null,
-          "type": "SelectOne",
-          "mandatory": true,
-          "mainField": null,
-          "rules": [],
-          "listName": "warehouses",
-          "referenceInfo": null,
-          "choiceFilter": "countryFilter == country",
-          "label": {
-            "en": "Warehouse",
-            "ar": "المخزن"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "warehouse",
-          "fields": []
-        },
-        {
-          "order": 3,
-          "name": "transactionInfo",
-          "description": "transaction Info description",
-          "type": "Section",
-          "mandatory": true,
-          "mainField": null,
-          "rules": [],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Transaction Info",
-            "ar": "معلومات الحركة"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "transactionInfo",
-          "fields": [
-            {
-              "order": 1,
-              "name": "transaction",
-              "description": null,
-              "type": "SelectOne",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [],
-              "listName": "transactions",
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "transactions",
-                "ar": "نوع الحركة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "transactionInfo",
-              "path": "transactionInfo.transaction",
-              "fields": []
-            },
-            {
-              "order": 2,
-              "name": "transactionDate",
-              "description": null,
-              "type": "Date",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "transaction Date",
-                "ar": "تاريخ الحركة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "transactionInfo",
-              "path": "transactionInfo.transactionDate",
-              "fields": []
-            },
-            {
-              "order": 3,
-              "name": "voucherId",
-              "description": null,
-              "type": "Integer",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply' || #{transaction} == 'dispense' || #{transaction} == 'return'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "voucherId",
-                "ar": "رقم الفاتورة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "transactionInfo",
-              "path": "transactionInfo.voucherId",
-              "fields": []
-            },
-            {
-              "order": 4,
-              "name": "voucherDate",
-              "description": null,
-              "type": "Date",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply' || #{transaction} == 'dispense' || #{transaction} == 'return'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "voucherDate",
-                "ar": "تاريخ الفاتورة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "transactionInfo",
-              "path": "transactionInfo.voucherDate",
-              "fields": []
-            },
-            {
-              "order": 5,
-              "name": "supplier",
-              "description": null,
-              "type": "Text",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "supplier",
-                "ar": "المورد"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "transactionInfo",
-              "path": "transactionInfo.supplier",
-              "fields": []
-            },
-            {
-              "order": 6,
-              "name": "distinationWarehouse",
-              "description": null,
-              "type": "OrganisationUnit",
-              "mandatory": true,
-              "mainField": true,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'dispense' || #{transaction} == 'return'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "distinationWarehouse",
-                "ar": "الجهة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "transactionInfo",
-              "path": "transactionInfo.distinationWarehouse",
-              "fields": []
-            }
-          ]
-        },
-        {
-          "order": 4,
-          "name": "stockItems",
-          "description": "RepeatableSection description",
-          "type": "RepeatableSection",
-          "mandatory": null,
-          "mainField": null,
-          "rules": [],
-          "listName": null,
-          "referenceInfo": null,
-          "choiceFilter": null,
-          "label": {
-            "en": "Stock Items Data",
-            "ar": "عناصر الحركة"
-          },
-          "calculation": null,
-          "defaultValue": null,
-          "section": null,
-          "path": "stockItems",
-          "fields": [
-            {
-              "order": 1,
-              "name": "itemType",
-              "description": null,
-              "type": "SelectOne",
-              "mandatory": true,
-              "mainField": null,
-              "rules": [],
-              "listName": "stockItems",
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "Item Type",
-                "ar": "نوع العنصر"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.itemType",
-              "fields": []
-            },
-            {
-              "order": 2,
-              "name": "quantityReceived",
-              "description": null,
-              "type": "Integer",
-              "mandatory": true,
-              "mainField": null,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'supply'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                },
-                {
-                  "expression": "#{transaction} >= 10",
-                  "action": "Error",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "Quantity Received",
-                "ar": "الكمية المستلمة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.quantityReceived",
-              "fields": []
-            },
-            {
-              "order": 3,
-              "name": "quantityDispensed",
-              "description": null,
-              "type": "Integer",
-              "mandatory": true,
-              "mainField": null,
-              "rules": [
-                {
-                  "expression": "#{transaction} == 'dispense' || #{transaction} == 'return'",
-                  "action": "Show",
-                  "message": null,
-                  "filterInfo": null
-                },
-                {
-                  "expression": "#{transaction} >= 10",
-                  "action": "Error",
-                  "message": null,
-                  "filterInfo": null
-                }
-              ],
-              "listName": null,
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "Quantity Dispensed/Returned",
-                "ar": "الكمية المصروفة أو المرتجعة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.quantityDispensed",
-              "fields": []
-            },
-            {
-              "order": 4,
-              "name": "uom",
-              "description": null,
-              "type": "SelectOne",
-              "mandatory": true,
-              "mainField": null,
-              "rules": [],
-              "listName": "uoms",
-              "referenceInfo": null,
-              "choiceFilter": null,
-              "label": {
-                "en": "UOM",
-                "ar": "الوحدة"
-              },
-              "calculation": null,
-              "defaultValue": null,
-              "section": "stockItems",
-              "path": "stockItems.uom",
-              "fields": []
-            }
-          ]
-        }
-      ],
-      "options": [
-        {
-          "listName": "regions",
-          "name": "northAmerica",
-          "order": null,
-          "label": {
-            "en": "northAmerica"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "regions",
-          "name": "europe",
-          "order": null,
-          "label": {
-            "en": "europe"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "uoms",
-          "name": "cassette",
-          "order": 3,
-          "label": {
-            "en": "cassette",
-            "ar": "كاست"
-          },
-          "properties": {
-            "stockItemFilter": "DRDT",
-            "transactionFilter": [
-              "dispense",
-              "return",
-              "expiry"
-            ]
-          }
-        },
-        {
-          "listName": "uoms",
-          "name": "Tape6Tablets",
-          "order": 6,
-          "label": {
-            "en": "Tape 6 Tablets",
-            "ar": "شريط 6 اقراص"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "PMQ7.5MG",
-          "order": 8,
-          "label": {
-            "en": "PMQ7.5MG",
-            "ar": "بريماكوين 7.5 مجم"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "uoms",
-          "name": "Tape10Tablets",
-          "order": 5,
-          "label": {
-            "en": "Tape10Tablets",
-            "ar": "شريط 10 اقراص"
-          },
-          "properties": {
-            "stockItemFilter": "PMQ7.5MG"
-          }
-        },
-        {
-          "listName": "stockItems",
-          "name": "PMQ15MG",
-          "order": 9,
-          "label": {
-            "en": "PMQ15MG",
-            "ar": "بريماكوين 15 مجم"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "countries",
-          "name": "us",
-          "order": null,
-          "label": {
-            "en": "us"
-          },
-          "properties": {
-            "regionFilter": "northAmerica"
-          }
-        },
-        {
-          "listName": "countries",
-          "name": "ca",
-          "order": null,
-          "label": {
-            "en": "ca"
-          },
-          "properties": {
-            "regionFilter": "northAmerica"
-          }
-        },
-        {
-          "listName": "uoms",
-          "name": "Kit10Test",
-          "order": 2,
-          "label": {
-            "en": "Kit10Test",
-            "ar": "كت 10 اشرطة"
-          },
-          "properties": {
-            "stockItemFilter": "DRDT",
-            "transactionFilter": "supply"
-          }
-        },
-        {
-          "listName": "stockItems",
-          "name": "ACT20MG",
-          "order": 4,
-          "label": {
-            "en": "ACT20MG",
-            "ar": "كوارتم 20"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "countries",
-          "name": "de",
-          "order": null,
-          "label": {
-            "en": "de"
-          },
-          "properties": {
-            "regionFilter": "europe"
-          }
-        },
-        {
-          "listName": "countries",
-          "name": "fr",
-          "order": null,
-          "label": {
-            "en": "fr"
-          },
-          "properties": {
-            "regionFilter": "europe"
-          }
-        },
-        {
-          "listName": "uoms",
-          "name": "Ampoule",
-          "order": 4,
-          "label": {
-            "en": "Ampoule",
-            "ar": "امبولة"
-          },
-          "properties": {
-            "stockItemFilter": "ARTING60MG"
-          }
-        },
-        {
-          "listName": "transactions",
-          "name": "supply",
-          "order": 2,
-          "label": {
-            "en": "Supply",
-            "ar": "توريد"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "uoms",
-          "name": "Tablet",
-          "order": 7,
-          "label": {
-            "en": "Tablet",
-            "ar": "قرص"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "warehouses",
-          "name": "Warehouse A",
-          "order": null,
-          "label": {
-            "en": "Warehouse A"
-          },
-          "properties": {
-            "countryFilter": "us"
-          }
-        },
-        {
-          "listName": "warehouses",
-          "name": "Warehouse B",
-          "order": null,
-          "label": {
-            "en": "Warehouse B"
-          },
-          "properties": {
-            "countryFilter": "ca"
-          }
-        },
-        {
-          "listName": "warehouses",
-          "name": "Warehouse C",
-          "order": null,
-          "label": {
-            "en": "Warehouse C"
-          },
-          "properties": {
-            "countryFilter": "de"
-          }
-        },
-        {
-          "listName": "stockItems",
-          "name": "ACT40MG",
-          "order": 3,
-          "label": {
-            "en": "ACT40MG",
-            "ar": "كوارتم 40"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "MRDT",
-          "order": 5,
-          "label": {
-            "en": "MRDT",
-            "ar": "الفحص السريع للملاريا"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "stockItems",
-          "name": "ACT60MG",
-          "order": 2,
-          "label": {
-            "en": "ACT60MG",
-            "ar": "كوارتم 60"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "warehouses",
-          "name": "Warehouse D",
-          "order": null,
-          "label": {
-            "en": "Warehouse D"
-          },
-          "properties": {
-            "countryFilter": "fr"
-          }
-        },
-        {
-          "listName": "stockItems",
-          "name": "ARTING60MG",
-          "order": 7,
-          "label": {
-            "en": "ARTING60MG",
-            "ar": "ارتيسونات 60 مجم امبول"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "transactions",
-          "name": "return",
-          "order": 4,
-          "label": {
-            "en": "return",
-            "ar": "مرتجع"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "transactions",
-          "name": "expiry",
-          "order": 5,
-          "label": {
-            "en": "expiry",
-            "ar": "منتهي"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "stockItems",
-          "name": "ACT80MG",
-          "order": 1,
-          "label": {
-            "en": "ACT80MG",
-            "ar": "كوارتم 80"
-          },
-          "properties": {}
-        },
-        {
-          "listName": "transactions",
-          "name": "inventory",
-          "order": 1,
-          "label": {
-            "en": "Inventory",
-            "ar": "جرد"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "uoms",
-          "name": "Kit25Test",
-          "order": 1,
-          "label": {
-            "en": "Kit25Test",
-            "ar": "كت 25 شريط"
-          },
-          "properties": {
-            "stockItemFilter": "DRDT"
-          }
-        },
-        {
-          "listName": "transactions",
-          "name": "dispense",
-          "order": 3,
-          "label": {
-            "en": "dispense",
-            "ar": "صرف"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "transactions",
-          "name": "consumption",
-          "order": 6,
-          "label": {
-            "en": "consumption",
-            "ar": "استهلاك"
-          },
-          "properties": {
-            "age": 0,
-            "phone": "",
-            "code": ""
-          }
-        },
-        {
-          "listName": "stockItems",
-          "name": "DRDT",
-          "order": 6,
-          "label": {
-            "en": "DRDT",
-            "ar": "الفحص السريع للضنك"
-          },
-          "properties": {}
-        }
-      ],
-      "optionSets": [
-        {
-          "listName": "regions",
-          "options": [
-            {
-              "listName": "regions",
-              "name": "northAmerica",
-              "order": null,
-              "label": {
-                "en": "northAmerica"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "regions",
-              "name": "europe",
-              "order": null,
-              "label": {
-                "en": "europe"
-              },
-              "properties": {}
-            }
-          ]
-        },
-        {
-          "listName": "countries",
-          "options": [
-            {
-              "listName": "countries",
-              "name": "us",
-              "order": null,
-              "label": {
-                "en": "us"
-              },
-              "properties": {
-                "regionFilter": "northAmerica"
-              }
-            },
-            {
-              "listName": "countries",
-              "name": "ca",
-              "order": null,
-              "label": {
-                "en": "ca"
-              },
-              "properties": {
-                "regionFilter": "northAmerica"
-              }
-            },
-            {
-              "listName": "countries",
-              "name": "de",
-              "order": null,
-              "label": {
-                "en": "de"
-              },
-              "properties": {
-                "regionFilter": "europe"
-              }
-            },
-            {
-              "listName": "countries",
-              "name": "fr",
-              "order": null,
-              "label": {
-                "en": "fr"
-              },
-              "properties": {
-                "regionFilter": "europe"
-              }
-            }
-          ]
-        },
-        {
-          "listName": "transactions",
-          "options": [
-            {
-              "listName": "transactions",
-              "name": "inventory",
-              "order": 1,
-              "label": {
-                "en": "Inventory",
-                "ar": "جرد"
-              },
-              "properties": {
-                "age": 0,
-                "phone": "",
-                "code": ""
-              }
-            },
-            {
-              "listName": "transactions",
-              "name": "supply",
-              "order": 2,
-              "label": {
-                "en": "Supply",
-                "ar": "توريد"
-              },
-              "properties": {
-                "age": 0,
-                "phone": "",
-                "code": ""
-              }
-            },
-            {
-              "listName": "transactions",
-              "name": "dispense",
-              "order": 3,
-              "label": {
-                "en": "dispense",
-                "ar": "صرف"
-              },
-              "properties": {
-                "age": 0,
-                "phone": "",
-                "code": ""
-              }
-            },
-            {
-              "listName": "transactions",
-              "name": "return",
-              "order": 4,
-              "label": {
-                "en": "return",
-                "ar": "مرتجع"
-              },
-              "properties": {
-                "age": 0,
-                "phone": "",
-                "code": ""
-              }
-            },
-            {
-              "listName": "transactions",
-              "name": "expiry",
-              "order": 5,
-              "label": {
-                "en": "expiry",
-                "ar": "منتهي"
-              },
-              "properties": {
-                "age": 0,
-                "phone": "",
-                "code": ""
-              }
-            },
-            {
-              "listName": "transactions",
-              "name": "consumption",
-              "order": 6,
-              "label": {
-                "en": "consumption",
-                "ar": "استهلاك"
-              },
-              "properties": {
-                "age": 0,
-                "phone": "",
-                "code": ""
-              }
-            }
-          ]
-        },
-        {
-          "listName": "uoms",
-          "options": [
-            {
-              "listName": "uoms",
-              "name": "Kit25Test",
-              "order": 1,
-              "label": {
-                "en": "Kit25Test",
-                "ar": "كت 25 شريط"
-              },
-              "properties": {
-                "stockItemFilter": "DRDT"
-              }
-            },
-            {
-              "listName": "uoms",
-              "name": "Kit10Test",
-              "order": 2,
-              "label": {
-                "en": "Kit10Test",
-                "ar": "كت 10 اشرطة"
-              },
-              "properties": {
-                "stockItemFilter": "DRDT",
-                "transactionFilter": "supply"
-              }
-            },
-            {
-              "listName": "uoms",
-              "name": "cassette",
-              "order": 3,
-              "label": {
-                "en": "cassette",
-                "ar": "كاست"
-              },
-              "properties": {
-                "stockItemFilter": "DRDT",
-                "transactionFilter": [
-                  "dispense",
-                  "return",
-                  "expiry"
-                ]
-              }
-            },
-            {
-              "listName": "uoms",
-              "name": "Ampoule",
-              "order": 4,
-              "label": {
-                "en": "Ampoule",
-                "ar": "امبولة"
-              },
-              "properties": {
-                "stockItemFilter": "ARTING60MG"
-              }
-            },
-            {
-              "listName": "uoms",
-              "name": "Tape10Tablets",
-              "order": 5,
-              "label": {
-                "en": "Tape10Tablets",
-                "ar": "شريط 10 اقراص"
-              },
-              "properties": {
-                "stockItemFilter": "PMQ7.5MG"
-              }
-            },
-            {
-              "listName": "uoms",
-              "name": "Tape6Tablets",
-              "order": 6,
-              "label": {
-                "en": "Tape 6 Tablets",
-                "ar": "شريط 6 اقراص"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "uoms",
-              "name": "Tablet",
-              "order": 7,
-              "label": {
-                "en": "Tablet",
-                "ar": "قرص"
-              },
-              "properties": {}
-            }
-          ]
-        },
-        {
-          "listName": "stockItems",
-          "options": [
-            {
-              "listName": "stockItems",
-              "name": "ACT80MG",
-              "order": 1,
-              "label": {
-                "en": "ACT80MG",
-                "ar": "كوارتم 80"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "stockItems",
-              "name": "ACT60MG",
-              "order": 2,
-              "label": {
-                "en": "ACT60MG",
-                "ar": "كوارتم 60"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "stockItems",
-              "name": "ACT40MG",
-              "order": 3,
-              "label": {
-                "en": "ACT40MG",
-                "ar": "كوارتم 40"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "stockItems",
-              "name": "ACT20MG",
-              "order": 4,
-              "label": {
-                "en": "ACT20MG",
-                "ar": "كوارتم 20"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "stockItems",
-              "name": "MRDT",
-              "order": 5,
-              "label": {
-                "en": "MRDT",
-                "ar": "الفحص السريع للملاريا"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "stockItems",
-              "name": "DRDT",
-              "order": 6,
-              "label": {
-                "en": "DRDT",
-                "ar": "الفحص السريع للضنك"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "stockItems",
-              "name": "ARTING60MG",
-              "order": 7,
-              "label": {
-                "en": "ARTING60MG",
-                "ar": "ارتيسونات 60 مجم امبول"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "stockItems",
-              "name": "PMQ7.5MG",
-              "order": 8,
-              "label": {
-                "en": "PMQ7.5MG",
-                "ar": "بريماكوين 7.5 مجم"
-              },
-              "properties": {}
-            },
-            {
-              "listName": "stockItems",
-              "name": "PMQ15MG",
-              "order": 9,
-              "label": {
-                "en": "PMQ15MG",
-                "ar": "بريماكوين 15 مجم"
-              },
-              "properties": {}
-            }
-          ]
-        },
-        {
-          "listName": "warehouses",
-          "options": [
-            {
-              "listName": "warehouses",
-              "name": "Warehouse A",
-              "order": null,
-              "label": {
-                "en": "Warehouse A"
-              },
-              "properties": {
-                "countryFilter": "us"
-              }
-            },
-            {
-              "listName": "warehouses",
-              "name": "Warehouse B",
-              "order": null,
-              "label": {
-                "en": "Warehouse B"
-              },
-              "properties": {
-                "countryFilter": "ca"
-              }
-            },
-            {
-              "listName": "warehouses",
-              "name": "Warehouse C",
-              "order": null,
-              "label": {
-                "en": "Warehouse C"
-              },
-              "properties": {
-                "countryFilter": "de"
-              }
-            },
-            {
-              "listName": "warehouses",
-              "name": "Warehouse D",
-              "order": null,
-              "label": {
-                "en": "Warehouse D"
-              },
-              "properties": {
-                "countryFilter": "fr"
-              }
-            }
-          ]
-        }
-      ],
-      "orgUnits": [],
       "label": {
-        "en": "Malaria Drugs Supply",
-        "ar": "توزيع أدوية الملاريا"
-      },
-      "displayName": "inventoryForm",
-      "translations": []
+        "en": "chv cases register",
+        "ar": "تدبير حالة ملاريا"
+      }
     }
   ]
 };

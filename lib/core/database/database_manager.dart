@@ -57,13 +57,20 @@ class DatabaseManager {
   }
 
   initializeDatabase() async {
+    if (this.databaseFactory != null) {
+      return databaseFactory?.openDatabase(inMemoryDatabasePath);
+    }
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, databaseName + '.db');
 
     var database = inMemory
         ? await openDatabase(inMemoryDatabasePath,
             onConfigure: _onConfigure, password: phrase)
-        : await openDatabase(path, version: version, password: phrase);
+        : await openDatabase(path,
+            version: version,
+            onCreate: _createDatabase,
+            onConfigure: _onConfigure,
+            password: phrase);
     return database;
   }
 
@@ -71,6 +78,8 @@ class DatabaseManager {
     // Add support for cascade delete
     await db.execute("PRAGMA foreign_keys = OFF");
   }
+
+  void _createDatabase(Database database, int version) async {}
 
   closeDatabase() async {
     if (_database != null) {

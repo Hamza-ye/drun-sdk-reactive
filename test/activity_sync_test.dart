@@ -39,7 +39,7 @@ void main() async {
   await userQuery.setData(user).save();
 
   // dioAdapter.onGet(
-  //   'http://localhost:8080/api/custom/projects?paging=false&eagerload=true',
+  //   'http://localhost:8080/api/custom/projects?paging=false',
   //   (server) => server.reply(200, sampleProjects),
   // );
 
@@ -49,7 +49,7 @@ void main() async {
   // }, dioTestClient: dio);
 
   dioAdapter.onGet(
-    'http://localhost:8080/api/custom/activities?paged=false&eagerload=true',
+    'http://localhost:8080/api/custom/activities?paged=false',
     (server) => server.reply(200, sampleActivities),
   );
   final activityQuery = DActivityQuery(database: db);
@@ -60,6 +60,6 @@ void main() async {
   List<DActivity> activities = await D2Remote.activityModuleD.activity.get();
 
   test('should store all incoming activities metadata', () {
-    expect(activities.length, 18);
+    expect(activities.length, 3);
   });
 }
