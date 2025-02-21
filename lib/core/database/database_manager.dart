@@ -58,8 +58,30 @@ class DatabaseManager {
 
   initializeDatabase() async {
     if (this.databaseFactory != null) {
-      return databaseFactory?.openDatabase(inMemoryDatabasePath);
+      // Use persistent database file for Windows instead of in-memory
+      // Directory documentDirectory = await getApplicationDocumentsDirectory();
+      final currentDir = Directory.current.path;
+      String customPath = join(currentDir, databaseName + '.db');
+
+      final customDir = Directory(customPath);
+      if (!await customDir.exists()) {
+        await customDir.create(recursive: true);
+      }
+
+      final path = join(customPath, databaseName + '.db');
+
+      return await databaseFactory!.openDatabase(path,
+          options: OpenDatabaseOptions(
+            version: version,
+            onCreate: _createDatabase,
+            onConfigure: _onConfigure,
+          ));
     }
+
+    // if (this.databaseFactory != null) {
+    //   return databaseFactory?.openDatabase(inMemoryDatabasePath);
+    // }
+
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, databaseName + '.db');
 

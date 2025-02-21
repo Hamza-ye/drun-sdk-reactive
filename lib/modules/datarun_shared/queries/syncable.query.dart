@@ -81,7 +81,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
     // final formVersion =
     //     await FormVersionQuery().byId(entity?.formVersion).getOne();
 
-    return entity?.synced == false /*|| haveChvSuperAuth*/;
+    return entity?.synced == false || entity?.createdBy != null/*|| haveChvSuperAuth*/;
   }
 
   /// **2. Preparing SyncableEntity Data for Upload (51%):**

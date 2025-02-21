@@ -5,7 +5,7 @@ extension UiDateString on String {}
 class DateHelper {
   static const String _DATABASE_FORMAT_EXPRESSION =
       "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-  static const String _UI_DATE_FORMAT = 'yyyy-MM-dd';
+  // static const String _UI_DATE_FORMAT = 'yyyy-MM-dd';
 
   static DateFormat _databaseDateFormat() {
     return DateFormat(_DATABASE_FORMAT_EXPRESSION, 'en_US');
@@ -44,7 +44,7 @@ class DateHelper {
   static String nowUtc() {
     // same as DateTime.now().toUtc().toIso8601String(), but
     // without microsecond, last 3 digits, not effect
-    return formatUtc(DateTime.now());;
+    return formatUtc(DateTime.now());
   }
 
   // Compare two dates (ignoring time)
@@ -91,17 +91,17 @@ class DateHelper {
 }
 
 void main() {
-  DateTime now = DateTime.now();
-  String utcString1 = DateHelper.formatUtc(now);
-  String utcString2 = DateHelper.formatUtc(now);
-  String utcString3 = DateHelper.convertDateTimeToSqlDate(now);
+  // DateTime now = DateTime.now();
+  // String utcString1 = DateHelper.formatUtc(now);
+  // String utcString2 = DateHelper.formatUtc(now);
+  // String utcString3 = DateHelper.convertDateTimeToSqlDate(now);
   // DateTime parsed = DateHelper.parseUtc(utcString1);
   // DateTime parsed2 = DateHelper.parseUtc(utcString2);
   // DateTime parsed3 = DateHelper.parseUtc(utcString3);
 
-  DateTime now2 = DateTime.now(); // Local time
-  String utcString = now2.toUtc().toIso8601String();
-  print(utcString); // Example: "2025-02-10T12:00:00.000Z"
+  // DateTime now2 = DateTime.now(); // Local time
+  // String utcString = now2.toUtc().toIso8601String();
+  // print(utcString); // Example: "2025-02-10T12:00:00.000Z"
 
   // print('UTC String: $utcString');
   // print('Parsed Date: ${DateHelper.formatForUi(parsed3)}');

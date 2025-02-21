@@ -37,6 +37,8 @@ class SyncableEntity extends BaseEntity {
   @Column(nullable: true)
   String? finishedEntryTime;
 
+  @Column(nullable: true)
+  String? createdBy;
   /// Active=IN_PROGRESS, Completed=COMPLETED
   @Column(type: ColumnType.TEXT, nullable: true)
   AssignmentStatus? status;
@@ -80,6 +82,8 @@ class SyncableEntity extends BaseEntity {
       this.code,
       String? lastModifiedDate,
       String? createdDate,
+      this.createdBy,
+
       this.assignment,
       this.orgUnit,
       this.form,
@@ -116,6 +120,7 @@ class SyncableEntity extends BaseEntity {
       "form": form,
       "name": this.name,
       "createdDate": this.createdDate,
+      "createdBy": this.createdBy,
       "lastModifiedDate": this.lastModifiedDate,
 
       /// Syncable

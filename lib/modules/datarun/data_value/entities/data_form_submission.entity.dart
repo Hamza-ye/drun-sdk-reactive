@@ -26,6 +26,7 @@ class DataFormSubmission extends SyncableEntity {
     String? code,
     Map<String, dynamic> formData = const {},
     String? createdDate,
+    String? createdBy,
     String? lastModifiedDate,
     // this.dataValues,
     // this.repeatInstances,
@@ -57,8 +58,8 @@ class DataFormSubmission extends SyncableEntity {
           name: name,
           code: code,
           createdDate: createdDate,
+          createdBy: createdBy,
           lastModifiedDate: lastModifiedDate,
-
           /// Syncable
           formVersion: formVersion,
           form: form,
@@ -113,6 +114,7 @@ class DataFormSubmission extends SyncableEntity {
       code: json['code'],
       name: json['name'],
       createdDate: json['createdDate'],
+      createdBy: json['createdBy'],
       lastModifiedDate: json['lastModifiedDate'],
       // dataValues: (json['dataValues'] ?? [])
       //     .map<DataValue>((dataValue) => DataValue.fromJson({
@@ -184,6 +186,7 @@ class DataFormSubmission extends SyncableEntity {
       code: json['code'],
       name: json['name'],
       createdDate: json['createdDate'],
+      createdBy: json['createdBy'],
       lastModifiedDate: json['lastModifiedDate'],
       formData: parseFormData(json['formData']),
 
@@ -191,9 +194,10 @@ class DataFormSubmission extends SyncableEntity {
       formVersion: '${json['form']}_${json['version']}',
       form: json['form'],
       version: json['version'],
-      deleted: json['deleted'],
-      synced: json['synced'],
-      syncFailed: json['syncFailed'],
+      deleted: json['deleted'] ?? false,
+      synced: json['synced'] ?? true,
+      isFinal: json['isFinal'] ?? true,
+      syncFailed: json['syncFailed'] ?? false,
       lastSyncDate: json['lastSyncDate'],
       lastSyncMessage: json['lastSyncMessage'],
       startEntryTime: json['startEntryTime'],
@@ -223,6 +227,7 @@ class DataFormSubmission extends SyncableEntity {
       'code': code,
       'name': name,
       'createdDate': createdDate,
+      'createdBy': createdBy,
       'lastModifiedDate': lastModifiedDate,
       'formData': jsonEncode(formData),
 
