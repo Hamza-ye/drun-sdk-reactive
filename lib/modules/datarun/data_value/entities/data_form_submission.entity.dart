@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:d2_remote/core/annotations/column.annotation.dart';
 import 'package:d2_remote/core/annotations/entity.annotation.dart';
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
 import 'package:d2_remote/modules/datarun/form/models/geometry.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 import 'package:d2_remote/shared/enumeration/assignment_status.dart';
@@ -60,6 +61,7 @@ class DataFormSubmission extends SyncableEntity {
           createdDate: createdDate,
           createdBy: createdBy,
           lastModifiedDate: lastModifiedDate,
+
           /// Syncable
           formVersion: formVersion,
           form: form,
@@ -232,7 +234,8 @@ class DataFormSubmission extends SyncableEntity {
       'formData': jsonEncode(formData),
 
       /// Syncable
-      'formVersion': formVersion,
+      'formVersion':
+          formVersion.runtimeType == FormVersion ? formVersion.id : formVersion,
       'form': form,
       'version': version,
       'deleted': this.deleted,

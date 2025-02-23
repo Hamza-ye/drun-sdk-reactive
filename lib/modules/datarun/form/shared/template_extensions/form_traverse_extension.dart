@@ -8,8 +8,9 @@ extension FormTraverseExtension on FormVersion {
 
   IMap<String, Template> get formFlatFields {
     if ((flattenFieldsMap ?? IMap()).isEmpty) {
-      flattenFieldsMap = sections
-          .addAll(fieldsConf)
+      final allFields =  sections
+          .addAll(fieldsConf);
+      flattenFieldsMap = allFields
           .asMap()
           .map((k, v) => MapEntry(v.path!, v));
     }

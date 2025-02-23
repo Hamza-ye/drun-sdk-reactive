@@ -32,9 +32,10 @@ class FormSubmissionQuery extends SyncableQuery<DataFormSubmission> {
         ..dirty = true
         ..lastModifiedDate = DateHelper.nowUtc();
 
-      mergeMode = MergeMode.Merge;
-      await setData(toDelete).save();
-      mergeMode = MergeMode.Replace;
+      // mergeMode = MergeMode.Merge;
+      await setData(toDelete)
+          .save(saveOptions: SaveOptions(skipLocalSyncStatus: true));
+      // mergeMode = MergeMode.Replace;
     }
   }
 
