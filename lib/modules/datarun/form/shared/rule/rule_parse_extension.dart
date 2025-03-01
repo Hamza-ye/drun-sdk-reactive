@@ -1,5 +1,6 @@
 import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
+import 'package:d2_remote/modules/datarun/form/shared/rule/action.dart';
 import 'package:d2_remote/modules/datarun/form/shared/template_extensions/form_traverse_extension.dart';
 
 extension FieldTemplateDependencies on Template {
@@ -22,6 +23,15 @@ extension FieldTemplateDependencies on Template {
     return dependencySet.toSet().toList();
   }
 
+  List<RuleAction> get visibilityRules {
+    List<RuleAction> visibilityRules = [];
+    for (final rule in (rules?.unlockView ?? [])
+        .where((rule) => rule.ruleAction.action.isVisibility)) {
+      visibilityRules.add(rule.ruleAction);
+    }
+    return visibilityRules.toSet().toList();
+  }
+
   /// from the choiceFilter expression
   List<String> get filterDependencies {
     List<String> dependencyList = [];
@@ -35,9 +45,7 @@ extension FieldTemplateDependencies on Template {
             .map((match) => match.group(1)!)
             .toList();
         dependencyList.addAll(filterDependencies);
-      } else {
-
-      }
+      } else {}
 
       return dependencyList.toSet().toList();
     }

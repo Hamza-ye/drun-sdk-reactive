@@ -3,16 +3,13 @@ import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart
 import 'package:d2_remote/modules/datarun/form/shared/field_template/template.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:d2_remote/modules/datarun/form/shared/field_template/section_template.entity.dart';
 
 extension FormTraverseExtension on FormVersion {
-
   IMap<String, Template> get formFlatFields {
     if ((flattenFieldsMap ?? IMap()).isEmpty) {
-      final allFields =  sections
-          .addAll(fieldsConf);
-      flattenFieldsMap = allFields
-          .asMap()
-          .map((k, v) => MapEntry(v.path!, v));
+      final allFields = sections.addAll(fieldsConf);
+      flattenFieldsMap = allFields.asMap().map((k, v) => MapEntry(v.path!, v));
     }
     return flattenFieldsMap!;
   }
@@ -43,8 +40,8 @@ extension FormTraverseExtension on FormVersion {
           String parentPath = parts.sublist(0, parts.length - 1).join('.');
           Template? parent = treeNodes[parentPath];
           if (parent != null) {
-            treeNodes[parentPath] =
-                parent.copyWith(treeFields: parent.treeFields.add(node));
+            treeNodes[parentPath] = (parent as SectionTemplate)
+                .copyWith(treeFields: parent.treeFields.add(node));
           } else {
             // If a parent is missing, treat this as a new root
             roots.add(node);
@@ -156,16 +153,16 @@ extension PathMaterializedFormUtil on FormVersion {
         .firstOrNullWhere((n) => n.path == parentPath.join('.'));
   }
 
-  // List<Template> getSiblings(String fieldPath) {
-  //   final parentPath = fieldPath.split('.')..removeLast();
-  //   if (parentPath.isEmpty) return []; // Root node has no siblings
-  //   final depth = fieldPath.split('.').length;
-  //   return formFlatFields.values.where((n) {
-  //     return n.path!.split('.').length == depth &&
-  //         n.path!.startsWith(parentPath.join('.')) &&
-  //         n.path != fieldPath;
-  //   }).toList();
-  // }
+// List<Template> getSiblings(String fieldPath) {
+//   final parentPath = fieldPath.split('.')..removeLast();
+//   if (parentPath.isEmpty) return []; // Root node has no siblings
+//   final depth = fieldPath.split('.').length;
+//   return formFlatFields.values.where((n) {
+//     return n.path!.split('.').length == depth &&
+//         n.path!.startsWith(parentPath.join('.')) &&
+//         n.path != fieldPath;
+//   }).toList();
+// }
 }
 
 extension FieldTemplatePathExtension on Template {

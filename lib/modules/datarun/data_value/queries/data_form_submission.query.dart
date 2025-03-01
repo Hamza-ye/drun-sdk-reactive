@@ -5,7 +5,6 @@ import 'package:d2_remote/modules/datarun/data_value/entities/data_form_submissi
 import 'package:d2_remote/modules/datarun_shared/queries/syncable.query.dart';
 import 'package:d2_remote/shared/models/request_progress.model.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
-import 'package:d2_remote/shared/utilities/merge_mode.util.dart';
 import 'package:d2_remote/shared/utilities/save_option.util.dart';
 import 'package:dio/dio.dart';
 import 'package:sqflite/sqflite.dart';

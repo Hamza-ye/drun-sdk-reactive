@@ -3,12 +3,33 @@ import 'package:intl/intl.dart';
 extension UiDateString on String {}
 
 class DateHelper {
-  static const String _DATABASE_FORMAT_EXPRESSION =
+  static const String DATABASE_FORMAT_EXPRESSION =
       "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-  // static const String _UI_DATE_FORMAT = 'yyyy-MM-dd';
+  static const String DATABASE_FORMAT_EXPRESSION_NO_SECONDS =
+      "yyyy-MM-dd'T'HH:mm";
 
-  static DateFormat _databaseDateFormat() {
-    return DateFormat(_DATABASE_FORMAT_EXPRESSION, 'en_US');
+  static const String DATE_TIME_FORMAT_EXPRESSION = "yyyy-MM-dd HH:mm";
+
+  static const String UI_DATE_FORMAT = 'yyyy-MM-dd';
+
+  static const String TIME_FORMAT = 'HH:mm';
+
+
+  static DateFormat databaseDateFormat() {
+    return DateFormat(DATABASE_FORMAT_EXPRESSION, 'en_US');
+  }
+
+  static DateFormat uiDateFormat() {
+    return DateFormat(UI_DATE_FORMAT, 'en_US');
+  }
+
+  static DateFormat uiDateFormatNoSeconds() {
+    return DateFormat(DATABASE_FORMAT_EXPRESSION_NO_SECONDS, 'en_US');
+  }
+
+
+  static DateFormat timeFormat() {
+    return DateFormat('HH:mm', 'en_US');
   }
 
   /// Parse from string to String (ensuring UTC)
@@ -19,17 +40,16 @@ class DateHelper {
   }
 
   /// from DbUtc To Ui Local Format
-  static String fromDbUtcToUiLocalFormat(String date) {
+  static String fromDbUtcToUiLocalFormat(String date, {bool includeTime = false}) {
     final DateTime? parsed =
         DateTime.tryParse(date.endsWith('Z') ? date : '${date}Z');
-    return parsed != null ? DateHelper.formatForUi(parsed) : date;
+    return parsed != null ? DateHelper.formatForUi(parsed, includeTime: includeTime) : date;
   }
 
-  static String formatForUi(DateTime dateTime, {bool includeTime = false}) {
+  static String formatForUi(DateTime dateTime, {bool includeTime = false, bool onlyTime = false}) {
     final DateTime localDate = dateTime.toLocal();
-    final DateFormat formatter = includeTime
-        ? DateFormat('yyyy-MM-dd HH:mm:ss', 'en_US')
-        : DateFormat('yyyy-MM-dd', 'en_US');
+    final DateFormat formatter =
+        includeTime ? uiDateFormatNoSeconds() : uiDateFormat();
     return formatter.format(localDate);
   }
 
@@ -37,7 +57,7 @@ class DateHelper {
   static String formatUtc(DateTime dateTime) {
     // same as dateTime.toUtc().toIso8601String(), but
     // without microsecond, last 3 digits, not effect
-    return _databaseDateFormat().format(dateTime.toUtc());
+    return databaseDateFormat().format(dateTime.toUtc());
   }
 
   // Get current UTC timestamp
@@ -70,7 +90,7 @@ class DateHelper {
 
   static String convertDateTimeToSqlDate([DateTime? date]) {
     date = date ?? DateTime.now();
-    return _databaseDateFormat().format(date.toUtc());
+    return databaseDateFormat().format(date.toUtc());
   }
 
   static String formatDateRange(String startDate, String endDate) {

@@ -13,6 +13,8 @@ abstract class Template with EquatableMixin, TreeElement {
 
   int get order;
 
+  String? get optionSet => null;
+
   String? get name;
 
   String? get code;
@@ -21,9 +23,9 @@ abstract class Template with EquatableMixin, TreeElement {
 
   IList<Rule>? get rules;
 
-  IList<Template> get fields => const IList.empty();
+  // IList<Template> get fields => const IList.empty();
 
-  IList<Template> get treeFields => const IList.empty();
+  // IList<Template> get treeFields => const IList.empty();
 
   ValueType? get type;
 
@@ -38,25 +40,36 @@ abstract class Template with EquatableMixin, TreeElement {
   IMap<String, String>? get constraintMessage;
 
   @override
-  List<Object?> get props =>
-      [id, code, path, name, description, type, rules, label, properties];
+  List<Object?> get props => [
+        id,
+        code,
+        path,
+        name,
+        description,
+        type,
+        rules,
+        label,
+        properties,
+        readOnly,
+        constraint
+      ];
 
-  Template copyWith({
-    String? id,
-    String? description,
-    String? path,
-    int? order,
-    String? name,
-    String? code,
-    bool? mainField,
-    Iterable<Rule>? rules,
-    Iterable<Template>? fields,
-    Iterable<Template>? treeFields,
-    ValueType? type,
-    IMap<String, dynamic>? label,
-    IMap<String, dynamic>? properties,
-    bool? readOnly,
-    String? constraint,
-    IMap<String, String>? constraintMessage,
-  });
+  // Template copyWith({
+  //   String? id,
+  //   String? description,
+  //   String? path,
+  //   int? order,
+  //   String? name,
+  //   String? code,
+  //   bool? mainField,
+  //   Iterable<Rule>? rules,
+  //   Iterable<Template>? fields,
+  //   Iterable<Template>? treeFields,
+  //   ValueType? type,
+  //   IMap<String, dynamic>? label,
+  //   IMap<String, dynamic>? properties,
+  //   bool? readOnly,
+  //   String? constraint,
+  //   IMap<String, String>? constraintMessage,
+  // });
 }

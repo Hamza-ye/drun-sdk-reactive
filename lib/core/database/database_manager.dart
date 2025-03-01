@@ -1,10 +1,11 @@
+import 'package:async/async.dart';
+import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
 
-import 'package:async/async.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite_sqlcipher/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart' as cipher;
 
 class DatabaseManager {
   final int version = 1;
@@ -59,23 +60,33 @@ class DatabaseManager {
   initializeDatabase() async {
     if (this.databaseFactory != null) {
       // Use persistent database file for Windows instead of in-memory
-      // Directory documentDirectory = await getApplicationDocumentsDirectory();
+      // the current working directory of the project folder (when developing)
+      // or the executable directory when running from a release build;
       final currentDir = Directory.current.path;
-      String customPath = join(currentDir, databaseName + '.db');
+      // String customPath = join(currentDir, databaseName + '.db');
 
-      final customDir = Directory(customPath);
+      final customDir = Directory(currentDir);
       if (!await customDir.exists()) {
         await customDir.create(recursive: true);
       }
 
-      final path = join(customPath, databaseName + '.db');
+      final path = join(currentDir, databaseName + '.db');
 
-      return await databaseFactory!.openDatabase(path,
-          options: OpenDatabaseOptions(
-            version: version,
-            onCreate: _createDatabase,
-            onConfigure: _onConfigure,
-          ));
+      // return await databaseFactory!.openDatabase(path,
+      //     options: OpenDatabaseOptions(
+      //       version: version,
+      //       onCreate: _createDatabase,
+      //       onConfigure: _onConfigure,
+      //     ));
+      var database = inMemory
+          ? await openDatabase(inMemoryDatabasePath,
+              onConfigure: _onConfigure, /*password: phrase*/)
+          : await openDatabase(path,
+              version: version,
+              onCreate: _createDatabase,
+              onConfigure: _onConfigure,
+              /*password: phrase*/);
+      return database;
     }
 
     // if (this.databaseFactory != null) {
@@ -86,9 +97,9 @@ class DatabaseManager {
     String path = join(documentDirectory.path, databaseName + '.db');
 
     var database = inMemory
-        ? await openDatabase(inMemoryDatabasePath,
+        ? await cipher.openDatabase(inMemoryDatabasePath,
             onConfigure: _onConfigure, password: phrase)
-        : await openDatabase(path,
+        : await cipher.openDatabase(path,
             version: version,
             onCreate: _createDatabase,
             onConfigure: _onConfigure,
@@ -99,6 +110,9 @@ class DatabaseManager {
   _onConfigure(Database db) async {
     // Add support for cascade delete
     await db.execute("PRAGMA foreign_keys = OFF");
+
+    // Set the encryption key for the database
+    // db.execute("PRAGMA key = $phrase;");
   }
 
   void _createDatabase(Database database, int version) async {}

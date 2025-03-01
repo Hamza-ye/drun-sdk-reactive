@@ -67,10 +67,7 @@ class SectionTemplate extends Template {
         this.rules = IList.orNull(rules) ?? const IList<Rule>.empty();
 
   @override
-  List<Object?> get props => [
-        parent,
-        itemTitle,
-      ];
+  List<Object?> get props => [parent, itemTitle, readOnly];
 
   factory SectionTemplate.fromJson(Map<String, dynamic> json) {
     final valueType = ValueType.getValueType(json['type']);
@@ -168,7 +165,6 @@ class SectionTemplate extends Template {
     };
   }
 
-  @override
   SectionTemplate copyWith({
     String? id,
     String? description,

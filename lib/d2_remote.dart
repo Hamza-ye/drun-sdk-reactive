@@ -16,6 +16,8 @@ import 'package:d2_remote/modules/datarun/form/form.module.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/authenticated_user.dart';
 import 'package:d2_remote/modules/metadatarun/activity/d_activity.module.dart';
 import 'package:d2_remote/modules/metadatarun/assignment/d_assignment.module.dart';
+import 'package:d2_remote/modules/metadatarun/data_element/data_element.module.dart';
+import 'package:d2_remote/modules/metadatarun/option_set/option_set.module.dart';
 import 'package:d2_remote/modules/metadatarun/project/d_project.module.dart';
 import 'package:d2_remote/modules/metadatarun/teams/d_team.module.dart';
 import 'package:d2_remote/modules/metadatarun/org_unit/org_unit.module.dart';
@@ -49,6 +51,8 @@ class D2Remote {
       await DAssignmentModule.createTables();
       await FormModule.createTables();
       await FormSubmissionModule.createTables();
+      await DataElementModule.createTables();
+      await OptionSetModule.createTables();
     }
   }
 
@@ -249,6 +253,10 @@ class D2Remote {
   }
 
   static DUserModule userModule = DUserModule();
+
+  static DataElementModule dataElementModule = DataElementModule();
+
+  static OptionSetModule optionSetModule = OptionSetModule();
 
   static OrgUnitModule organisationUnitModuleD = OrgUnitModule();
 

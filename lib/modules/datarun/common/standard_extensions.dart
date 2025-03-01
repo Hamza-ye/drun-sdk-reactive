@@ -18,12 +18,6 @@ extension StandardExt<T> on T {
     return block(this);
   }
 
-  /// Calls the specified function [block] with `this` value as its argument and returns `this` value.
-  T also(void Function(T it) block) {
-    block(this);
-    return this;
-  }
-
   /// Returns `this` value if it satisfies the given [predicate] or `null`, if it doesn't.
   T? takeIf(bool Function(T it) predicate) {
     if (predicate(this)) {
@@ -36,6 +30,12 @@ extension StandardExt<T> on T {
   T? takeUnless(bool Function(T it) predicate) {
     if (!predicate(this)) return this;
     return null;
+  }
+
+  /// Calls the specified function [block] with `this` value as its argument and returns `this` value.
+  T also(void Function(T it) block) {
+    block(this);
+    return this;
   }
 
   /// Calls the specified function [block] with this value as its receiver and returns this value.

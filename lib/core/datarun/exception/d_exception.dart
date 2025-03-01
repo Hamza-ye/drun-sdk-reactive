@@ -30,7 +30,7 @@ class DException implements Exception {
 
     Object? source = this.cause;
     if (source is String) {
-      description += "(source: '${source.substring(0, 20)}')";
+      description += "(source: '${source.substring(0, 50)}')";
     }
 
     return description;

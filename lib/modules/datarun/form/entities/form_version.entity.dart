@@ -19,7 +19,8 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 @AnnotationReflectable
 @Entity(tableName: 'formVersion', apiResourceName: 'formVersions')
-class FormVersion extends IdentifiableEntity with TemplatePathWalkingService<Template> {
+class FormVersion extends IdentifiableEntity
+    with TemplatePathWalkingService<Template> {
   @ManyToOne(table: FormTemplate, joinColumnName: 'formTemplate')
   dynamic formTemplate;
 
