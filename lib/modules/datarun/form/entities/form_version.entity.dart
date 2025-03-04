@@ -13,6 +13,7 @@ import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/template_extensions/form_traverse_extension.dart';
 import 'package:d2_remote/modules/datarun/form/shared/template_extensions/template_path_walking_service.dart';
+import 'package:d2_remote/modules/datarun/form/shared/validation_strategy.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
@@ -48,6 +49,9 @@ class FormVersion extends IdentifiableEntity
   @Column(nullable: true, type: ColumnType.TEXT)
   String? description;
 
+  @Column(type: ColumnType.TEXT, nullable: false)
+  ValidationStrategy validationStrategy;
+
   /// current Version
   @Column(nullable: false, type: ColumnType.INTEGER)
   int version;
@@ -66,6 +70,7 @@ class FormVersion extends IdentifiableEntity
     this.formTemplate,
     required this.version,
     required this.defaultLocal,
+    required this.validationStrategy,
     List<Template> fields = const [],
     // List<Template> flattenedFields = const [],
     // Map<String, Template>? flattenFieldsMap,
@@ -95,6 +100,9 @@ class FormVersion extends IdentifiableEntity
   }
 
   factory FormVersion.fromJson(Map<String, dynamic> json) {
+    final validationStrategy =
+        ValidationStrategy.getValueType(json['validationStrategy']);
+
     final orgUnits = json['orgUnits'] != null
         ? json['orgUnits'].runtimeType == String
             ? jsonDecode(json['orgUnits']).cast<String>()
@@ -142,6 +150,7 @@ class FormVersion extends IdentifiableEntity
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
+      validationStrategy: validationStrategy,
       version: json['version'],
       formTemplate: json['formTemplate'],
       label: json['label'] != null
@@ -165,6 +174,9 @@ class FormVersion extends IdentifiableEntity
   }
 
   factory FormVersion.fromApi(Map<String, dynamic> json) {
+    final validationStrategy =
+        ValidationStrategy.getValueType(json['validationStrategy']);
+
     final orgUnits = json['orgUnits'] != null
         ? json['orgUnits'].runtimeType == String
             ? jsonDecode(json['orgUnits']).cast<String>()
@@ -212,6 +224,7 @@ class FormVersion extends IdentifiableEntity
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
+      validationStrategy: validationStrategy,
       version: json['version'],
       formTemplate: json['formTemplate'],
       label: json['label'] != null
@@ -240,6 +253,7 @@ class FormVersion extends IdentifiableEntity
       'uid': uid,
       'code': code,
       'name': name,
+      'validationStrategy': validationStrategy.name,
       // 'activity': activity,
       'version': version,
       'formTemplate': formTemplate,

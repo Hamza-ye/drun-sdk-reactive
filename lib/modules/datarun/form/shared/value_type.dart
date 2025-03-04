@@ -1,44 +1,53 @@
+import 'package:d2_remote/core/datarun/exception/exception.dart';
+import 'package:d2_remote/core/value_type_validator/value_type/validators/validators.dart';
+
 enum ValueType {
-  Progress,
-  // Transaction,
-  Section,
-  RepeatableSection,
-  Attribute,
-  Text,
-  LongText,
-  Letter,
-  PhoneNumber,
-  Email,
-  Boolean,
-  TrueOnly,
-  Date,
-  DateTime,
-  Time,
-  Number,
-  UnitInterval,
-  Percentage,
-  Integer,
-  IntegerPositive,
-  IntegerNegative,
-  IntegerZeroOrPositive,
-  TrackerAssociate,
-  Username,
-  Coordinate,
-  OrganisationUnit,
-  Team,
-  Reference,
-  Age,
-  FullName,
-  URL,
-  FileResource,
-  Image,
-  SelectMulti,
-  SelectOne,
-  YesNo,
-  GeoJson,
-  Calculated,
-  ScannedCode,
-  Unknown;
+  Progress(TextValidator()),
+  Section(TextValidator()),
+  RepeatableSection(TextValidator()),
+  Attribute(TextValidator()),
+  Text(TextValidator()),
+  LongText(LongTextValidator()),
+  Letter(LetterValidator()),
+  PhoneNumber(PhoneNumberValidator()),
+  Email(EmailValidator()),
+  Boolean(BooleanValidator()),
+  TrueOnly(TrueOnlyValidator()),
+  Date(DateValidator()),
+  DateTime(DateTimeValidator()),
+  Time(TimeValidator()),
+  Number(NumberValidator()),
+  UnitInterval(UnitIntervalValidator()),
+  Percentage(PercentageValidator()),
+  Integer(IntegerValidator()),
+  IntegerPositive(IntegerPositiveValidator()),
+  IntegerNegative(IntegerNegativeValidator()),
+  IntegerZeroOrPositive(IntegerZeroOrPositiveValidator()),
+  TrackerAssociate(UidValidator()),
+  Username(TextValidator()),
+  Coordinate(CoordinateValidator()),
+  OrganisationUnit(UidValidator()),
+  Team(UidValidator()),
+  Reference(TextValidator()),
+  Age(NumberValidator()),
+  FullName(FullNameValidator()),
+  URL(UrlValidator()),
+  FileResource(UidValidator()),
+  Image(UidValidator()),
+  // split by  `,`
+  SelectMulti(TextValidator()),
+  SelectOne(TextValidator()),
+  YesNo(TextValidator()),
+  GeoJson(TextValidator()),
+  Calculated(TextValidator()),
+  ScannedCode(TextValidator()),
+  Unknown(TextValidator());
+
+  const ValueType(this._validator);
+
+  final ValueTypeValidator<DException> _validator;
+
+  ValueTypeValidator<DException> get validator => _validator;
 
   static List<ValueType> get INTEGER_TYPES => <ValueType>[
         Integer,
@@ -121,6 +130,7 @@ enum ValueType {
   bool get isDateTime => DATE_TYPES.contains(this);
 
   bool get isCalculate => this == ValueType.Calculated;
+
   bool get isDate => this == ValueType.Date;
 
   bool get isTime => this == ValueType.Time;

@@ -3,14 +3,13 @@ class DException implements Exception {
   /// Creates a new `FormatException` with an optional error [message].
   ///
   /// Optionally also supply the actual [cause] with the incorrect format,
-  DException(
-    this.message, {
+  const DException([
+    this.message = 'Exception',
     this.cause,
-    this.stackTrace,
-  });
+  ]);
 
   /// A message describing the format error.
-  final String message;
+  final String? message;
 
   /// The actual source input which caused the error.
   ///
@@ -20,13 +19,13 @@ class DException implements Exception {
   /// The source is `null` if omitted or unknown.
   final Object? cause;
 
-  final StackTrace? stackTrace;
+  // final StackTrace? stackTrace;
 
   // final String? userMessage;
 
   @override
   String toString() {
-    String description = message;
+    String description = message ?? '';
 
     Object? source = this.cause;
     if (source is String) {

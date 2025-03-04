@@ -264,7 +264,6 @@ class FieldTemplate extends Template
     };
   }
 
-  @override
   FieldTemplate copyWith({
     String? id,
     String? description,
