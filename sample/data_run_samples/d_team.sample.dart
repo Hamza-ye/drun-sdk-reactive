@@ -65,21 +65,15 @@ final Map<String, dynamic> dSampleTeams = {
       "formPermissions": [
         {
           "form": "KcsA3KETRbY",
-          "permissions": [
-            "ADD_SUBMISSIONS"
-          ]
+          "permissions": ["ADD_SUBMISSIONS"]
         },
         {
           "form": "RQlMiMcukid",
-          "permissions": [
-            "ADD_SUBMISSIONS"
-          ]
+          "permissions": ["ADD_SUBMISSIONS"]
         },
         {
           "form": "zglED4TsbTh",
-          "permissions": [
-            "ADD_SUBMISSIONS"
-          ]
+          "permissions": ["ADD_SUBMISSIONS"]
         }
       ]
     },
@@ -142,21 +136,15 @@ final Map<String, dynamic> dSampleTeams = {
       "formPermissions": [
         {
           "form": "KcsA3KETRbY",
-          "permissions": [
-            "ADD_SUBMISSIONS"
-          ]
+          "permissions": ["ADD_SUBMISSIONS"]
         },
         {
           "form": "RQlMiMcukid",
-          "permissions": [
-            "ADD_SUBMISSIONS"
-          ]
+          "permissions": ["ADD_SUBMISSIONS"]
         },
         {
           "form": "zglED4TsbTh",
-          "permissions": [
-            "ADD_SUBMISSIONS"
-          ]
+          "permissions": ["ADD_SUBMISSIONS"]
         }
       ]
     }

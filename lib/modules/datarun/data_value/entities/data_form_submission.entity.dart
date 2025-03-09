@@ -183,7 +183,8 @@ class DataFormSubmission extends SyncableEntity {
     }
 
     return DataFormSubmission(
-      id: json['id'].toString(),
+      // id: json['id'].toString(),
+      id: json['uid'].toString(),
       uid: json['uid'],
       code: json['code'],
       name: json['name'],
@@ -224,7 +225,7 @@ class DataFormSubmission extends SyncableEntity {
   /// To JSON string for Database and API
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id': uid ?? id,
       'uid': uid,
       'code': code,
       'name': name,

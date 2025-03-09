@@ -1,5 +1,4 @@
-final Map<String, dynamic> dSampleOrgUnits =
-{
+final Map<String, dynamic> dSampleOrgUnits = {
   "paging": false,
   "page": 0,
   "pageCount": 1,
@@ -27,9 +26,7 @@ final Map<String, dynamic> dSampleOrgUnits =
           "id": 104,
           "uid": "XdemwK1RBfh",
           "code": "1117002",
-          "activity": {
-            "id": 18
-          },
+          "activity": {"id": 18},
           "team": {
             "createdBy": "admin",
             "createdDate": "2024-08-08T21:46:55.254770Z",
@@ -108,9 +105,7 @@ final Map<String, dynamic> dSampleOrgUnits =
           "id": 1297,
           "uid": "omM4mf7xw6C",
           "code": "23099993",
-          "activity": {
-            "id": 17
-          },
+          "activity": {"id": 17},
           "team": {
             "createdBy": "admin",
             "createdDate": "2024-08-08T21:46:55.254770Z",
@@ -217,8 +212,7 @@ final Map<String, dynamic> dSampleOrgUnits =
       "parentCode": null,
       "assignments": null,
       "parent": null,
-      "ancestors": [
-      ],
+      "ancestors": [],
       "level": 2,
       "displayName": "Yemen"
     },

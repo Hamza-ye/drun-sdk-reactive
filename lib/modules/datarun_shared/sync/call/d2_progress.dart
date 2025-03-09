@@ -34,7 +34,7 @@ class D2Progress with EquatableMixin {
       throw ArgumentError('Negative total calls');
     }
     return D2Progress(
-      progressState: WorkInfoState.CANCELLED,
+        progressState: WorkInfoState.CANCELLED,
         isComplete: totalCalls != null && totalCalls == 0,
         totalCalls: totalCalls,
         doneCalls: IList());

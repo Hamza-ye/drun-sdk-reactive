@@ -35,7 +35,7 @@ class QueryFilter {
         // NMC
         case QueryCondition.Nin:
           final List<String> values =
-          filter.value is List ? filter.value : [filter.value];
+              filter.value is List ? filter.value : [filter.value];
           return '${filter.attribute} NOT IN (${values.map((value) => '${QueryFilter.getTypedValue(attributeColumn, value)}').join(',')})';
 
         case QueryCondition.Neq:
@@ -88,7 +88,7 @@ class QueryFilter {
         // NMC
         case QueryCondition.Nin:
           final List<String> values =
-          filter.value is List ? filter.value : [filter.value];
+              filter.value is List ? filter.value : [filter.value];
           return 'filter=${filter.attribute}${attributeColumn.relation?.referencedColumn != null ? '.${attributeColumn.relation?.referencedColumn}' : ''}:!in:[${values.join(',')}]';
 
         case QueryCondition.Neq:

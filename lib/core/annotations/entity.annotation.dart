@@ -46,15 +46,17 @@ class Entity {
     List<Column> columns = [];
 
     // NMC for (IdentifiableTreeNode)
-    for (String key
-    in entityClassMirror.superclass?.superclass?.superclass?.declarations.keys ?? []) {
-      var value = entityClassMirror.superclass!.superclass!.superclass!.declarations[key];
+    for (String key in entityClassMirror
+            .superclass?.superclass?.superclass?.declarations.keys ??
+        []) {
+      var value = entityClassMirror
+          .superclass!.superclass!.superclass!.declarations[key];
 
       if (value is VariableMirror) {
         VariableMirror variableMirror = value;
         Column column =
-        Column.getColumn(variableMirror, key, ignoreRelationColumns)
-        as Column;
+            Column.getColumn(variableMirror, key, ignoreRelationColumns)
+                as Column;
         columns.add(column);
       }
     }

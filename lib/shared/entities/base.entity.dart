@@ -5,35 +5,30 @@ import 'package:d2_remote/shared/utilities/dhis_uid_generator.util.dart';
 // @AnnotationReflectable
 class BaseEntity {
   @PrimaryColumn()
-  late String? id;
+  late final String? id;
 
   @Column(nullable: true)
-  late String? uid;
+  late final String? uid;
 
   @Column()
-  bool dirty;
+  final bool dirty;
 
   @Column(nullable: true)
-  String? lastModifiedDate;
+  final String? lastModifiedDate;
 
   @Column(nullable: true)
-  String? createdDate;
+  final String? createdDate;
 
   BaseEntity(
-      {this.id,
-      this.uid,
+      {String? id,
+      // String? uid,
       required this.dirty,
-      this.createdDate,
-      this.lastModifiedDate}) {
-    this.id = this.id ?? DhisUidGenerator.generate();
-
-    /// Added for DataRun
-    this.uid = this.id;
-
-    this.createdDate =
-        this.createdDate ?? DateHelper.nowUtc();
-    this.lastModifiedDate = this.lastModifiedDate ?? this.createdDate;
-  }
+      String? createdDate,
+      String? lastModifiedDate})
+      : this.id = id ?? DhisUidGenerator.generate(),
+        this.uid = id,
+        this.createdDate = createdDate ?? DateHelper.nowUtc(),
+        this.lastModifiedDate = lastModifiedDate ?? createdDate;
 
   static fromJson(Map<String, dynamic> json) {
     throw UnimplementedError();

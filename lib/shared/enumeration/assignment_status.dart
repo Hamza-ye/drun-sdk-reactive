@@ -1,4 +1,3 @@
-
 enum AssignmentStatus {
   NOT_STARTED,
   IN_PROGRESS, // Active

@@ -36,7 +36,6 @@ class SyncMetadata {
         .lock;
     IList<D2Progress> requestProgresses = queryMetadataItems
         .map((queryResource) => progress.copyWith(
-
             message:
                 'Downloading ${queryResource.simpleName.toUpperCase()} from the server',
             isComplete: false,
@@ -80,7 +79,7 @@ class SyncMetadata {
       queue.add(() => metadataEntityQuery
               .download((RequestProgress requestProgress, bool isComplete) {
             callback?.call(progress.copyWith(
-              progressState: WorkInfoState.RUNNING,
+                progressState: WorkInfoState.RUNNING,
                 message: requestProgress.message,
                 percentage: requestProgress.percentage));
           }));

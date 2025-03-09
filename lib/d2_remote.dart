@@ -184,12 +184,18 @@ class D2Remote {
     WidgetsFlutterBinding.ensureInitialized();
     bool logOutSuccess = false;
     try {
-      DUser? currentUser = await D2Remote.userModule.user.getOne();
+      final currentUserMap = {
+        ...?(await D2Remote.userModule.user.getOne())?.toJson(),
+        'isLoggedIn': false,
+        'dirty': true
+      };
 
-      currentUser?.isLoggedIn = false;
-      currentUser?.dirty = true;
+      // currentUser?.isLoggedIn = false;
+      // currentUser?.dirty = true;
 
-      await D2Remote.userModule.user.setData(currentUser).save();
+      await D2Remote.userModule.user
+          .setData(DUser.fromJson(currentUserMap))
+          .save();
 
       // nmc
       SharedPreferences prefs =

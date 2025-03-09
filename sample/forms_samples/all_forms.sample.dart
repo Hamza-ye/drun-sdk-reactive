@@ -10,7 +10,8 @@ final Map<String, dynamic> dSampleAllForms = {
       "uid": "Tcf3Ks9ZRpB",
       "code": "LLINS_DISTRIBUTION_FORM",
       "name": "استمارة توزيع الناموسيات | منازل | فريق ميداني",
-      "description": "استمارة ارسال بيانات توزيع الناموسيات على مستوى المنزل، ترسل من قائد الفريق.",
+      "description":
+          "استمارة ارسال بيانات توزيع الناموسيات على مستوى المنزل، ترسل من قائد الفريق.",
       "disabled": false,
       "deleted": false,
       "version": 22,
@@ -20,10 +21,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "mainSection",
           "type": "Section",
           "description": "Main Section.",
-          "label": {
-            "en": "Work Date and Day",
-            "ar": "بيانات أساسية"
-          },
+          "label": {"en": "Work Date and Day", "ar": "بيانات أساسية"},
           "rules": [],
           "order": 0,
           "mandatory": false,
@@ -34,10 +32,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "name": "workDay",
               "type": "SelectOne",
               "description": "Day of work for the campaign.",
-              "label": {
-                "en": "Work Day",
-                "ar": "اليوم"
-              },
+              "label": {"en": "Work Day", "ar": "اليوم"},
               "rules": [],
               "calculation": null,
               "order": 1,
@@ -55,10 +50,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "name": "status",
               "type": "Progress",
               "description": "Distribution Status",
-              "label": {
-                "en": "Select status",
-                "ar": "حالة سير عملية التوزيع"
-              },
+              "label": {"en": "Select status", "ar": "حالة سير عملية التوزيع"},
               "rules": [],
               "calculation": null,
               "order": 2,
@@ -78,15 +70,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "completion_details",
           "type": "Section",
           "description": "Status",
-          "label": {
-            "en": "Completion Details",
-            "ar": "معلومات اكتمال التوزيع"
-          },
+          "label": {"en": "Completion Details", "ar": "معلومات اكتمال التوزيع"},
           "rules": [
-            {
-              "expression": "#{status} == 'DONE'",
-              "action": "Show"
-            }
+            {"expression": "#{status} == 'DONE'", "action": "Show"}
           ],
           "calculation": null,
           "order": 3,
@@ -102,10 +88,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "name": "completionStatus",
               "type": "SelectOne",
               "description": "Completion Status",
-              "label": {
-                "en": "Completion Status",
-                "ar": "حالة الاكتمال"
-              },
+              "label": {"en": "Completion Status", "ar": "حالة الاكتمال"},
               "rules": [],
               "order": 4,
               "mandatory": true,
@@ -116,21 +99,20 @@ final Map<String, dynamic> dSampleAllForms = {
             {
               "name": "completionPercentage",
               "type": "IntegerZeroOrPositive",
-              "label": {
-                "en": "Completion Percentage",
-                "ar": "% نسبة الاكتمال"
-              },
+              "label": {"en": "Completion Percentage", "ar": "% نسبة الاكتمال"},
               "rules": [
                 {
                   "expression": "#{completionStatus} == 'PARTIAL'",
                   "action": "Show"
                 },
                 {
-                  "expression": "#{completionPercentage} > 100 || #{completionPercentage} == 100",
+                  "expression":
+                      "#{completionPercentage} > 100 || #{completionPercentage} == 100",
                   "action": "Error",
                   "message": {
                     "en": "Completion percentage must be between 0 and 100",
-                    "ar": "الجزئي معناه أن يكون نسبة الاكتمال بين 0 و أقل من 100"
+                    "ar":
+                        "الجزئي معناه أن يكون نسبة الاكتمال بين 0 و أقل من 100"
                   }
                 }
               ],
@@ -150,10 +132,7 @@ final Map<String, dynamic> dSampleAllForms = {
             "ar": "معلومات إعادة تعيين فريق آخر"
           },
           "rules": [
-            {
-              "expression": "#{status} == 'REASSIGNED'",
-              "action": "Show"
-            }
+            {"expression": "#{status} == 'REASSIGNED'", "action": "Show"}
           ],
           "order": 6,
           "fields": [
@@ -194,15 +173,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "status_cancelled_details",
           "type": "Section",
           "description": "cancelling_details",
-          "label": {
-            "en": "Cancelling Details",
-            "ar": "معلومات إلغاء التوزيع"
-          },
+          "label": {"en": "Cancelling Details", "ar": "معلومات إلغاء التوزيع"},
           "rules": [
-            {
-              "expression": "#{status} == 'CANCELLED'",
-              "action": "Show"
-            }
+            {"expression": "#{status} == 'CANCELLED'", "action": "Show"}
           ],
           "order": 9,
           "mandatory": false,
@@ -212,10 +185,7 @@ final Map<String, dynamic> dSampleAllForms = {
             {
               "name": "notargetingReasons",
               "type": "SelectOne",
-              "label": {
-                "en": "no targeting Reason",
-                "ar": "سبب عدم الاستهداف"
-              },
+              "label": {"en": "no targeting Reason", "ar": "سبب عدم الاستهداف"},
               "rules": [],
               "order": 10,
               "mandatory": true,
@@ -226,13 +196,11 @@ final Map<String, dynamic> dSampleAllForms = {
             {
               "name": "otherReasonForNotargeting",
               "type": "Text",
-              "label": {
-                "en": "UnTargetting Reason",
-                "ar": "اذكر السبب الاخر"
-              },
+              "label": {"en": "UnTargetting Reason", "ar": "اذكر السبب الاخر"},
               "rules": [
                 {
-                  "expression": "#{status} == 'CANCELLED' && #{notargetingReasons} == 'OTHER'",
+                  "expression":
+                      "#{status} == 'CANCELLED' && #{notargetingReasons} == 'OTHER'",
                   "action": "Show"
                 }
               ],
@@ -247,15 +215,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "status_merged_details",
           "type": "Section",
           "description": "location Status Details",
-          "label": {
-            "en": "Status",
-            "ar": "تفاصيل حالة دمج"
-          },
+          "label": {"en": "Status", "ar": "تفاصيل حالة دمج"},
           "rules": [
-            {
-              "expression": "#{status} == 'MERGED'",
-              "action": "Show"
-            }
+            {"expression": "#{status} == 'MERGED'", "action": "Show"}
           ],
           "calculation": null,
           "order": 12,
@@ -291,10 +253,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "name": "status_rescheduled_details",
           "type": "Section",
           "description": "status_rescheduled_details",
-          "label": {
-            "en": "Status",
-            "ar": "تفاصيل حالة إعادة جدولة"
-          },
+          "label": {"en": "Status", "ar": "تفاصيل حالة إعادة جدولة"},
           "rules": [
             {
               "expression": "#{status} == 'RESCHEDULED'",
@@ -315,10 +274,7 @@ final Map<String, dynamic> dSampleAllForms = {
             {
               "name": "rescheduledTo",
               "type": "SelectOne",
-              "label": {
-                "en": "Rescheduled To",
-                "ar": "جدولة إلى يوم:"
-              },
+              "label": {"en": "Rescheduled To", "ar": "جدولة إلى يوم:"},
               "rules": [],
               "order": 15,
               "mandatory": true,
@@ -333,10 +289,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "type": "Section",
           "description": null,
           "order": 16,
-          "label": {
-            "en": "Households Information",
-            "ar": "معلومات المنازل"
-          },
+          "label": {"en": "Households Information", "ar": "معلومات المنازل"},
           "rules": [
             {
               "expression": "#{status} == 'IN_PROGRESS' || #{status} == 'DONE'",
@@ -347,10 +300,7 @@ final Map<String, dynamic> dSampleAllForms = {
             {
               "name": "settlement",
               "type": "SelectOne",
-              "label": {
-                "en": "Setllement Type",
-                "ar": "نوع التجمع"
-              },
+              "label": {"en": "Setllement Type", "ar": "نوع التجمع"},
               "rules": [],
               "order": 17,
               "mandatory": true,
@@ -362,10 +312,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "name": "householdnames",
               "type": "RepeatableSection",
               "description": "Repeatable data for each household.",
-              "label": {
-                "en": "Household Data",
-                "ar": "بيانات المنازل"
-              },
+              "label": {"en": "Household Data", "ar": "بيانات المنازل"},
               "rules": [],
               "order": 18,
               "mandatory": true,
@@ -390,10 +337,7 @@ final Map<String, dynamic> dSampleAllForms = {
                   "name": "inputmethod",
                   "type": "SelectOne",
                   "description": null,
-                  "label": {
-                    "en": "inputmethod",
-                    "ar": "طريقة الادخال"
-                  },
+                  "label": {"en": "inputmethod", "ar": "طريقة الادخال"},
                   "rules": [],
                   "order": 20,
                   "mandatory": true,
@@ -444,26 +388,21 @@ final Map<String, dynamic> dSampleAllForms = {
                     "householdHeadSerialNumber",
                     "householdName"
                   ],
-                  "allowedActions": [
-                    "Add",
-                    "Update",
-                    "SoftDelete"
-                  ]
+                  "allowedActions": ["Add", "Update", "SoftDelete"]
                 },
                 {
                   "name": "population",
                   "type": "IntegerPositive",
                   "description": "Total population in the household.",
-                  "label": {
-                    "en": "Total Population",
-                    "ar": "عدد السكان"
-                  },
+                  "label": {"en": "Total Population", "ar": "عدد السكان"},
                   "rules": [
                     {
-                      "expression": "#{population} != #{femalePopulation} + #{malePopulation}",
+                      "expression":
+                          "#{population} != #{femalePopulation} + #{malePopulation}",
                       "action": "Error",
                       "message": {
-                        "ar": "مجموع الذكور والإناث يجب أن يساوي عدد السكان الكلي.",
+                        "ar":
+                            "مجموع الذكور والإناث يجب أن يساوي عدد السكان الكلي.",
                         "en": "Males + Females must equal Total Population."
                       }
                     }
@@ -477,10 +416,7 @@ final Map<String, dynamic> dSampleAllForms = {
                   "name": "malePopulation",
                   "type": "IntegerZeroOrPositive",
                   "description": "Number of males in the household.",
-                  "label": {
-                    "en": "Male Population",
-                    "ar": "سكان-ذكور"
-                  },
+                  "label": {"en": "Male Population", "ar": "سكان-ذكور"},
                   "rules": [],
                   "order": 24,
                   "mandatory": true,
@@ -491,10 +427,7 @@ final Map<String, dynamic> dSampleAllForms = {
                   "name": "femalePopulation",
                   "type": "IntegerZeroOrPositive",
                   "description": "Number of females in the household.",
-                  "label": {
-                    "en": "Female Population",
-                    "ar": "سكان-إناث"
-                  },
+                  "label": {"en": "Female Population", "ar": "سكان-إناث"},
                   "rules": [],
                   "order": 25,
                   "mandatory": true,
@@ -505,10 +438,7 @@ final Map<String, dynamic> dSampleAllForms = {
                   "name": "pregnantWomen",
                   "type": "IntegerZeroOrPositive",
                   "description": "Number of pregnant women in the household.",
-                  "label": {
-                    "en": "Pregnant Women",
-                    "ar": "حوامل"
-                  },
+                  "label": {"en": "Pregnant Women", "ar": "حوامل"},
                   "rules": [
                     {
                       "expression": "#{pregnantWomen} > #{femalePopulation}",
@@ -528,16 +458,14 @@ final Map<String, dynamic> dSampleAllForms = {
                   "name": "childrenMaleCount",
                   "type": "IntegerZeroOrPositive",
                   "description": "Number of male children.",
-                  "label": {
-                    "en": "Children (Male)",
-                    "ar": "أطفال-ذكور"
-                  },
+                  "label": {"en": "Children (Male)", "ar": "أطفال-ذكور"},
                   "rules": [
                     {
                       "expression": "#{childrenMaleCount} > #{malePopulation}",
                       "action": "Error",
                       "message": {
-                        "ar": "عدد الأطفال الذكور لا يمكن أن يتجاوز عدد الذكور الكلي.",
+                        "ar":
+                            "عدد الأطفال الذكور لا يمكن أن يتجاوز عدد الذكور الكلي.",
                         "en": "Male children cannot exceed total males."
                       }
                     }
@@ -551,17 +479,17 @@ final Map<String, dynamic> dSampleAllForms = {
                   "name": "childrenFemaleCount",
                   "type": "IntegerZeroOrPositive",
                   "description": "Number of female children.",
-                  "label": {
-                    "en": "Children (Female)",
-                    "ar": "أطفال-إناث"
-                  },
+                  "label": {"en": "Children (Female)", "ar": "أطفال-إناث"},
                   "rules": [
                     {
-                      "expression": "#{childrenFemaleCount} + #{pregnantWomen} > #{femalePopulation}",
+                      "expression":
+                          "#{childrenFemaleCount} + #{pregnantWomen} > #{femalePopulation}",
                       "action": "Error",
                       "message": {
-                        "ar": "عدد الأطفال الإناث والحوامل يجب أن يكون أصغر من أو يساوي عدد الإناث",
-                        "en": "The number of female children and pregnant women must be less than or equal to the female population"
+                        "ar":
+                            "عدد الأطفال الإناث والحوامل يجب أن يكون أصغر من أو يساوي عدد الإناث",
+                        "en":
+                            "The number of female children and pregnant women must be less than or equal to the female population"
                       },
                       "assignedValue": null
                     }
@@ -579,18 +507,22 @@ final Map<String, dynamic> dSampleAllForms = {
                 {
                   "name": "displacedResidentsCount",
                   "type": "IntegerZeroOrPositive",
-                  "description": "Number of displaced residents in the household, if any.",
+                  "description":
+                      "Number of displaced residents in the household, if any.",
                   "label": {
                     "en": "Number of Displaced Residents",
                     "ar": "النازحين"
                   },
                   "rules": [
                     {
-                      "expression": "#{displacedResidentsCount} > #{population}",
+                      "expression":
+                          "#{displacedResidentsCount} > #{population}",
                       "action": "Error",
                       "message": {
-                        "ar": "عدد النازحين لا يمكن أن يتجاوز عدد السكان الكلي.",
-                        "en": "Displaced residents cannot exceed total population."
+                        "ar":
+                            "عدد النازحين لا يمكن أن يتجاوز عدد السكان الكلي.",
+                        "en":
+                            "Displaced residents cannot exceed total population."
                       },
                       "assignedValue": null
                     }
@@ -604,21 +536,21 @@ final Map<String, dynamic> dSampleAllForms = {
                   "name": "itns",
                   "type": "IntegerPositive",
                   "description": "Number of mosquito nets received.",
-                  "label": {
-                    "en": "Received Nets",
-                    "ar": "الناموسيات"
-                  },
+                  "label": {"en": "Received Nets", "ar": "الناموسيات"},
                   "rules": [
                     {
                       "expression": "#{itns} > #{population}",
                       "action": "Error",
                       "message": {
-                        "ar": "لايمكن ان يكون عدد الناموسيات اكبر من اجمالي عدد السكان",
-                        "en": "The number of mosquito nets received cannot exceed the total population"
+                        "ar":
+                            "لايمكن ان يكون عدد الناموسيات اكبر من اجمالي عدد السكان",
+                        "en":
+                            "The number of mosquito nets received cannot exceed the total population"
                       }
                     },
                     {
-                      "expression": "((#{itns} > 0 && #{population} > 0) && (#{itns} <= #{population})) && (#{itns} != ((#{population} + (#{population} % 2)) / 2))",
+                      "expression":
+                          "((#{itns} > 0 && #{population} > 0) && (#{itns} <= #{population})) && (#{itns} != ((#{population} + (#{population} % 2)) / 2))",
                       "action": "Warning"
                     }
                   ],
@@ -640,50 +572,35 @@ final Map<String, dynamic> dSampleAllForms = {
           "listName": "status",
           "name": "IN_PROGRESS",
           "order": 1,
-          "label": {
-            "en": "In progress",
-            "ar": "قيد التنفيذ"
-          },
+          "label": {"en": "In progress", "ar": "قيد التنفيذ"},
           "properties": {}
         },
         {
           "listName": "status",
           "name": "DONE",
           "order": 2,
-          "label": {
-            "en": "Completed",
-            "ar": "اكتمل"
-          },
+          "label": {"en": "Completed", "ar": "اكتمل"},
           "properties": {}
         },
         {
           "listName": "status",
           "name": "REASSIGNED",
           "order": 3,
-          "label": {
-            "en": "Not Covered for a reason",
-            "ar": "فريق آخر"
-          },
+          "label": {"en": "Not Covered for a reason", "ar": "فريق آخر"},
           "properties": {}
         },
         {
           "listName": "status",
           "name": "RESCHEDULED",
           "order": 3,
-          "label": {
-            "en": "Not Covered for a reason",
-            "ar": "جدولة ليوم آخر"
-          },
+          "label": {"en": "Not Covered for a reason", "ar": "جدولة ليوم آخر"},
           "properties": {}
         },
         {
           "listName": "status",
           "name": "MERGED",
           "order": 3,
-          "label": {
-            "en": "Merged With another",
-            "ar": "دمجت مع أخرى"
-          },
+          "label": {"en": "Merged With another", "ar": "دمجت مع أخرى"},
           "properties": {}
         },
         {
@@ -700,160 +617,112 @@ final Map<String, dynamic> dSampleAllForms = {
           "listName": "notargetingReasons",
           "name": "DOESNOTEXIST",
           "order": 4,
-          "label": {
-            "en": "No Such Village",
-            "ar": "لاتوجد"
-          },
+          "label": {"en": "No Such Village", "ar": "لاتوجد"},
           "properties": {}
         },
         {
           "listName": "notargetingReasons",
           "name": "DESERTED",
           "order": 1,
-          "label": {
-            "en": "Deserted",
-            "ar": "مهجورة"
-          },
+          "label": {"en": "Deserted", "ar": "مهجورة"},
           "properties": {}
         },
         {
           "listName": "notargetingReasons",
           "name": "DISPLACED",
           "order": 0,
-          "label": {
-            "en": "Displaced",
-            "ar": "نزوح الجميع"
-          },
+          "label": {"en": "Displaced", "ar": "نزوح الجميع"},
           "properties": {}
         },
         {
           "listName": "notargetingReasons",
           "name": "OTHER",
           "order": 6,
-          "label": {
-            "en": "Other Reason",
-            "ar": "لسبب اخر"
-          },
+          "label": {"en": "Other Reason", "ar": "لسبب اخر"},
           "properties": {}
         },
         {
           "listName": "completionStatus",
           "name": "FULL",
           "order": 0,
-          "label": {
-            "en": "Full",
-            "ar": "كلي"
-          },
+          "label": {"en": "Full", "ar": "كلي"},
           "properties": {}
         },
         {
           "listName": "completionStatus",
           "name": "PARTIAL",
           "order": 1,
-          "label": {
-            "en": "Partial",
-            "ar": "جزئي"
-          },
+          "label": {"en": "Partial", "ar": "جزئي"},
           "properties": {}
         },
         {
           "listName": "inputmethods",
           "name": "fromList",
           "order": 1,
-          "label": {
-            "en": "from List",
-            "ar": "اختيار من القائمة"
-          },
+          "label": {"en": "from List", "ar": "اختيار من القائمة"},
           "properties": {}
         },
         {
           "listName": "inputmethods",
           "name": "addNew",
           "order": 2,
-          "label": {
-            "en": "Add New",
-            "ar": "اسم جديد"
-          },
+          "label": {"en": "Add New", "ar": "اسم جديد"},
           "properties": {}
         },
         {
           "listName": "workDays",
           "name": "6",
           "order": 6,
-          "label": {
-            "en": "Day 6",
-            "ar": "السادس"
-          },
+          "label": {"en": "Day 6", "ar": "السادس"},
           "properties": {}
         },
         {
           "listName": "workDays",
           "name": "2",
           "order": 2,
-          "label": {
-            "en": "Day 2",
-            "ar": "الثاني"
-          },
+          "label": {"en": "Day 2", "ar": "الثاني"},
           "properties": {}
         },
         {
           "listName": "workDays",
           "name": "5",
           "order": 5,
-          "label": {
-            "en": "Day 5",
-            "ar": "الخامس"
-          },
+          "label": {"en": "Day 5", "ar": "الخامس"},
           "properties": {}
         },
         {
           "listName": "settlementType",
           "name": "resident",
           "order": 0,
-          "label": {
-            "en": "Resiedent",
-            "ar": "مقيمين"
-          },
+          "label": {"en": "Resiedent", "ar": "مقيمين"},
           "properties": {}
         },
         {
           "listName": "workDays",
           "name": "3",
           "order": 3,
-          "label": {
-            "en": "Day 3",
-            "ar": "الثالث"
-          },
+          "label": {"en": "Day 3", "ar": "الثالث"},
           "properties": {}
         },
         {
           "listName": "settlementType",
           "name": "camp",
           "order": 1,
-          "label": {
-            "en": "camp",
-            "ar": "مخيم نازحين"
-          },
+          "label": {"en": "camp", "ar": "مخيم نازحين"},
           "properties": {}
         },
         {
           "listName": "workDays",
           "name": "1",
           "order": 1,
-          "label": {
-            "en": "Day 1",
-            "ar": "الأول"
-          },
+          "label": {"en": "Day 1", "ar": "الأول"},
           "properties": {}
         },
         {
           "listName": "workDays",
           "name": "4",
           "order": 4,
-          "label": {
-            "en": "Day 4",
-            "ar": "الرابع"
-          },
+          "label": {"en": "Day 4", "ar": "الرابع"},
           "properties": {}
         }
       ],
@@ -880,10 +749,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "order": 0,
           "description": "Patiant Basic Info",
           "type": "Section",
-          "label": {
-            "en": "Patient info",
-            "ar": "بيانات المريض"
-          },
+          "label": {"en": "Patient info", "ar": "بيانات المريض"},
           "fields": [
             {
               "uid": "cD7eF8gH9I0",
@@ -893,10 +759,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "type": "FullName",
               "mandatory": true,
               "mainField": true,
-              "label": {
-                "en": "Patient name",
-                "ar": "اسم المريض"
-              }
+              "label": {"en": "Patient name", "ar": "اسم المريض"}
             },
             {
               "uid": "vW3xY4zA5B6",
@@ -906,16 +769,14 @@ final Map<String, dynamic> dSampleAllForms = {
               "mandatory": true,
               "mainField": true,
               "rules": [],
-              "label": {
-                "en": "Visit Date",
-                "ar": "تاريخ الزيارة"
-              }
+              "label": {"en": "Visit Date", "ar": "تاريخ الزيارة"}
             },
             {
               "uid": "jK1lM2nO3P4",
               "name": "age",
               "order": 3,
-              "description": "Age in Years and (months for age less than 1 year)",
+              "description":
+                  "Age in Years and (months for age less than 1 year)",
               "type": "Number",
               "mandatory": true,
               "mainField": true,
@@ -935,10 +796,7 @@ final Map<String, dynamic> dSampleAllForms = {
                   }
                 }
               ],
-              "label": {
-                "en": "Age",
-                "ar": "العمر"
-              }
+              "label": {"en": "Age", "ar": "العمر"}
             },
             {
               "uid": "xY9zA0bC1D2",
@@ -949,10 +807,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": true,
               "rules": [],
               "listName": "genders",
-              "label": {
-                "en": "Gender",
-                "ar": "الجنس"
-              }
+              "label": {"en": "Gender", "ar": "الجنس"}
             },
             {
               "uid": "eF3gH4iJ5K6",
@@ -969,10 +824,7 @@ final Map<String, dynamic> dSampleAllForms = {
                   "action": "Show"
                 }
               ],
-              "label": {
-                "en": "Is pregnant?",
-                "ar": "هل هي حامل؟"
-              }
+              "label": {"en": "Is pregnant?", "ar": "هل هي حامل؟"}
             }
           ]
         },
@@ -981,10 +833,7 @@ final Map<String, dynamic> dSampleAllForms = {
           "order": 6,
           "description": "Test Details",
           "type": "Section",
-          "label": {
-            "en": "Test Details",
-            "ar": "معلومات الفحص"
-          },
+          "label": {"en": "Test Details", "ar": "معلومات الفحص"},
           "fields": [
             {
               "uid": "lM7nO8pQ9R0",
@@ -995,10 +844,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "rules": [],
               "listName": "testResults",
-              "label": {
-                "en": "Test Result",
-                "ar": "نتيجة الفحص"
-              }
+              "label": {"en": "Test Result", "ar": "نتيجة الفحص"}
             },
             {
               "uid": "z33bC6dE7F8",
@@ -1011,15 +857,13 @@ final Map<String, dynamic> dSampleAllForms = {
                 {
                   "uid": "eF3gH8iJ5K9",
                   "field": "detectionType",
-                  "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+                  "expression":
+                      "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
                   "action": "Show"
                 }
               ],
               "listName": "detectionTypes",
-              "label": {
-                "en": "Detection Type",
-                "ar": "نوع الاكتشاف"
-              }
+              "label": {"en": "Detection Type", "ar": "نوع الاكتشاف"}
             },
             {
               "uid": "zA5bDDdE7F8",
@@ -1032,29 +876,25 @@ final Map<String, dynamic> dSampleAllForms = {
                 {
                   "uid": "eF9gH8iJ5K9",
                   "field": "severity",
-                  "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+                  "expression":
+                      "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
                   "action": "Show"
                 }
               ],
               "listName": "severities",
-              "label": {
-                "en": "Severity",
-                "ar": "تصنيف الحالة"
-              }
+              "label": {"en": "Severity", "ar": "تصنيف الحالة"}
             },
             {
               "uid": "positivity",
               "name": "positivity",
               "order": 10,
               "type": "Calculated",
-              "calculation": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+              "calculation":
+                  "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
               "mandatory": false,
               "mainField": false,
               "rules": [],
-              "label": {
-                "en": "positivity",
-                "ar": "إيجابية الحالة"
-              }
+              "label": {"en": "positivity", "ar": "إيجابية الحالة"}
             },
             {
               "uid": "gH9iJ0kL1M2",
@@ -1063,20 +903,19 @@ final Map<String, dynamic> dSampleAllForms = {
               "type": "SelectOne",
               "mandatory": true,
               "mainField": true,
-              "choiceFilter": "severityFilter == #{severity} && pregnantFilter == #{pregnant} && positivityFilter == #{positivity}",
+              "choiceFilter":
+                  "severityFilter == #{severity} && pregnantFilter == #{pregnant} && positivityFilter == #{positivity}",
               "rules": [
                 {
                   "uid": "gH10J1kL1M2",
                   "field": "treatment",
-                  "expression": "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
+                  "expression":
+                      "#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX'",
                   "action": "Show"
                 }
               ],
               "listName": "treatments",
-              "label": {
-                "en": "Treatment",
-                "ar": "تدبير الحالة"
-              }
+              "label": {"en": "Treatment", "ar": "تدبير الحالة"}
             },
             {
               "uid": "nO3pQ4rS5T6",
@@ -1086,10 +925,7 @@ final Map<String, dynamic> dSampleAllForms = {
               "mainField": false,
               "mandatory": false,
               "rules": [],
-              "label": {
-                "en": "Comments",
-                "ar": "ملاحظات وتعليقات"
-              }
+              "label": {"en": "Comments", "ar": "ملاحظات وتعليقات"}
             }
           ]
         }
@@ -1099,30 +935,21 @@ final Map<String, dynamic> dSampleAllForms = {
           "listName": "genders",
           "name": "MALE",
           "order": 0,
-          "label": {
-            "ar": "ذكر",
-            "en": "Male"
-          },
+          "label": {"ar": "ذكر", "en": "Male"},
           "properties": {}
         },
         {
           "listName": "genders",
           "name": "FEMALE",
           "order": 1,
-          "label": {
-            "ar": "أنثى",
-            "en": "Female"
-          },
+          "label": {"ar": "أنثى", "en": "Female"},
           "properties": {}
         },
         {
           "listName": "testResults",
           "name": "NEGATIVE",
           "order": 0,
-          "label": {
-            "ar": "سلبي",
-            "en": "Negative"
-          },
+          "label": {"ar": "سلبي", "en": "Negative"},
           "properties": {}
         },
         {
@@ -1139,81 +966,58 @@ final Map<String, dynamic> dSampleAllForms = {
           "listName": "testResults",
           "name": "PV",
           "order": 2,
-          "label": {
-            "ar": "بلاسموديوم فيفاكس",
-            "en": "Plasmodium vivax"
-          },
+          "label": {"ar": "بلاسموديوم فيفاكس", "en": "Plasmodium vivax"},
           "properties": {}
         },
         {
           "listName": "testResults",
           "name": "MIX",
           "order": 3,
-          "label": {
-            "ar": "مختلط",
-            "en": "Mixed"
-          },
+          "label": {"ar": "مختلط", "en": "Mixed"},
           "properties": {}
         },
         {
           "listName": "testResults",
           "name": "INVALID",
           "order": 0,
-          "label": {
-            "ar": "غير صالح",
-            "en": "Invalid"
-          },
+          "label": {"ar": "غير صالح", "en": "Invalid"},
           "properties": {}
         },
         {
           "listName": "detectionTypes",
           "name": "ACTIVE",
           "order": 0,
-          "label": {
-            "ar": "بحث نشط",
-            "en": "Active"
-          },
+          "label": {"ar": "بحث نشط", "en": "Active"},
           "properties": {}
         },
         {
           "listName": "detectionTypes",
           "name": "REACTIVE",
           "order": 1,
-          "label": {
-            "ar": "زيارة روتينية",
-            "en": "Reactive"
-          },
+          "label": {"ar": "زيارة روتينية", "en": "Reactive"},
           "properties": {}
         },
         {
           "listName": "severities",
           "name": "SIMPLE",
           "order": 0,
-          "label": {
-            "ar": "بسيطة",
-            "en": "Simple"
-          },
+          "label": {"ar": "بسيطة", "en": "Simple"},
           "properties": {}
         },
         {
           "listName": "severities",
           "name": "SEVERE",
           "order": 1,
-          "label": {
-            "ar": "وخيمة",
-            "en": "Severe"
-          },
+          "label": {"ar": "وخيمة", "en": "Severe"},
           "properties": {}
         },
         {
           "listName": "treatments",
           "name": "TREATED",
           "order": 0,
-          "label": {
-            "ar": "معالج",
-            "en": "Treated"
-          },
-          "filterExpression": "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SIMPLE'",
+          "label": {"ar": "معالج", "en": "Treated"},
+          "filterExpression":
+              "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SIMPLE'",
           "properties": {
             "severityFilter": "SIMPLE",
             "positivityFilter": true,
@@ -1224,11 +1028,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "listName": "treatments",
           "name": "FIRST_DOSE",
           "order": 1,
-          "label": {
-            "ar": "الجرعة الأولى",
-            "en": "First Dose"
-          },
-          "filterExpression": "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SEVERE' && #{pregnant} == false",
+          "label": {"ar": "الجرعة الأولى", "en": "First Dose"},
+          "filterExpression":
+              "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SEVERE' && #{pregnant} == false",
           "properties": {
             "positivityFilter": true,
             "severityFilter": "SEVERE",
@@ -1239,11 +1041,9 @@ final Map<String, dynamic> dSampleAllForms = {
           "listName": "treatments",
           "name": "REFERRAL",
           "order": 2,
-          "label": {
-            "ar": "إحالة",
-            "en": "Referral"
-          },
-          "filterExpression": "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && (#{pregnant} == true || #{severity} == 'SEVERE')",
+          "label": {"ar": "إحالة", "en": "Referral"},
+          "filterExpression":
+              "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && (#{pregnant} == true || #{severity} == 'SEVERE')",
           "properties": {
             "severityFilter": "SEVERE",
             "positivityFilter": true,
@@ -1258,7 +1058,8 @@ final Map<String, dynamic> dSampleAllForms = {
             "ar": "الجرعة الأولى وإحالة",
             "en": "First Dose & Referral"
           },
-          "filterExpression": "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SEVERE'",
+          "filterExpression":
+              "(#{testResult} == 'PF' || #{testResult} == 'PV' || #{testResult} == 'MIX') && #{severity} == 'SEVERE'",
           "properties": {
             "severityFilter": "SEVERE",
             "positivityFilter": true,
@@ -1266,10 +1067,7 @@ final Map<String, dynamic> dSampleAllForms = {
           }
         }
       ],
-      "label": {
-        "en": "chv cases register",
-        "ar": "تدبير حالة ملاريا"
-      }
+      "label": {"en": "chv cases register", "ar": "تدبير حالة ملاريا"}
     }
   ]
 };

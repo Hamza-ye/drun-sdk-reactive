@@ -39,8 +39,8 @@ class Rule with EquatableMixin {
   factory Rule.fromJson(Map<String, dynamic> json) {
     final message = json['message'] != null
         ? Map<String, String>.from(json['message'] is String
-        ? jsonDecode(json['message'])
-        : json['message'])
+            ? jsonDecode(json['message'])
+            : json['message'])
         : <String, String>{};
     return Rule(
         field: json['field'],

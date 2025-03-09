@@ -46,7 +46,7 @@ void main() async {
   );
   dioAdapter.onGet(
     'http://localhost:8080/api/custom/teams/managed?paged=false',
-        (server) => server.reply(200, sampleTeams),
+    (server) => server.reply(200, sampleTeams),
   );
   final teamQuery = DTeamQuery(database: db);
   await teamQuery.download((progress, complete) {

@@ -144,9 +144,8 @@ class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
       final dataResults = (await db.query(this.entity.tableName,
           orderBy: orderParameters, columns: fields));
 
-      final List<String> dataIds = dataResults
-          .map((dataResult) => dataResult['id'].toString())
-          .toList();
+      final List<String> dataIds =
+          dataResults.map((dataResult) => dataResult['id'].toString()).toList();
 
       final relationData = await this.findRelationByParent(
           relations: relations as List<ColumnRelation>,
@@ -393,8 +392,7 @@ class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
           saveDataResponse = 1;
         } else {
           if (data['dirty'] == 1) {
-            data['lastModifiedDate'] =
-                DateHelper.nowUtc();
+            data['lastModifiedDate'] = DateHelper.nowUtc();
           }
           saveDataResponse = await db.update(
             columnRelation.referencedEntity?.tableName as String,
@@ -515,7 +513,8 @@ class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
     if (result != null) {
       final currentLastUpdatedDate =
           DateTime.parse(result.lastModifiedDate as String);
-      final newLastUpdatedDate = DateTime.parse(entity.lastModifiedDate as String);
+      final newLastUpdatedDate =
+          DateTime.parse(entity.lastModifiedDate as String);
 
       if (currentLastUpdatedDate.difference(newLastUpdatedDate).inMilliseconds >
           0) {
@@ -577,11 +576,18 @@ class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
 
   @override
   Future<int> updateOne({required T entity, Database? database}) async {
-    if (entity.dirty == true) {
-      entity.lastModifiedDate = DateHelper.nowUtc();
+    T newEntity = entity;
+    if (newEntity.dirty == true) {
+      ClassMirror classMirror =
+          AnnotationReflectable.reflectType(T) as ClassMirror;
+
+      newEntity = classMirror.newInstance('fromJson', [
+        {...newEntity.toJson(), 'lastModifiedDate': DateHelper.nowUtc()}
+      ]) as T;
+      // entity.lastModifiedDate = DateHelper.nowUtc();
     }
-    Map<String, dynamic> data = this
-        .sanitizeIncomingData(entity: entity.toJson(), columns: this.columns);
+    Map<String, dynamic> data = this.sanitizeIncomingData(
+        entity: newEntity.toJson(), columns: this.columns);
     final Database db = database != null ? database : await this.database;
     final saveDataResponse = await db.update(
       this.entity.tableName,
@@ -598,7 +604,8 @@ class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
     num availableItemCount = 0;
 
     this.oneToManyColumns.forEach((Column column) {
-      final List data = entity.toJson()[column.relation?.attributeName] ?? [];
+      final List data =
+          newEntity.toJson()[column.relation?.attributeName] ?? [];
       if (data.isNotEmpty) {
         availableItemCount++;
         data.forEach((dataItem) {

@@ -14,7 +14,6 @@ class DateHelper {
 
   static const String TIME_FORMAT = 'HH:mm';
 
-
   static DateFormat databaseDateFormat() {
     return DateFormat(DATABASE_FORMAT_EXPRESSION, 'en_US');
   }
@@ -26,7 +25,6 @@ class DateHelper {
   static DateFormat uiDateFormatNoSeconds() {
     return DateFormat(DATABASE_FORMAT_EXPRESSION_NO_SECONDS, 'en_US');
   }
-
 
   static DateFormat timeFormat() {
     return DateFormat('HH:mm', 'en_US');
@@ -40,13 +38,17 @@ class DateHelper {
   }
 
   /// from DbUtc To Ui Local Format
-  static String fromDbUtcToUiLocalFormat(String date, {bool includeTime = false}) {
+  static String fromDbUtcToUiLocalFormat(String date,
+      {bool includeTime = false}) {
     final DateTime? parsed =
         DateTime.tryParse(date.endsWith('Z') ? date : '${date}Z');
-    return parsed != null ? DateHelper.formatForUi(parsed, includeTime: includeTime) : date;
+    return parsed != null
+        ? DateHelper.formatForUi(parsed, includeTime: includeTime)
+        : date;
   }
 
-  static String formatForUi(DateTime dateTime, {bool includeTime = false, bool onlyTime = false}) {
+  static String formatForUi(DateTime dateTime,
+      {bool includeTime = false, bool onlyTime = false}) {
     final DateTime localDate = dateTime.toLocal();
     final DateFormat formatter =
         includeTime ? uiDateFormatNoSeconds() : uiDateFormat();

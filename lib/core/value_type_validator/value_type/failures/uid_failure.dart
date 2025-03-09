@@ -3,7 +3,6 @@ import 'package:d2_remote/core/datarun/exception/exception.dart';
 /// UID Failures
 sealed class UidFailure extends DException {
   const UidFailure();
-
 }
 
 final class MoreThanElevenCharsException extends UidFailure {

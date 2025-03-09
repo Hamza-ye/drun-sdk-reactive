@@ -82,7 +82,6 @@ class FormTemplate extends IdentifiableEntity {
   }
 
   factory FormTemplate.fromApi(Map<String, dynamic> json) {
-
     final options = json['options'] != null
         ? (parseDynamicJson(json['options']) as List)
             .map((option) => FormOption.fromJson(option))

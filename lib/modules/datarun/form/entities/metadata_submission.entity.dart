@@ -27,7 +27,6 @@ class MetadataSubmission extends IdentifiableEntity {
   @Column(nullable: true, type: ColumnType.TEXT)
   final Map<String, dynamic> formData = {};
 
-
   @Column(nullable: true, type: ColumnType.TEXT)
   final String? createdBy;
 

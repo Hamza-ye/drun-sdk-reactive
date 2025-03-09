@@ -6,7 +6,5 @@ enum QueryType { METADATA, DATA, INTERNAL }
 class Query {
   final QueryType? type;
   final bool aut;
-  const Query(
-      {required this.type,
-        this.aut = true});
+  const Query({required this.type, this.aut = true});
 }

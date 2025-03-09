@@ -135,8 +135,8 @@ class DAssignment extends IdentifiableEntity {
 
     final forms = json['forms'] != null
         ? json['forms'].runtimeType == String
-        ? jsonDecode(json['forms']).cast<String>()
-        : json['forms'].cast<String>()
+            ? jsonDecode(json['forms']).cast<String>()
+            : json['forms'].cast<String>()
         : <String>[];
 
     // final forms = json['forms'] != null
@@ -151,31 +151,31 @@ class DAssignment extends IdentifiableEntity {
         name: json['name'] ?? json['orgUnit']?['name'],
         allocatedResources: json['allocatedResources'] != null
             ? Map<String, Object?>.from(json['allocatedResources'] is String
-            ? jsonDecode(json['allocatedResources'])
-            : json['allocatedResources'])
+                ? jsonDecode(json['allocatedResources'])
+                : json['allocatedResources'])
             : <String, Object?>{},
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
         code: json['code'],
         activity: json['activity'] != null
             ? json['activity'] is String
-            ? json['activity']
-            : json['activity']['uid']
+                ? json['activity']
+                : json['activity']['uid']
             : null,
         orgUnit: json['orgUnit'] != null
             ? json['orgUnit'] is String
-            ? json['orgUnit']
-            : json['orgUnit']['uid']
+                ? json['orgUnit']
+                : json['orgUnit']['uid']
             : null,
         parent: json['parent'] != null
             ? json['parent'] is String
-            ? json['parent']
-            : json['parent']['uid']
+                ? json['parent']
+                : json['parent']['uid']
             : null,
         team: json['team'] != null
             ? json['team'] is String
-            ? json['team']
-            : json['team']['uid']
+                ? json['team']
+                : json['team']['uid']
             : null,
 
         //warehouse,

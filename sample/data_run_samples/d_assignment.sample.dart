@@ -49,15 +49,11 @@ final Map<String, dynamic> dSampleAssignments = {
         "formPermissions": [
           {
             "form": "Tcf3Ks9ZRpB",
-            "permissions": [
-              "ADD_SUBMISSIONS"
-            ]
+            "permissions": ["ADD_SUBMISSIONS"]
           },
           {
             "form": "oHpNiSgUOT4",
-            "permissions": [
-              "ADD_SUBMISSIONS"
-            ]
+            "permissions": ["ADD_SUBMISSIONS"]
           }
         ]
       },
@@ -69,23 +65,11 @@ final Map<String, dynamic> dSampleAssignments = {
         "code": "1503019",
         "startDay": 1,
         "path": ",lBnEF1UzAEh",
-        "forms": [
-          "oHpNiSgUOT4",
-          "A3Ao5Dsxyac",
-          "pBLU5LcKCVF"
-        ],
-        "allocatedResources": {
-          "ITNs": 14520,
-          "Population": 26085
-        }
+        "forms": ["oHpNiSgUOT4", "A3Ao5Dsxyac", "pBLU5LcKCVF"],
+        "allocatedResources": {"ITNs": 14520, "Population": 26085}
       },
-      "forms": [
-        "oHpNiSgUOT4"
-      ],
-      "allocatedResources": {
-        "ITNs": 2450,
-        "Population": 4375
-      },
+      "forms": ["oHpNiSgUOT4"],
+      "allocatedResources": {"ITNs": 2450, "Population": 4375},
       "entityScope": "Assigned",
       "level": 2
     },
@@ -134,15 +118,8 @@ final Map<String, dynamic> dSampleAssignments = {
       },
       "children": null,
       "path": ",qjA2VdhVGE6",
-      "forms": [
-        "oHpNiSgUOT4",
-        "A3Ao5Dsxyac",
-        "pBLU5LcKCVF"
-      ],
-      "allocatedResources": {
-        "ITNs": 10350,
-        "Population": 18546
-      },
+      "forms": ["oHpNiSgUOT4", "A3Ao5Dsxyac", "pBLU5LcKCVF"],
+      "allocatedResources": {"ITNs": 10350, "Population": 18546},
       "entityScope": "Assigned",
       "level": 1
     }

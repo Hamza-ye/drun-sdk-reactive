@@ -39,6 +39,7 @@ class SyncableEntity extends BaseEntity {
 
   @Column(nullable: true)
   String? createdBy;
+
   /// Active=IN_PROGRESS, Completed=COMPLETED
   @Column(type: ColumnType.TEXT, nullable: true)
   AssignmentStatus? status;
@@ -83,7 +84,6 @@ class SyncableEntity extends BaseEntity {
       String? lastModifiedDate,
       String? createdDate,
       this.createdBy,
-
       this.assignment,
       this.orgUnit,
       this.form,
@@ -106,7 +106,7 @@ class SyncableEntity extends BaseEntity {
       required bool dirty})
       : super(
             id: uid,
-            uid: uid,
+            // uid: uid,
             dirty: dirty,
             createdDate: createdDate,
             lastModifiedDate: lastModifiedDate);
@@ -114,7 +114,7 @@ class SyncableEntity extends BaseEntity {
   Map<String, dynamic> toUpload() {
     Map<String, dynamic> syncableToUpload = {
       // "id": this.id,
-      "uid": this.uid,
+      "uid": this.id,
       "code": this.code,
       "formVersion": this.formVersion,
       "form": form,

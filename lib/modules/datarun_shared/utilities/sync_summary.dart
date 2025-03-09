@@ -11,24 +11,21 @@ class SyncSummary {
   factory SyncSummary.fromJson(Map<String, dynamic> json) {
     final created = json['created'] != null
         ? json['created'].runtimeType == String
-        ? jsonDecode(json['created']).cast<String>()
-        : json['created'].cast<String>()
+            ? jsonDecode(json['created']).cast<String>()
+            : json['created'].cast<String>()
         : null;
 
     final updated = json['updated'] != null
         ? json['updated'].runtimeType == String
-        ? jsonDecode(json['updated']).cast<String>()
-        : json['updated'].cast<String>()
+            ? jsonDecode(json['updated']).cast<String>()
+            : json['updated'].cast<String>()
         : null;
 
     final failed = json['failed'] != null
         ? json['failed'].runtimeType == String
-        ? jsonDecode(json['failed'])
-        : json['failed']
+            ? jsonDecode(json['failed'])
+            : json['failed']
         : null;
-    return SyncSummary(
-        created: created,
-        updated: updated,
-        failed: failed);
+    return SyncSummary(created: created, updated: updated, failed: failed);
   }
 }

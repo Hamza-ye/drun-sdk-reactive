@@ -10,6 +10,7 @@ import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:d2_remote/shared/utilities/http_client.util.dart';
 import 'package:dio/dio.dart';
 import 'package:queue/queue.dart';
+import 'package:reflectable/mirrors.dart';
 import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
@@ -81,7 +82,8 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
     // final formVersion =
     //     await FormVersionQuery().byId(entity?.formVersion).getOne();
 
-    return entity?.synced == false || entity?.createdBy != null/*|| haveChvSuperAuth*/;
+    return entity?.synced == false ||
+        entity?.createdBy != null /*|| haveChvSuperAuth*/;
   }
 
   /// **2. Preparing SyncableEntity Data for Upload (51%):**
@@ -176,24 +178,50 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
       final syncFailed = summary.failed.containsKey(syncableEntity.id);
       final syncCreated = summary.created.contains(syncableEntity.id);
       final syncUpdated = summary.updated.contains(syncableEntity.id);
-
+      T newEntity = syncableEntity;
+      ClassMirror classMirror =
+          AnnotationReflectable.reflectType(T) as ClassMirror;
       if (syncCreated || syncUpdated) {
-        syncableEntity.synced = true;
-        syncableEntity.dirty = false;
-        syncableEntity.syncFailed = false;
-        syncableEntity.lastSyncDate = DateHelper.nowUtc();
-        syncableEntity.lastSyncMessage = null;
+        // syncableEntity.synced = true;
+        // syncableEntity.dirty = false;
+        // syncableEntity.syncFailed = false;
+        // syncableEntity.lastSyncDate = DateHelper.nowUtc();
+        // syncableEntity.lastSyncMessage = null;
+
+        newEntity = classMirror.newInstance('fromJson', [
+          {
+            ...newEntity.toJson(),
+            "synced": true,
+            "lastSyncMassage": null,
+            "syncFailed": false,
+            "lastSyncDate": DateHelper.nowUtc(),
+            "dirty": false,
+            "lastModifiedDate": DateHelper.nowUtc(),
+          }
+        ]) as T;
         availableItemCount++;
       } else if (syncFailed) {
-        syncableEntity.synced = false;
-        syncableEntity.dirty = true;
-        syncableEntity.syncFailed = true;
-        syncableEntity.lastSyncDate = DateHelper.nowUtc();
-        syncableEntity.lastSyncMessage = summary.failed[syncableEntity.id];
+        // syncableEntity.synced = false;
+        // syncableEntity.dirty = true;
+        // syncableEntity.syncFailed = true;
+        // syncableEntity.lastSyncDate = DateHelper.nowUtc();
+        // syncableEntity.lastSyncMessage = summary.failed[syncableEntity.id];
+        newEntity = classMirror.newInstance('fromJson', [
+          {
+            ...newEntity.toJson(),
+            "synced": false,
+            "lastSyncMassage": summary.failed[syncableEntity.id],
+            "syncFailed": true,
+            "lastSyncDate": DateHelper.nowUtc(),
+            "dirty": true,
+            "lastModifiedDate": DateHelper.nowUtc(),
+          }
+        ]) as T;
+
         availableItemCount++;
       }
 
-      queue.add(() => setDataAndSave(syncableEntity));
+      queue.add(() => setDataAndSave(newEntity));
     }
 
     if (availableItemCount == 0) {

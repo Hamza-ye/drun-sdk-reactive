@@ -49,8 +49,7 @@ void main() async {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<OrgUnit> projects =
-      await D2Remote.organisationUnitModuleD.orgUnit.get();
+  List<OrgUnit> projects = await D2Remote.organisationUnitModuleD.orgUnit.get();
 
   test('should store all incoming orgUnits metadata', () {
     expect(projects.length, 7);

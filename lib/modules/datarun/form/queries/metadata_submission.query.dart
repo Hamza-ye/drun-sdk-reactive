@@ -12,7 +12,8 @@ class MetadataSubmissionQuery extends BaseQuery<MetadataSubmission> {
   MetadataSubmissionQuery({Database? database}) : super(database: database);
 
   @override
-  Future<List<MetadataSubmission>?> download(Function(RequestProgress, bool) callback,
+  Future<List<MetadataSubmission>?> download(
+      Function(RequestProgress, bool) callback,
       {Dio? dioTestClient}) async {
     callback(
         RequestProgress(
@@ -41,7 +42,7 @@ class MetadataSubmissionQuery extends BaseQuery<MetadataSubmission> {
         RequestProgress(
             resourceName: this.apiResourceName as String,
             message:
-            'Downloading ${this.apiResourceName?.toLowerCase()} from the server....',
+                'Downloading ${this.apiResourceName?.toLowerCase()} from the server....',
             status: '',
             percentage: 26),
         false);
@@ -57,7 +58,7 @@ class MetadataSubmissionQuery extends BaseQuery<MetadataSubmission> {
         RequestProgress(
             resourceName: this.apiResourceName as String,
             message:
-            '${data.length} ${this.apiResourceName?.toLowerCase()} downloaded successfully',
+                '${data.length} ${this.apiResourceName?.toLowerCase()} downloaded successfully',
             status: '',
             percentage: 50),
         false);
@@ -71,7 +72,7 @@ class MetadataSubmissionQuery extends BaseQuery<MetadataSubmission> {
         RequestProgress(
             resourceName: this.apiResourceName as String,
             message:
-            'Saving ${data.length} ${this.apiResourceName?.toLowerCase()} into phone database...',
+                'Saving ${data.length} ${this.apiResourceName?.toLowerCase()} into phone database...',
             status: '',
             percentage: 51),
         false);
@@ -82,7 +83,7 @@ class MetadataSubmissionQuery extends BaseQuery<MetadataSubmission> {
         RequestProgress(
             resourceName: this.apiResourceName as String,
             message:
-            '${data.length} ${this.apiResourceName?.toLowerCase()} successfully saved into the database',
+                '${data.length} ${this.apiResourceName?.toLowerCase()} successfully saved into the database',
             status: '',
             percentage: 100),
         true);

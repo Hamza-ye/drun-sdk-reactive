@@ -1,10 +1,11 @@
 import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
+import 'package:d2_remote/shared/entities/d_run_identifiable.dart';
 
 @AnnotationReflectable
-class IdentifiableEntity extends BaseEntity {
+class IdentifiableEntity extends BaseEntity implements IdentifiableModel {
   @Column(nullable: true)
-  String? name;
+  final String? name;
 
   @Column(nullable: true)
   final String? displayName;
@@ -25,13 +26,44 @@ class IdentifiableEntity extends BaseEntity {
     String? lastModifiedDate,
     String? createdDate,
     this.code,
-
-    /// id changed to point to uid for DataRun
   })  : this.displayName = displayName ?? name,
         super(
             id: uid,
-            uid: uid,
+            // uid: uid,
             dirty: dirty,
             createdDate: createdDate,
             lastModifiedDate: lastModifiedDate);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is IdentifiableEntity &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          uid == other.uid &&
+          code == other.code &&
+          name == other.name &&
+          dirty == other.dirty &&
+          lastModifiedDate == other.lastModifiedDate);
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      uid.hashCode ^
+      code.hashCode ^
+      name.hashCode ^
+      dirty.hashCode ^
+      lastModifiedDate.hashCode;
+
+  @override
+  String toString() {
+    return 'BaseEntity{' +
+        ' id: $id,' +
+        ' uid: $uid,' +
+        ' code: $code,' +
+        ' name: $name,' +
+        ' dirty: $dirty,' +
+        ' lastModifiedDate: $lastModifiedDate,'
+     '}';
+  }
 }

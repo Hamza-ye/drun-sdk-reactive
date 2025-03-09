@@ -26,12 +26,7 @@ class RuleAction
   });
 
   @override
-  List<Object?> get props => [
-        expression,
-        action,
-        assignedValue,
-        message
-      ];
+  List<Object?> get props => [expression, action, assignedValue, message];
 
   factory RuleAction.fromJson(Map<String, dynamic> json) {
     final message = json['message'] != null

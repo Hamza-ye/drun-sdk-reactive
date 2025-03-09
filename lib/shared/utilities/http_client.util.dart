@@ -124,15 +124,15 @@ class HttpClient {
 
   static Future<HttpResponse> get(String resourceUrl,
       {String? baseUrl,
-        String? username,
-        String? password,
-        Database? database,
-        Dio? dioTestClient}) async {
+      String? username,
+      String? password,
+      Database? database,
+      Dio? dioTestClient}) async {
     HttpDetails httpDetails = await HttpDetails(
-        baseUrl: baseUrl,
-        username: username,
-        password: password,
-        database: database)
+            baseUrl: baseUrl,
+            username: username,
+            password: password,
+            database: database)
         .get();
 
     final dioClient = dioTestClient ??
@@ -141,7 +141,7 @@ class HttpClient {
             receiveTimeout: Duration(milliseconds: 100000),
             headers: {
               HttpHeaders.authorizationHeader:
-              '${httpDetails.authTokenType} ${httpDetails.authToken}',
+                  '${httpDetails.authTokenType} ${httpDetails.authToken}',
             }));
 
     try {

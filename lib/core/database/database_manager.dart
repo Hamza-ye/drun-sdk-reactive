@@ -79,13 +79,16 @@ class DatabaseManager {
       //       onConfigure: _onConfigure,
       //     ));
       var database = inMemory
-          ? await openDatabase(inMemoryDatabasePath,
-              onConfigure: _onConfigure, /*password: phrase*/)
-          : await openDatabase(path,
+          ? await openDatabase(
+              inMemoryDatabasePath,
+              onConfigure: _onConfigure, /*password: phrase*/
+            )
+          : await openDatabase(
+              path,
               version: version,
               onCreate: _createDatabase,
-              onConfigure: _onConfigure,
-              /*password: phrase*/);
+              onConfigure: _onConfigure, /*password: phrase*/
+            );
       return database;
     }
 

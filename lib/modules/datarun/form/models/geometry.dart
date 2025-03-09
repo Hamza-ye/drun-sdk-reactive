@@ -5,7 +5,10 @@ class Geometry {
   Map<String, dynamic> geometryData;
 
   Geometry(
-      {required this.type, required this.latitude, required this.longitude, required this.geometryData});
+      {required this.type,
+      required this.latitude,
+      required this.longitude,
+      required this.geometryData});
 
   factory Geometry.fromJson(Map<String, dynamic> jsonData) {
     return Geometry(
@@ -16,7 +19,7 @@ class Geometry {
             ? jsonData["coordinates"][0]
             : "",
         type: jsonData["type"],
-        geometryData:  jsonData);
+        geometryData: jsonData);
   }
 
   Map<String, dynamic> toJson() {

@@ -1,5 +1,3 @@
-
-
 // class CalculatedTemplate extends FieldTemplate {
 //   bool get readOnly => true;
 //   final String? calculation;

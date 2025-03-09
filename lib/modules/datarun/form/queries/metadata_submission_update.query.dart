@@ -11,11 +11,10 @@ class MetadataSubmissionUpdateQuery
     extends BaseQuery<MetadataSubmissionUpdate> {
   MetadataSubmissionUpdateQuery({Database? database})
       : super(database: database);
-  Future<List<MetadataSubmissionUpdate>?> upload(List<String> submissionsIds, {Dio? dioTestClient}) async {
-
-    List<MetadataSubmissionUpdate> syncableEntities = await this
-        .where(attribute: 'dirty', value: true)
-        .get();
+  Future<List<MetadataSubmissionUpdate>?> upload(List<String> submissionsIds,
+      {Dio? dioTestClient}) async {
+    List<MetadataSubmissionUpdate> syncableEntities =
+        await this.where(attribute: 'dirty', value: true).get();
 
     //
     // List<String> syncableEntityIds = [];

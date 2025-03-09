@@ -1,7 +1,6 @@
 import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
 
 extension FormTemplateExtension on FormVersion {
-
   // String? resolveDependencyPath(String fieldPath, String dependencyName) {
   //   // Check in current scope
   //   for (var field in fields) {
@@ -20,5 +19,4 @@ extension FormTemplateExtension on FormVersion {
   //   // Check global scope (root level)
   //   return allFields.firstWhere((f) => f.name == dependencyName, orElse: () => this).path;
   // }
-
 }

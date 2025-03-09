@@ -23,18 +23,21 @@ class FormSubmissionQuery extends SyncableQuery<DataFormSubmission> {
   Future delete() async {
     if (this.id != null) {
       final toDelete = await getOne();
+      if (toDelete!.synced ?? false) {
+        DataFormSubmission deleted = DataFormSubmission.fromJson({
+          ...toDelete.toJson(),
+          'deleted': !(toDelete.deleted ?? false),
+          // 'synced': true,
+          'isFinal': true,
+          'dirty': true,
+          'lastModifiedDate': DateHelper.nowUtc()
+        });
 
-      toDelete!
-        ..deleted = !(toDelete.deleted ?? false)
-        ..synced = false
-        ..isFinal = true
-        ..dirty = true
-        ..lastModifiedDate = DateHelper.nowUtc();
-
-      // mergeMode = MergeMode.Merge;
-      await setData(toDelete)
-          .save(saveOptions: SaveOptions(skipLocalSyncStatus: true));
-      // mergeMode = MergeMode.Replace;
+        await setData(deleted)
+            .save(saveOptions: SaveOptions(skipLocalSyncStatus: true));
+      } else {
+        super.delete();
+      }
     }
   }
 

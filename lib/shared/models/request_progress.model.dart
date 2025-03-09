@@ -1,4 +1,3 @@
-
 class RequestProgress {
   String resourceName;
   String message;

@@ -3,10 +3,11 @@ import 'package:d2_remote/core/datarun/exception/exception.dart';
 /// Letter Failure
 sealed class LetterFailure extends DException {
   const LetterFailure();
-  const factory LetterFailure.stringIsNotALetterException() = StringIsNotALetterException;
-  const factory LetterFailure.moreThanOneLetterException() = MoreThanOneLetterException;
+  const factory LetterFailure.stringIsNotALetterException() =
+      StringIsNotALetterException;
+  const factory LetterFailure.moreThanOneLetterException() =
+      MoreThanOneLetterException;
   const factory LetterFailure.emptyStringException() = EmptyStringException;
-
 }
 
 final class StringIsNotALetterException extends LetterFailure {
