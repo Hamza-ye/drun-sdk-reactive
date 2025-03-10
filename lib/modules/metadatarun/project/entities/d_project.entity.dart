@@ -1,14 +1,14 @@
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'dProject', apiResourceName: 'projects')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'dProject', apiResourceName: 'projects')
 class DProject extends IdentifiableEntity {
-  @OneToMany(table: DActivity)
-  List<DActivity>? activities;
+  @legacy.OneToMany(table: Activity)
+  List<Activity>? activities;
 
-  @Column(type: ColumnType.BOOLEAN)
+  @legacy.Column(type: legacy.ColumnType.BOOLEAN)
   bool disabled;
 
   DProject(
@@ -46,7 +46,7 @@ class DProject extends IdentifiableEntity {
         displayName: json['displayName'] ?? json['name'],
         disabled: json['disabled'] ?? true,
         activities: List<dynamic>.from(json['activities'] ?? [])
-            .map((activity) => DActivity.fromJson(
+            .map((activity) => Activity.fromJson(
                 {...activity, 'project': json['uid'], 'dirty': false}))
             .toList(),
         dirty: json['dirty']);

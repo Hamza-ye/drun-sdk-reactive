@@ -52,12 +52,12 @@ void main() async {
     'http://localhost:8080/api/custom/activities?paged=false',
     (server) => server.reply(200, sampleActivities),
   );
-  final activityQuery = DActivityQuery(database: db);
+  final activityQuery = ActivityQuery(database: db);
   await activityQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DActivity> activities = await D2Remote.activityModuleD.activity.get();
+  List<Activity> activities = await D2Remote.activityModuleD.activity.get();
 
   test('should store all incoming activities metadata', () {
     expect(activities.length, 3);

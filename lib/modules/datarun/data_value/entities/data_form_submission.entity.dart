@@ -1,23 +1,20 @@
 import 'dart:convert';
-
-import 'package:d2_remote/core/annotations/column.annotation.dart';
-import 'package:d2_remote/core/annotations/entity.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
 import 'package:d2_remote/modules/datarun/form/models/geometry.dart';
 import 'package:d2_remote/modules/datarun_shared/entities/syncable.entity.dart';
 import 'package:d2_remote/shared/enumeration/assignment_status.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmission')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'dataSubmission', apiResourceName: 'dataSubmission')
 class DataFormSubmission extends SyncableEntity {
-  // @OneToMany(table: DataValue)
+  // @legacy.OneToMany(table: DataValue)
   // List<DataValue>? dataValues;
 
-  // @OneToMany(table: RepeatInstance)
+  // @legacy.OneToMany(table: RepeatInstance)
   // List<RepeatInstance>? repeatInstances;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final Map<String, dynamic> formData = {};
 
   DataFormSubmission({

@@ -1,32 +1,32 @@
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/data_value/entities/data_form_submission.entity.dart';
 import 'package:d2_remote/modules/datarun/data_value/entities/data_value.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'repeatInstance', apiResourceName: 'repeatInstances')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'repeatInstance', apiResourceName: 'repeatInstances')
 class RepeatInstance extends IdentifiableEntity {
-  @ManyToOne(table: DataFormSubmission, joinColumnName: 'submission')
+  @legacy.ManyToOne(table: DataFormSubmission, joinColumnName: 'submission')
   dynamic submission;
 
   /// path of the Repeat in the FormTemplate
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   String templatePath;
 
   // /// the nearest repeat Instance in ancestry
-  // @Column(nullable: false, type: ColumnType.TEXT)
+  // @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   // String parent;
-  // @ManyToOne(table: RepeatInstance, joinColumnName: 'parent')
+  // @legacy.ManyToOne(table: RepeatInstance, joinColumnName: 'parent')
   /// the nearest repeat item Instance in ancestry or null
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   String? parent;
 
   /// for order and identity within a repeat row
   /// not necessarily successive in case of delete
-  @Column(nullable: false, type: ColumnType.INTEGER)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.INTEGER)
   int repeatIndex;
 
-  @OneToMany(table: DataValue)
+  @legacy.OneToMany(table: DataValue)
   List<DataValue>? dataValues;
 
   RepeatInstance(

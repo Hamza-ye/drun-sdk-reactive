@@ -1,15 +1,13 @@
-import 'package:d2_remote/core/annotations/column.annotation.dart';
-import 'package:d2_remote/core/annotations/entity.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'ouLevel', apiResourceName: 'ouLevels')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'ouLevel', apiResourceName: 'ouLevels')
 class OrgUnitLevel extends IdentifiableEntity {
-  @Column(type: ColumnType.INTEGER)
+  @legacy.Column(type: legacy.ColumnType.INTEGER)
   int? level;
 
-  @Column(type: ColumnType.INTEGER, nullable: true)
+  @legacy.Column(type: legacy.ColumnType.INTEGER, nullable: true)
   int? offlineLevels;
 
   OrgUnitLevel(

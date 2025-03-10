@@ -1,22 +1,22 @@
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/core/datarun/utilities/date_helper.dart';
 import 'package:d2_remote/shared/utilities/dhis_uid_generator.util.dart';
 
-// @AnnotationReflectable
+// @legacy.AnnotationReflectable
 class BaseEntity {
-  @PrimaryColumn()
+  @legacy.PrimaryColumn()
   late final String? id;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   late final String? uid;
 
-  @Column()
+  @legacy.Column()
   final bool dirty;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? lastModifiedDate;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? createdDate;
 
   BaseEntity(

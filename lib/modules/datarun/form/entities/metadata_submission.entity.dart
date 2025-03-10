@@ -1,36 +1,34 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/column.annotation.dart';
-import 'package:d2_remote/core/annotations/entity.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'metadataSubmission', apiResourceName: 'metadataSubmissions')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'metadataSubmission', apiResourceName: 'metadataSubmissions')
 class MetadataSubmission extends IdentifiableEntity {
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   final MetadataResourceType resourceType;
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   final String metadataSchema;
 
-  @Column(nullable: false, type: ColumnType.INTEGER)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.INTEGER)
   final int serialNumber;
 
-  @Column(nullable: false, type: ColumnType.INTEGER)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.INTEGER)
   final int version;
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   final String resourceId;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final Map<String, dynamic> formData = {};
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final String? createdBy;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final String? lastModifiedBy;
 
   MetadataSubmission({

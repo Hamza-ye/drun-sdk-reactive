@@ -1,79 +1,79 @@
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/models/geometry.dart';
 import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
 import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart';
 import 'package:d2_remote/shared/entities/base.entity.dart';
 import 'package:d2_remote/shared/enumeration/assignment_status.dart';
 
-@AnnotationReflectable
+@legacy.AnnotationReflectable
 class SyncableEntity extends BaseEntity {
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? name;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? code;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   bool? deleted;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   bool? synced;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   bool? syncFailed;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   bool isFinal;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? lastSyncDate;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? lastSyncMessage;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? startEntryTime;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? finishedEntryTime;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? createdBy;
 
   /// Active=IN_PROGRESS, Completed=COMPLETED
-  @Column(type: ColumnType.TEXT, nullable: true)
+  @legacy.Column(type: legacy.ColumnType.TEXT, nullable: true)
   AssignmentStatus? status;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? rescheduledDate;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? reassignedToTeam;
 
-  @Column(nullable: false, type: ColumnType.INTEGER)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.INTEGER)
   int version;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   Geometry? geometry;
 
   // Relations
-  @ManyToOne(table: DTeam, joinColumnName: 'team')
+  @legacy.ManyToOne(table: Team, joinColumnName: 'team')
   dynamic team;
 
-  // @ManyToOne(table: DActivity, joinColumnName: 'activity')
+  // @legacy.ManyToOne(table: Activity, joinColumnName: 'activity')
   // dynamic activity;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final String? form;
 
-  @ManyToOne(table: FormVersion, joinColumnName: 'formVersion')
+  @legacy.ManyToOne(table: FormVersion, joinColumnName: 'formVersion')
   dynamic formVersion;
 
   /// assignment id or null if form is not assigned
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? assignment;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? orgUnit;
 
   SyncableEntity(

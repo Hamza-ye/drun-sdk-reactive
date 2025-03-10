@@ -1,11 +1,11 @@
 import 'package:d2_remote/modules/metadatarun/teams/queries/d_team.query.dart';
 
-class DTeamModule {
+class TeamModule {
   static createTables() async {
-    await DTeamQuery().createTable();
+    await TeamQuery().createTable();
   }
 
-  DTeamQuery get team => DTeamQuery();
+  TeamQuery get team => TeamQuery();
 }
 
 enum TeamType {

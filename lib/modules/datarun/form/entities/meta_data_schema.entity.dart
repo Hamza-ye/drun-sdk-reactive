@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/column.annotation.dart';
-import 'package:d2_remote/core/annotations/entity.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
@@ -10,28 +8,28 @@ import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'metadataSchema', apiResourceName: 'metadataSchemas')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'metadataSchema', apiResourceName: 'metadataSchemas')
 class MetadataSchema extends IdentifiableEntity {
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final MetadataResourceType? resourceType;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<FieldTemplate> fields = [];
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<FieldTemplate> flattenedFields = [];
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<FormOption> options = [];
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<DOptionSet> optionSets = [];
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   Map<String, String> label = {};
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   String defaultLocal;
 
   MetadataSchema({

@@ -10,18 +10,18 @@ import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
-class DTeamQuery extends BaseQuery<DTeam> {
-  DTeamQuery({Database? database}) : super(database: database);
+class TeamQuery extends BaseQuery<Team> {
+  TeamQuery({Database? database}) : super(database: database);
   String? activity;
   ActiveStatus? activeStatus;
 
-  DTeamQuery byActivity(String activity) {
+  TeamQuery byActivity(String activity) {
     this.where(attribute: 'activity', value: activity);
     this.activity = activity;
     return this;
   }
 
-  DTeamQuery byActivityStatus(ActiveStatus activeStatus) {
+  TeamQuery byActivityStatus(ActiveStatus activeStatus) {
     this.activeStatus = activeStatus;
     switch (activeStatus) {
       case ActiveStatus.EnabledOnly:
@@ -35,12 +35,12 @@ class DTeamQuery extends BaseQuery<DTeam> {
     }
   }
 
-  Future<List<DTeam>>? getManagedTeams() async {
+  Future<List<Team>>? getManagedTeams() async {
     return this.where(attribute: 'scope', value: 'Managed');
   }
 
   @override
-  Future<List<DTeam>?> download(Function(RequestProgress, bool) callback,
+  Future<List<Team>?> download(Function(RequestProgress, bool) callback,
       {Dio? dioTestClient}) async {
     callback(
         RequestProgress(
@@ -69,7 +69,7 @@ class DTeamQuery extends BaseQuery<DTeam> {
     this.data = data.map((dataItem) {
       dataItem['dirty'] = false;
       dataItem['entityScope'] = EntityScope.Assigned.name;
-      return DTeam.fromApi(dataItem);
+      return Team.fromApi(dataItem);
     }).toList();
 
     callback(
@@ -103,7 +103,7 @@ class DTeamQuery extends BaseQuery<DTeam> {
     final managedTeams = managedData.map((dataItem) {
       dataItem['dirty'] = false;
       dataItem['entityScope'] = EntityScope.Managed.name;
-      return DTeam.fromApi(dataItem);
+      return Team.fromApi(dataItem);
     }).toList();
 
     callback(
@@ -115,7 +115,7 @@ class DTeamQuery extends BaseQuery<DTeam> {
             percentage: 90),
         false);
 
-    await DTeamQuery().setData(managedTeams).save();
+    await TeamQuery().setData(managedTeams).save();
 
     // await this.save();
 

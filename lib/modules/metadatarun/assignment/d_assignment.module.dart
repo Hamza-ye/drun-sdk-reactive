@@ -1,9 +1,9 @@
 import 'package:d2_remote/modules/metadatarun/assignment/queries/d_assignment.query.dart';
 
-class DAssignmentModule {
+class AssignmentModule {
   static createTables() async {
-    await DAssignmentQuery().createTable();
+    await AssignmentQuery().createTable();
   }
 
-  DAssignmentQuery get assignment => DAssignmentQuery();
+  AssignmentQuery get assignment => AssignmentQuery();
 }

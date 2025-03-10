@@ -1,19 +1,19 @@
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
+@legacy.AnnotationReflectable
 class IdentifiableTreeNode extends IdentifiableEntity {
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? path;
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   Map<String, String> label;
 
-  @Column(name: 'parent', nullable: true)
+  @legacy.Column(name: 'parent', nullable: true)
   String? parent;
 
   // NMC
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<IdentifiableTreeNode>? ancestors;
 
   IdentifiableTreeNode(

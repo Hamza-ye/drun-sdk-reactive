@@ -1,35 +1,35 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun_shared/utilities/entity_scope.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/team_form_permission.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'dTeam', apiResourceName: 'teams')
-class DTeam extends IdentifiableEntity {
-  // @ManyToOne(table: DActivity, joinColumnName: 'activity')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'team', apiResourceName: 'teams')
+class Team extends IdentifiableEntity {
+  // @legacy.ManyToOne(table: Activity, joinColumnName: 'activity')
   // dynamic activity;
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? activity;
 
-  @Column(type: ColumnType.BOOLEAN)
+  @legacy.Column(type: legacy.ColumnType.BOOLEAN)
   bool disabled;
 
-  @Column(type: ColumnType.BOOLEAN)
+  @legacy.Column(type: legacy.ColumnType.BOOLEAN)
   bool deleteClientData;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   Map<String, Object?> properties = {};
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<TeamFormPermission> formPermissions = [];
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   EntityScope? scope;
 
-  DTeam(
+  Team(
       {String? id,
       required String uid,
       String? createdDate,
@@ -60,7 +60,7 @@ class DTeam extends IdentifiableEntity {
     this.formPermissions.addAll(formPermissions);
   }
 
-  factory DTeam.fromJson(Map<String, dynamic> json) {
+  factory Team.fromJson(Map<String, dynamic> json) {
     // final activity =
     //     json['activity'] is String ? json['activity'] : json['activity']['uid'];
 
@@ -72,7 +72,7 @@ class DTeam extends IdentifiableEntity {
             .toList()
         : <TeamFormPermission>[];
 
-    return DTeam(
+    return Team(
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],
@@ -99,7 +99,7 @@ class DTeam extends IdentifiableEntity {
         dirty: json['dirty']);
   }
 
-  factory DTeam.fromApi(Map<String, dynamic> jsonData) {
+  factory Team.fromApi(Map<String, dynamic> jsonData) {
     final activity = jsonData['activity'] is String?
         ? jsonData['activity']
         : jsonData['activity']['uid'];
@@ -112,7 +112,7 @@ class DTeam extends IdentifiableEntity {
             .toList()
         : <TeamFormPermission>[];
 
-    return DTeam(
+    return Team(
         id: jsonData['id'].toString(),
         uid: jsonData['uid'],
         name: jsonData['name'],

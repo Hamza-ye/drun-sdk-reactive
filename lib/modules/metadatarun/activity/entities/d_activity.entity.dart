@@ -1,36 +1,36 @@
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
 import 'package:d2_remote/modules/metadatarun/project/entities/d_project.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'dActivity', apiResourceName: 'activities')
-class DActivity extends IdentifiableEntity {
-  @ManyToOne(table: DProject, joinColumnName: 'project')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'activity', apiResourceName: 'activities')
+class Activity extends IdentifiableEntity {
+  @legacy.ManyToOne(table: DProject, joinColumnName: 'project')
   dynamic project;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? startDate;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? endDate;
 
-  @Column(type: ColumnType.BOOLEAN)
+  @legacy.Column(type: legacy.ColumnType.BOOLEAN)
   bool disabled;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? programs;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? organisationUnits;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? description;
 
-  @OneToMany(table: FormTemplate)
+  @legacy.OneToMany(table: FormTemplate)
   List<FormTemplate>? formTemplates;
 
-  DActivity(
+  Activity(
       {String? id,
       required String uid,
       String? createdDate,
@@ -59,8 +59,8 @@ class DActivity extends IdentifiableEntity {
             lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
-  factory DActivity.fromJson(Map<String, dynamic> json) {
-    return DActivity(
+  factory Activity.fromJson(Map<String, dynamic> json) {
+    return Activity(
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'],

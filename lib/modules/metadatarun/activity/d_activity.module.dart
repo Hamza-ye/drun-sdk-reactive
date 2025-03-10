@@ -1,9 +1,9 @@
 import 'package:d2_remote/modules/metadatarun/activity/queries/d_activity.query.dart';
 
-class DActivityModule {
+class ActivityModule {
   static createTables() async {
-    return await DActivityQuery().createTable();
+    return await ActivityQuery().createTable();
   }
 
-  DActivityQuery get activity => DActivityQuery();
+  ActivityQuery get activity => ActivityQuery();
 }

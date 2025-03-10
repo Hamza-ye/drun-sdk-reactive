@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/shared/field_template/allowed_action.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/scanned_code_properties.dart';
 import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
@@ -9,38 +9,38 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'dataElement', apiResourceName: 'dataElements')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'dataElement', apiResourceName: 'dataElements')
 class DataElement extends IdentifiableEntity {
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final String? description;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final ValueType? type;
 
-  @Column(nullable: true, type: ColumnType.BOOLEAN)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.BOOLEAN)
   final bool mandatory;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final dynamic defaultValue;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final IMap<String, String?> label;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final ScannedCodeProperties? scannedCodeProperties;
 
-  @Column(nullable: true, type: ColumnType.BOOLEAN)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.BOOLEAN)
   final bool gs1Enabled;
 
   /// references to other entities
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final MetadataResourceType? resourceType;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final String? resourceMetadataSchema;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final IList<AllowedAction> allowedActions;
 
   DataElement(

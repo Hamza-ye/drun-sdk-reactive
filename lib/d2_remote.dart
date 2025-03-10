@@ -46,9 +46,9 @@ class D2Remote {
       await DUserModule.createTables();
       await OrgUnitModule.createTables();
       await DProjectModule.createTables();
-      await DActivityModule.createTables();
-      await DTeamModule.createTables();
-      await DAssignmentModule.createTables();
+      await ActivityModule.createTables();
+      await TeamModule.createTables();
+      await AssignmentModule.createTables();
       await FormModule.createTables();
       await FormSubmissionModule.createTables();
       await DataElementModule.createTables();
@@ -268,13 +268,13 @@ class D2Remote {
 
   static DProjectModule projectModuleD = DProjectModule();
 
-  static DActivityModule activityModuleD = DActivityModule();
+  static ActivityModule activityModuleD = ActivityModule();
 
-  static DAssignmentModule assignmentModuleD = DAssignmentModule();
+  static AssignmentModule assignmentModuleD = AssignmentModule();
 
   static FormModule formModule = FormModule();
 
   static FormSubmissionModule formSubmissionModule = FormSubmissionModule();
 
-  static DTeamModule teamModuleD = DTeamModule();
+  static TeamModule teamModuleD = TeamModule();
 }

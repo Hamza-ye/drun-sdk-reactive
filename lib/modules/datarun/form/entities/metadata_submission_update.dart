@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:d2_remote/core/annotations/column.annotation.dart';
-import 'package:d2_remote/core/annotations/entity.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
 import 'package:d2_remote/modules/datarun/form/shared/metadata_resource_type.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @AnnotationReflectable
-@Entity(
+@legacy.Entity(
     tableName: 'metadataSubmissionUpdate',
     apiResourceName: 'metadataSubmissionUpdates')
 class MetadataSubmissionUpdate extends IdentifiableEntity {

@@ -31,10 +31,10 @@ class MetadataSubmissionUpdateQuery
     //   syncableTeamIds.add(event.team);
     // });
 
-    // List<DActivity> activities =
-    //     await DActivityQuery().byIds(syncableActivityIds).get();
+    // List<Activity> activities =
+    //     await ActivityQuery().byIds(syncableActivityIds).get();
     //
-    // List<DTeam> teams = await DTeamQuery().byIds(syncableTeamIds).get();
+    // List<Team> teams = await TeamQuery().byIds(syncableTeamIds).get();
 
     // final uploadPayload = syncableEntities.map((event) {
     //   // final team = teams.lastWhere((team) => team.id == event.team).toJson();

@@ -8,44 +8,44 @@ import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
-class DAssignmentQuery extends BaseQuery<DAssignment> {
+class AssignmentQuery extends BaseQuery<Assignment> {
   String? activity;
   String? warehouse;
   String? team;
   String? orgUnit;
 
-  DAssignmentQuery({Database? database}) : super(database: database);
+  AssignmentQuery({Database? database}) : super(database: database);
 
-  DAssignmentQuery byActivity(String activity) {
+  AssignmentQuery byActivity(String activity) {
     this.activity = activity;
     this.where(attribute: 'activity', value: activity);
     return this;
   }
 
-  DAssignmentQuery byTeam(String team) {
+  AssignmentQuery byTeam(String team) {
     this.team = team;
     this.where(attribute: 'team', value: team);
     return this;
   }
 
-  DAssignmentQuery byOrgUnit(String orgUnit) {
+  AssignmentQuery byOrgUnit(String orgUnit) {
     this.orgUnit = orgUnit;
     this.where(attribute: 'orgUnit', value: orgUnit);
     return this;
   }
 
-  DAssignmentQuery assigned() {
+  AssignmentQuery assigned() {
     this.where(attribute: 'scope', value: 'Assigned');
     return this;
   }
 
-  DAssignmentQuery managed() {
+  AssignmentQuery managed() {
     this.where(attribute: 'scope', value: 'Managed');
     return this;
   }
 
   @override
-  Future<List<DAssignment>?> download(Function(RequestProgress, bool) callback,
+  Future<List<Assignment>?> download(Function(RequestProgress, bool) callback,
       {Dio? dioTestClient}) async {
     callback(
         RequestProgress(
@@ -73,7 +73,7 @@ class DAssignmentQuery extends BaseQuery<DAssignment> {
 
     this.data = data.map((dataItem) {
       dataItem['dirty'] = false;
-      return DAssignment.fromApi(dataItem);
+      return Assignment.fromApi(dataItem);
     }).toList();
 
     callback(
@@ -88,10 +88,10 @@ class DAssignmentQuery extends BaseQuery<DAssignment> {
     await this.save();
 
     // final activities = data.map((dataItem) {
-    //   return DActivity.fromJson({...?dataItem['activity'], 'dirty': false});
+    //   return Activity.fromJson({...?dataItem['activity'], 'dirty': false});
     // }).toList();
     //
-    // await DActivityQuery().setData(activities).save();
+    // await ActivityQuery().setData(activities).save();
     //
     // final orgUnits = data.map((dataItem) {
     //   return OrgUnit.fromJson({
@@ -104,14 +104,14 @@ class DAssignmentQuery extends BaseQuery<DAssignment> {
     // await OrgUnitQuery().setData(orgUnits).save();
     //
     // final teams = data.map((dataItem) {
-    //   return DTeam.fromApi({
+    //   return Team.fromApi({
     //     ...?dataItem['team'],
     //     'scope': EntityScope.Managed.name,
     //     'dirty': false
     //   });
     // }).toList();
     //
-    // await DTeamQuery().setData(teams).save();
+    // await TeamQuery().setData(teams).save();
 
     callback(
         RequestProgress(

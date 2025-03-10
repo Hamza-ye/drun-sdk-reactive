@@ -1,43 +1,41 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/column.annotation.dart';
-import 'package:d2_remote/core/annotations/entity.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun_shared/utilities/entity_scope.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable_tree_node.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'orgUnit', apiResourceName: 'orgUnits')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'orgUnit', apiResourceName: 'orgUnits')
 class OrgUnit extends IdentifiableTreeNode {
-  // @Column(nullable: true)
+  // @legacy.Column(nullable: true)
   // String? path;
 
-  // @Column(nullable: true)
+  // @legacy.Column(nullable: true)
   // String? parentUid;
 
-  // @Column(nullable: true, type: ColumnType.INTEGER)
+  // @legacy.Column(nullable: true, type: legacy.ColumnType.INTEGER)
   // int? level;
 
-  // @Column(nullable: false, type: ColumnType.TEXT)
+  // @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   // Map<String, String> label;
 
-  // @Column(nullable: true, type: ColumnType.TEXT)
+  // @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   // Geometry? geometry;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   Object? geometry;
 
-  // @Column(name: 'parent', nullable: true)
+  // @legacy.Column(name: 'parent', nullable: true)
   // String? parent;
   //
   // // NMC
-  // @Column(nullable: true, type: ColumnType.TEXT)
+  // @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   // List<OrgUnit>? ancestors;
-  // @OneToMany(table: OrgUnit)
+  // @legacy.OneToMany(table: OrgUnit)
   // final List<OrgUnit>? ancestors;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   EntityScope? scope;
 
   OrgUnit(

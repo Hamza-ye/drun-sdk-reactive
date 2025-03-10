@@ -45,12 +45,12 @@ void main() async {
     'http://localhost:8080/api/custom/assignments?paged=false',
     (server) => server.reply(200, sampleAssignments),
   );
-  final assignmentQuery = DAssignmentQuery(database: db);
+  final assignmentQuery = AssignmentQuery(database: db);
   await assignmentQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DAssignment> assignments =
+  List<Assignment> assignments =
       await D2Remote.assignmentModuleD.assignment.get();
 
   test('should store all incoming assignments metadata', () {

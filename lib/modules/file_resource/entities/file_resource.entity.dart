@@ -1,44 +1,44 @@
 // import 'dart:convert';
 //
-// import 'package:d2_remote/core/annotations/index.dart';
+// import 'package:d2_remote/core/annotations/index.dart' as legacy;
 // import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 //
-// @AnnotationReflectable
+// @legacy.AnnotationReflectable
 // @Entity(tableName: 'fileResource', apiResourceName: 'fileResources')
 // class FileResource extends IdentifiableEntity {
-//   @Column(nullable: true)
+//   @legacy.Column(nullable: true)
 //   String? resourceId;
 //
-//   @Column()
+//   @legacy.Column()
 //   String elementId;
 //
-//   @Column()
+//   @legacy.Column()
 //   String elementType;
 //
-//   @Column()
+//   @legacy.Column()
 //   String formInstance;
 //
-//   @Column()
+//   @legacy.Column()
 //   String contentType;
 //
-//   @Column(nullable: true)
+//   @legacy.Column(nullable: true)
 //   String? contentLength;
 //
-//   @Column()
+//   @legacy.Column()
 //   String storageStatus;
-//   @Column()
+//   @legacy.Column()
 //   String localFilePath;
 //
-//   @Column(nullable: true)
+//   @legacy.Column(nullable: true)
 //   bool? synced;
 //
-//   @Column(nullable: true)
+//   @legacy.Column(nullable: true)
 //   bool? syncFailed;
 //
-//   @Column(nullable: true)
+//   @legacy.Column(nullable: true)
 //   String? lastSyncSummary;
 //
-//   @Column(nullable: true)
+//   @legacy.Column(nullable: true)
 //   String? lastSyncDate;
 //
 //   FileResource(

@@ -9,12 +9,12 @@ import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
-class DActivityQuery extends BaseQuery<DActivity> {
-  DActivityQuery({Database? database}) : super(database: database);
+class ActivityQuery extends BaseQuery<Activity> {
+  ActivityQuery({Database? database}) : super(database: database);
   String? project;
   ActiveStatus? activeStatus;
 
-  DActivityQuery withFormTemplates() {
+  ActivityQuery withFormTemplates() {
     final formTemplate = Repository<FormTemplate>();
     final Column? relationColumn = formTemplate.columns.firstWhere((column) =>
         column.relation?.referencedEntity?.tableName == this.tableName);
@@ -36,13 +36,13 @@ class DActivityQuery extends BaseQuery<DActivity> {
     return this;
   }
 
-  DActivityQuery byProject(String project) {
+  ActivityQuery byProject(String project) {
     this.project = project;
     this.where(attribute: 'project', value: project);
     return this;
   }
 
-  DActivityQuery byActivityStatus(ActiveStatus activeStatus) {
+  ActivityQuery byActivityStatus(ActiveStatus activeStatus) {
     this.activeStatus = activeStatus;
     switch (activeStatus) {
       case ActiveStatus.EnabledOnly:

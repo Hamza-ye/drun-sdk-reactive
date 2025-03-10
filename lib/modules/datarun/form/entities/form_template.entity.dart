@@ -1,29 +1,26 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/column.annotation.dart';
-import 'package:d2_remote/core/annotations/entity.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
-import 'package:d2_remote/core/annotations/relation.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/entities/form_version.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/option_set.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'formTemplate', apiResourceName: 'dataForm')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'formTemplate', apiResourceName: 'dataForm')
 class FormTemplate extends IdentifiableEntity {
   /// template latest Version
-  @Column(nullable: false, type: ColumnType.INTEGER)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.INTEGER)
   int version;
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   Map<String, String> label = {};
 
-  @OneToMany(table: FormVersion)
+  @legacy.OneToMany(table: FormVersion)
   List<FormVersion>? formVersions;
 
-  // @ManyToOne(table: DActivity, joinColumnName: 'team')
+  // @legacy.ManyToOne(table: Activity, joinColumnName: 'team')
   // dynamic team;
 
   FormTemplate({

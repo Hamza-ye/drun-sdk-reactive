@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/shared/form_option.entity.dart';
 import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'optionSet', apiResourceName: 'optionSets')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'optionSet', apiResourceName: 'optionSets')
 class OptionSet extends IdentifiableEntity {
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   final IList<FormOption> options;
 
   OptionSet(

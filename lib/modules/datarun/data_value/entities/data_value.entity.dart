@@ -1,30 +1,29 @@
 import 'dart:convert';
-
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/data_value/entities/data_form_submission.entity.dart';
 import 'package:d2_remote/modules/datarun/data_value/entities/repeat_instance.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/value_type.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'dataValue', apiResourceName: 'dataValues')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'dataValue', apiResourceName: 'dataValues')
 class DataValue extends IdentifiableEntity {
   /// path of the Repeat in the FormTemplate
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   String templatePath;
 
   /// the nearest repeat parent Instance in ancestry, or null
-  @ManyToOne(table: RepeatInstance, joinColumnName: 'parent')
+  @legacy.ManyToOne(table: RepeatInstance, joinColumnName: 'parent')
   dynamic parent;
 
   /// the root submission
-  @ManyToOne(table: DataFormSubmission, joinColumnName: 'submission')
+  @legacy.ManyToOne(table: DataFormSubmission, joinColumnName: 'submission')
   dynamic submission;
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   String dataElement;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   dynamic value;
 
   DataValue(

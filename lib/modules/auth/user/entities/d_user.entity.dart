@@ -1,63 +1,64 @@
-import 'package:d2_remote/core/annotations/index.dart';
 import 'package:d2_remote/modules/auth/user/entities/d_user_authority.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'user', apiResourceName: 'users')
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
+
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'user', apiResourceName: 'users')
 class DUser extends IdentifiableEntity {
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? username;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? password;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? firstName;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? surname;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? phoneNumber;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? token;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? tokenType;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? refreshToken;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final int? tokenExpiry;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? authType;
 
-  @Column()
+  @legacy.Column()
   final String baseUrl;
 
-  @OneToMany(table: DUserAuthority)
+  @legacy.OneToMany(table: DUserAuthority)
   List<DUserAuthority>? authorities;
 
-  @Column()
+  @legacy.Column()
   bool isLoggedIn;
 
   // NMC
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? email;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? langKey;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   bool? activated;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? imageUrl;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? checkWithServerTime;
 
   DUser(

@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/column.annotation.dart';
-import 'package:d2_remote/core/annotations/entity.annotation.dart';
-import 'package:d2_remote/core/annotations/reflectable.annotation.dart';
-import 'package:d2_remote/core/annotations/relation.annotation.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun/form/entities/form_template.entity.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/json_factory.dart';
 import 'package:d2_remote/modules/datarun/form/shared/field_template/field_template.entity.dart';
@@ -18,45 +15,45 @@ import 'package:d2_remote/modules/datarun_shared/utilities/parsing_helpers.dart'
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'formVersion', apiResourceName: 'formVersions')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'formVersion', apiResourceName: 'formVersions')
 class FormVersion extends IdentifiableEntity
     with TemplatePathWalkingService<Template> {
-  @ManyToOne(table: FormTemplate, joinColumnName: 'formTemplate')
+  @legacy.ManyToOne(table: FormTemplate, joinColumnName: 'formTemplate')
   dynamic formTemplate;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<Template> fields = [];
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<FormOption> options = [];
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<DOptionSet> optionSets = [];
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   Map<String, String> label = {};
 
-  @Column(nullable: false, type: ColumnType.TEXT)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.TEXT)
   String defaultLocal;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   IList<Template> fieldsConf;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   IList<Template> sections;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   String? description;
 
-  @Column(type: ColumnType.TEXT, nullable: false)
+  @legacy.Column(type: legacy.ColumnType.TEXT, nullable: false)
   ValidationStrategy validationStrategy;
 
   /// current Version
-  @Column(nullable: false, type: ColumnType.INTEGER)
+  @legacy.Column(nullable: false, type: legacy.ColumnType.INTEGER)
   int version;
 
-  // @Column(nullable: true, type: ColumnType.TEXT)
+  // @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   // List<Template> flattenedFields = [];
 
   FormVersion({
@@ -282,10 +279,10 @@ class FormVersion extends IdentifiableEntity
     };
   }
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   IMap<String, Template>? flattenFieldsMap;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   IList<Template>? treeFields;
 
   @override

@@ -117,6 +117,7 @@ class BaseQuery<T extends BaseEntity> {
 
     return this;
   }
+
   //
 
   like({required String attribute, required dynamic value}) {
@@ -202,7 +203,8 @@ class BaseQuery<T extends BaseEntity> {
         columns: this.repository.columns);
   }
 
-  Future<List<T>> get({Dio? dioTestClient, bool? online}) async {
+  Future<List<T>> get(
+      {Dio? dioTestClient, bool? online, int? limit, int? offset}) async {
     if (online == true) {
       return this._fetchOnline(dioTestClient: dioTestClient);
     }

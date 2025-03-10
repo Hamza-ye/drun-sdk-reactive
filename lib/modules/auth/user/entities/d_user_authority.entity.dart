@@ -1,14 +1,14 @@
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'userAuthority', apiResourceName: 'userAuthorities')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'userAuthority', apiResourceName: 'userAuthorities')
 class DUserAuthority extends IdentifiableEntity {
-  @Column()
+  @legacy.Column()
   final String authority;
 
-  @ManyToOne(joinColumnName: 'user', table: DUser)
+  @legacy.ManyToOne(joinColumnName: 'user', table: DUser)
   dynamic user;
 
   DUserAuthority(

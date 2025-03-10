@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/modules/datarun_shared/utilities/entity_scope.dart';
 import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entity.dart';
 import 'package:d2_remote/modules/metadatarun/org_unit/entities/org_unit.entity.dart';
@@ -8,40 +8,40 @@ import 'package:d2_remote/modules/metadatarun/teams/entities/d_team.entity.dart'
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 import 'package:d2_remote/shared/enumeration/assignment_status.dart';
 
-@AnnotationReflectable
-@Entity(tableName: 'dAssignment', apiResourceName: 'assignments')
-class DAssignment extends IdentifiableEntity {
-  @ManyToOne(table: DActivity, joinColumnName: 'activity')
+@legacy.AnnotationReflectable
+@legacy.Entity(tableName: 'assignment', apiResourceName: 'assignments')
+class Assignment extends IdentifiableEntity {
+  @legacy.ManyToOne(table: Activity, joinColumnName: 'activity')
   dynamic activity;
 
-  @ManyToOne(table: DTeam, joinColumnName: 'team')
+  @legacy.ManyToOne(table: Team, joinColumnName: 'team')
   dynamic team;
 
-  @ManyToOne(table: OrgUnit, joinColumnName: 'orgUnit')
+  @legacy.ManyToOne(table: OrgUnit, joinColumnName: 'orgUnit')
   dynamic orgUnit;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? parent;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   int? startDay;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   String? startDate;
 
-  @Column(type: ColumnType.TEXT, nullable: true)
+  @legacy.Column(type: legacy.ColumnType.TEXT, nullable: true)
   AssignmentStatus? status;
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   Map<String, Object?> allocatedResources = {};
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   List<String> forms = [];
 
-  @Column(nullable: true, type: ColumnType.TEXT)
+  @legacy.Column(nullable: true, type: legacy.ColumnType.TEXT)
   EntityScope? scope;
 
-  DAssignment(
+  Assignment(
       {String? id,
       required String uid,
       String? createdDate,
@@ -71,7 +71,7 @@ class DAssignment extends IdentifiableEntity {
     this.allocatedResources.addAll(allocatedResources);
   }
 
-  factory DAssignment.fromJson(Map<String, dynamic> json) {
+  factory Assignment.fromJson(Map<String, dynamic> json) {
     final scope = EntityScope.getType(json['scope']);
     final status = AssignmentStatus.getType(json['status']);
 
@@ -87,7 +87,7 @@ class DAssignment extends IdentifiableEntity {
     //     : json['forms'].map<String>((item) => item.toString()).toList()
     //     : <String>[];
 
-    return DAssignment(
+    return Assignment(
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'] ?? json['orgUnit']?['name'],
@@ -129,7 +129,7 @@ class DAssignment extends IdentifiableEntity {
         dirty: json['dirty']);
   }
 
-  factory DAssignment.fromApi(Map<String, dynamic> json) {
+  factory Assignment.fromApi(Map<String, dynamic> json) {
     final scope = EntityScope.getType(json['entityScope']);
     final status = AssignmentStatus.getType(json['status']);
 
@@ -145,7 +145,7 @@ class DAssignment extends IdentifiableEntity {
     //     : json['forms'].map<String>((item) => item.toString()).toList()
     //     : <String>[];
 
-    return DAssignment(
+    return Assignment(
         id: json['id'].toString(),
         uid: json['uid'],
         name: json['name'] ?? json['orgUnit']?['name'],

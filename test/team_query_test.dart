@@ -48,12 +48,12 @@ void main() async {
     'http://localhost:8080/api/custom/teams/managed?paged=false',
     (server) => server.reply(200, sampleTeams),
   );
-  final teamQuery = DTeamQuery(database: db);
+  final teamQuery = TeamQuery(database: db);
   await teamQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DTeam> teams = await D2Remote.teamModuleD.team.get();
+  List<Team> teams = await D2Remote.teamModuleD.team.get();
 
   test('should store all incoming teams metadata', () {
     expect(teams.length, 2);

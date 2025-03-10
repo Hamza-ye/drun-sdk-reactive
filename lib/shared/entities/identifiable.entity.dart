@@ -1,19 +1,20 @@
-import 'package:d2_remote/core/annotations/index.dart';
+import 'package:d2_remote/core/annotations/index.dart' as legacy;
 import 'package:d2_remote/shared/entities/base.entity.dart';
 import 'package:d2_remote/shared/entities/d_run_identifiable.dart';
 
-@AnnotationReflectable
-class IdentifiableEntity extends BaseEntity implements IdentifiableModel {
-  @Column(nullable: true)
+@legacy.AnnotationReflectable
+class IdentifiableEntity
+    extends BaseEntity implements IdentifiableModel {
+  @legacy.Column(nullable: true)
   final String? name;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? displayName;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? shortName;
 
-  @Column(nullable: true)
+  @legacy.Column(nullable: true)
   final String? code;
 
   IdentifiableEntity({

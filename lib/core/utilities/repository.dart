@@ -15,62 +15,6 @@ import 'package:sqflite/sqflite.dart';
 import '../../shared/utilities/save_option.util.dart';
 import 'query_expression.dart';
 
-// abstract class BaseRepository<T extends BaseEntity> {
-//   List<Column> get columns;
-//
-//   List<Column> get oneToManyColumns;
-//
-//   Entity get entity;
-//
-//   String get createQuery;
-//
-//   Future<Database> get database;
-//
-//   Future<dynamic> create({Database database});
-//
-//   Future<int> count({Database database});
-//
-//   Future<List<T>> find(
-//       {String? id,
-//       List<QueryFilter>? filters,
-//       List<String>? fields,
-//       Map<String, SortOrder>? sortOrder,
-//       Database? database});
-//
-//   Future<T?> findById(
-//       {required String id, List<String>? fields, Database? database});
-//
-//   Future<List<T>> findAll(
-//       {List<QueryFilter> filters,
-//       List<String> fields,
-//       Map<String, SortOrder> sortOrder});
-//
-//   Future<int> insertOne({required T entity, Database? database});
-//
-//   Future<int> insertMany({required List<T> entities, Database? database});
-//
-//   Future<int> updateOne({required T entity, Database database});
-//
-//   Future<int> updateMany({required List<T> entities, Database database});
-//
-//   Future<int> saveMany(
-//       {required List<T> entities,
-//       Database database,
-//       required MergeMode mergeMode});
-//
-//   Future<int> saveOne(
-//       {required T entity, Database database, required MergeMode mergeMode});
-//
-//   Future<int> deleteById({required String id, Database database});
-//
-//   Future<int> deleteByIds({required List<String> ids, Database database});
-//
-//   Future<int> deleteAll({Database database});
-//
-//   Map<String, dynamic> sanitizeIncomingData(
-//       {required Map<String, dynamic> entity, required List<Column> columns});
-// }
-
 class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
   @override
   Future<Database> get database => DatabaseManager.instance.database;
@@ -99,7 +43,10 @@ class Repository<T extends BaseEntity> extends BaseRepositoryD<T> {
       List<String>? fields,
       Map<String, SortOrder>? sortOrder,
       Database? database,
-      List<ColumnRelation>? relations}) async {
+      List<ColumnRelation>? relations,
+      // NMC
+      int? limit,
+      int? offset}) async {
     final Database db = database != null ? database : await this.database;
 
     if (id != null) {
