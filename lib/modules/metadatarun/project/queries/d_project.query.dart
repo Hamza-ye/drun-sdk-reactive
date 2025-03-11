@@ -5,6 +5,6 @@ import 'package:sqflite/sqflite.dart';
 
 @AnnotationReflectable
 @Query(type: QueryType.METADATA)
-class DProjectQuery extends BaseQuery<DProject> {
-  DProjectQuery({Database? database}) : super(database: database);
+class ProjectQuery extends BaseQuery<Project> {
+  ProjectQuery({Database? database}) : super(database: database);
 }

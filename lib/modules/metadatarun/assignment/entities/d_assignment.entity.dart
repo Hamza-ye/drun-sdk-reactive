@@ -43,7 +43,7 @@ class Assignment extends IdentifiableEntity {
 
   Assignment(
       {String? id,
-      required String uid,
+      // required String uid,
       String? createdDate,
       String? lastModifiedDate,
       String? name,
@@ -61,7 +61,7 @@ class Assignment extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
-            uid: uid,
+            // uid: uid,
             name: name,
             code: code,
             createdDate: createdDate,
@@ -88,8 +88,8 @@ class Assignment extends IdentifiableEntity {
     //     : <String>[];
 
     return Assignment(
-        id: json['id'].toString(),
-        uid: json['uid'],
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         name: json['name'] ?? json['orgUnit']?['name'],
         allocatedResources: json['allocatedResources'] != null
             ? Map<String, Object?>.from(json['allocatedResources'] is String
@@ -146,8 +146,8 @@ class Assignment extends IdentifiableEntity {
     //     : <String>[];
 
     return Assignment(
-        id: json['id'].toString(),
-        uid: json['uid'],
+        id: json['uid'],
+        // uid: json['uid'],
         name: json['name'] ?? json['orgUnit']?['name'],
         allocatedResources: json['allocatedResources'] != null
             ? Map<String, Object?>.from(json['allocatedResources'] is String
@@ -190,7 +190,7 @@ class Assignment extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['uid'] = this.uid;
+    data['uid'] = this.id;
     data['name'] = this.name;
     data['code'] = this.code;
     data['displayName'] = this.displayName;

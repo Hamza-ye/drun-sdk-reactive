@@ -1,9 +1,9 @@
 import 'package:d2_remote/modules/metadatarun/project/queries/d_project.query.dart';
 
-class DProjectModule {
+class ProjectModule {
   static createTables() async {
-    await DProjectQuery().createTable();
+    await ProjectQuery().createTable();
   }
 
-  DProjectQuery get project => DProjectQuery();
+  ProjectQuery get project => ProjectQuery();
 }

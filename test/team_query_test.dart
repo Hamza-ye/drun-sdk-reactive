@@ -35,9 +35,9 @@ void main() async {
   userData['isLoggedIn'] = true;
   userData['login'] = 'admin';
   userData['baseUrl'] = 'http://localhost:8080';
-  DUserQuery userQuery = DUserQuery(database: db);
+  UserQuery userQuery = UserQuery(database: db);
 
-  final user = DUser.fromApi(userData);
+  final user = User.fromApi(userData);
   await userQuery.setData(user).save();
 
   dioAdapter.onGet(

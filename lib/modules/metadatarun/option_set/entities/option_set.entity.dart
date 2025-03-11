@@ -14,7 +14,7 @@ class OptionSet extends IdentifiableEntity {
 
   OptionSet(
       {String? id,
-      String? uid,
+      // String? uid,
       String? name,
       String? code,
       String? createdDate,
@@ -22,7 +22,9 @@ class OptionSet extends IdentifiableEntity {
       Iterable<FormOption>? options,
       required dirty})
       : this.options = IList.orNull(options) ?? const IList<FormOption>.empty(),
-        super(id: id, uid: uid, name: name, code: code, dirty: dirty);
+        super(id: id,
+          // uid: uid,
+          name: name, code: code, dirty: dirty);
 
   factory OptionSet.fromJson(Map<String, dynamic> json) {
     final options = json['options'] != null
@@ -32,8 +34,8 @@ class OptionSet extends IdentifiableEntity {
         : <FormOption>[];
 
     return OptionSet(
-        id: json['id'].toString(),
-        uid: json['uid'],
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         code: json['code'],
         name: json['name'],
         createdDate: json['createdDate'],
@@ -45,7 +47,7 @@ class OptionSet extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     return {
       'id': this.id,
-      'uid': this.uid,
+      'uid': this.id,
       'code': this.code,
       'name': this.name,
       'createdDate': this.createdDate,

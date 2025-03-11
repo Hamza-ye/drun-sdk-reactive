@@ -12,7 +12,7 @@ class OrgUnitLevel extends IdentifiableEntity {
 
   OrgUnitLevel(
       {required String id,
-      required String uid,
+      // required String uid,
       String? created,
       String? code,
       String? lastUpdated,
@@ -23,7 +23,7 @@ class OrgUnitLevel extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
-            uid: uid,
+            // uid: uid,
             code: code,
             name: name,
             displayName: displayName,
@@ -33,8 +33,8 @@ class OrgUnitLevel extends IdentifiableEntity {
 
   factory OrgUnitLevel.fromJson(Map<String, dynamic> json) {
     return OrgUnitLevel(
-        id: json['uid'],
-        uid: json['uid'],
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         code: json['code'],
         name: json['name'],
         level: json['level'],
@@ -48,8 +48,8 @@ class OrgUnitLevel extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastModifiedDate'] = this.lastModifiedDate;
-    data['id'] = this.uid;
-    data['uid'] = this.uid;
+    data['id'] = this.id;
+    data['uid'] = this.id;
     data['code'] = this.code;
     data['level'] = this.level;
     data['createdDate'] = this.createdDate;

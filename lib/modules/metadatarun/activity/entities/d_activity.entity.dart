@@ -6,7 +6,7 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 @legacy.AnnotationReflectable
 @legacy.Entity(tableName: 'activity', apiResourceName: 'activities')
 class Activity extends IdentifiableEntity {
-  @legacy.ManyToOne(table: DProject, joinColumnName: 'project')
+  @legacy.ManyToOne(table: Project, joinColumnName: 'project')
   dynamic project;
 
   @legacy.Column(nullable: true)
@@ -31,8 +31,8 @@ class Activity extends IdentifiableEntity {
   List<FormTemplate>? formTemplates;
 
   Activity(
-      {String? id,
-      required String uid,
+      {required String id,
+      // required String uid,
       String? createdDate,
       String? lastModifiedDate,
       String? name,
@@ -50,7 +50,7 @@ class Activity extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
-            uid: uid,
+            // uid: uid,
             name: name,
             shortName: shortName,
             displayName: displayName,
@@ -61,8 +61,8 @@ class Activity extends IdentifiableEntity {
 
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
-        id: json['id'].toString(),
-        uid: json['uid'],
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         name: json['name'],
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
@@ -75,13 +75,16 @@ class Activity extends IdentifiableEntity {
         project: json['project'] != null
             ? json['project'] is String
                 ? json['project']
-                : json['project']['uid']
+                : json['project']['uid'] ?? json['project']['id']
             : null,
         disabled: json['disabled'] ?? true,
         programs: json['programs'] != null ? json['programs'].toString() : null,
         formTemplates: (json['assignments'] ?? [])
-            .map<FormTemplate>((formTemplate) => FormTemplate.fromJson(
-                {...formTemplate, 'activity': json['uid'], 'dirty': false}))
+            .map<FormTemplate>((formTemplate) => FormTemplate.fromJson({
+                  ...formTemplate,
+                  'activity': json['uid'] ?? json['id'],
+                  'dirty': false
+                }))
             .toList(),
         organisationUnits: json['organisationUnits'] != null
             ? json['organisationUnits'].toString()
@@ -93,7 +96,7 @@ class Activity extends IdentifiableEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['lastModifiedDate'] = this.lastModifiedDate;
     data['id'] = this.id;
-    data['uid'] = this.uid;
+    data['uid'] = this.id;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;

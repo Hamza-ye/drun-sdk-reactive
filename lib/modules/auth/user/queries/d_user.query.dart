@@ -6,11 +6,11 @@ import 'package:d2_remote/shared/queries/base.query.dart';
 import 'package:reflectable/reflectable.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DUserQuery extends BaseQuery<DUser> {
-  DUserQuery({Database? database}) : super(database: database);
+class UserQuery extends BaseQuery<User> {
+  UserQuery({Database? database}) : super(database: database);
 
-  DUserQuery withAuthorities() {
-    final userAuthority = Repository<DUserAuthority>();
+  UserQuery withAuthorities() {
+    final userAuthority = Repository<UserAuthority>();
     final Column? relationColumn = userAuthority.columns.firstWhere((column) =>
         column.relation?.referencedEntity?.tableName == this.tableName);
 
@@ -21,9 +21,9 @@ class DUserQuery extends BaseQuery<DUser> {
           primaryKey: this.primaryKey?.name,
           relationType: RelationType.OneToMany,
           referencedEntity: Entity.getEntityDefinition(
-              AnnotationReflectable.reflectType(DUserAuthority) as ClassMirror),
+              AnnotationReflectable.reflectType(UserAuthority) as ClassMirror),
           referencedEntityColumns: Entity.getEntityColumns(
-              AnnotationReflectable.reflectType(DUserAuthority) as ClassMirror,
+              AnnotationReflectable.reflectType(UserAuthority) as ClassMirror,
               false));
       this.relations.add(relation);
     }
@@ -31,8 +31,8 @@ class DUserQuery extends BaseQuery<DUser> {
     return this;
   }
 
-// DUserQuery withRoles() {
-//   final userRole = Repository<DUserRole>();
+// UserQuery withRoles() {
+//   final userRole = Repository<UserRole>();
 //   final Column? relationColumn = userRole.columns.firstWhere((column) =>
 //       column.relation?.referencedEntity?.tableName == this.tableName);
 //

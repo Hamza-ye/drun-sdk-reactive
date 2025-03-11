@@ -3,17 +3,17 @@ import 'package:d2_remote/modules/metadatarun/activity/entities/d_activity.entit
 import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @legacy.AnnotationReflectable
-@legacy.Entity(tableName: 'dProject', apiResourceName: 'projects')
-class DProject extends IdentifiableEntity {
+@legacy.Entity(tableName: 'project', apiResourceName: 'projects')
+class Project extends IdentifiableEntity {
   @legacy.OneToMany(table: Activity)
   List<Activity>? activities;
 
   @legacy.Column(type: legacy.ColumnType.BOOLEAN)
   bool disabled;
 
-  DProject(
+  Project(
       {String? id,
-      required String uid,
+      // required String uid,
       String? createdDate,
       String? lastModifiedDate,
       required String? name,
@@ -25,7 +25,7 @@ class DProject extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
-            uid: uid,
+            // uid: uid,
             name: name,
             shortName: shortName,
             displayName: displayName,
@@ -34,10 +34,10 @@ class DProject extends IdentifiableEntity {
             lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
-  factory DProject.fromJson(Map<String, dynamic> json) {
-    return DProject(
-        id: json['id'].toString(),
-        uid: json['uid'],
+  factory Project.fromJson(Map<String, dynamic> json) {
+    return Project(
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         name: json['name'],
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
@@ -55,7 +55,7 @@ class DProject extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['uid'] = this.uid;
+    data['uid'] = this.id;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;

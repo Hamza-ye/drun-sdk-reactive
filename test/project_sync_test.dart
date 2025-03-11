@@ -26,12 +26,12 @@ void main() async {
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
 
-  DUserQuery userQuery = DUserQuery(database: db);
+  UserQuery userQuery = UserQuery(database: db);
   userData['password'] = 'district';
   userData['isLoggedIn'] = true;
   userData['login'] = 'admin';
   userData['baseUrl'] = 'http://localhost:8080';
-  final user = DUser.fromApi(userData);
+  final user = User.fromApi(userData);
   await userQuery.setData(user).save();
 
   final dio = Dio(BaseOptions());
@@ -42,12 +42,12 @@ void main() async {
     (server) => server.reply(200, sampleProjects),
   );
 
-  DProjectQuery projectQuery = DProjectQuery(database: db);
+  ProjectQuery projectQuery = ProjectQuery(database: db);
   await projectQuery.download((progress, complete) {
     print(progress.message);
   }, dioTestClient: dio);
 
-  List<DProject> projects = await D2Remote.projectModuleD.project.get();
+  List<Project> projects = await D2Remote.projectModuleD.project.get();
 
   test('should store all incoming projects metadata', () {
     expect(projects.length, 5);

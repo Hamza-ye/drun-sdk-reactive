@@ -45,7 +45,7 @@ class DataElement extends IdentifiableEntity {
 
   DataElement(
       {String? id,
-      String? uid,
+      // String? uid,
       String? name,
       String? code,
       String? createdDate,
@@ -63,7 +63,14 @@ class DataElement extends IdentifiableEntity {
       required dirty})
       : this.allowedActions =
             IList.orNull(allowedActions) ?? const IList<AllowedAction>.empty(),
-        super(id: id, uid: uid, name: name, code: code, dirty: dirty);
+        super(
+            id: id,
+            // uid: uid,
+            name: name,
+            code: code,
+            createdDate: createdDate,
+            lastModifiedDate: lastModifiedDate,
+            dirty: dirty);
 
   factory DataElement.fromJson(Map<String, dynamic> json) {
     final valueType = ValueType.getValueType(json['type']);
@@ -84,8 +91,8 @@ class DataElement extends IdentifiableEntity {
         : <String, String?>{"en": json['name']};
 
     return DataElement(
-        id: json['id'].toString(),
-        uid: json['uid'],
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         code: json['code'],
         name: json['name'],
         createdDate: json['createdDate'],
@@ -110,7 +117,7 @@ class DataElement extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     return {
       'id': this.id,
-      'uid': this.uid,
+      'uid': this.id,
       'code': this.code,
       'name': this.name,
       'description': this.description,

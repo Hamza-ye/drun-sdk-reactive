@@ -202,7 +202,7 @@ class HttpClient {
     }
 
     // final User? user = await UserQuery(database: database).getOne();
-    final DUser? user = await DUserQuery(database: database).getOne();
+    final User? user = await UserQuery(database: database).getOne();
 
     return base64Encode(utf8.encode('${user?.username}:${user?.password}'));
   }

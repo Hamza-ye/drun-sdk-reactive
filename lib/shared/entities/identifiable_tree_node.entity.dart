@@ -18,7 +18,6 @@ class IdentifiableTreeNode extends IdentifiableEntity {
 
   IdentifiableTreeNode(
       {required String id,
-      required String uid,
       required String name,
       String? displayName,
       String? code,
@@ -31,7 +30,6 @@ class IdentifiableTreeNode extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
-            uid: uid,
             name: name,
             code: code,
             dirty: dirty,

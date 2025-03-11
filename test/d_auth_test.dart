@@ -36,9 +36,9 @@ void main() async {
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
 
-  DUserQuery userQuery = DUserQuery(database: db);
+  UserQuery userQuery = UserQuery(database: db);
 
-  DUser? userResponse;
+  User? userResponse;
   try {
     userResponse = await userQuery.getOne();
   } catch (e) {}

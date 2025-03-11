@@ -25,7 +25,7 @@ class FormTemplate extends IdentifiableEntity {
 
   FormTemplate({
     String? id,
-    String? uid,
+    // String? uid,
     String? name,
     String? code,
     String? createdDate,
@@ -37,7 +37,7 @@ class FormTemplate extends IdentifiableEntity {
     required dirty,
   }) : super(
           id: id,
-          uid: uid,
+          // uid: uid,
           name: name,
           code: code,
           createdDate: createdDate,
@@ -53,16 +53,16 @@ class FormTemplate extends IdentifiableEntity {
     //     json['team'] is String ? json['team'] : json['team']['uid'];
 
     return FormTemplate(
-      id: json['uid'],
+      id: json['uid'] ?? json['id'].toString(),
       formVersions: List<dynamic>.from(json['formVersions'] ?? [])
           .map((formVersion) => FormVersion.fromJson({
                 ...formVersion,
-                'id': formVersion['uid'],
-                'uid': formVersion['uid'],
+                'id': formVersion['uid'] ?? formVersion['id'].toString(),
+                'uid': formVersion['uid'] ?? formVersion['id'].toString(),
                 'formTemplate': formVersion['formTemplate'],
               }))
           .toList(),
-      uid: json['uid'],
+      // uid: json['uid'],
       code: json['code'],
       name: json['name'],
       label: json['label'] != null
@@ -95,6 +95,7 @@ class FormTemplate extends IdentifiableEntity {
 
     return FormTemplate(
       id: json['uid'],
+      // id: json['uid'],
       formVersions: List<dynamic>.from(json['formVersions'] ?? [])
           .map((formVersion) => FormVersion.fromApi({
                 ...formVersion,
@@ -108,7 +109,7 @@ class FormTemplate extends IdentifiableEntity {
                 'dirty': false
               }))
           .toList(),
-      uid: json['uid'],
+      // uid: json['uid'],
       code: json['code'],
       name: json['name'],
       label: json['label'] != null
@@ -128,7 +129,7 @@ class FormTemplate extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'uid': uid,
+      'uid': id,
       'code': code,
       'name': name,
       'version': version,

@@ -31,7 +31,7 @@ class Team extends IdentifiableEntity {
 
   Team(
       {String? id,
-      required String uid,
+      // required String uid,
       String? createdDate,
       String? lastModifiedDate,
       String? name,
@@ -47,7 +47,7 @@ class Team extends IdentifiableEntity {
       this.scope,
       required dirty})
       : super(
-            uid: uid,
+            // uid: uid,
             id: id,
             name: name,
             shortName: shortName,
@@ -73,8 +73,8 @@ class Team extends IdentifiableEntity {
         : <TeamFormPermission>[];
 
     return Team(
-        id: json['id'].toString(),
-        uid: json['uid'],
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         name: json['name'],
         shortName: json['shortName'],
         code: json['code'],
@@ -113,8 +113,8 @@ class Team extends IdentifiableEntity {
         : <TeamFormPermission>[];
 
     return Team(
-        id: jsonData['id'].toString(),
-        uid: jsonData['uid'],
+        id: jsonData['uid'],
+        // uid: jsonData['uid'],
         name: jsonData['name'],
         shortName: jsonData['shortName'],
         code: jsonData['code'],
@@ -148,7 +148,7 @@ class Team extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['uid'] = this.uid;
+    data['uid'] = this.id;
     data['name'] = this.name;
     data['shortName'] = this.shortName;
     data['code'] = this.code;

@@ -11,7 +11,7 @@ class HttpDetails {
   String? password;
   String? token;
   String? tokenType;
-  DUser? user;
+  User? user;
   HttpDetails({
     this.username,
     this.password,
@@ -30,7 +30,7 @@ class HttpDetails {
 
     // Data-run
     // final User? user = await UserQuery(database: database).getOne();
-    final DUser? user = await DUserQuery(database: database).getOne();
+    final User? user = await UserQuery(database: database).getOne();
 
     this.username = user?.username;
     this.password = user?.password;

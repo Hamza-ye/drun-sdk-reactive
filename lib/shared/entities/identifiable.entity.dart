@@ -19,7 +19,7 @@ class IdentifiableEntity
 
   IdentifiableEntity({
     String? id,
-    String? uid,
+    // String? uid,
     required bool dirty,
     this.name,
     String? displayName,
@@ -29,7 +29,7 @@ class IdentifiableEntity
     this.code,
   })  : this.displayName = displayName ?? name,
         super(
-            id: uid,
+            id: id,
             // uid: uid,
             dirty: dirty,
             createdDate: createdDate,
@@ -41,7 +41,6 @@ class IdentifiableEntity
       (other is IdentifiableEntity &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          uid == other.uid &&
           code == other.code &&
           name == other.name &&
           dirty == other.dirty &&
@@ -50,7 +49,6 @@ class IdentifiableEntity
   @override
   int get hashCode =>
       id.hashCode ^
-      uid.hashCode ^
       code.hashCode ^
       name.hashCode ^
       dirty.hashCode ^
@@ -60,7 +58,6 @@ class IdentifiableEntity
   String toString() {
     return 'BaseEntity{' +
         ' id: $id,' +
-        ' uid: $uid,' +
         ' code: $code,' +
         ' name: $name,' +
         ' dirty: $dirty,' +

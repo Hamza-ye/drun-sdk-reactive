@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 class AuthenticationResult with EquatableMixin {
   final bool success;
-  final DUser? sessionUser;
+  final User? sessionUser;
 
   const AuthenticationResult({
     this.success = false,
@@ -12,7 +12,7 @@ class AuthenticationResult with EquatableMixin {
 
   AuthenticationResult copyWith({
     bool? success,
-    DUser? sessionUser,
+    User? sessionUser,
   }) {
     return AuthenticationResult(
       success: success ?? this.success,

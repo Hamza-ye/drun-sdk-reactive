@@ -95,7 +95,6 @@ class DatabaseManager {
     // if (this.databaseFactory != null) {
     //   return databaseFactory?.openDatabase(inMemoryDatabasePath);
     // }
-
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, databaseName + '.db');
 

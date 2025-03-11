@@ -40,7 +40,7 @@ class MetadataSubmission extends IdentifiableEntity {
     this.lastModifiedBy,
     this.createdBy,
     String? id,
-    String? uid,
+    // String? uid,
     String? name,
     String? code,
     Map<String, dynamic> formData = const {},
@@ -49,7 +49,7 @@ class MetadataSubmission extends IdentifiableEntity {
     required dirty,
   }) : super(
           id: id,
-          uid: uid,
+          // uid: uid,
           name: name,
           code: code,
           createdDate: createdDate,
@@ -94,9 +94,9 @@ class MetadataSubmission extends IdentifiableEntity {
       resourceId: json['resourceId'],
       serialNumber: json['serialNumber'],
       version: json['version'],
-      id: json['id'],
+      id: json['uid'] ?? json['id'].toString(),
       // metadataSubmissionUpdates: metadataSubmissionUpdates,
-      uid: json['uid'],
+      // uid: json['uid'],
       code: json['code'],
       name: json['name'],
       createdDate: json['createdDate'],
@@ -139,8 +139,8 @@ class MetadataSubmission extends IdentifiableEntity {
       resourceType: resourceType,
       metadataSchema: json['metadataSchema'],
       resourceId: json['resourceId'],
-      id: json['id'],
-      uid: json['uid'],
+      id: json['uid'] ?? json['id'].toString(),
+      // uid: json['uid'],
       code: json['code'],
       serialNumber: json['serialNumber'],
       version: json['version'],
@@ -159,7 +159,7 @@ class MetadataSubmission extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'uid': uid,
+      'uid': id,
       'code': code,
       'name': name,
       'version': version,
@@ -176,7 +176,7 @@ class MetadataSubmission extends IdentifiableEntity {
 
   Map<String, dynamic> toContext() {
     return {
-      'metadataSubmission': uid,
+      'metadataSubmission': id,
       'createdDate': createdDate,
       'lastModifiedDate': lastModifiedDate,
       'metadataSchema': metadataSchema,

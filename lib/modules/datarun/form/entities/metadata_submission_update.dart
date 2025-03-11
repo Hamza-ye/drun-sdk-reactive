@@ -73,7 +73,6 @@ class MetadataSubmissionUpdate extends IdentifiableEntity {
     String? lastModifiedDate,
     required super.dirty,
   }) : super(
-            uid: id,
             createdDate: createdDate,
             lastModifiedDate: lastModifiedDate) {
     this.formData.addAll(formData);

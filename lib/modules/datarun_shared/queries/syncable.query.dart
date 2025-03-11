@@ -140,7 +140,7 @@ abstract class SyncableQuery<T extends SyncableEntity> extends BaseQuery<T> {
   Future<List<T>?> upload({Dio? dioTestClient}) async {
     List<T> syncableEntities = await this
         .where(attribute: 'isFinal', value: true)
-        .where(attribute: 'synced', value: false)
+        // .where(attribute: 'synced', value: false)
         .where(attribute: 'dirty', value: true)
         .get();
 

@@ -7,8 +7,8 @@ class BaseEntity {
   @legacy.PrimaryColumn()
   late final String? id;
 
-  @legacy.Column(nullable: true)
-  late final String? uid;
+  // @legacy.Column(nullable: true)
+  // late final String? uid;
 
   @legacy.Column()
   final bool dirty;
@@ -26,9 +26,9 @@ class BaseEntity {
       String? createdDate,
       String? lastModifiedDate})
       : this.id = id ?? DhisUidGenerator.generate(),
-        this.uid = id,
         this.createdDate = createdDate ?? DateHelper.nowUtc(),
-        this.lastModifiedDate = lastModifiedDate ?? createdDate;
+        this.lastModifiedDate =
+            lastModifiedDate ?? createdDate ?? DateHelper.nowUtc();
 
   static fromJson(Map<String, dynamic> json) {
     throw UnimplementedError();

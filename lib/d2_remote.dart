@@ -43,9 +43,9 @@ class D2Remote {
           databaseFactory: databaseFactory);
 
       await DatabaseManager.instance.database;
-      await DUserModule.createTables();
+      await UserModule.createTables();
       await OrgUnitModule.createTables();
-      await DProjectModule.createTables();
+      await ProjectModule.createTables();
       await ActivityModule.createTables();
       await TeamModule.createTables();
       await AssignmentModule.createTables();
@@ -73,7 +73,7 @@ class D2Remote {
         inMemory: inMemory,
         databaseFactory: databaseFactory);
 
-    DUser? user = await D2Remote.userModule.user.getOne();
+    User? user = await D2Remote.userModule.user.getOne();
 
     return user?.isLoggedIn ?? false;
   }
@@ -149,7 +149,7 @@ class D2Remote {
           sharedPreferenceInstance:
               sharedPreferenceInstance ?? SharedPreferences.getInstance());
 
-      DUserQuery userQuery = DUserQuery();
+      UserQuery userQuery = UserQuery();
 
       Map<String, dynamic> userData = userResponse.body;
       userData['password'] = password;
@@ -160,7 +160,7 @@ class D2Remote {
       userData['authTye'] = 'basic';
       userData['dirty'] = true;
 
-      final user = DUser.fromApi(userData);
+      final user = User.fromApi(userData);
       await userQuery.setData(user).save();
 
       return AuthenticationResult(success: true, sessionUser: user);
@@ -180,7 +180,7 @@ class D2Remote {
   }
 
   static Future<bool> logOut(
-      {Future<SharedPreferences>? sharedPreferenceInstance}) async {
+      {SharedPreferences? sharedPreferenceInstance}) async {
     WidgetsFlutterBinding.ensureInitialized();
     bool logOutSuccess = false;
     try {
@@ -194,14 +194,14 @@ class D2Remote {
       // currentUser?.dirty = true;
 
       await D2Remote.userModule.user
-          .setData(DUser.fromJson(currentUserMap))
+          .setData(User.fromJson(currentUserMap))
           .save();
 
       // nmc
       SharedPreferences prefs =
-          await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
+           sharedPreferenceInstance ?? await SharedPreferences.getInstance();
       prefs.remove(currentDatabaseNameKey);
-      await DatabaseManager.instance.closeDatabase();
+      // await DatabaseManager.instance.closeDatabase();
 
       // DatabaseManager
       logOutSuccess = true;
@@ -243,8 +243,8 @@ class D2Remote {
     userObject['authType'] = "token";
     userObject['authorities'] = authorities;
 
-    final user = DUser.fromApi(userObject);
-    await DUserQuery().setData(user).save();
+    final user = User.fromApi(userObject);
+    await UserQuery().setData(user).save();
 
     return LoginResponseStatus.ONLINE_LOGIN_SUCCESS;
   }
@@ -258,7 +258,7 @@ class D2Remote {
     return queryResult;
   }
 
-  static DUserModule userModule = DUserModule();
+  static UserModule userModule = UserModule();
 
   static DataElementModule dataElementModule = DataElementModule();
 
@@ -266,7 +266,7 @@ class D2Remote {
 
   static OrgUnitModule organisationUnitModuleD = OrgUnitModule();
 
-  static DProjectModule projectModuleD = DProjectModule();
+  static ProjectModule projectModuleD = ProjectModule();
 
   static ActivityModule activityModuleD = ActivityModule();
 

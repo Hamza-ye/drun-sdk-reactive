@@ -28,7 +28,7 @@ class DataValue extends IdentifiableEntity {
 
   DataValue(
       {String? id,
-      String? uid,
+      // String? uid,
       String? createdDate,
       String? lastModifiedDate,
       required this.parent,
@@ -39,7 +39,7 @@ class DataValue extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
-            uid: uid,
+            // uid: uid,
             createdDate: createdDate,
             lastModifiedDate: lastModifiedDate,
             dirty: dirty);
@@ -52,8 +52,8 @@ class DataValue extends IdentifiableEntity {
       value = json['value'] != null ? json['value'].toString() : null;
     }
     return DataValue(
-        id: json['id']?.toString(),
-        uid: json['uid'],
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         createdDate: json['createdDate'],
         lastModifiedDate: json['lastModifiedDate'],
         value: value,
@@ -83,7 +83,7 @@ class DataValue extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     return {
       'id': this.id,
-      'uid': this.uid,
+      'uid': this.id,
       'templatePath': this.templatePath,
       'submission': this.submission,
       'parent': this.parent,

@@ -58,7 +58,7 @@ class FormVersion extends IdentifiableEntity
 
   FormVersion({
     String? id,
-    String? uid,
+    // String? uid,
     String? name,
     String? code,
     String? createdDate,
@@ -83,7 +83,7 @@ class FormVersion extends IdentifiableEntity
         // this.flattenFieldsMap = IMap.orNull(flattenFieldsMap) ?? IMap(),
         super(
           id: id,
-          uid: uid,
+          // uid: uid,
           name: name,
           code: code,
           createdDate: createdDate,
@@ -143,8 +143,8 @@ class FormVersion extends IdentifiableEntity
         : <DOptionSet>[];
 
     return FormVersion(
-      id: json['id'],
-      uid: json['uid'],
+      id: json['uid'] ?? json['id'].toString(),
+      // uid: json['uid'],
       code: json['code'],
       name: json['name'],
       validationStrategy: validationStrategy,
@@ -217,8 +217,8 @@ class FormVersion extends IdentifiableEntity
         : <DOptionSet>[];
 
     return FormVersion(
-      id: json['id'],
-      uid: json['uid'],
+      id: json['uid'],
+      // uid: json['uid'],
       code: json['code'],
       name: json['name'],
       validationStrategy: validationStrategy,
@@ -247,7 +247,7 @@ class FormVersion extends IdentifiableEntity
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'uid': uid,
+      'uid': id,
       'code': code,
       'name': name,
       'validationStrategy': validationStrategy.name,

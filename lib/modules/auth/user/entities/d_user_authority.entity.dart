@@ -4,27 +4,29 @@ import 'package:d2_remote/shared/entities/identifiable.entity.dart';
 
 @legacy.AnnotationReflectable
 @legacy.Entity(tableName: 'userAuthority', apiResourceName: 'userAuthorities')
-class DUserAuthority extends IdentifiableEntity {
+class UserAuthority extends IdentifiableEntity {
   @legacy.Column()
   final String authority;
 
-  @legacy.ManyToOne(joinColumnName: 'user', table: DUser)
+  @legacy.ManyToOne(joinColumnName: 'user', table: User)
   dynamic user;
 
-  DUserAuthority(
+  UserAuthority(
       {required String id,
-      required String uid,
+      // required String uid,
       required String name,
       required this.authority,
       required this.user,
       required bool dirty})
-      : super(uid: uid, id: id, name: name, dirty: dirty);
+      : super(
+      // uid: uid,
+      id: id, name: name, dirty: dirty);
 
-  factory DUserAuthority.fromJson(Map<String, dynamic> json) {
-    return DUserAuthority(
-        id: json['id'],
-        uid: json['uid'],
-        name: json['id'],
+  factory UserAuthority.fromJson(Map<String, dynamic> json) {
+    return UserAuthority(
+        id: json['uid'] ?? json['id'],
+        // uid: json['uid'],
+        name: json['uid'] ?? json['id'],
         authority: json['authority'],
         user: json['user'],
         dirty: json['dirty']);
@@ -33,7 +35,7 @@ class DUserAuthority extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['uid'] = this.uid;
+    data['uid'] = this.id;
     data['name'] = this.name;
     data['authority'] = this.authority;
     data['user'] = this.user;

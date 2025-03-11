@@ -5,7 +5,7 @@ import 'package:d2_remote/core/annotations/index.dart' as legacy;
 
 @legacy.AnnotationReflectable
 @legacy.Entity(tableName: 'user', apiResourceName: 'users')
-class DUser extends IdentifiableEntity {
+class User extends IdentifiableEntity {
   @legacy.Column(nullable: true)
   final String? username;
 
@@ -39,8 +39,8 @@ class DUser extends IdentifiableEntity {
   @legacy.Column()
   final String baseUrl;
 
-  @legacy.OneToMany(table: DUserAuthority)
-  List<DUserAuthority>? authorities;
+  @legacy.OneToMany(table: UserAuthority)
+  List<UserAuthority>? authorities;
 
   @legacy.Column()
   bool isLoggedIn;
@@ -61,9 +61,9 @@ class DUser extends IdentifiableEntity {
   @legacy.Column(nullable: true)
   String? checkWithServerTime;
 
-  DUser(
+  User(
       {required String? id,
-      String? uid,
+      // String? uid,
       this.username,
       this.password,
       String? name,
@@ -92,16 +92,31 @@ class DUser extends IdentifiableEntity {
       required bool dirty})
       : super(
             id: id,
-            uid: uid,
+            // uid: uid,
             name: name,
             dirty: dirty,
             createdDate: createdDate,
             lastModifiedDate: lastModifiedDate);
 
-  factory DUser.fromJson(Map<String, dynamic> jsonData) {
-    return DUser(
-        id: jsonData['id'],
-        uid: jsonData['uid'],
+  factory User.fromJson(Map<String, dynamic> jsonData) {
+    final List<UserAuthority> authorities = jsonData['authorities']
+            is List<UserAuthority>
+        ? jsonData['authorities']
+        : (jsonData['authorities'] ?? []).map<UserAuthority>((authority) {
+            final auth =
+                authority is UserAuthority ? authority.toJson() : authority;
+            return UserAuthority(
+                id: auth['uid'] ?? auth['id'].toString(),
+                // id: auth['uid'],
+                // uid: auth['uid'] ?? auth['id'].toString(),
+                name: auth['name'],
+                authority: auth['authority'],
+                user: auth['user'],
+                dirty: auth['dirty'] ?? false);
+          }).toList();
+    return User(
+        id: jsonData['uid'] ?? jsonData['id'].toString(),
+        // uid: jsonData['uid'],
         username: jsonData['username'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
@@ -114,15 +129,7 @@ class DUser extends IdentifiableEntity {
         name: jsonData['name'],
         phoneNumber: jsonData['mobile'],
         baseUrl: jsonData['baseUrl'],
-        authorities: (jsonData['authorities'] ?? [])
-            .map<DUserAuthority>((authority) => DUserAuthority(
-                id: authority['uid'],
-                uid: authority['uid'],
-                name: authority['name'],
-                authority: authority['authority'],
-                user: authority['user'],
-                dirty: authority['dirty'] ?? false))
-            .toList(),
+        authorities: authorities,
         isLoggedIn: jsonData['isLoggedIn'],
         email: jsonData['email'],
         activated: jsonData['activated'],
@@ -135,10 +142,10 @@ class DUser extends IdentifiableEntity {
         dirty: jsonData['dirty']);
   }
 
-  factory DUser.fromApi(Map<String, dynamic> jsonData) {
-    return DUser(
-        id: jsonData['id'].toString(),
-        uid: jsonData['uid'],
+  factory User.fromApi(Map<String, dynamic> jsonData) {
+    return User(
+        id: jsonData['uid'],
+        // uid: jsonData['uid'],
         username: jsonData['username'],
         password: jsonData['password'],
         firstName: jsonData['firstName'],
@@ -152,10 +159,10 @@ class DUser extends IdentifiableEntity {
         tokenExpiry: jsonData['tokenExpiry'],
         authType: jsonData['authType'],
         authorities: (jsonData['authorities'] ?? [])
-            .map<DUserAuthority>((authority) => DUserAuthority(
-                uid: '${jsonData['uid']}_$authority',
+            .map<UserAuthority>((authority) => UserAuthority(
+                id: '${jsonData['uid']}_$authority',
                 name: '${jsonData['uid']}_$authority',
-                id: jsonData['uid'] ?? 0,
+                // id: jsonData['uid'] ?? 0,
                 authority: authority,
                 user: jsonData['uid'].toString(),
                 dirty: jsonData['dirty'] ?? false))
@@ -176,7 +183,7 @@ class DUser extends IdentifiableEntity {
     final Map<String, dynamic> data = new Map<String, dynamic>();
 
     data['id'] = this.id;
-    data['uid'] = this.uid;
+    data['uid'] = this.id;
     data['name'] = this.name;
     data['firstName'] = this.firstName;
     data['surname'] = this.surname;

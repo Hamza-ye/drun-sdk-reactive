@@ -40,7 +40,7 @@ class OrgUnit extends IdentifiableTreeNode {
 
   OrgUnit(
       {required String id,
-      required String uid,
+      // required String uid,
       required String name,
       String? displayName,
       String? code,
@@ -55,7 +55,7 @@ class OrgUnit extends IdentifiableTreeNode {
       required dirty})
       : super(
             id: id,
-            uid: uid,
+            // uid: uid,
             code: code,
             name: name,
             displayName: displayName,
@@ -79,8 +79,8 @@ class OrgUnit extends IdentifiableTreeNode {
         : null;
 
     return OrgUnit(
-        id: json['uid'],
-        uid: json['uid'],
+        id: json['uid'] ?? json['id'].toString(),
+        // uid: json['uid'],
         code: json['code'],
         name: json['name'],
         path: json['path'],
@@ -106,8 +106,8 @@ class OrgUnit extends IdentifiableTreeNode {
 
   Map<String, dynamic> toJson() {
     final data = {
-      'id': uid,
-      'uid': uid,
+      'id': id,
+      'uid': id,
       'code': code,
       'name': name,
       'path': path,

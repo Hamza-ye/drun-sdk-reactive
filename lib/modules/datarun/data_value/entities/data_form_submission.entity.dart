@@ -19,7 +19,7 @@ class DataFormSubmission extends SyncableEntity {
 
   DataFormSubmission({
     String? id,
-    String? uid,
+    // String? uid,
     String? name,
     String? code,
     Map<String, dynamic> formData = const {},
@@ -52,7 +52,7 @@ class DataFormSubmission extends SyncableEntity {
     required dirty,
   }) : super(
           id: id,
-          uid: uid,
+          // uid: uid,
           name: name,
           code: code,
           createdDate: createdDate,
@@ -108,8 +108,8 @@ class DataFormSubmission extends SyncableEntity {
         : json['formVersion']['uid'].split('_');
 
     return DataFormSubmission(
-      id: json['id'].toString(),
-      uid: json['uid'],
+      id: json['uid'] ?? json['id'].toString(),
+      // uid: json['uid'],
       code: json['code'],
       name: json['name'],
       createdDate: json['createdDate'],
@@ -181,8 +181,7 @@ class DataFormSubmission extends SyncableEntity {
 
     return DataFormSubmission(
       // id: json['id'].toString(),
-      id: json['uid'].toString(),
-      uid: json['uid'],
+      id: json['uid'],
       code: json['code'],
       name: json['name'],
       createdDate: json['createdDate'],
@@ -222,8 +221,8 @@ class DataFormSubmission extends SyncableEntity {
   /// To JSON string for Database and API
   Map<String, dynamic> toJson() {
     return {
-      'id': uid ?? id,
-      'uid': uid,
+      'id': id,
+      'uid': id,
       'code': code,
       'name': name,
       'createdDate': createdDate,

@@ -1,15 +1,15 @@
 import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
 import 'package:d2_remote/modules/auth/user/queries/d_user_authority.query.dart';
 
-class DUserModule {
+class UserModule {
   static createTables() async {
-    await DUserQuery().createTable();
-    await DUserAuthorityQuery().createTable();
+    await UserQuery().createTable();
+    await UserAuthorityQuery().createTable();
   }
 
   static logOut() async {}
 
-  DUserQuery user = DUserQuery();
+  UserQuery user = UserQuery();
 
-  DUserAuthorityQuery userAuthority = DUserAuthorityQuery();
+  UserAuthorityQuery userAuthority = UserAuthorityQuery();
 }

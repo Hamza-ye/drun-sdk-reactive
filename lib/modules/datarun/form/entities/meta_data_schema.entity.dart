@@ -34,7 +34,7 @@ class MetadataSchema extends IdentifiableEntity {
 
   MetadataSchema({
     String? id,
-    String? uid,
+    // String? uid,
     String? name,
     String? code,
     String? createdDate,
@@ -50,7 +50,7 @@ class MetadataSchema extends IdentifiableEntity {
     required dirty,
   }) : super(
           id: id,
-          uid: uid,
+          // uid: uid,
           name: name,
           code: code,
           createdDate: createdDate,
@@ -92,8 +92,8 @@ class MetadataSchema extends IdentifiableEntity {
 
     return MetadataSchema(
       resourceType: resourceType,
-      id: json['id'].toString(),
-      uid: json['uid'],
+      id: json['uid'] ?? json['id'].toString(),
+      // uid: json['uid'],
       code: json['code'],
       name: json['name'],
       label: json['label'] != null
@@ -142,7 +142,7 @@ class MetadataSchema extends IdentifiableEntity {
     return MetadataSchema(
       resourceType: resourceType,
       id: '${json['uid']}_${json['version']}',
-      uid: '${json['uid']}_${json['version']}',
+      // uid: '${json['uid']}_${json['version']}',
       code: json['code'],
       name: json['name'],
       label: json['label'] != null
@@ -164,7 +164,7 @@ class MetadataSchema extends IdentifiableEntity {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'uid': uid,
+      'uid': id,
       'code': code,
       'name': name,
       'label': jsonEncode(label),

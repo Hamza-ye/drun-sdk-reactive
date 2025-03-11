@@ -28,12 +28,12 @@ void main() async {
 
   var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
 
-  DUserQuery userQuery = DUserQuery(database: db);
+  UserQuery userQuery = UserQuery(database: db);
   userData['password'] = 'district';
   userData['isLoggedIn'] = true;
   userData['login'] = 'admin';
   userData['baseUrl'] = 'http://localhost:8080';
-  final user = DUser.fromApi(userData);
+  final user = User.fromApi(userData);
   await userQuery.setData(user).save();
 
   final dio = Dio(BaseOptions());

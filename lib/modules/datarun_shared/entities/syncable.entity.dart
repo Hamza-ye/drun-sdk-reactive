@@ -78,7 +78,7 @@ class SyncableEntity extends BaseEntity {
 
   SyncableEntity(
       {String? id,
-      String? uid,
+      // String? uid,
       this.name,
       this.code,
       String? lastModifiedDate,
@@ -105,7 +105,7 @@ class SyncableEntity extends BaseEntity {
       this.rescheduledDate,
       required bool dirty})
       : super(
-            id: uid,
+            id: id,
             // uid: uid,
             dirty: dirty,
             createdDate: createdDate,
@@ -149,7 +149,7 @@ class SyncableEntity extends BaseEntity {
     // }
 
     if (team != null && team.runtimeType != String) {
-      syncableToUpload['team'] = team['uid'];
+      syncableToUpload['team'] = team['id'];
     }
 
     if (form != null) {

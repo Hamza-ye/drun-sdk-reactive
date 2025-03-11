@@ -41,14 +41,14 @@ class RepeatInstance extends IdentifiableEntity {
       required dirty})
       : super(
             id: id,
-            uid: id,
+            // uid: id,
             createdDate: createdDate,
             lastModifiedDate: lastModifiedDate,
             dirty: dirty);
 
   factory RepeatInstance.fromJson(Map<String, dynamic> json) {
     return RepeatInstance(
-        id: json['id'],
+        id: json['uid'] ?? json['id'].toString(),
         lastModifiedDate: json['lastModifiedDate'],
         createdDate: json['createdDate'],
         submission: json['dataSubmission'],
