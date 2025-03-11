@@ -90,10 +90,10 @@ class D2Remote {
   /// use to store data until the user logs out.
   static Future<bool> setDatabaseName(
       {required String databaseName,
-      Future<SharedPreferences>? sharedPreferenceInstance}) async {
+     SharedPreferences? sharedPreferenceInstance}) async {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences prefs =
-        await (sharedPreferenceInstance ?? SharedPreferences.getInstance());
+         sharedPreferenceInstance ?? await SharedPreferences.getInstance();
     return prefs.setString(currentDatabaseNameKey, databaseName);
   }
 
@@ -101,7 +101,7 @@ class D2Remote {
       {required String username,
       required String password,
       required String url,
-      Future<SharedPreferences>? sharedPreferenceInstance,
+      SharedPreferences? sharedPreferenceInstance,
       Duration? timeout,
       bool? inMemory,
       DatabaseFactory? databaseFactory,
@@ -147,7 +147,7 @@ class D2Remote {
       await D2Remote.setDatabaseName(
           databaseName: databaseName,
           sharedPreferenceInstance:
-              sharedPreferenceInstance ?? SharedPreferences.getInstance());
+              sharedPreferenceInstance ?? await SharedPreferences.getInstance());
 
       UserQuery userQuery = UserQuery();
 
@@ -201,7 +201,7 @@ class D2Remote {
       SharedPreferences prefs =
            sharedPreferenceInstance ?? await SharedPreferences.getInstance();
       prefs.remove(currentDatabaseNameKey);
-      // await DatabaseManager.instance.closeDatabase();
+      await DatabaseManager.instance.closeDatabase();
 
       // DatabaseManager
       logOutSuccess = true;
@@ -213,7 +213,7 @@ class D2Remote {
       {required String instanceUrl,
       required Map<String, dynamic> userObject,
       required Map<String, dynamic> tokenObject,
-      Future<SharedPreferences>? sharedPreferenceInstance,
+      SharedPreferences? sharedPreferenceInstance,
       bool? inMemory,
       DatabaseFactory? databaseFactory,
       Dio? dioTestClient}) async {
@@ -227,7 +227,7 @@ class D2Remote {
     await D2Remote.setDatabaseName(
         databaseName: databaseName,
         sharedPreferenceInstance:
-            sharedPreferenceInstance ?? SharedPreferences.getInstance());
+            sharedPreferenceInstance ?? await SharedPreferences.getInstance());
 
     AuthToken token = AuthToken.fromJson(tokenObject);
 
