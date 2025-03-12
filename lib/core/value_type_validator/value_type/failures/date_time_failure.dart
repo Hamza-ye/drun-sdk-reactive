@@ -1,4 +1,4 @@
-import 'package:d2_remote/core/datarun/exception/exception.dart';
+import 'package:d_sdk/core/exception/exception.dart';
 
 /// DateTime Failure
 sealed class DateTimeFailure extends DException {

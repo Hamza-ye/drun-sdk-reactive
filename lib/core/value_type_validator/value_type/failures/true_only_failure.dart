@@ -1,4 +1,4 @@
-import 'package:d2_remote/core/datarun/exception/exception.dart';
+import 'package:d_sdk/core/exception/exception.dart';
 
 /// TrueOnly Failure
 sealed class TrueOnlyFailure extends DException {

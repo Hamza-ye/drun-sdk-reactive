@@ -1,5 +1,5 @@
-import 'package:d2_remote/core/datarun/exception/d_exception.dart';
-import 'package:d2_remote/core/value_type_validator/value_type/validators/number_validator_base.dart';
+import 'package:d_sdk/core/exception/exception.dart';
+import 'package:d_sdk/core/value_type_validator/value_type/validators/number_validator_base.dart';
 import 'package:multiple_result/multiple_result.dart';
 
 abstract class IntegerValidatorBase<T extends DException>

@@ -1,5 +1,5 @@
-import 'package:d2_remote/core/value_type_validator/value_type/failures/email_failure.dart';
-import 'package:d2_remote/core/value_type_validator/value_type/validators/value_type_validator.dart';
+import 'package:d_sdk/core/value_type_validator/value_type/failures/email_failure.dart';
+import 'package:d_sdk/core/value_type_validator/value_type/validators/value_type_validator.dart';
 import 'package:multiple_result/multiple_result.dart';
 
 /// EmailValidator: Validates email addresses using a regex.

@@ -1,7 +1,7 @@
-import 'package:d2_remote/d2_remote.dart';
-import 'package:d2_remote/modules/auth/user/entities/d_user.entity.dart';
-import 'package:d2_remote/modules/auth/user/models/login-response.model.dart';
-import 'package:d2_remote/modules/auth/user/queries/d_user.query.dart';
+import 'package:d_sdk/d_sdk.dart';
+import 'package:d_sdk/modules/auth/user/entities/d_user.entity.dart';
+import 'package:d_sdk/modules/auth/user/models/login-response.model.dart';
+import 'package:d_sdk/modules/auth/user/queries/d_user.query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
