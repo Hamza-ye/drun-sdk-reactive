@@ -54,6 +54,10 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  void getOne() {
+
+  }
 }
 
 Map<String, List<Type>> get dbTables => {

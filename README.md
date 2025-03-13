@@ -1,9 +1,6 @@
-# Data Run Flutter SDK
+# Reactive Datarun Flutter's SDK
 
-[![Flutter SDK CI](https://github.com/Hamza-ye/data-run-sdk/actions/workflows/deploy.yml/badge.svg)](https://github.com/Hamza-ye/data-run-sdk/actions/workflows/deploy.yml)
-
-A New Project forked from the original
-project [d2-touch](https://github.com/udsm-dhis2-lab/d2-touch)
+[![Flutter SDK CI](https://github.com/Hamza-ye/drun-sdk-reactive/actions/workflows/deploy.yml/badge.svg)](https://github.com/Hamza-ye/drun-sdk-reactive/actions/workflows/deploy.yml)
 
 ## Introduction
 
