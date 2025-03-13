@@ -21,12 +21,12 @@ part 'app_database.g.dart';
   FormTemplates,
   FormVersions,
   MetadataSubmissions,
-  DataFormSubmissions,
   RepeatInstances,
   DataValues,
   DataElements,
   DataOptionSets,
-  DataOptions
+  DataOptions,
+  DataFormSubmissions,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase({QueryExecutor? e, String? databaseName})
@@ -55,3 +55,25 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 }
+
+Map<String, List<Type>> get dbTables => {
+  'metadata': [
+    Users,
+    UserAuthorities,
+    OrgUnits,
+    OuLevels,
+    Projects,
+    Activities,
+    Teams,
+    Assignments,
+    FormTemplates,
+    FormVersions,
+    DataElements,
+    DataOptionSets,
+    DataOptions,
+    RepeatInstances,
+    DataValues,
+    MetadataSubmissions,
+  ],
+  'data': [DataFormSubmissions]
+};
