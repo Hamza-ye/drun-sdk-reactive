@@ -8624,12 +8624,12 @@ class $RepeatInstancesTable extends RepeatInstances
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES data_form_submissions (id)'));
-  static const VerificationMeta _repeatTemplatePathMeta =
-      const VerificationMeta('repeatTemplatePath');
+  static const VerificationMeta _templatePathMeta =
+      const VerificationMeta('templatePath');
   @override
-  late final GeneratedColumn<String> repeatTemplatePath =
-      GeneratedColumn<String>('repeat_template_path', aliasedName, false,
-          type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> templatePath = GeneratedColumn<String>(
+      'template_path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _parentMeta = const VerificationMeta('parent');
   @override
   late final GeneratedColumn<String> parent = GeneratedColumn<String>(
@@ -8651,7 +8651,7 @@ class $RepeatInstancesTable extends RepeatInstances
         lastModifiedDate,
         createdDate,
         submission,
-        repeatTemplatePath,
+        templatePath,
         parent,
         repeatIndex
       ];
@@ -8696,13 +8696,13 @@ class $RepeatInstancesTable extends RepeatInstances
     } else if (isInserting) {
       context.missing(_submissionMeta);
     }
-    if (data.containsKey('repeat_template_path')) {
+    if (data.containsKey('template_path')) {
       context.handle(
-          _repeatTemplatePathMeta,
-          repeatTemplatePath.isAcceptableOrUnknown(
-              data['repeat_template_path']!, _repeatTemplatePathMeta));
+          _templatePathMeta,
+          templatePath.isAcceptableOrUnknown(
+              data['template_path']!, _templatePathMeta));
     } else if (isInserting) {
-      context.missing(_repeatTemplatePathMeta);
+      context.missing(_templatePathMeta);
     }
     if (data.containsKey('parent')) {
       context.handle(_parentMeta,
@@ -8735,8 +8735,8 @@ class $RepeatInstancesTable extends RepeatInstances
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       submission: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}submission'])!,
-      repeatTemplatePath: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}repeat_template_path'])!,
+      templatePath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}template_path'])!,
       parent: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}parent']),
       repeatIndex: attachedDatabase.typeMapping
@@ -8758,7 +8758,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   final String submission;
 
   /// Path of the Repeat in the FormTemplate (non-null)
-  final String repeatTemplatePath;
+  final String templatePath;
 
   /// reference to nearest parent RepeatInstance (nullable)
   final String? parent;
@@ -8771,7 +8771,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
       required this.lastModifiedDate,
       required this.createdDate,
       required this.submission,
-      required this.repeatTemplatePath,
+      required this.templatePath,
       this.parent,
       required this.repeatIndex});
   @override
@@ -8782,7 +8782,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     map['submission'] = Variable<String>(submission);
-    map['repeat_template_path'] = Variable<String>(repeatTemplatePath);
+    map['template_path'] = Variable<String>(templatePath);
     if (!nullToAbsent || parent != null) {
       map['parent'] = Variable<String>(parent);
     }
@@ -8797,7 +8797,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       submission: Value(submission),
-      repeatTemplatePath: Value(repeatTemplatePath),
+      templatePath: Value(templatePath),
       parent:
           parent == null && nullToAbsent ? const Value.absent() : Value(parent),
       repeatIndex: Value(repeatIndex),
@@ -8813,8 +8813,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       submission: serializer.fromJson<String>(json['submission']),
-      repeatTemplatePath:
-          serializer.fromJson<String>(json['repeatTemplatePath']),
+      templatePath: serializer.fromJson<String>(json['templatePath']),
       parent: serializer.fromJson<String?>(json['parent']),
       repeatIndex: serializer.fromJson<int>(json['repeatIndex']),
     );
@@ -8828,7 +8827,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'submission': serializer.toJson<String>(submission),
-      'repeatTemplatePath': serializer.toJson<String>(repeatTemplatePath),
+      'templatePath': serializer.toJson<String>(templatePath),
       'parent': serializer.toJson<String?>(parent),
       'repeatIndex': serializer.toJson<int>(repeatIndex),
     };
@@ -8840,7 +8839,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           String? submission,
-          String? repeatTemplatePath,
+          String? templatePath,
           Value<String?> parent = const Value.absent(),
           int? repeatIndex}) =>
       RepeatInstance(
@@ -8849,7 +8848,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         submission: submission ?? this.submission,
-        repeatTemplatePath: repeatTemplatePath ?? this.repeatTemplatePath,
+        templatePath: templatePath ?? this.templatePath,
         parent: parent.present ? parent.value : this.parent,
         repeatIndex: repeatIndex ?? this.repeatIndex,
       );
@@ -8864,9 +8863,9 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
           data.createdDate.present ? data.createdDate.value : this.createdDate,
       submission:
           data.submission.present ? data.submission.value : this.submission,
-      repeatTemplatePath: data.repeatTemplatePath.present
-          ? data.repeatTemplatePath.value
-          : this.repeatTemplatePath,
+      templatePath: data.templatePath.present
+          ? data.templatePath.value
+          : this.templatePath,
       parent: data.parent.present ? data.parent.value : this.parent,
       repeatIndex:
           data.repeatIndex.present ? data.repeatIndex.value : this.repeatIndex,
@@ -8881,7 +8880,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('submission: $submission, ')
-          ..write('repeatTemplatePath: $repeatTemplatePath, ')
+          ..write('templatePath: $templatePath, ')
           ..write('parent: $parent, ')
           ..write('repeatIndex: $repeatIndex')
           ..write(')'))
@@ -8890,7 +8889,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
 
   @override
   int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      submission, repeatTemplatePath, parent, repeatIndex);
+      submission, templatePath, parent, repeatIndex);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8900,7 +8899,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.submission == this.submission &&
-          other.repeatTemplatePath == this.repeatTemplatePath &&
+          other.templatePath == this.templatePath &&
           other.parent == this.parent &&
           other.repeatIndex == this.repeatIndex);
 }
@@ -8911,7 +8910,7 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String> submission;
-  final Value<String> repeatTemplatePath;
+  final Value<String> templatePath;
   final Value<String?> parent;
   final Value<int> repeatIndex;
   final Value<int> rowid;
@@ -8921,7 +8920,7 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.submission = const Value.absent(),
-    this.repeatTemplatePath = const Value.absent(),
+    this.templatePath = const Value.absent(),
     this.parent = const Value.absent(),
     this.repeatIndex = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -8932,14 +8931,14 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     required String submission,
-    required String repeatTemplatePath,
+    required String templatePath,
     this.parent = const Value.absent(),
     required int repeatIndex,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         dirty = Value(dirty),
         submission = Value(submission),
-        repeatTemplatePath = Value(repeatTemplatePath),
+        templatePath = Value(templatePath),
         repeatIndex = Value(repeatIndex);
   static Insertable<RepeatInstance> custom({
     Expression<String>? id,
@@ -8947,7 +8946,7 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? submission,
-    Expression<String>? repeatTemplatePath,
+    Expression<String>? templatePath,
     Expression<String>? parent,
     Expression<int>? repeatIndex,
     Expression<int>? rowid,
@@ -8958,8 +8957,7 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (submission != null) 'submission': submission,
-      if (repeatTemplatePath != null)
-        'repeat_template_path': repeatTemplatePath,
+      if (templatePath != null) 'template_path': templatePath,
       if (parent != null) 'parent': parent,
       if (repeatIndex != null) 'repeat_index': repeatIndex,
       if (rowid != null) 'rowid': rowid,
@@ -8972,7 +8970,7 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String>? submission,
-      Value<String>? repeatTemplatePath,
+      Value<String>? templatePath,
       Value<String?>? parent,
       Value<int>? repeatIndex,
       Value<int>? rowid}) {
@@ -8982,7 +8980,7 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       submission: submission ?? this.submission,
-      repeatTemplatePath: repeatTemplatePath ?? this.repeatTemplatePath,
+      templatePath: templatePath ?? this.templatePath,
       parent: parent ?? this.parent,
       repeatIndex: repeatIndex ?? this.repeatIndex,
       rowid: rowid ?? this.rowid,
@@ -9007,8 +9005,8 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     if (submission.present) {
       map['submission'] = Variable<String>(submission.value);
     }
-    if (repeatTemplatePath.present) {
-      map['repeat_template_path'] = Variable<String>(repeatTemplatePath.value);
+    if (templatePath.present) {
+      map['template_path'] = Variable<String>(templatePath.value);
     }
     if (parent.present) {
       map['parent'] = Variable<String>(parent.value);
@@ -9030,7 +9028,7 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('submission: $submission, ')
-          ..write('repeatTemplatePath: $repeatTemplatePath, ')
+          ..write('templatePath: $templatePath, ')
           ..write('parent: $parent, ')
           ..write('repeatIndex: $repeatIndex, ')
           ..write('rowid: $rowid')
@@ -11466,9 +11464,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index assignmentScope = Index('assignment_scope',
       'CREATE INDEX assignment_scope ON assignments (scope)');
   late final Index repeatTemplatePath = Index('repeat_template_path',
-      'CREATE INDEX repeat_template_path ON repeat_instances (repeat_template_path)');
-  late final Index templatePath = Index('template_path',
-      'CREATE INDEX template_path ON data_values (template_path)');
+      'CREATE INDEX repeat_template_path ON repeat_instances (template_path)');
+  late final Index dataValueTemplatePath = Index('data_value_template_path',
+      'CREATE INDEX data_value_template_path ON data_values (template_path)');
   late final Index submissionSynced = Index('submission_synced',
       'CREATE INDEX submission_synced ON data_form_submissions (synced)');
   late final Index submissionIsFinal = Index('submission_is_final',
@@ -11505,7 +11503,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         assignmentStartDate,
         assignmentScope,
         repeatTemplatePath,
-        templatePath,
+        dataValueTemplatePath,
         submissionSynced,
         submissionIsFinal,
         submissionDirty,
@@ -17439,7 +17437,7 @@ typedef $$RepeatInstancesTableCreateCompanionBuilder = RepeatInstancesCompanion
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   required String submission,
-  required String repeatTemplatePath,
+  required String templatePath,
   Value<String?> parent,
   required int repeatIndex,
   Value<int> rowid,
@@ -17451,7 +17449,7 @@ typedef $$RepeatInstancesTableUpdateCompanionBuilder = RepeatInstancesCompanion
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String> submission,
-  Value<String> repeatTemplatePath,
+  Value<String> templatePath,
   Value<String?> parent,
   Value<int> repeatIndex,
   Value<int> rowid,
@@ -17529,9 +17527,8 @@ class $$RepeatInstancesTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get repeatTemplatePath => $composableBuilder(
-      column: $table.repeatTemplatePath,
-      builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get templatePath => $composableBuilder(
+      column: $table.templatePath, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get repeatIndex => $composableBuilder(
       column: $table.repeatIndex, builder: (column) => ColumnFilters(column));
@@ -17620,8 +17617,8 @@ class $$RepeatInstancesTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get repeatTemplatePath => $composableBuilder(
-      column: $table.repeatTemplatePath,
+  ColumnOrderings<String> get templatePath => $composableBuilder(
+      column: $table.templatePath,
       builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get repeatIndex => $composableBuilder(
@@ -17690,8 +17687,8 @@ class $$RepeatInstancesTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumn<String> get repeatTemplatePath => $composableBuilder(
-      column: $table.repeatTemplatePath, builder: (column) => column);
+  GeneratedColumn<String> get templatePath => $composableBuilder(
+      column: $table.templatePath, builder: (column) => column);
 
   GeneratedColumn<int> get repeatIndex => $composableBuilder(
       column: $table.repeatIndex, builder: (column) => column);
@@ -17789,7 +17786,7 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String> submission = const Value.absent(),
-            Value<String> repeatTemplatePath = const Value.absent(),
+            Value<String> templatePath = const Value.absent(),
             Value<String?> parent = const Value.absent(),
             Value<int> repeatIndex = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -17800,7 +17797,7 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             submission: submission,
-            repeatTemplatePath: repeatTemplatePath,
+            templatePath: templatePath,
             parent: parent,
             repeatIndex: repeatIndex,
             rowid: rowid,
@@ -17811,7 +17808,7 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             required String submission,
-            required String repeatTemplatePath,
+            required String templatePath,
             Value<String?> parent = const Value.absent(),
             required int repeatIndex,
             Value<int> rowid = const Value.absent(),
@@ -17822,7 +17819,7 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             submission: submission,
-            repeatTemplatePath: repeatTemplatePath,
+            templatePath: templatePath,
             parent: parent,
             repeatIndex: repeatIndex,
             rowid: rowid,

@@ -1,7 +1,7 @@
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'template_path', columns: {#templatePath})
+@TableIndex(name: 'data_value_template_path', columns: {#templatePath})
 class DataValues extends Table with BaseTableMixin {
   /// Path of the Repeat in the FormTemplate – non-null.
   late final TextColumn templatePath = text()();
