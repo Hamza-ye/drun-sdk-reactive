@@ -2,7 +2,7 @@ enum DErrorComponent { Server, SDK, Database }
 
 enum DErrorCode {
   // Network-related errors
-  networkTimeout, // Timeout error for network requests
+  networkTimeout, // Timeout error for config requests
   networkConnectionFailed, // Connection failure (e.g., no internet connection)
 
   // Authentication|Account errors

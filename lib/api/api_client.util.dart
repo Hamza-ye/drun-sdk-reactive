@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:d_sdk/core/constants.dart';
+import 'package:d_sdk/core/config/constants.dart';
 import 'package:d_sdk/api/http-details.util.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:dio/dio.dart';
@@ -47,7 +47,7 @@ class ApiClient {
 
     try {
       final Response<dynamic> response = await dioClient
-          .post('${httpDetails.baseUrl}$apiPath$resourceUrl', data: data);
+          .post('${httpDetails.baseUrl}$kApiPath$resourceUrl', data: data);
 
       return HttpResponse(
           statusCode: response.statusCode ?? 500, body: response.data);
@@ -88,8 +88,8 @@ class ApiClient {
 
     try {
       final Response<dynamic> response = data == null
-          ? await dioClient.put('${httpDetails.baseUrl}$apiPath$resourceUrl')
-          : await dioClient.put('${httpDetails.baseUrl}$apiPath$resourceUrl',
+          ? await dioClient.put('${httpDetails.baseUrl}$kApiPath$resourceUrl')
+          : await dioClient.put('${httpDetails.baseUrl}$kApiPath$resourceUrl',
               data: data);
 
       return HttpResponse(
@@ -130,7 +130,7 @@ class ApiClient {
 
     try {
       final Response<dynamic> response =
-          await dioClient.get('${httpDetails.baseUrl}$apiPath$resourceUrl');
+          await dioClient.get('${httpDetails.baseUrl}$kApiPath$resourceUrl');
 
       return HttpResponse(
           statusCode: response.statusCode ?? 500, body: response.data);

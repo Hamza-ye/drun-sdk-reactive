@@ -32,6 +32,8 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase({QueryExecutor? e, String? databaseName})
       : super(
           e ??
+
+              /// no encryption, called if QueryExecutor is null
               driftDatabase(
                 name: databaseName ?? 'drun-db',
                 native: const DriftNativeOptions(
