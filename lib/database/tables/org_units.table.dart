@@ -2,7 +2,7 @@ import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-// OrgUnit Table
+/// OrgUnit Table
 class OrgUnits extends Table with BaseTableMixin, IdentifiableMixin {
   late final TextColumn path = text().nullable()();
 

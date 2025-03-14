@@ -1,9 +1,6 @@
 targets:
   $default:
     builders:
-      drun_generators:
-        generate_for:
-          - lib/database/tables/*.table.dart
       drift_dev:
         # These options change how drift generates code
         options:

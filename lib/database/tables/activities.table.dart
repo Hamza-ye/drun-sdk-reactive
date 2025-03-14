@@ -1,7 +1,7 @@
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-// DActivity Table
+/// DActivity Table
 class Activities extends Table with BaseTableMixin, IdentifiableMixin {
   late final TextColumn project = text().references(Projects, #id)();
 

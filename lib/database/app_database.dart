@@ -55,29 +55,5 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  void getOne() {
-
-  }
+  void getOne() {}
 }
-
-Map<String, List<Type>> get dbTables => {
-  'metadata': [
-    Users,
-    UserAuthorities,
-    OrgUnits,
-    OuLevels,
-    Projects,
-    Activities,
-    Teams,
-    Assignments,
-    FormTemplates,
-    FormVersions,
-    DataElements,
-    DataOptionSets,
-    DataOptions,
-    RepeatInstances,
-    DataValues,
-    MetadataSubmissions,
-  ],
-  'data': [DataFormSubmissions]
-};

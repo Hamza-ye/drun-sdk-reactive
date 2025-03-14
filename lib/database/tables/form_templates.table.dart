@@ -7,6 +7,6 @@ class FormTemplates extends Table with BaseTableMixin, IdentifiableMixin {
   late final TextColumn label =
   text().map(const MapConverter<String>()).withDefault(Constant('{}'))();
 
-  // Version is an integer.
+  /// Version is an integer.
   late final IntColumn version = integer()();
 }

@@ -3,8 +3,13 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
+@TableIndex(name: 'synced', columns: {#synced})
+@TableIndex(name: 'is_final', columns: {#isFinal})
+@TableIndex(name: 'dirty', columns: {#dirty})
+@TableIndex(name: 'status', columns: {#status})
+@TableIndex(name: 'deleted', columns: {#deleted})
 class DataFormSubmissions extends Table with BaseTableMixin, IdentifiableMixin {
-  // Bool columns (nullable)
+  /// Bool columns (nullable)
   late final BoolColumn deleted =
       boolean().withDefault(const Constant(false))();
 
@@ -13,7 +18,7 @@ class DataFormSubmissions extends Table with BaseTableMixin, IdentifiableMixin {
   late final BoolColumn syncFailed =
       boolean().withDefault(const Constant(false))();
 
-  // isFinal is non-nullable; default to false (adjust default as needed)
+  /// isFinal is non-nullable; default to false (adjust default as needed)
   late final BoolColumn isFinal =
       boolean().withDefault(const Constant(false))();
 
@@ -28,30 +33,30 @@ class DataFormSubmissions extends Table with BaseTableMixin, IdentifiableMixin {
 
   late final TextColumn createdBy = text().nullable()();
 
-  // Status stored as text via a converter; nullable.
+  /// Status stored as text via a converter; nullable.
   late final TextColumn status =
       text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
 
-  // Many-to-one references stored as text.
+  /// Many-to-one references stored as text.
   late final TextColumn team = text().nullable().references(Teams, #id)();
 
-  // Form template id is stored as text (nullable).
-  late final TextColumn formTemplateId = text().nullable()();
+  /// Form template id is stored as text (nullable).
+  late final TextColumn form = text().nullable()();
 
-  // Many-to-one references stored as text.
+  /// Many-to-one references stored as text.
   late final TextColumn formVersion = text().references(FormVersions, #id)();
 
-  // Version is non-nullable integer.
+  /// Version is non-nullable integer.
   late final IntColumn version = integer()();
 
-  // Nullable assignment reference.
+  /// Nullable assignment reference.
   late final TextColumn assignment =
       text().nullable().references(Assignments, #id)();
 
-  // Nullable orgUnit reference.
+  /// Nullable orgUnit reference.
   late final TextColumn orgUnit = text().nullable().references(OrgUnits, #id)();
 
-  // formData is stored as a JSON string.
+  /// formData is stored as a JSON string.
   late final TextColumn formData =
       text().map(const MapConverter()).nullable()();
 }

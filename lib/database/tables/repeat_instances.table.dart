@@ -1,16 +1,18 @@
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-class RepeatInstances extends Table with BaseTableMixin, IdentifiableMixin {
+@TableIndex(name: 'template_path', columns: {#repeatTemplatePath})
+class RepeatInstances extends Table with BaseTableMixin {
+  late final TextColumn submission =
+      text().references(DataFormSubmissions, #id)();
 
-  late final TextColumn submission = text().references(DataFormSubmissions, #id)();
+  /// Path of the Repeat in the FormTemplate (non-null)
+  late final TextColumn repeatTemplatePath = text()();
 
-  // Path of the Repeat in the FormTemplate (non-null)
-  late final TextColumn templatePath = text()();
+  /// reference to nearest parent RepeatInstance (nullable)
+  late final TextColumn parent =
+      text().nullable().references(RepeatInstances, #id)();
 
-  // Parent instance (nullable)
-  late final TextColumn parent = text().nullable()();
-
-  // Repeat index for order and identity (non-null)
+  /// Repeat index for order and identity (non-null)
   late final IntColumn repeatIndex = integer()();
 }
