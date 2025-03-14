@@ -1,4 +1,3 @@
-import 'package:d_sdk/core/utilities/query_model.util.dart';
 
 class DataRunUrlGenerator {
   static String generate(/*QueryModel? query*/ String resourceName) {

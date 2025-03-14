@@ -1,5 +1,5 @@
-import 'package:d_sdk/core/network/data-run-url-generator.util.dart';
-import 'package:d_sdk/core/network/http_client.util.dart';
+import 'package:d_sdk/api/api_client.util.dart';
+import 'package:d_sdk/api/data-run-url-generator.util.dart';
 import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/core/sync/model/sync_logger.dart';
 import 'package:d_sdk/core/sync/model/sync_progress_event.dart';
@@ -37,7 +37,7 @@ abstract class ApiDataSource<T extends Table, D> {
 
   Future<Iterable<Insertable<D>>> fetchOnline({Dio? dioTestClient}) async {
     final dataRunUrl = await this.dataRunUrl();
-    final response = await HttpClient.get(dataRunUrl,
+    final response = await ApiClient.get(dataRunUrl,
         database: this.database, dioTestClient: dioTestClient);
 
     List data = response.body != null

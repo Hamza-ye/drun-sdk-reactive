@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:d_sdk/core/constants.dart';
-import 'package:d_sdk/core/network/http-details.util.dart';
+import 'package:d_sdk/api/http-details.util.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:dio/dio.dart';
 import 'package:xml2json/xml2json.dart';
@@ -17,7 +17,7 @@ class HttpResponse {
   }
 }
 
-class HttpClient {
+class ApiClient {
   findById() {}
 
   update() {}
@@ -173,7 +173,7 @@ class HttpClient {
       return base64Encode(utf8.encode('$username:$password'));
     }
 
-    final User? user = await database?.managers.users.getSingle();;
+    final User? user = await database!.managers.users.getSingle();;
 
     return base64Encode(utf8.encode('${user?.username}:${user?.password}'));
   }
