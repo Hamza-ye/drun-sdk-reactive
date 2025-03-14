@@ -1,7 +1,7 @@
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'template_path', columns: {#repeatTemplatePath})
+@TableIndex(name: 'repeat_template_path', columns: {#repeatTemplatePath})
 class RepeatInstances extends Table with BaseTableMixin {
   late final TextColumn submission =
       text().references(DataFormSubmissions, #id)();

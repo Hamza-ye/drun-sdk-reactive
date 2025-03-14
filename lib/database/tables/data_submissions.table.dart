@@ -3,11 +3,11 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'synced', columns: {#synced})
-@TableIndex(name: 'is_final', columns: {#isFinal})
-@TableIndex(name: 'dirty', columns: {#dirty})
-@TableIndex(name: 'status', columns: {#status})
-@TableIndex(name: 'deleted', columns: {#deleted})
+@TableIndex(name: 'submission_synced', columns: {#synced})
+@TableIndex(name: 'submission_is_final', columns: {#isFinal})
+@TableIndex(name: 'submission_dirty', columns: {#dirty})
+@TableIndex(name: 'submission_status', columns: {#status})
+@TableIndex(name: 'submission_deleted', columns: {#deleted})
 class DataFormSubmissions extends Table with BaseTableMixin, IdentifiableMixin {
   /// Bool columns (nullable)
   late final BoolColumn deleted =

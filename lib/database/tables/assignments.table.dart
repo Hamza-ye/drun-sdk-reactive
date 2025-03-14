@@ -3,9 +3,9 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'status', columns: {#status})
-@TableIndex(name: 'start_date', columns: {#startDate})
-@TableIndex(name: 'scope', columns: {#scope})
+@TableIndex(name: 'assignment_status', columns: {#status})
+@TableIndex(name: 'assignment_start_date', columns: {#startDate})
+@TableIndex(name: 'assignment_scope', columns: {#scope})
 class Assignments extends Table with BaseTableMixin, IdentifiableMixin {
   late final TextColumn activity = text().references(Activities, #id)();
 

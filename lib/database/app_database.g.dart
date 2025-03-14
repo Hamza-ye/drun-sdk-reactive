@@ -11459,26 +11459,26 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DataValuesTable dataValues = $DataValuesTable(this);
   late final $DataOptionSetsTable dataOptionSets = $DataOptionSetsTable(this);
   late final $DataOptionsTable dataOptions = $DataOptionsTable(this);
-  late final Index status =
-      Index('status', 'CREATE INDEX status ON assignments (status)');
-  late final Index startDate = Index(
-      'start_date', 'CREATE INDEX start_date ON assignments (start_date)');
-  late final Index scope =
-      Index('scope', 'CREATE INDEX scope ON assignments (scope)');
-  late final Index templatePath = Index('template_path',
-      'CREATE INDEX template_path ON repeat_instances (repeat_template_path)');
+  late final Index assignmentStatus = Index('assignment_status',
+      'CREATE INDEX assignment_status ON assignments (status)');
+  late final Index assignmentStartDate = Index('assignment_start_date',
+      'CREATE INDEX assignment_start_date ON assignments (start_date)');
+  late final Index assignmentScope = Index('assignment_scope',
+      'CREATE INDEX assignment_scope ON assignments (scope)');
+  late final Index repeatTemplatePath = Index('repeat_template_path',
+      'CREATE INDEX repeat_template_path ON repeat_instances (repeat_template_path)');
   late final Index templatePath = Index('template_path',
       'CREATE INDEX template_path ON data_values (template_path)');
-  late final Index synced =
-      Index('synced', 'CREATE INDEX synced ON data_form_submissions (synced)');
-  late final Index isFinal = Index(
-      'is_final', 'CREATE INDEX is_final ON data_form_submissions (is_final)');
-  late final Index dirty =
-      Index('dirty', 'CREATE INDEX dirty ON data_form_submissions (dirty)');
-  late final Index status =
-      Index('status', 'CREATE INDEX status ON data_form_submissions (status)');
-  late final Index deleted = Index(
-      'deleted', 'CREATE INDEX deleted ON data_form_submissions (deleted)');
+  late final Index submissionSynced = Index('submission_synced',
+      'CREATE INDEX submission_synced ON data_form_submissions (synced)');
+  late final Index submissionIsFinal = Index('submission_is_final',
+      'CREATE INDEX submission_is_final ON data_form_submissions (is_final)');
+  late final Index submissionDirty = Index('submission_dirty',
+      'CREATE INDEX submission_dirty ON data_form_submissions (dirty)');
+  late final Index submissionStatus = Index('submission_status',
+      'CREATE INDEX submission_status ON data_form_submissions (status)');
+  late final Index submissionDeleted = Index('submission_deleted',
+      'CREATE INDEX submission_deleted ON data_form_submissions (deleted)');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11501,16 +11501,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         dataValues,
         dataOptionSets,
         dataOptions,
-        status,
-        startDate,
-        scope,
+        assignmentStatus,
+        assignmentStartDate,
+        assignmentScope,
+        repeatTemplatePath,
         templatePath,
-        templatePath,
-        synced,
-        isFinal,
-        dirty,
-        status,
-        deleted
+        submissionSynced,
+        submissionIsFinal,
+        submissionDirty,
+        submissionStatus,
+        submissionDeleted
       ];
   @override
   DriftDatabaseOptions get options =>
