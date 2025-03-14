@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:d_sdk/core/form/rule/expression_provider.dart';
 import 'package:d_sdk/core/form/rule/rule_action.dart';
 import 'package:equatable/equatable.dart';
-import 'package:expressions/expressions.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class RuleAction
