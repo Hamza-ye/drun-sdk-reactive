@@ -4,7 +4,7 @@
 
 ## Introduction
 
-DataRun Flutter SDK is a library that abstracts the complexity of interacting with DataRun web api.
+DataRun Flutter SDK is a library that abstracts the complexity of interacting with DataRun web api, and enables stream queries.
 It aims to be an starting point to build Flutter apps for DataRun, covering some tasks that any
 Flutter app should implement, like metadata and data synchronization.
 
