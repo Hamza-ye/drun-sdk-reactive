@@ -1,5 +1,5 @@
-
 import 'package:d_sdk/core/exception/exception.dart';
+import 'package:d_sdk/core/utilities/date_helper.dart';
 
 class DError implements DException {
   DError(
@@ -15,7 +15,7 @@ class DError implements DException {
 
   final String? url;
   final DErrorComponent? errorComponent;
-  final DErrorCode errorCode;
+  final DRunErrorCode errorCode;
   final String message;
   final int? httpErrorCode;
   final Object? cause;
@@ -24,18 +24,20 @@ class DError implements DException {
   final bool shouldShowMessage;
 
   bool isOffline() {
-    return errorCode == DErrorCode.networkTimeout ||
-        errorCode == DErrorCode.networkConnectionFailed;
+    return errorCode == DRunErrorCode.networkTimeout ||
+        errorCode == DRunErrorCode.networkConnectionFailed;
   }
 
-// return switch (originalException) {
-//   final String s => s,
-//   DException(:final message, :final source) => source,
-//   _ => originalException,
-// };
-//
-// originalException != null ? originalException is DException
-//     ? DException(originalException.message, originalException)
-//     : null;
-// }
+  Map<String, dynamic> toMap() {
+    return {
+      'url': this.url,
+      'errorComponent': this.errorComponent,
+      'errorCode': this.errorCode,
+      'message': this.message,
+      'httpErrorCode': this.httpErrorCode,
+      'cause': this.cause,
+      'time': DateHelper.formatForUi(DateTime.now(), includeTime: true),
+      'shouldShowMessage': this.shouldShowMessage,
+    };
+  }
 }

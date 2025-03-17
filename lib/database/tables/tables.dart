@@ -16,6 +16,5 @@ export 'ou_levels.table.dart';
 export 'projects.table.dart';
 export 'repeat_instances.table.dart';
 export 'teams.table.dart';
-export 'user_authorities.table.dart';
 export 'users.table.dart';
 

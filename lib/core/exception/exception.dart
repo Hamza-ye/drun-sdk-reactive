@@ -1,5 +1,5 @@
 //GENERATED BARREL FILE
-export 'authentication_exceptions.dart';
+export 'api_exceptions.dart';
 export 'd_error.dart';
 export 'd_error_code.dart';
 export 'd_exception.dart';

@@ -1,16 +1,24 @@
 enum DErrorComponent { Server, SDK, Database }
 
-enum DErrorCode {
+enum DRunErrorCode {
   // Network-related errors
   networkTimeout, // Timeout error for config requests
   networkConnectionFailed, // Connection failure (e.g., no internet connection)
 
+  // http errors
+  badResponse,
+  badRequest,
+  notFound,
+  serverError,
+  unauthorized,
+  forbidden,
+  invalidData,
+  badCertificate,
   // Authentication|Account errors
-  authInvalidCredentials, // Invalid credentials provided
-  authSessionExpired, // User session has expired
-  noAuthenticatedUser,
-  noAuthenticatedUserOffline,
-  differentOfflineUser,
+  invalidCredentials, // Invalid credentials provided
+  sessionExpired, // User session has expired
+  noLoggedInUser,
+  noLoggedInUserOffline,
   accountDisabled,
 
   // Database-related errors
@@ -18,7 +26,7 @@ enum DErrorCode {
   databaseQueryFailed, // Database query failed
   databaseInternalError, // Internal database error
   // Generic errors
-  unknownError, // General unknown error
+  unexpected, // General unknown error
 
   // Other potential categories can be added
   validationError, // Form validation error

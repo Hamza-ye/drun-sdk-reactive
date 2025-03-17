@@ -8,7 +8,7 @@
 // import 'package:d2_remote/shared/entities/base.entity.dart';
 // import 'package:d2_remote/shared/models/request_progress.model.dart';
 // import 'package:d2_remote/shared/utilities/dhis-url-generator.util.dart';
-// import 'package:d2_remote/shared/utilities/api_client.util.dart';
+// import 'package:d2_remote/shared/utilities/http_client.util.dart';
 // import 'package:d2_remote/shared/utilities/merge_mode.util.dart';
 // import 'package:d2_remote/shared/utilities/query_filter.util.dart';
 // import 'package:d2_remote/shared/utilities/query_filter_condition.util.dart';

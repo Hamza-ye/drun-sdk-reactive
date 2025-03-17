@@ -1,9 +1,14 @@
-enum Environment { production, staging, local }
+import 'package:d_sdk/core/config/environment.dart';
+import 'package:equatable/equatable.dart';
 
-class ServerConfig {
-  final Environment environment;
+class ServerConfig with EquatableMixin {
   final String baseUrl;
-  final String? displayName; // e.g., "Production EU", "Training US"
+  final Environment environment;
+  final String apiPingUrl;
 
-  const ServerConfig(this.environment, this.baseUrl, {this.displayName});
+  const ServerConfig(this.baseUrl, this.environment, {String? apiPingUrl})
+      : this.apiPingUrl = apiPingUrl ?? '${baseUrl}/api/authenticate';
+
+  @override
+  List<Object?> get props => [baseUrl, environment];
 }

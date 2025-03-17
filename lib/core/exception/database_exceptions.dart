@@ -14,7 +14,7 @@ class DDatabaseConnectionException extends DDatabaseException {
       : super("Failed to connect to the database.",
             cause: cause,
             stackTrace: stackTrace,
-            errorCode: DErrorCode.databaseConnectionFailed);
+            errorCode: DRunErrorCode.databaseConnectionFailed);
 }
 
 class DRecordNotFoundException extends DDatabaseException {
@@ -25,7 +25,7 @@ class DRecordNotFoundException extends DDatabaseException {
   }) : super("record $recordId not found.",
             cause: cause,
             stackTrace: stackTrace,
-            errorCode: DErrorCode.databaseQueryFailed);
+            errorCode: DRunErrorCode.databaseQueryFailed);
 }
 
 class DDataIntegrityException extends DDatabaseException {
@@ -36,5 +36,5 @@ class DDataIntegrityException extends DDatabaseException {
   }) : super(message,
             cause: cause,
             stackTrace: stackTrace,
-            errorCode: DErrorCode.databaseInternalError);
+            errorCode: DRunErrorCode.databaseInternalError);
 }

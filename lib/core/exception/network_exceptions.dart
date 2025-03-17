@@ -20,7 +20,7 @@ class InternalServerError extends NetworkException {
       StackTrace? stackTrace})
       : super(message ?? "Internal Server Error.",
             url: url,
-            errorCode: DErrorCode.apiError,
+            errorCode: DRunErrorCode.apiError,
             httpErrorCode: httpErrorCode,
             cause: cause,
             stackTrace: stackTrace);

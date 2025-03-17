@@ -37,34 +37,20 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _displayNameMeta =
-      const VerificationMeta('displayName');
-  @override
-  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
-      'display_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _usernameMeta =
       const VerificationMeta('username');
   @override
   late final GeneratedColumn<String> username = GeneratedColumn<String>(
-      'username', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'username', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _passwordMeta =
       const VerificationMeta('password');
   @override
   late final GeneratedColumn<String> password = GeneratedColumn<String>(
-      'password', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'password', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _firstNameMeta =
       const VerificationMeta('firstName');
   @override
@@ -82,50 +68,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   late final GeneratedColumn<String> mobile = GeneratedColumn<String>(
       'mobile', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _tokenMeta = const VerificationMeta('token');
-  @override
-  late final GeneratedColumn<String> token = GeneratedColumn<String>(
-      'token', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _tokenTypeMeta =
-      const VerificationMeta('tokenType');
-  @override
-  late final GeneratedColumn<String> tokenType = GeneratedColumn<String>(
-      'token_type', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _refreshTokenMeta =
-      const VerificationMeta('refreshToken');
-  @override
-  late final GeneratedColumn<String> refreshToken = GeneratedColumn<String>(
-      'refresh_token', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _tokenExpiryMeta =
-      const VerificationMeta('tokenExpiry');
-  @override
-  late final GeneratedColumn<int> tokenExpiry = GeneratedColumn<int>(
-      'token_expiry', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _authTypeMeta =
-      const VerificationMeta('authType');
-  @override
-  late final GeneratedColumn<String> authType = GeneratedColumn<String>(
-      'auth_type', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _baseUrlMeta =
-      const VerificationMeta('baseUrl');
-  @override
-  late final GeneratedColumn<String> baseUrl = GeneratedColumn<String>(
-      'base_url', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _isLoggedInMeta =
-      const VerificationMeta('isLoggedIn');
-  @override
-  late final GeneratedColumn<bool> isLoggedIn = GeneratedColumn<bool>(
-      'is_logged_in', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_logged_in" IN (0, 1))'));
   static const VerificationMeta _emailMeta = const VerificationMeta('email');
   @override
   late final GeneratedColumn<String> email = GeneratedColumn<String>(
@@ -135,55 +77,49 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       const VerificationMeta('langKey');
   @override
   late final GeneratedColumn<String> langKey = GeneratedColumn<String>(
-      'lang_key', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'lang_key', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('ar'));
   static const VerificationMeta _activatedMeta =
       const VerificationMeta('activated');
   @override
   late final GeneratedColumn<bool> activated = GeneratedColumn<bool>(
-      'activated', aliasedName, true,
+      'activated', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("activated" IN (0, 1))'));
+          GeneratedColumn.constraintIsAlways('CHECK ("activated" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _imageUrlMeta =
       const VerificationMeta('imageUrl');
   @override
   late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
       'image_url', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _checkWithServerTimeMeta =
-      const VerificationMeta('checkWithServerTime');
+  static const VerificationMeta _authoritiesMeta =
+      const VerificationMeta('authorities');
   @override
-  late final GeneratedColumn<String> checkWithServerTime =
-      GeneratedColumn<String>('check_with_server_time', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      authorities = GeneratedColumn<String>('authorities', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<String>>($UsersTable.$converterauthorities);
   @override
   List<GeneratedColumn> get $columns => [
         id,
         dirty,
         lastModifiedDate,
         createdDate,
-        name,
-        displayName,
-        code,
         username,
         password,
         firstName,
         lastname,
         mobile,
-        token,
-        tokenType,
-        refreshToken,
-        tokenExpiry,
-        authType,
-        baseUrl,
-        isLoggedIn,
         email,
         langKey,
         activated,
         imageUrl,
-        checkWithServerTime
+        authorities
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -218,27 +154,17 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    }
-    if (data.containsKey('display_name')) {
-      context.handle(
-          _displayNameMeta,
-          displayName.isAcceptableOrUnknown(
-              data['display_name']!, _displayNameMeta));
-    }
-    if (data.containsKey('code')) {
-      context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
-    }
     if (data.containsKey('username')) {
       context.handle(_usernameMeta,
           username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
+    } else if (isInserting) {
+      context.missing(_usernameMeta);
     }
     if (data.containsKey('password')) {
       context.handle(_passwordMeta,
           password.isAcceptableOrUnknown(data['password']!, _passwordMeta));
+    } else if (isInserting) {
+      context.missing(_passwordMeta);
     }
     if (data.containsKey('first_name')) {
       context.handle(_firstNameMeta,
@@ -251,44 +177,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     if (data.containsKey('mobile')) {
       context.handle(_mobileMeta,
           mobile.isAcceptableOrUnknown(data['mobile']!, _mobileMeta));
-    }
-    if (data.containsKey('token')) {
-      context.handle(
-          _tokenMeta, token.isAcceptableOrUnknown(data['token']!, _tokenMeta));
-    }
-    if (data.containsKey('token_type')) {
-      context.handle(_tokenTypeMeta,
-          tokenType.isAcceptableOrUnknown(data['token_type']!, _tokenTypeMeta));
-    }
-    if (data.containsKey('refresh_token')) {
-      context.handle(
-          _refreshTokenMeta,
-          refreshToken.isAcceptableOrUnknown(
-              data['refresh_token']!, _refreshTokenMeta));
-    }
-    if (data.containsKey('token_expiry')) {
-      context.handle(
-          _tokenExpiryMeta,
-          tokenExpiry.isAcceptableOrUnknown(
-              data['token_expiry']!, _tokenExpiryMeta));
-    }
-    if (data.containsKey('auth_type')) {
-      context.handle(_authTypeMeta,
-          authType.isAcceptableOrUnknown(data['auth_type']!, _authTypeMeta));
-    }
-    if (data.containsKey('base_url')) {
-      context.handle(_baseUrlMeta,
-          baseUrl.isAcceptableOrUnknown(data['base_url']!, _baseUrlMeta));
-    } else if (isInserting) {
-      context.missing(_baseUrlMeta);
-    }
-    if (data.containsKey('is_logged_in')) {
-      context.handle(
-          _isLoggedInMeta,
-          isLoggedIn.isAcceptableOrUnknown(
-              data['is_logged_in']!, _isLoggedInMeta));
-    } else if (isInserting) {
-      context.missing(_isLoggedInMeta);
     }
     if (data.containsKey('email')) {
       context.handle(
@@ -306,12 +194,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       context.handle(_imageUrlMeta,
           imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
     }
-    if (data.containsKey('check_with_server_time')) {
-      context.handle(
-          _checkWithServerTimeMeta,
-          checkWithServerTime.isAcceptableOrUnknown(
-              data['check_with_server_time']!, _checkWithServerTimeMeta));
-    }
+    context.handle(_authoritiesMeta, const VerificationResult.success());
     return context;
   }
 
@@ -329,47 +212,27 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
-      displayName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code']),
       username: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}username']),
+          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       password: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}password']),
+          .read(DriftSqlType.string, data['${effectivePrefix}password'])!,
       firstName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}first_name']),
       lastname: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}lastname']),
       mobile: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}mobile']),
-      token: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}token']),
-      tokenType: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}token_type']),
-      refreshToken: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}refresh_token']),
-      tokenExpiry: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}token_expiry']),
-      authType: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}auth_type']),
-      baseUrl: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}base_url'])!,
-      isLoggedIn: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_logged_in'])!,
       email: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}email']),
       langKey: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}lang_key']),
+          .read(DriftSqlType.string, data['${effectivePrefix}lang_key'])!,
       activated: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}activated']),
+          .read(DriftSqlType.bool, data['${effectivePrefix}activated'])!,
       imageUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_url']),
-      checkWithServerTime: attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}check_with_server_time']),
+      authorities: $UsersTable.$converterauthorities.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}authorities'])),
     );
   }
 
@@ -377,6 +240,9 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   $UsersTable createAlias(String alias) {
     return $UsersTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<List<String>, String?> $converterauthorities =
+      const ListConverter<String>();
 }
 
 class User extends DataClass implements Insertable<User> {
@@ -384,51 +250,31 @@ class User extends DataClass implements Insertable<User> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-  final String? name;
-  final String? displayName;
-  final String? code;
-  final String? username;
-  final String? password;
+  final String username;
+  final String password;
   final String? firstName;
   final String? lastname;
   final String? mobile;
-  final String? token;
-  final String? tokenType;
-  final String? refreshToken;
-  final int? tokenExpiry;
-  final String? authType;
-  final String baseUrl;
-  final bool isLoggedIn;
   final String? email;
-  final String? langKey;
-  final bool? activated;
+  final String langKey;
+  final bool activated;
   final String? imageUrl;
-  final String? checkWithServerTime;
+  final List<String> authorities;
   const User(
       {required this.id,
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.name,
-      this.displayName,
-      this.code,
-      this.username,
-      this.password,
+      required this.username,
+      required this.password,
       this.firstName,
       this.lastname,
       this.mobile,
-      this.token,
-      this.tokenType,
-      this.refreshToken,
-      this.tokenExpiry,
-      this.authType,
-      required this.baseUrl,
-      required this.isLoggedIn,
       this.email,
-      this.langKey,
-      this.activated,
+      required this.langKey,
+      required this.activated,
       this.imageUrl,
-      this.checkWithServerTime});
+      required this.authorities});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -436,21 +282,8 @@ class User extends DataClass implements Insertable<User> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || displayName != null) {
-      map['display_name'] = Variable<String>(displayName);
-    }
-    if (!nullToAbsent || code != null) {
-      map['code'] = Variable<String>(code);
-    }
-    if (!nullToAbsent || username != null) {
-      map['username'] = Variable<String>(username);
-    }
-    if (!nullToAbsent || password != null) {
-      map['password'] = Variable<String>(password);
-    }
+    map['username'] = Variable<String>(username);
+    map['password'] = Variable<String>(password);
     if (!nullToAbsent || firstName != null) {
       map['first_name'] = Variable<String>(firstName);
     }
@@ -460,37 +293,17 @@ class User extends DataClass implements Insertable<User> {
     if (!nullToAbsent || mobile != null) {
       map['mobile'] = Variable<String>(mobile);
     }
-    if (!nullToAbsent || token != null) {
-      map['token'] = Variable<String>(token);
-    }
-    if (!nullToAbsent || tokenType != null) {
-      map['token_type'] = Variable<String>(tokenType);
-    }
-    if (!nullToAbsent || refreshToken != null) {
-      map['refresh_token'] = Variable<String>(refreshToken);
-    }
-    if (!nullToAbsent || tokenExpiry != null) {
-      map['token_expiry'] = Variable<int>(tokenExpiry);
-    }
-    if (!nullToAbsent || authType != null) {
-      map['auth_type'] = Variable<String>(authType);
-    }
-    map['base_url'] = Variable<String>(baseUrl);
-    map['is_logged_in'] = Variable<bool>(isLoggedIn);
     if (!nullToAbsent || email != null) {
       map['email'] = Variable<String>(email);
     }
-    if (!nullToAbsent || langKey != null) {
-      map['lang_key'] = Variable<String>(langKey);
-    }
-    if (!nullToAbsent || activated != null) {
-      map['activated'] = Variable<bool>(activated);
-    }
+    map['lang_key'] = Variable<String>(langKey);
+    map['activated'] = Variable<bool>(activated);
     if (!nullToAbsent || imageUrl != null) {
       map['image_url'] = Variable<String>(imageUrl);
     }
-    if (!nullToAbsent || checkWithServerTime != null) {
-      map['check_with_server_time'] = Variable<String>(checkWithServerTime);
+    {
+      map['authorities'] = Variable<String>(
+          $UsersTable.$converterauthorities.toSql(authorities));
     }
     return map;
   }
@@ -501,17 +314,8 @@ class User extends DataClass implements Insertable<User> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      displayName: displayName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(displayName),
-      code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      username: username == null && nullToAbsent
-          ? const Value.absent()
-          : Value(username),
-      password: password == null && nullToAbsent
-          ? const Value.absent()
-          : Value(password),
+      username: Value(username),
+      password: Value(password),
       firstName: firstName == null && nullToAbsent
           ? const Value.absent()
           : Value(firstName),
@@ -520,36 +324,14 @@ class User extends DataClass implements Insertable<User> {
           : Value(lastname),
       mobile:
           mobile == null && nullToAbsent ? const Value.absent() : Value(mobile),
-      token:
-          token == null && nullToAbsent ? const Value.absent() : Value(token),
-      tokenType: tokenType == null && nullToAbsent
-          ? const Value.absent()
-          : Value(tokenType),
-      refreshToken: refreshToken == null && nullToAbsent
-          ? const Value.absent()
-          : Value(refreshToken),
-      tokenExpiry: tokenExpiry == null && nullToAbsent
-          ? const Value.absent()
-          : Value(tokenExpiry),
-      authType: authType == null && nullToAbsent
-          ? const Value.absent()
-          : Value(authType),
-      baseUrl: Value(baseUrl),
-      isLoggedIn: Value(isLoggedIn),
       email:
           email == null && nullToAbsent ? const Value.absent() : Value(email),
-      langKey: langKey == null && nullToAbsent
-          ? const Value.absent()
-          : Value(langKey),
-      activated: activated == null && nullToAbsent
-          ? const Value.absent()
-          : Value(activated),
+      langKey: Value(langKey),
+      activated: Value(activated),
       imageUrl: imageUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(imageUrl),
-      checkWithServerTime: checkWithServerTime == null && nullToAbsent
-          ? const Value.absent()
-          : Value(checkWithServerTime),
+      authorities: Value(authorities),
     );
   }
 
@@ -561,27 +343,16 @@ class User extends DataClass implements Insertable<User> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
-      displayName: serializer.fromJson<String?>(json['displayName']),
-      code: serializer.fromJson<String?>(json['code']),
-      username: serializer.fromJson<String?>(json['username']),
-      password: serializer.fromJson<String?>(json['password']),
+      username: serializer.fromJson<String>(json['username']),
+      password: serializer.fromJson<String>(json['password']),
       firstName: serializer.fromJson<String?>(json['firstName']),
       lastname: serializer.fromJson<String?>(json['lastname']),
       mobile: serializer.fromJson<String?>(json['mobile']),
-      token: serializer.fromJson<String?>(json['token']),
-      tokenType: serializer.fromJson<String?>(json['tokenType']),
-      refreshToken: serializer.fromJson<String?>(json['refreshToken']),
-      tokenExpiry: serializer.fromJson<int?>(json['tokenExpiry']),
-      authType: serializer.fromJson<String?>(json['authType']),
-      baseUrl: serializer.fromJson<String>(json['baseUrl']),
-      isLoggedIn: serializer.fromJson<bool>(json['isLoggedIn']),
       email: serializer.fromJson<String?>(json['email']),
-      langKey: serializer.fromJson<String?>(json['langKey']),
-      activated: serializer.fromJson<bool?>(json['activated']),
+      langKey: serializer.fromJson<String>(json['langKey']),
+      activated: serializer.fromJson<bool>(json['activated']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
-      checkWithServerTime:
-          serializer.fromJson<String?>(json['checkWithServerTime']),
+      authorities: serializer.fromJson<List<String>>(json['authorities']),
     );
   }
   @override
@@ -592,26 +363,16 @@ class User extends DataClass implements Insertable<User> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'name': serializer.toJson<String?>(name),
-      'displayName': serializer.toJson<String?>(displayName),
-      'code': serializer.toJson<String?>(code),
-      'username': serializer.toJson<String?>(username),
-      'password': serializer.toJson<String?>(password),
+      'username': serializer.toJson<String>(username),
+      'password': serializer.toJson<String>(password),
       'firstName': serializer.toJson<String?>(firstName),
       'lastname': serializer.toJson<String?>(lastname),
       'mobile': serializer.toJson<String?>(mobile),
-      'token': serializer.toJson<String?>(token),
-      'tokenType': serializer.toJson<String?>(tokenType),
-      'refreshToken': serializer.toJson<String?>(refreshToken),
-      'tokenExpiry': serializer.toJson<int?>(tokenExpiry),
-      'authType': serializer.toJson<String?>(authType),
-      'baseUrl': serializer.toJson<String>(baseUrl),
-      'isLoggedIn': serializer.toJson<bool>(isLoggedIn),
       'email': serializer.toJson<String?>(email),
-      'langKey': serializer.toJson<String?>(langKey),
-      'activated': serializer.toJson<bool?>(activated),
+      'langKey': serializer.toJson<String>(langKey),
+      'activated': serializer.toJson<bool>(activated),
       'imageUrl': serializer.toJson<String?>(imageUrl),
-      'checkWithServerTime': serializer.toJson<String?>(checkWithServerTime),
+      'authorities': serializer.toJson<List<String>>(authorities),
     };
   }
 
@@ -620,54 +381,31 @@ class User extends DataClass implements Insertable<User> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<String?> name = const Value.absent(),
-          Value<String?> displayName = const Value.absent(),
-          Value<String?> code = const Value.absent(),
-          Value<String?> username = const Value.absent(),
-          Value<String?> password = const Value.absent(),
+          String? username,
+          String? password,
           Value<String?> firstName = const Value.absent(),
           Value<String?> lastname = const Value.absent(),
           Value<String?> mobile = const Value.absent(),
-          Value<String?> token = const Value.absent(),
-          Value<String?> tokenType = const Value.absent(),
-          Value<String?> refreshToken = const Value.absent(),
-          Value<int?> tokenExpiry = const Value.absent(),
-          Value<String?> authType = const Value.absent(),
-          String? baseUrl,
-          bool? isLoggedIn,
           Value<String?> email = const Value.absent(),
-          Value<String?> langKey = const Value.absent(),
-          Value<bool?> activated = const Value.absent(),
+          String? langKey,
+          bool? activated,
           Value<String?> imageUrl = const Value.absent(),
-          Value<String?> checkWithServerTime = const Value.absent()}) =>
+          List<String>? authorities}) =>
       User(
         id: id ?? this.id,
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        name: name.present ? name.value : this.name,
-        displayName: displayName.present ? displayName.value : this.displayName,
-        code: code.present ? code.value : this.code,
-        username: username.present ? username.value : this.username,
-        password: password.present ? password.value : this.password,
+        username: username ?? this.username,
+        password: password ?? this.password,
         firstName: firstName.present ? firstName.value : this.firstName,
         lastname: lastname.present ? lastname.value : this.lastname,
         mobile: mobile.present ? mobile.value : this.mobile,
-        token: token.present ? token.value : this.token,
-        tokenType: tokenType.present ? tokenType.value : this.tokenType,
-        refreshToken:
-            refreshToken.present ? refreshToken.value : this.refreshToken,
-        tokenExpiry: tokenExpiry.present ? tokenExpiry.value : this.tokenExpiry,
-        authType: authType.present ? authType.value : this.authType,
-        baseUrl: baseUrl ?? this.baseUrl,
-        isLoggedIn: isLoggedIn ?? this.isLoggedIn,
         email: email.present ? email.value : this.email,
-        langKey: langKey.present ? langKey.value : this.langKey,
-        activated: activated.present ? activated.value : this.activated,
+        langKey: langKey ?? this.langKey,
+        activated: activated ?? this.activated,
         imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
-        checkWithServerTime: checkWithServerTime.present
-            ? checkWithServerTime.value
-            : this.checkWithServerTime,
+        authorities: authorities ?? this.authorities,
       );
   User copyWithCompanion(UsersCompanion data) {
     return User(
@@ -678,33 +416,17 @@ class User extends DataClass implements Insertable<User> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      name: data.name.present ? data.name.value : this.name,
-      displayName:
-          data.displayName.present ? data.displayName.value : this.displayName,
-      code: data.code.present ? data.code.value : this.code,
       username: data.username.present ? data.username.value : this.username,
       password: data.password.present ? data.password.value : this.password,
       firstName: data.firstName.present ? data.firstName.value : this.firstName,
       lastname: data.lastname.present ? data.lastname.value : this.lastname,
       mobile: data.mobile.present ? data.mobile.value : this.mobile,
-      token: data.token.present ? data.token.value : this.token,
-      tokenType: data.tokenType.present ? data.tokenType.value : this.tokenType,
-      refreshToken: data.refreshToken.present
-          ? data.refreshToken.value
-          : this.refreshToken,
-      tokenExpiry:
-          data.tokenExpiry.present ? data.tokenExpiry.value : this.tokenExpiry,
-      authType: data.authType.present ? data.authType.value : this.authType,
-      baseUrl: data.baseUrl.present ? data.baseUrl.value : this.baseUrl,
-      isLoggedIn:
-          data.isLoggedIn.present ? data.isLoggedIn.value : this.isLoggedIn,
       email: data.email.present ? data.email.value : this.email,
       langKey: data.langKey.present ? data.langKey.value : this.langKey,
       activated: data.activated.present ? data.activated.value : this.activated,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
-      checkWithServerTime: data.checkWithServerTime.present
-          ? data.checkWithServerTime.value
-          : this.checkWithServerTime,
+      authorities:
+          data.authorities.present ? data.authorities.value : this.authorities,
     );
   }
 
@@ -715,57 +437,36 @@ class User extends DataClass implements Insertable<User> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
           ..write('username: $username, ')
           ..write('password: $password, ')
           ..write('firstName: $firstName, ')
           ..write('lastname: $lastname, ')
           ..write('mobile: $mobile, ')
-          ..write('token: $token, ')
-          ..write('tokenType: $tokenType, ')
-          ..write('refreshToken: $refreshToken, ')
-          ..write('tokenExpiry: $tokenExpiry, ')
-          ..write('authType: $authType, ')
-          ..write('baseUrl: $baseUrl, ')
-          ..write('isLoggedIn: $isLoggedIn, ')
           ..write('email: $email, ')
           ..write('langKey: $langKey, ')
           ..write('activated: $activated, ')
           ..write('imageUrl: $imageUrl, ')
-          ..write('checkWithServerTime: $checkWithServerTime')
+          ..write('authorities: $authorities')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hashAll([
-        id,
-        dirty,
-        lastModifiedDate,
-        createdDate,
-        name,
-        displayName,
-        code,
-        username,
-        password,
-        firstName,
-        lastname,
-        mobile,
-        token,
-        tokenType,
-        refreshToken,
-        tokenExpiry,
-        authType,
-        baseUrl,
-        isLoggedIn,
-        email,
-        langKey,
-        activated,
-        imageUrl,
-        checkWithServerTime
-      ]);
+  int get hashCode => Object.hash(
+      id,
+      dirty,
+      lastModifiedDate,
+      createdDate,
+      username,
+      password,
+      firstName,
+      lastname,
+      mobile,
+      email,
+      langKey,
+      activated,
+      imageUrl,
+      authorities);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -774,26 +475,16 @@ class User extends DataClass implements Insertable<User> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.name == this.name &&
-          other.displayName == this.displayName &&
-          other.code == this.code &&
           other.username == this.username &&
           other.password == this.password &&
           other.firstName == this.firstName &&
           other.lastname == this.lastname &&
           other.mobile == this.mobile &&
-          other.token == this.token &&
-          other.tokenType == this.tokenType &&
-          other.refreshToken == this.refreshToken &&
-          other.tokenExpiry == this.tokenExpiry &&
-          other.authType == this.authType &&
-          other.baseUrl == this.baseUrl &&
-          other.isLoggedIn == this.isLoggedIn &&
           other.email == this.email &&
           other.langKey == this.langKey &&
           other.activated == this.activated &&
           other.imageUrl == this.imageUrl &&
-          other.checkWithServerTime == this.checkWithServerTime);
+          other.authorities == this.authorities);
 }
 
 class UsersCompanion extends UpdateCompanion<User> {
@@ -801,52 +492,32 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<String?> name;
-  final Value<String?> displayName;
-  final Value<String?> code;
-  final Value<String?> username;
-  final Value<String?> password;
+  final Value<String> username;
+  final Value<String> password;
   final Value<String?> firstName;
   final Value<String?> lastname;
   final Value<String?> mobile;
-  final Value<String?> token;
-  final Value<String?> tokenType;
-  final Value<String?> refreshToken;
-  final Value<int?> tokenExpiry;
-  final Value<String?> authType;
-  final Value<String> baseUrl;
-  final Value<bool> isLoggedIn;
   final Value<String?> email;
-  final Value<String?> langKey;
-  final Value<bool?> activated;
+  final Value<String> langKey;
+  final Value<bool> activated;
   final Value<String?> imageUrl;
-  final Value<String?> checkWithServerTime;
+  final Value<List<String>> authorities;
   final Value<int> rowid;
   const UsersCompanion({
     this.id = const Value.absent(),
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
     this.username = const Value.absent(),
     this.password = const Value.absent(),
     this.firstName = const Value.absent(),
     this.lastname = const Value.absent(),
     this.mobile = const Value.absent(),
-    this.token = const Value.absent(),
-    this.tokenType = const Value.absent(),
-    this.refreshToken = const Value.absent(),
-    this.tokenExpiry = const Value.absent(),
-    this.authType = const Value.absent(),
-    this.baseUrl = const Value.absent(),
-    this.isLoggedIn = const Value.absent(),
     this.email = const Value.absent(),
     this.langKey = const Value.absent(),
     this.activated = const Value.absent(),
     this.imageUrl = const Value.absent(),
-    this.checkWithServerTime = const Value.absent(),
+    this.authorities = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   UsersCompanion.insert({
@@ -854,56 +525,36 @@ class UsersCompanion extends UpdateCompanion<User> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    this.username = const Value.absent(),
-    this.password = const Value.absent(),
+    required String username,
+    required String password,
     this.firstName = const Value.absent(),
     this.lastname = const Value.absent(),
     this.mobile = const Value.absent(),
-    this.token = const Value.absent(),
-    this.tokenType = const Value.absent(),
-    this.refreshToken = const Value.absent(),
-    this.tokenExpiry = const Value.absent(),
-    this.authType = const Value.absent(),
-    required String baseUrl,
-    required bool isLoggedIn,
     this.email = const Value.absent(),
     this.langKey = const Value.absent(),
     this.activated = const Value.absent(),
     this.imageUrl = const Value.absent(),
-    this.checkWithServerTime = const Value.absent(),
+    this.authorities = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         dirty = Value(dirty),
-        baseUrl = Value(baseUrl),
-        isLoggedIn = Value(isLoggedIn);
+        username = Value(username),
+        password = Value(password);
   static Insertable<User> custom({
     Expression<String>? id,
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? name,
-    Expression<String>? displayName,
-    Expression<String>? code,
     Expression<String>? username,
     Expression<String>? password,
     Expression<String>? firstName,
     Expression<String>? lastname,
     Expression<String>? mobile,
-    Expression<String>? token,
-    Expression<String>? tokenType,
-    Expression<String>? refreshToken,
-    Expression<int>? tokenExpiry,
-    Expression<String>? authType,
-    Expression<String>? baseUrl,
-    Expression<bool>? isLoggedIn,
     Expression<String>? email,
     Expression<String>? langKey,
     Expression<bool>? activated,
     Expression<String>? imageUrl,
-    Expression<String>? checkWithServerTime,
+    Expression<String>? authorities,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -911,27 +562,16 @@ class UsersCompanion extends UpdateCompanion<User> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (name != null) 'name': name,
-      if (displayName != null) 'display_name': displayName,
-      if (code != null) 'code': code,
       if (username != null) 'username': username,
       if (password != null) 'password': password,
       if (firstName != null) 'first_name': firstName,
       if (lastname != null) 'lastname': lastname,
       if (mobile != null) 'mobile': mobile,
-      if (token != null) 'token': token,
-      if (tokenType != null) 'token_type': tokenType,
-      if (refreshToken != null) 'refresh_token': refreshToken,
-      if (tokenExpiry != null) 'token_expiry': tokenExpiry,
-      if (authType != null) 'auth_type': authType,
-      if (baseUrl != null) 'base_url': baseUrl,
-      if (isLoggedIn != null) 'is_logged_in': isLoggedIn,
       if (email != null) 'email': email,
       if (langKey != null) 'lang_key': langKey,
       if (activated != null) 'activated': activated,
       if (imageUrl != null) 'image_url': imageUrl,
-      if (checkWithServerTime != null)
-        'check_with_server_time': checkWithServerTime,
+      if (authorities != null) 'authorities': authorities,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -941,52 +581,32 @@ class UsersCompanion extends UpdateCompanion<User> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<String?>? name,
-      Value<String?>? displayName,
-      Value<String?>? code,
-      Value<String?>? username,
-      Value<String?>? password,
+      Value<String>? username,
+      Value<String>? password,
       Value<String?>? firstName,
       Value<String?>? lastname,
       Value<String?>? mobile,
-      Value<String?>? token,
-      Value<String?>? tokenType,
-      Value<String?>? refreshToken,
-      Value<int?>? tokenExpiry,
-      Value<String?>? authType,
-      Value<String>? baseUrl,
-      Value<bool>? isLoggedIn,
       Value<String?>? email,
-      Value<String?>? langKey,
-      Value<bool?>? activated,
+      Value<String>? langKey,
+      Value<bool>? activated,
       Value<String?>? imageUrl,
-      Value<String?>? checkWithServerTime,
+      Value<List<String>>? authorities,
       Value<int>? rowid}) {
     return UsersCompanion(
       id: id ?? this.id,
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      name: name ?? this.name,
-      displayName: displayName ?? this.displayName,
-      code: code ?? this.code,
       username: username ?? this.username,
       password: password ?? this.password,
       firstName: firstName ?? this.firstName,
       lastname: lastname ?? this.lastname,
       mobile: mobile ?? this.mobile,
-      token: token ?? this.token,
-      tokenType: tokenType ?? this.tokenType,
-      refreshToken: refreshToken ?? this.refreshToken,
-      tokenExpiry: tokenExpiry ?? this.tokenExpiry,
-      authType: authType ?? this.authType,
-      baseUrl: baseUrl ?? this.baseUrl,
-      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       email: email ?? this.email,
       langKey: langKey ?? this.langKey,
       activated: activated ?? this.activated,
       imageUrl: imageUrl ?? this.imageUrl,
-      checkWithServerTime: checkWithServerTime ?? this.checkWithServerTime,
+      authorities: authorities ?? this.authorities,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1005,15 +625,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (displayName.present) {
-      map['display_name'] = Variable<String>(displayName.value);
-    }
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
     }
     if (username.present) {
       map['username'] = Variable<String>(username.value);
@@ -1030,27 +641,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     if (mobile.present) {
       map['mobile'] = Variable<String>(mobile.value);
     }
-    if (token.present) {
-      map['token'] = Variable<String>(token.value);
-    }
-    if (tokenType.present) {
-      map['token_type'] = Variable<String>(tokenType.value);
-    }
-    if (refreshToken.present) {
-      map['refresh_token'] = Variable<String>(refreshToken.value);
-    }
-    if (tokenExpiry.present) {
-      map['token_expiry'] = Variable<int>(tokenExpiry.value);
-    }
-    if (authType.present) {
-      map['auth_type'] = Variable<String>(authType.value);
-    }
-    if (baseUrl.present) {
-      map['base_url'] = Variable<String>(baseUrl.value);
-    }
-    if (isLoggedIn.present) {
-      map['is_logged_in'] = Variable<bool>(isLoggedIn.value);
-    }
     if (email.present) {
       map['email'] = Variable<String>(email.value);
     }
@@ -1063,9 +653,9 @@ class UsersCompanion extends UpdateCompanion<User> {
     if (imageUrl.present) {
       map['image_url'] = Variable<String>(imageUrl.value);
     }
-    if (checkWithServerTime.present) {
-      map['check_with_server_time'] =
-          Variable<String>(checkWithServerTime.value);
+    if (authorities.present) {
+      map['authorities'] = Variable<String>(
+          $UsersTable.$converterauthorities.toSql(authorities.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1080,502 +670,16 @@ class UsersCompanion extends UpdateCompanion<User> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
           ..write('username: $username, ')
           ..write('password: $password, ')
           ..write('firstName: $firstName, ')
           ..write('lastname: $lastname, ')
           ..write('mobile: $mobile, ')
-          ..write('token: $token, ')
-          ..write('tokenType: $tokenType, ')
-          ..write('refreshToken: $refreshToken, ')
-          ..write('tokenExpiry: $tokenExpiry, ')
-          ..write('authType: $authType, ')
-          ..write('baseUrl: $baseUrl, ')
-          ..write('isLoggedIn: $isLoggedIn, ')
           ..write('email: $email, ')
           ..write('langKey: $langKey, ')
           ..write('activated: $activated, ')
           ..write('imageUrl: $imageUrl, ')
-          ..write('checkWithServerTime: $checkWithServerTime, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $UserAuthoritiesTable extends UserAuthorities
-    with TableInfo<$UserAuthoritiesTable, UserAuthority> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $UserAuthoritiesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
-  static const VerificationMeta _lastModifiedDateMeta =
-      const VerificationMeta('lastModifiedDate');
-  @override
-  late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
-          type: DriftSqlType.dateTime,
-          requiredDuringInsert: false,
-          defaultValue: currentDateAndTime);
-  static const VerificationMeta _createdDateMeta =
-      const VerificationMeta('createdDate');
-  @override
-  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _displayNameMeta =
-      const VerificationMeta('displayName');
-  @override
-  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
-      'display_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _authorityMeta =
-      const VerificationMeta('authority');
-  @override
-  late final GeneratedColumn<String> authority = GeneratedColumn<String>(
-      'authority', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _userMeta = const VerificationMeta('user');
-  @override
-  late final GeneratedColumn<String> user = GeneratedColumn<String>(
-      'user', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES users (id)'));
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        dirty,
-        lastModifiedDate,
-        createdDate,
-        name,
-        displayName,
-        code,
-        authority,
-        user
-      ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'user_authorities';
-  @override
-  VerificationContext validateIntegrity(Insertable<UserAuthority> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
-    }
-    if (data.containsKey('last_modified_date')) {
-      context.handle(
-          _lastModifiedDateMeta,
-          lastModifiedDate.isAcceptableOrUnknown(
-              data['last_modified_date']!, _lastModifiedDateMeta));
-    }
-    if (data.containsKey('created_date')) {
-      context.handle(
-          _createdDateMeta,
-          createdDate.isAcceptableOrUnknown(
-              data['created_date']!, _createdDateMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    }
-    if (data.containsKey('display_name')) {
-      context.handle(
-          _displayNameMeta,
-          displayName.isAcceptableOrUnknown(
-              data['display_name']!, _displayNameMeta));
-    }
-    if (data.containsKey('code')) {
-      context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
-    }
-    if (data.containsKey('authority')) {
-      context.handle(_authorityMeta,
-          authority.isAcceptableOrUnknown(data['authority']!, _authorityMeta));
-    } else if (isInserting) {
-      context.missing(_authorityMeta);
-    }
-    if (data.containsKey('user')) {
-      context.handle(
-          _userMeta, user.isAcceptableOrUnknown(data['user']!, _userMeta));
-    } else if (isInserting) {
-      context.missing(_userMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  UserAuthority map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UserAuthority(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
-      lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
-      createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
-      displayName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      authority: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}authority'])!,
-      user: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}user'])!,
-    );
-  }
-
-  @override
-  $UserAuthoritiesTable createAlias(String alias) {
-    return $UserAuthoritiesTable(attachedDatabase, alias);
-  }
-}
-
-class UserAuthority extends DataClass implements Insertable<UserAuthority> {
-  final String id;
-  final bool dirty;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
-  final String? name;
-  final String? displayName;
-  final String? code;
-  final String authority;
-  final String user;
-  const UserAuthority(
-      {required this.id,
-      required this.dirty,
-      required this.lastModifiedDate,
-      required this.createdDate,
-      this.name,
-      this.displayName,
-      this.code,
-      required this.authority,
-      required this.user});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || displayName != null) {
-      map['display_name'] = Variable<String>(displayName);
-    }
-    if (!nullToAbsent || code != null) {
-      map['code'] = Variable<String>(code);
-    }
-    map['authority'] = Variable<String>(authority);
-    map['user'] = Variable<String>(user);
-    return map;
-  }
-
-  UserAuthoritiesCompanion toCompanion(bool nullToAbsent) {
-    return UserAuthoritiesCompanion(
-      id: Value(id),
-      dirty: Value(dirty),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      displayName: displayName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(displayName),
-      code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      authority: Value(authority),
-      user: Value(user),
-    );
-  }
-
-  factory UserAuthority.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UserAuthority(
-      id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
-      displayName: serializer.fromJson<String?>(json['displayName']),
-      code: serializer.fromJson<String?>(json['code']),
-      authority: serializer.fromJson<String>(json['authority']),
-      user: serializer.fromJson<String>(json['user']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
-      'name': serializer.toJson<String?>(name),
-      'displayName': serializer.toJson<String?>(displayName),
-      'code': serializer.toJson<String?>(code),
-      'authority': serializer.toJson<String>(authority),
-      'user': serializer.toJson<String>(user),
-    };
-  }
-
-  UserAuthority copyWith(
-          {String? id,
-          bool? dirty,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
-          Value<String?> name = const Value.absent(),
-          Value<String?> displayName = const Value.absent(),
-          Value<String?> code = const Value.absent(),
-          String? authority,
-          String? user}) =>
-      UserAuthority(
-        id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
-        name: name.present ? name.value : this.name,
-        displayName: displayName.present ? displayName.value : this.displayName,
-        code: code.present ? code.value : this.code,
-        authority: authority ?? this.authority,
-        user: user ?? this.user,
-      );
-  UserAuthority copyWithCompanion(UserAuthoritiesCompanion data) {
-    return UserAuthority(
-      id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
-      lastModifiedDate: data.lastModifiedDate.present
-          ? data.lastModifiedDate.value
-          : this.lastModifiedDate,
-      createdDate:
-          data.createdDate.present ? data.createdDate.value : this.createdDate,
-      name: data.name.present ? data.name.value : this.name,
-      displayName:
-          data.displayName.present ? data.displayName.value : this.displayName,
-      code: data.code.present ? data.code.value : this.code,
-      authority: data.authority.present ? data.authority.value : this.authority,
-      user: data.user.present ? data.user.value : this.user,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('UserAuthority(')
-          ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
-          ..write('lastModifiedDate: $lastModifiedDate, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
-          ..write('authority: $authority, ')
-          ..write('user: $user')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      name, displayName, code, authority, user);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is UserAuthority &&
-          other.id == this.id &&
-          other.dirty == this.dirty &&
-          other.lastModifiedDate == this.lastModifiedDate &&
-          other.createdDate == this.createdDate &&
-          other.name == this.name &&
-          other.displayName == this.displayName &&
-          other.code == this.code &&
-          other.authority == this.authority &&
-          other.user == this.user);
-}
-
-class UserAuthoritiesCompanion extends UpdateCompanion<UserAuthority> {
-  final Value<String> id;
-  final Value<bool> dirty;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
-  final Value<String?> name;
-  final Value<String?> displayName;
-  final Value<String?> code;
-  final Value<String> authority;
-  final Value<String> user;
-  final Value<int> rowid;
-  const UserAuthoritiesCompanion({
-    this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
-    this.lastModifiedDate = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    this.authority = const Value.absent(),
-    this.user = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  UserAuthoritiesCompanion.insert({
-    required String id,
-    required bool dirty,
-    this.lastModifiedDate = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    required String authority,
-    required String user,
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        dirty = Value(dirty),
-        authority = Value(authority),
-        user = Value(user);
-  static Insertable<UserAuthority> custom({
-    Expression<String>? id,
-    Expression<bool>? dirty,
-    Expression<DateTime>? lastModifiedDate,
-    Expression<DateTime>? createdDate,
-    Expression<String>? name,
-    Expression<String>? displayName,
-    Expression<String>? code,
-    Expression<String>? authority,
-    Expression<String>? user,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
-      if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
-      if (createdDate != null) 'created_date': createdDate,
-      if (name != null) 'name': name,
-      if (displayName != null) 'display_name': displayName,
-      if (code != null) 'code': code,
-      if (authority != null) 'authority': authority,
-      if (user != null) 'user': user,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  UserAuthoritiesCompanion copyWith(
-      {Value<String>? id,
-      Value<bool>? dirty,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
-      Value<String?>? name,
-      Value<String?>? displayName,
-      Value<String?>? code,
-      Value<String>? authority,
-      Value<String>? user,
-      Value<int>? rowid}) {
-    return UserAuthoritiesCompanion(
-      id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
-      lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-      createdDate: createdDate ?? this.createdDate,
-      name: name ?? this.name,
-      displayName: displayName ?? this.displayName,
-      code: code ?? this.code,
-      authority: authority ?? this.authority,
-      user: user ?? this.user,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
-    }
-    if (lastModifiedDate.present) {
-      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
-    }
-    if (createdDate.present) {
-      map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (displayName.present) {
-      map['display_name'] = Variable<String>(displayName.value);
-    }
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
-    }
-    if (authority.present) {
-      map['authority'] = Variable<String>(authority.value);
-    }
-    if (user.present) {
-      map['user'] = Variable<String>(user.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('UserAuthoritiesCompanion(')
-          ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
-          ..write('lastModifiedDate: $lastModifiedDate, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
-          ..write('authority: $authority, ')
-          ..write('user: $user, ')
+          ..write('authorities: $authorities, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11437,8 +10541,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $UsersTable users = $UsersTable(this);
-  late final $UserAuthoritiesTable userAuthorities =
-      $UserAuthoritiesTable(this);
   late final $OrgUnitsTable orgUnits = $OrgUnitsTable(this);
   late final $OuLevelsTable ouLevels = $OuLevelsTable(this);
   late final $ProjectsTable projects = $ProjectsTable(this);
@@ -11483,7 +10585,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         users,
-        userAuthorities,
         orgUnits,
         ouLevels,
         projects,
@@ -11520,26 +10621,16 @@ typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<String?> username,
-  Value<String?> password,
+  required String username,
+  required String password,
   Value<String?> firstName,
   Value<String?> lastname,
   Value<String?> mobile,
-  Value<String?> token,
-  Value<String?> tokenType,
-  Value<String?> refreshToken,
-  Value<int?> tokenExpiry,
-  Value<String?> authType,
-  required String baseUrl,
-  required bool isLoggedIn,
   Value<String?> email,
-  Value<String?> langKey,
-  Value<bool?> activated,
+  Value<String> langKey,
+  Value<bool> activated,
   Value<String?> imageUrl,
-  Value<String?> checkWithServerTime,
+  Value<List<String>> authorities,
   Value<int> rowid,
 });
 typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
@@ -11547,50 +10638,18 @@ typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<String?> username,
-  Value<String?> password,
+  Value<String> username,
+  Value<String> password,
   Value<String?> firstName,
   Value<String?> lastname,
   Value<String?> mobile,
-  Value<String?> token,
-  Value<String?> tokenType,
-  Value<String?> refreshToken,
-  Value<int?> tokenExpiry,
-  Value<String?> authType,
-  Value<String> baseUrl,
-  Value<bool> isLoggedIn,
   Value<String?> email,
-  Value<String?> langKey,
-  Value<bool?> activated,
+  Value<String> langKey,
+  Value<bool> activated,
   Value<String?> imageUrl,
-  Value<String?> checkWithServerTime,
+  Value<List<String>> authorities,
   Value<int> rowid,
 });
-
-final class $$UsersTableReferences
-    extends BaseReferences<_$AppDatabase, $UsersTable, User> {
-  $$UsersTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$UserAuthoritiesTable, List<UserAuthority>>
-      _userAuthoritiesRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.userAuthorities,
-              aliasName:
-                  $_aliasNameGenerator(db.users.id, db.userAuthorities.user));
-
-  $$UserAuthoritiesTableProcessedTableManager get userAuthoritiesRefs {
-    final manager =
-        $$UserAuthoritiesTableTableManager($_db, $_db.userAuthorities)
-            .filter((f) => f.user.id($_item.id));
-
-    final cache =
-        $_typedResult.readTableOrNull(_userAuthoritiesRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-}
 
 class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
   $$UsersTableFilterComposer({
@@ -11613,15 +10672,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<String> get username => $composableBuilder(
       column: $table.username, builder: (column) => ColumnFilters(column));
 
@@ -11637,27 +10687,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
   ColumnFilters<String> get mobile => $composableBuilder(
       column: $table.mobile, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get token => $composableBuilder(
-      column: $table.token, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get tokenType => $composableBuilder(
-      column: $table.tokenType, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get refreshToken => $composableBuilder(
-      column: $table.refreshToken, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get tokenExpiry => $composableBuilder(
-      column: $table.tokenExpiry, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get authType => $composableBuilder(
-      column: $table.authType, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get baseUrl => $composableBuilder(
-      column: $table.baseUrl, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isLoggedIn => $composableBuilder(
-      column: $table.isLoggedIn, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<String> get email => $composableBuilder(
       column: $table.email, builder: (column) => ColumnFilters(column));
 
@@ -11670,30 +10699,10 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
   ColumnFilters<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get checkWithServerTime => $composableBuilder(
-      column: $table.checkWithServerTime,
-      builder: (column) => ColumnFilters(column));
-
-  Expression<bool> userAuthoritiesRefs(
-      Expression<bool> Function($$UserAuthoritiesTableFilterComposer f) f) {
-    final $$UserAuthoritiesTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.userAuthorities,
-        getReferencedColumn: (t) => t.user,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$UserAuthoritiesTableFilterComposer(
-              $db: $db,
-              $table: $db.userAuthorities,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get authorities => $composableBuilder(
+          column: $table.authorities,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$UsersTableOrderingComposer
@@ -11718,15 +10727,6 @@ class $$UsersTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get username => $composableBuilder(
       column: $table.username, builder: (column) => ColumnOrderings(column));
 
@@ -11742,28 +10742,6 @@ class $$UsersTableOrderingComposer
   ColumnOrderings<String> get mobile => $composableBuilder(
       column: $table.mobile, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get token => $composableBuilder(
-      column: $table.token, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get tokenType => $composableBuilder(
-      column: $table.tokenType, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get refreshToken => $composableBuilder(
-      column: $table.refreshToken,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get tokenExpiry => $composableBuilder(
-      column: $table.tokenExpiry, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get authType => $composableBuilder(
-      column: $table.authType, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get baseUrl => $composableBuilder(
-      column: $table.baseUrl, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get isLoggedIn => $composableBuilder(
-      column: $table.isLoggedIn, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get email => $composableBuilder(
       column: $table.email, builder: (column) => ColumnOrderings(column));
 
@@ -11776,9 +10754,8 @@ class $$UsersTableOrderingComposer
   ColumnOrderings<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get checkWithServerTime => $composableBuilder(
-      column: $table.checkWithServerTime,
-      builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get authorities => $composableBuilder(
+      column: $table.authorities, builder: (column) => ColumnOrderings(column));
 }
 
 class $$UsersTableAnnotationComposer
@@ -11802,15 +10779,6 @@ class $$UsersTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => column);
-
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
-
   GeneratedColumn<String> get username =>
       $composableBuilder(column: $table.username, builder: (column) => column);
 
@@ -11826,27 +10794,6 @@ class $$UsersTableAnnotationComposer
   GeneratedColumn<String> get mobile =>
       $composableBuilder(column: $table.mobile, builder: (column) => column);
 
-  GeneratedColumn<String> get token =>
-      $composableBuilder(column: $table.token, builder: (column) => column);
-
-  GeneratedColumn<String> get tokenType =>
-      $composableBuilder(column: $table.tokenType, builder: (column) => column);
-
-  GeneratedColumn<String> get refreshToken => $composableBuilder(
-      column: $table.refreshToken, builder: (column) => column);
-
-  GeneratedColumn<int> get tokenExpiry => $composableBuilder(
-      column: $table.tokenExpiry, builder: (column) => column);
-
-  GeneratedColumn<String> get authType =>
-      $composableBuilder(column: $table.authType, builder: (column) => column);
-
-  GeneratedColumn<String> get baseUrl =>
-      $composableBuilder(column: $table.baseUrl, builder: (column) => column);
-
-  GeneratedColumn<bool> get isLoggedIn => $composableBuilder(
-      column: $table.isLoggedIn, builder: (column) => column);
-
   GeneratedColumn<String> get email =>
       $composableBuilder(column: $table.email, builder: (column) => column);
 
@@ -11859,29 +10806,9 @@ class $$UsersTableAnnotationComposer
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
 
-  GeneratedColumn<String> get checkWithServerTime => $composableBuilder(
-      column: $table.checkWithServerTime, builder: (column) => column);
-
-  Expression<T> userAuthoritiesRefs<T extends Object>(
-      Expression<T> Function($$UserAuthoritiesTableAnnotationComposer a) f) {
-    final $$UserAuthoritiesTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.userAuthorities,
-        getReferencedColumn: (t) => t.user,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$UserAuthoritiesTableAnnotationComposer(
-              $db: $db,
-              $table: $db.userAuthorities,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
+  GeneratedColumnWithTypeConverter<List<String>, String> get authorities =>
+      $composableBuilder(
+          column: $table.authorities, builder: (column) => column);
 }
 
 class $$UsersTableTableManager extends RootTableManager<
@@ -11893,9 +10820,9 @@ class $$UsersTableTableManager extends RootTableManager<
     $$UsersTableAnnotationComposer,
     $$UsersTableCreateCompanionBuilder,
     $$UsersTableUpdateCompanionBuilder,
-    (User, $$UsersTableReferences),
+    (User, BaseReferences<_$AppDatabase, $UsersTable, User>),
     User,
-    PrefetchHooks Function({bool userAuthoritiesRefs})> {
+    PrefetchHooks Function()> {
   $$UsersTableTableManager(_$AppDatabase db, $UsersTable table)
       : super(TableManagerState(
           db: db,
@@ -11911,26 +10838,16 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<String?> username = const Value.absent(),
-            Value<String?> password = const Value.absent(),
+            Value<String> username = const Value.absent(),
+            Value<String> password = const Value.absent(),
             Value<String?> firstName = const Value.absent(),
             Value<String?> lastname = const Value.absent(),
             Value<String?> mobile = const Value.absent(),
-            Value<String?> token = const Value.absent(),
-            Value<String?> tokenType = const Value.absent(),
-            Value<String?> refreshToken = const Value.absent(),
-            Value<int?> tokenExpiry = const Value.absent(),
-            Value<String?> authType = const Value.absent(),
-            Value<String> baseUrl = const Value.absent(),
-            Value<bool> isLoggedIn = const Value.absent(),
             Value<String?> email = const Value.absent(),
-            Value<String?> langKey = const Value.absent(),
-            Value<bool?> activated = const Value.absent(),
+            Value<String> langKey = const Value.absent(),
+            Value<bool> activated = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
-            Value<String?> checkWithServerTime = const Value.absent(),
+            Value<List<String>> authorities = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               UsersCompanion(
@@ -11938,26 +10855,16 @@ class $$UsersTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
             username: username,
             password: password,
             firstName: firstName,
             lastname: lastname,
             mobile: mobile,
-            token: token,
-            tokenType: tokenType,
-            refreshToken: refreshToken,
-            tokenExpiry: tokenExpiry,
-            authType: authType,
-            baseUrl: baseUrl,
-            isLoggedIn: isLoggedIn,
             email: email,
             langKey: langKey,
             activated: activated,
             imageUrl: imageUrl,
-            checkWithServerTime: checkWithServerTime,
+            authorities: authorities,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -11965,26 +10872,16 @@ class $$UsersTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<String?> username = const Value.absent(),
-            Value<String?> password = const Value.absent(),
+            required String username,
+            required String password,
             Value<String?> firstName = const Value.absent(),
             Value<String?> lastname = const Value.absent(),
             Value<String?> mobile = const Value.absent(),
-            Value<String?> token = const Value.absent(),
-            Value<String?> tokenType = const Value.absent(),
-            Value<String?> refreshToken = const Value.absent(),
-            Value<int?> tokenExpiry = const Value.absent(),
-            Value<String?> authType = const Value.absent(),
-            required String baseUrl,
-            required bool isLoggedIn,
             Value<String?> email = const Value.absent(),
-            Value<String?> langKey = const Value.absent(),
-            Value<bool?> activated = const Value.absent(),
+            Value<String> langKey = const Value.absent(),
+            Value<bool> activated = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
-            Value<String?> checkWithServerTime = const Value.absent(),
+            Value<List<String>> authorities = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               UsersCompanion.insert(
@@ -11992,57 +10889,22 @@ class $$UsersTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
             username: username,
             password: password,
             firstName: firstName,
             lastname: lastname,
             mobile: mobile,
-            token: token,
-            tokenType: tokenType,
-            refreshToken: refreshToken,
-            tokenExpiry: tokenExpiry,
-            authType: authType,
-            baseUrl: baseUrl,
-            isLoggedIn: isLoggedIn,
             email: email,
             langKey: langKey,
             activated: activated,
             imageUrl: imageUrl,
-            checkWithServerTime: checkWithServerTime,
+            authorities: authorities,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$UsersTableReferences(db, table, e)))
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({userAuthoritiesRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (userAuthoritiesRefs) db.userAuthorities
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (userAuthoritiesRefs)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable: $$UsersTableReferences
-                            ._userAuthoritiesRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$UsersTableReferences(db, table, p0)
-                                .userAuthoritiesRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.user == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
+          prefetchHooksCallback: null,
         ));
 }
 
@@ -12055,345 +10917,9 @@ typedef $$UsersTableProcessedTableManager = ProcessedTableManager<
     $$UsersTableAnnotationComposer,
     $$UsersTableCreateCompanionBuilder,
     $$UsersTableUpdateCompanionBuilder,
-    (User, $$UsersTableReferences),
+    (User, BaseReferences<_$AppDatabase, $UsersTable, User>),
     User,
-    PrefetchHooks Function({bool userAuthoritiesRefs})>;
-typedef $$UserAuthoritiesTableCreateCompanionBuilder = UserAuthoritiesCompanion
-    Function({
-  required String id,
-  required bool dirty,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  required String authority,
-  required String user,
-  Value<int> rowid,
-});
-typedef $$UserAuthoritiesTableUpdateCompanionBuilder = UserAuthoritiesCompanion
-    Function({
-  Value<String> id,
-  Value<bool> dirty,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<String> authority,
-  Value<String> user,
-  Value<int> rowid,
-});
-
-final class $$UserAuthoritiesTableReferences extends BaseReferences<
-    _$AppDatabase, $UserAuthoritiesTable, UserAuthority> {
-  $$UserAuthoritiesTableReferences(
-      super.$_db, super.$_table, super.$_typedResult);
-
-  static $UsersTable _userTable(_$AppDatabase db) => db.users
-      .createAlias($_aliasNameGenerator(db.userAuthorities.user, db.users.id));
-
-  $$UsersTableProcessedTableManager get user {
-    final manager = $$UsersTableTableManager($_db, $_db.users)
-        .filter((f) => f.id($_item.user));
-    final item = $_typedResult.readTableOrNull(_userTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-}
-
-class $$UserAuthoritiesTableFilterComposer
-    extends Composer<_$AppDatabase, $UserAuthoritiesTable> {
-  $$UserAuthoritiesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
-      column: $table.lastModifiedDate,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdDate => $composableBuilder(
-      column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get authority => $composableBuilder(
-      column: $table.authority, builder: (column) => ColumnFilters(column));
-
-  $$UsersTableFilterComposer get user {
-    final $$UsersTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableFilterComposer(
-              $db: $db,
-              $table: $db.users,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$UserAuthoritiesTableOrderingComposer
-    extends Composer<_$AppDatabase, $UserAuthoritiesTable> {
-  $$UserAuthoritiesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
-      column: $table.lastModifiedDate,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdDate => $composableBuilder(
-      column: $table.createdDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get authority => $composableBuilder(
-      column: $table.authority, builder: (column) => ColumnOrderings(column));
-
-  $$UsersTableOrderingComposer get user {
-    final $$UsersTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableOrderingComposer(
-              $db: $db,
-              $table: $db.users,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$UserAuthoritiesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $UserAuthoritiesTable> {
-  $$UserAuthoritiesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
-      column: $table.lastModifiedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdDate => $composableBuilder(
-      column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => column);
-
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
-
-  GeneratedColumn<String> get authority =>
-      $composableBuilder(column: $table.authority, builder: (column) => column);
-
-  $$UsersTableAnnotationComposer get user {
-    final $$UsersTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableAnnotationComposer(
-              $db: $db,
-              $table: $db.users,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$UserAuthoritiesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $UserAuthoritiesTable,
-    UserAuthority,
-    $$UserAuthoritiesTableFilterComposer,
-    $$UserAuthoritiesTableOrderingComposer,
-    $$UserAuthoritiesTableAnnotationComposer,
-    $$UserAuthoritiesTableCreateCompanionBuilder,
-    $$UserAuthoritiesTableUpdateCompanionBuilder,
-    (UserAuthority, $$UserAuthoritiesTableReferences),
-    UserAuthority,
-    PrefetchHooks Function({bool user})> {
-  $$UserAuthoritiesTableTableManager(
-      _$AppDatabase db, $UserAuthoritiesTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$UserAuthoritiesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$UserAuthoritiesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$UserAuthoritiesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<String> authority = const Value.absent(),
-            Value<String> user = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              UserAuthoritiesCompanion(
-            id: id,
-            dirty: dirty,
-            lastModifiedDate: lastModifiedDate,
-            createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
-            authority: authority,
-            user: user,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required bool dirty,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            required String authority,
-            required String user,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              UserAuthoritiesCompanion.insert(
-            id: id,
-            dirty: dirty,
-            lastModifiedDate: lastModifiedDate,
-            createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
-            authority: authority,
-            user: user,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$UserAuthoritiesTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: ({user = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (user) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.user,
-                    referencedTable:
-                        $$UserAuthoritiesTableReferences._userTable(db),
-                    referencedColumn:
-                        $$UserAuthoritiesTableReferences._userTable(db).id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$UserAuthoritiesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $UserAuthoritiesTable,
-    UserAuthority,
-    $$UserAuthoritiesTableFilterComposer,
-    $$UserAuthoritiesTableOrderingComposer,
-    $$UserAuthoritiesTableAnnotationComposer,
-    $$UserAuthoritiesTableCreateCompanionBuilder,
-    $$UserAuthoritiesTableUpdateCompanionBuilder,
-    (UserAuthority, $$UserAuthoritiesTableReferences),
-    UserAuthority,
-    PrefetchHooks Function({bool user})>;
+    PrefetchHooks Function()>;
 typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
   required String id,
   required bool dirty,
@@ -19533,8 +18059,6 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$UsersTableTableManager get users =>
       $$UsersTableTableManager(_db, _db.users);
-  $$UserAuthoritiesTableTableManager get userAuthorities =>
-      $$UserAuthoritiesTableTableManager(_db, _db.userAuthorities);
   $$OrgUnitsTableTableManager get orgUnits =>
       $$OrgUnitsTableTableManager(_db, _db.orgUnits);
   $$OuLevelsTableTableManager get ouLevels =>

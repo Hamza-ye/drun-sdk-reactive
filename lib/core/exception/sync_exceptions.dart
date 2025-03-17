@@ -5,7 +5,7 @@ class DSyncException extends DError {
     String message, {
     super.url,
     super.cause,
-    super.errorCode = DErrorCode.syncError,
+    super.errorCode = DRunErrorCode.syncError,
     super.httpErrorCode,
     super.stackTrace,
   }) : super(message: message, errorComponent: DErrorComponent.SDK);

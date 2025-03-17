@@ -1,7 +1,6 @@
 import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/database/converters/converters.dart';
-import 'package:d_sdk/database/data_base_connector.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
@@ -12,7 +11,6 @@ part 'app_database.g.dart';
 
 @DriftDatabase(tables: [
   Users,
-  UserAuthorities,
   OrgUnits,
   OuLevels,
   Projects,
@@ -30,9 +28,9 @@ part 'app_database.g.dart';
   DataFormSubmissions,
 ])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase({QueryExecutor? e, String? databaseName})
+  AppDatabase({QueryExecutor? executor, String? databaseName})
       : super(
-          e ??
+          executor ??
 
               /// no encryption, called if QueryExecutor is null
               driftDatabase(
@@ -57,6 +55,4 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
-
-  void getOne() {}
 }

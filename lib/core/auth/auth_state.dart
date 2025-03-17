@@ -1,15 +1,28 @@
-import 'package:d_sdk/core/config/server_config.dart';
+import 'package:equatable/equatable.dart';
 
-class AuthState {
-  final String? userId;
-  final String? authToken;
-  final ServerConfig? activeServer;
+class AuthState with EquatableMixin {
+  final String? username;
+  final String? activeServerUrl;
   final bool isLoggedIn;
 
   AuthState({
-    this.userId,
-    this.authToken,
-    this.activeServer,
+    this.username,
+    this.activeServerUrl,
     this.isLoggedIn = false,
   });
+
+  AuthState copyWith({
+    String? username,
+    String? activeServerUrl,
+    bool? isLoggedIn,
+  }) {
+    return AuthState(
+      username: username ?? this.username,
+      activeServerUrl: activeServerUrl ?? this.activeServerUrl,
+      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
+    );
+  }
+
+  @override
+  List<Object?> get props => [username, activeServerUrl, isLoggedIn];
 }
