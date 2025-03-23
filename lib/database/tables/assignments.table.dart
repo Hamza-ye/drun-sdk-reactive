@@ -6,7 +6,7 @@ import 'package:drift/drift.dart';
 @TableIndex(name: 'assignment_status', columns: {#status})
 @TableIndex(name: 'assignment_start_date', columns: {#startDate})
 @TableIndex(name: 'assignment_scope', columns: {#scope})
-class Assignments extends Table with BaseTableMixin, IdentifiableMixin {
+class Assignments extends Table with BaseTableMixin {
   late final TextColumn activity = text().references(Activities, #id)();
 
   late final TextColumn team = text().references(Teams, #id)();
@@ -14,7 +14,8 @@ class Assignments extends Table with BaseTableMixin, IdentifiableMixin {
   late final TextColumn orgUnit = text().references(OrgUnits, #id)();
 
   /// Parent reference (stored as a text foreign key, if applicable)
-  late final TextColumn parent = text().nullable().references(Assignments, #id)();
+  late final TextColumn parent =
+      text().nullable().references(Assignments, #id)();
 
   /// Start day as integer, nullable
   late final IntColumn startDay = integer().nullable()();

@@ -7,5 +7,7 @@ export 'metadata_resource_type.dart';
 export 'option_set.entity.dart'; 
 export 'scanned_code_properties.dart'; 
 export 'team_form_permission.dart'; 
-export 'validation_strategy.dart'; 
-export 'value_type.dart'; 
+export 'translations.dart';
+export 'validation_strategy.dart';
+export 'value_type.dart';
+

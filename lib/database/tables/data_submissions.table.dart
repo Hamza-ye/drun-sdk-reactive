@@ -8,7 +8,7 @@ import 'package:drift/drift.dart';
 @TableIndex(name: 'submission_dirty', columns: {#dirty})
 @TableIndex(name: 'submission_status', columns: {#status})
 @TableIndex(name: 'submission_deleted', columns: {#deleted})
-class DataFormSubmissions extends Table with BaseTableMixin, IdentifiableMixin {
+class DataFormSubmissions extends Table with BaseTableMixin {
   /// Bool columns (nullable)
   late final BoolColumn deleted =
       boolean().withDefault(const Constant(false))();

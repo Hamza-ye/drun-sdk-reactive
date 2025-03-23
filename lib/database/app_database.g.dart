@@ -37,13 +37,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>($UsersTable.$converteroptionSetsn);
   static const VerificationMeta _usernameMeta =
       const VerificationMeta('username');
   @override
@@ -117,7 +110,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         username,
         password,
         firstName,
@@ -162,7 +154,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('username')) {
       context.handle(_usernameMeta,
           username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
@@ -221,9 +212,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $UsersTable.$converteroptionSetsn.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       username: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       password: attachedDatabase.typeMapping
@@ -253,10 +241,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     return $UsersTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
-      const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
   static TypeConverter<List<String>, String?> $converterauthorities =
       const ListConverter<String>();
 }
@@ -266,9 +250,6 @@ class User extends DataClass implements Insertable<User> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String username;
   final String password;
   final String? firstName;
@@ -284,7 +265,6 @@ class User extends DataClass implements Insertable<User> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       required this.username,
       required this.password,
       this.firstName,
@@ -302,10 +282,6 @@ class User extends DataClass implements Insertable<User> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] =
-          Variable<String>($UsersTable.$converteroptionSetsn.toSql(optionSets));
-    }
     map['username'] = Variable<String>(username);
     map['password'] = Variable<String>(password);
     if (!nullToAbsent || firstName != null) {
@@ -338,9 +314,6 @@ class User extends DataClass implements Insertable<User> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       username: Value(username),
       password: Value(password),
       firstName: firstName == null && nullToAbsent
@@ -370,7 +343,6 @@ class User extends DataClass implements Insertable<User> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       username: serializer.fromJson<String>(json['username']),
       password: serializer.fromJson<String>(json['password']),
       firstName: serializer.fromJson<String?>(json['firstName']),
@@ -391,7 +363,6 @@ class User extends DataClass implements Insertable<User> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'username': serializer.toJson<String>(username),
       'password': serializer.toJson<String>(password),
       'firstName': serializer.toJson<String?>(firstName),
@@ -410,7 +381,6 @@ class User extends DataClass implements Insertable<User> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           String? username,
           String? password,
           Value<String?> firstName = const Value.absent(),
@@ -426,7 +396,6 @@ class User extends DataClass implements Insertable<User> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         username: username ?? this.username,
         password: password ?? this.password,
         firstName: firstName.present ? firstName.value : this.firstName,
@@ -447,8 +416,6 @@ class User extends DataClass implements Insertable<User> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       username: data.username.present ? data.username.value : this.username,
       password: data.password.present ? data.password.value : this.password,
       firstName: data.firstName.present ? data.firstName.value : this.firstName,
@@ -470,7 +437,6 @@ class User extends DataClass implements Insertable<User> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('username: $username, ')
           ..write('password: $password, ')
           ..write('firstName: $firstName, ')
@@ -491,7 +457,6 @@ class User extends DataClass implements Insertable<User> {
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
       username,
       password,
       firstName,
@@ -510,7 +475,6 @@ class User extends DataClass implements Insertable<User> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.username == this.username &&
           other.password == this.password &&
           other.firstName == this.firstName &&
@@ -528,7 +492,6 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String> username;
   final Value<String> password;
   final Value<String?> firstName;
@@ -545,7 +508,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.username = const Value.absent(),
     this.password = const Value.absent(),
     this.firstName = const Value.absent(),
@@ -563,7 +525,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     required String username,
     required String password,
     this.firstName = const Value.absent(),
@@ -584,7 +545,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? username,
     Expression<String>? password,
     Expression<String>? firstName,
@@ -602,7 +562,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (username != null) 'username': username,
       if (password != null) 'password': password,
       if (firstName != null) 'first_name': firstName,
@@ -622,7 +581,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String>? username,
       Value<String>? password,
       Value<String?>? firstName,
@@ -639,7 +597,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       username: username ?? this.username,
       password: password ?? this.password,
       firstName: firstName ?? this.firstName,
@@ -668,10 +625,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $UsersTable.$converteroptionSetsn.toSql(optionSets.value));
     }
     if (username.present) {
       map['username'] = Variable<String>(username.value);
@@ -717,7 +670,6 @@ class UsersCompanion extends UpdateCompanion<User> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('username: $username, ')
           ..write('password: $password, ')
           ..write('firstName: $firstName, ')
@@ -768,14 +720,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $OrgUnitsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -792,6 +736,14 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $OrgUnitsTable.$convertertranslationsn);
   static const VerificationMeta _pathMeta = const VerificationMeta('path');
   @override
   late final GeneratedColumn<String> path = GeneratedColumn<String>(
@@ -833,10 +785,10 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         path,
         label,
         parent,
@@ -877,7 +829,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -892,6 +843,7 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('path')) {
       context.handle(
           _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
@@ -930,15 +882,15 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $OrgUnitsTable.$converteroptionSetsn.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $OrgUnitsTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       path: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}path']),
       label: $OrgUnitsTable.$converterlabel.fromSql(attachedDatabase.typeMapping
@@ -959,10 +911,10 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
     return $OrgUnitsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<Map<String, String>, String> $converterlabel =
       const MapConverter<String>();
 }
@@ -972,12 +924,12 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final String? path;
   final Map<String, String> label;
   final String? parent;
@@ -989,10 +941,10 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       this.path,
       required this.label,
       this.parent,
@@ -1006,10 +958,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $OrgUnitsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -1018,6 +966,10 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $OrgUnitsTable.$convertertranslationsn.toSql(translations));
     }
     if (!nullToAbsent || path != null) {
       map['path'] = Variable<String>(path);
@@ -1047,14 +999,14 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       path: path == null && nullToAbsent ? const Value.absent() : Value(path),
       label: Value(label),
       parent:
@@ -1078,10 +1030,11 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       path: serializer.fromJson<String?>(json['path']),
       label: serializer.fromJson<Map<String, String>>(json['label']),
       parent: serializer.fromJson<String?>(json['parent']),
@@ -1098,10 +1051,10 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'path': serializer.toJson<String?>(path),
       'label': serializer.toJson<Map<String, String>>(label),
       'parent': serializer.toJson<String?>(parent),
@@ -1116,10 +1069,10 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           Value<String?> path = const Value.absent(),
           Map<String, String>? label,
           Value<String?> parent = const Value.absent(),
@@ -1131,10 +1084,11 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         path: path.present ? path.value : this.path,
         label: label ?? this.label,
         parent: parent.present ? parent.value : this.parent,
@@ -1151,12 +1105,13 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       path: data.path.present ? data.path.value : this.path,
       label: data.label.present ? data.label.value : this.label,
       parent: data.parent.present ? data.parent.value : this.parent,
@@ -1173,10 +1128,10 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('path: $path, ')
           ..write('label: $label, ')
           ..write('parent: $parent, ')
@@ -1193,10 +1148,10 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
       name,
       displayName,
       code,
+      translations,
       path,
       label,
       parent,
@@ -1211,10 +1166,10 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.path == this.path &&
           other.label == this.label &&
           other.parent == this.parent &&
@@ -1228,10 +1183,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<String?> path;
   final Value<Map<String, String>> label;
   final Value<String?> parent;
@@ -1244,10 +1199,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.path = const Value.absent(),
     this.label = const Value.absent(),
     this.parent = const Value.absent(),
@@ -1261,10 +1216,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.path = const Value.absent(),
     this.label = const Value.absent(),
     this.parent = const Value.absent(),
@@ -1279,10 +1234,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<String>? path,
     Expression<String>? label,
     Expression<String>? parent,
@@ -1296,10 +1251,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (path != null) 'path': path,
       if (label != null) 'label': label,
       if (parent != null) 'parent': parent,
@@ -1315,10 +1270,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<String?>? path,
       Value<Map<String, String>>? label,
       Value<String?>? parent,
@@ -1331,10 +1286,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       path: path ?? this.path,
       label: label ?? this.label,
       parent: parent ?? this.parent,
@@ -1360,10 +1315,6 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $OrgUnitsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -1372,6 +1323,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>(
+          $OrgUnitsTable.$convertertranslationsn.toSql(translations.value));
     }
     if (path.present) {
       map['path'] = Variable<String>(path.value);
@@ -1405,10 +1360,10 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('path: $path, ')
           ..write('label: $label, ')
           ..write('parent: $parent, ')
@@ -1455,14 +1410,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $OuLevelsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -1479,6 +1426,14 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $OuLevelsTable.$convertertranslationsn);
   static const VerificationMeta _levelMeta = const VerificationMeta('level');
   @override
   late final GeneratedColumn<int> level = GeneratedColumn<int>(
@@ -1496,10 +1451,10 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         level,
         offlineLevels
       ];
@@ -1536,7 +1491,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -1551,6 +1505,7 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('level')) {
       context.handle(
           _levelMeta, level.isAcceptableOrUnknown(data['level']!, _levelMeta));
@@ -1580,15 +1535,15 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $OuLevelsTable.$converteroptionSetsn.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $OuLevelsTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       level: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}level'])!,
       offlineLevels: attachedDatabase.typeMapping
@@ -1601,10 +1556,10 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
     return $OuLevelsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
 }
 
 class OuLevel extends DataClass implements Insertable<OuLevel> {
@@ -1612,12 +1567,12 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final int level;
   final int? offlineLevels;
   const OuLevel(
@@ -1625,10 +1580,10 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       required this.level,
       this.offlineLevels});
   @override
@@ -1638,10 +1593,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $OuLevelsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -1650,6 +1601,10 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $OuLevelsTable.$convertertranslationsn.toSql(translations));
     }
     map['level'] = Variable<int>(level);
     if (!nullToAbsent || offlineLevels != null) {
@@ -1664,14 +1619,14 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       level: Value(level),
       offlineLevels: offlineLevels == null && nullToAbsent
           ? const Value.absent()
@@ -1687,10 +1642,11 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       level: serializer.fromJson<int>(json['level']),
       offlineLevels: serializer.fromJson<int?>(json['offlineLevels']),
     );
@@ -1703,10 +1659,10 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'level': serializer.toJson<int>(level),
       'offlineLevels': serializer.toJson<int?>(offlineLevels),
     };
@@ -1717,10 +1673,10 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           int? level,
           Value<int?> offlineLevels = const Value.absent()}) =>
       OuLevel(
@@ -1728,10 +1684,11 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         level: level ?? this.level,
         offlineLevels:
             offlineLevels.present ? offlineLevels.value : this.offlineLevels,
@@ -1745,12 +1702,13 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       level: data.level.present ? data.level.value : this.level,
       offlineLevels: data.offlineLevels.present
           ? data.offlineLevels.value
@@ -1765,10 +1723,10 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('level: $level, ')
           ..write('offlineLevels: $offlineLevels')
           ..write(')'))
@@ -1777,7 +1735,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
 
   @override
   int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      optionSets, name, displayName, code, level, offlineLevels);
+      name, displayName, code, translations, level, offlineLevels);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1786,10 +1744,10 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.level == this.level &&
           other.offlineLevels == this.offlineLevels);
 }
@@ -1799,10 +1757,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<int> level;
   final Value<int?> offlineLevels;
   final Value<int> rowid;
@@ -1811,10 +1769,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.level = const Value.absent(),
     this.offlineLevels = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1824,10 +1782,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     required int level,
     this.offlineLevels = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1839,10 +1797,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<int>? level,
     Expression<int>? offlineLevels,
     Expression<int>? rowid,
@@ -1852,10 +1810,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (level != null) 'level': level,
       if (offlineLevels != null) 'offline_levels': offlineLevels,
       if (rowid != null) 'rowid': rowid,
@@ -1867,10 +1825,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<int>? level,
       Value<int?>? offlineLevels,
       Value<int>? rowid}) {
@@ -1879,10 +1837,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       level: level ?? this.level,
       offlineLevels: offlineLevels ?? this.offlineLevels,
       rowid: rowid ?? this.rowid,
@@ -1904,10 +1862,6 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $OuLevelsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -1916,6 +1870,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>(
+          $OuLevelsTable.$convertertranslationsn.toSql(translations.value));
     }
     if (level.present) {
       map['level'] = Variable<int>(level.value);
@@ -1936,10 +1894,10 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('level: $level, ')
           ..write('offlineLevels: $offlineLevels, ')
           ..write('rowid: $rowid')
@@ -1982,14 +1940,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $ProjectsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -2006,6 +1956,14 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $ProjectsTable.$convertertranslationsn);
   static const VerificationMeta _disabledMeta =
       const VerificationMeta('disabled');
   @override
@@ -2021,10 +1979,10 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         disabled
       ];
   @override
@@ -2060,7 +2018,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -2075,6 +2032,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('disabled')) {
       context.handle(_disabledMeta,
           disabled.isAcceptableOrUnknown(data['disabled']!, _disabledMeta));
@@ -2098,15 +2056,15 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $ProjectsTable.$converteroptionSetsn.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $ProjectsTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       disabled: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}disabled'])!,
     );
@@ -2117,10 +2075,10 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
     return $ProjectsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
 }
 
 class Project extends DataClass implements Insertable<Project> {
@@ -2128,22 +2086,22 @@ class Project extends DataClass implements Insertable<Project> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final bool disabled;
   const Project(
       {required this.id,
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       required this.disabled});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2152,10 +2110,6 @@ class Project extends DataClass implements Insertable<Project> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $ProjectsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -2164,6 +2118,10 @@ class Project extends DataClass implements Insertable<Project> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $ProjectsTable.$convertertranslationsn.toSql(translations));
     }
     map['disabled'] = Variable<bool>(disabled);
     return map;
@@ -2175,14 +2133,14 @@ class Project extends DataClass implements Insertable<Project> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       disabled: Value(disabled),
     );
   }
@@ -2195,10 +2153,11 @@ class Project extends DataClass implements Insertable<Project> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       disabled: serializer.fromJson<bool>(json['disabled']),
     );
   }
@@ -2210,10 +2169,10 @@ class Project extends DataClass implements Insertable<Project> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'disabled': serializer.toJson<bool>(disabled),
     };
   }
@@ -2223,20 +2182,21 @@ class Project extends DataClass implements Insertable<Project> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           bool? disabled}) =>
       Project(
         id: id ?? this.id,
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         disabled: disabled ?? this.disabled,
       );
   Project copyWithCompanion(ProjectsCompanion data) {
@@ -2248,12 +2208,13 @@ class Project extends DataClass implements Insertable<Project> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       disabled: data.disabled.present ? data.disabled.value : this.disabled,
     );
   }
@@ -2265,10 +2226,10 @@ class Project extends DataClass implements Insertable<Project> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('disabled: $disabled')
           ..write(')'))
         .toString();
@@ -2276,7 +2237,7 @@ class Project extends DataClass implements Insertable<Project> {
 
   @override
   int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      optionSets, name, displayName, code, disabled);
+      name, displayName, code, translations, disabled);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2285,10 +2246,10 @@ class Project extends DataClass implements Insertable<Project> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.disabled == this.disabled);
 }
 
@@ -2297,10 +2258,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<bool> disabled;
   final Value<int> rowid;
   const ProjectsCompanion({
@@ -2308,10 +2269,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.disabled = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2320,10 +2281,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     required bool disabled,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -2334,10 +2295,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<bool>? disabled,
     Expression<int>? rowid,
   }) {
@@ -2346,10 +2307,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (disabled != null) 'disabled': disabled,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2360,10 +2321,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<bool>? disabled,
       Value<int>? rowid}) {
     return ProjectsCompanion(
@@ -2371,10 +2332,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       disabled: disabled ?? this.disabled,
       rowid: rowid ?? this.rowid,
     );
@@ -2395,10 +2356,6 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $ProjectsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -2407,6 +2364,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>(
+          $ProjectsTable.$convertertranslationsn.toSql(translations.value));
     }
     if (disabled.present) {
       map['disabled'] = Variable<bool>(disabled.value);
@@ -2424,10 +2385,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('disabled: $disabled, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2470,14 +2431,6 @@ class $ActivitiesTable extends Activities
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $ActivitiesTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -2494,6 +2447,14 @@ class $ActivitiesTable extends Activities
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $ActivitiesTable.$convertertranslationsn);
   static const VerificationMeta _projectMeta =
       const VerificationMeta('project');
   @override
@@ -2536,10 +2497,10 @@ class $ActivitiesTable extends Activities
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         project,
         disabled,
         description,
@@ -2579,7 +2540,6 @@ class $ActivitiesTable extends Activities
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -2594,6 +2554,7 @@ class $ActivitiesTable extends Activities
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('project')) {
       context.handle(_projectMeta,
           project.isAcceptableOrUnknown(data['project']!, _projectMeta));
@@ -2637,15 +2598,15 @@ class $ActivitiesTable extends Activities
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $ActivitiesTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $ActivitiesTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       project: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}project'])!,
       disabled: attachedDatabase.typeMapping
@@ -2664,10 +2625,10 @@ class $ActivitiesTable extends Activities
     return $ActivitiesTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
 }
 
 class Activity extends DataClass implements Insertable<Activity> {
@@ -2675,12 +2636,12 @@ class Activity extends DataClass implements Insertable<Activity> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final String project;
   final bool disabled;
   final String? description;
@@ -2691,10 +2652,10 @@ class Activity extends DataClass implements Insertable<Activity> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       required this.project,
       required this.disabled,
       this.description,
@@ -2707,10 +2668,6 @@ class Activity extends DataClass implements Insertable<Activity> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $ActivitiesTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -2719,6 +2676,10 @@ class Activity extends DataClass implements Insertable<Activity> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $ActivitiesTable.$convertertranslationsn.toSql(translations));
     }
     map['project'] = Variable<String>(project);
     map['disabled'] = Variable<bool>(disabled);
@@ -2740,14 +2701,14 @@ class Activity extends DataClass implements Insertable<Activity> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       project: Value(project),
       disabled: Value(disabled),
       description: description == null && nullToAbsent
@@ -2770,10 +2731,11 @@ class Activity extends DataClass implements Insertable<Activity> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       project: serializer.fromJson<String>(json['project']),
       disabled: serializer.fromJson<bool>(json['disabled']),
       description: serializer.fromJson<String?>(json['description']),
@@ -2789,10 +2751,10 @@ class Activity extends DataClass implements Insertable<Activity> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'project': serializer.toJson<String>(project),
       'disabled': serializer.toJson<bool>(disabled),
       'description': serializer.toJson<String?>(description),
@@ -2806,10 +2768,10 @@ class Activity extends DataClass implements Insertable<Activity> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           String? project,
           bool? disabled,
           Value<String?> description = const Value.absent(),
@@ -2820,10 +2782,11 @@ class Activity extends DataClass implements Insertable<Activity> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         project: project ?? this.project,
         disabled: disabled ?? this.disabled,
         description: description.present ? description.value : this.description,
@@ -2839,12 +2802,13 @@ class Activity extends DataClass implements Insertable<Activity> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       project: data.project.present ? data.project.value : this.project,
       disabled: data.disabled.present ? data.disabled.value : this.disabled,
       description:
@@ -2861,10 +2825,10 @@ class Activity extends DataClass implements Insertable<Activity> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('project: $project, ')
           ..write('disabled: $disabled, ')
           ..write('description: $description, ')
@@ -2880,10 +2844,10 @@ class Activity extends DataClass implements Insertable<Activity> {
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
       name,
       displayName,
       code,
+      translations,
       project,
       disabled,
       description,
@@ -2897,10 +2861,10 @@ class Activity extends DataClass implements Insertable<Activity> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.project == this.project &&
           other.disabled == this.disabled &&
           other.description == this.description &&
@@ -2913,10 +2877,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<String> project;
   final Value<bool> disabled;
   final Value<String?> description;
@@ -2928,10 +2892,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.project = const Value.absent(),
     this.disabled = const Value.absent(),
     this.description = const Value.absent(),
@@ -2944,10 +2908,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     required String project,
     required bool disabled,
     this.description = const Value.absent(),
@@ -2963,10 +2927,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<String>? project,
     Expression<bool>? disabled,
     Expression<String>? description,
@@ -2979,10 +2943,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (project != null) 'project': project,
       if (disabled != null) 'disabled': disabled,
       if (description != null) 'description': description,
@@ -2997,10 +2961,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<String>? project,
       Value<bool>? disabled,
       Value<String?>? description,
@@ -3012,10 +2976,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       project: project ?? this.project,
       disabled: disabled ?? this.disabled,
       description: description ?? this.description,
@@ -3040,10 +3004,6 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $ActivitiesTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -3052,6 +3012,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>(
+          $ActivitiesTable.$convertertranslationsn.toSql(translations.value));
     }
     if (project.present) {
       map['project'] = Variable<String>(project.value);
@@ -3081,10 +3045,10 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('project: $project, ')
           ..write('disabled: $disabled, ')
           ..write('description: $description, ')
@@ -3130,13 +3094,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>($TeamsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -3153,6 +3110,14 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $TeamsTable.$convertertranslationsn);
   static const VerificationMeta _activityMeta =
       const VerificationMeta('activity');
   @override
@@ -3211,10 +3176,10 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         activity,
         disabled,
         deleteClientData,
@@ -3255,7 +3220,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -3270,6 +3234,7 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('activity')) {
       context.handle(_activityMeta,
           activity.isAcceptableOrUnknown(data['activity']!, _activityMeta));
@@ -3306,15 +3271,15 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $TeamsTable.$converteroptionSetsn.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $TeamsTable.$convertertranslationsn.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}translations'])),
       activity: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}activity'])!,
       disabled: attachedDatabase.typeMapping
@@ -3337,10 +3302,10 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
     return $TeamsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<Map<String, Object?>, String> $converterproperties =
       const MapConverter<Object?>();
   static TypeConverter<Map<String, Object?>?, String?> $converterpropertiesn =
@@ -3358,12 +3323,12 @@ class Team extends DataClass implements Insertable<Team> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final String activity;
 
   /// Boolean columns with defaults.
@@ -3383,10 +3348,10 @@ class Team extends DataClass implements Insertable<Team> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       required this.activity,
       required this.disabled,
       required this.deleteClientData,
@@ -3400,10 +3365,6 @@ class Team extends DataClass implements Insertable<Team> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] =
-          Variable<String>($TeamsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -3412,6 +3373,10 @@ class Team extends DataClass implements Insertable<Team> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $TeamsTable.$convertertranslationsn.toSql(translations));
     }
     map['activity'] = Variable<String>(activity);
     map['disabled'] = Variable<bool>(disabled);
@@ -3437,14 +3402,14 @@ class Team extends DataClass implements Insertable<Team> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       activity: Value(activity),
       disabled: Value(disabled),
       deleteClientData: Value(deleteClientData),
@@ -3465,10 +3430,11 @@ class Team extends DataClass implements Insertable<Team> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       activity: serializer.fromJson<String>(json['activity']),
       disabled: serializer.fromJson<bool>(json['disabled']),
       deleteClientData: serializer.fromJson<bool>(json['deleteClientData']),
@@ -3488,10 +3454,10 @@ class Team extends DataClass implements Insertable<Team> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'activity': serializer.toJson<String>(activity),
       'disabled': serializer.toJson<bool>(disabled),
       'deleteClientData': serializer.toJson<bool>(deleteClientData),
@@ -3508,10 +3474,10 @@ class Team extends DataClass implements Insertable<Team> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           String? activity,
           bool? disabled,
           bool? deleteClientData,
@@ -3523,10 +3489,11 @@ class Team extends DataClass implements Insertable<Team> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         activity: activity ?? this.activity,
         disabled: disabled ?? this.disabled,
         deleteClientData: deleteClientData ?? this.deleteClientData,
@@ -3543,12 +3510,13 @@ class Team extends DataClass implements Insertable<Team> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       activity: data.activity.present ? data.activity.value : this.activity,
       disabled: data.disabled.present ? data.disabled.value : this.disabled,
       deleteClientData: data.deleteClientData.present
@@ -3570,10 +3538,10 @@ class Team extends DataClass implements Insertable<Team> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('activity: $activity, ')
           ..write('disabled: $disabled, ')
           ..write('deleteClientData: $deleteClientData, ')
@@ -3590,10 +3558,10 @@ class Team extends DataClass implements Insertable<Team> {
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
       name,
       displayName,
       code,
+      translations,
       activity,
       disabled,
       deleteClientData,
@@ -3608,10 +3576,10 @@ class Team extends DataClass implements Insertable<Team> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.activity == this.activity &&
           other.disabled == this.disabled &&
           other.deleteClientData == this.deleteClientData &&
@@ -3625,10 +3593,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<String> activity;
   final Value<bool> disabled;
   final Value<bool> deleteClientData;
@@ -3641,10 +3609,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.activity = const Value.absent(),
     this.disabled = const Value.absent(),
     this.deleteClientData = const Value.absent(),
@@ -3658,10 +3626,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     required String activity,
     this.disabled = const Value.absent(),
     this.deleteClientData = const Value.absent(),
@@ -3677,10 +3645,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<String>? activity,
     Expression<bool>? disabled,
     Expression<bool>? deleteClientData,
@@ -3694,10 +3662,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (activity != null) 'activity': activity,
       if (disabled != null) 'disabled': disabled,
       if (deleteClientData != null) 'delete_client_data': deleteClientData,
@@ -3713,10 +3681,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<String>? activity,
       Value<bool>? disabled,
       Value<bool>? deleteClientData,
@@ -3729,10 +3697,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       activity: activity ?? this.activity,
       disabled: disabled ?? this.disabled,
       deleteClientData: deleteClientData ?? this.deleteClientData,
@@ -3758,10 +3726,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $TeamsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -3770,6 +3734,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>(
+          $TeamsTable.$convertertranslationsn.toSql(translations.value));
     }
     if (activity.present) {
       map['activity'] = Variable<String>(activity.value);
@@ -3805,10 +3773,10 @@ class TeamsCompanion extends UpdateCompanion<Team> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('activity: $activity, ')
           ..write('disabled: $disabled, ')
           ..write('deleteClientData: $deleteClientData, ')
@@ -3856,30 +3824,6 @@ class $AssignmentsTable extends Assignments
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $AssignmentsTable.$converteroptionSetsn);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _displayNameMeta =
-      const VerificationMeta('displayName');
-  @override
-  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
-      'display_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _activityMeta =
       const VerificationMeta('activity');
   @override
@@ -3960,10 +3904,6 @@ class $AssignmentsTable extends Assignments
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
-        name,
-        displayName,
-        code,
         activity,
         team,
         orgUnit,
@@ -4007,21 +3947,6 @@ class $AssignmentsTable extends Assignments
           _createdDateMeta,
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
-    }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    }
-    if (data.containsKey('display_name')) {
-      context.handle(
-          _displayNameMeta,
-          displayName.isAcceptableOrUnknown(
-              data['display_name']!, _displayNameMeta));
-    }
-    if (data.containsKey('code')) {
-      context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
     if (data.containsKey('activity')) {
       context.handle(_activityMeta,
@@ -4074,15 +3999,6 @@ class $AssignmentsTable extends Assignments
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $AssignmentsTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
-      displayName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code']),
       activity: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}activity'])!,
       team: attachedDatabase.typeMapping
@@ -4115,10 +4031,6 @@ class $AssignmentsTable extends Assignments
     return $AssignmentsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
-      const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
   static JsonTypeConverter2<AssignmentStatus, String, String> $converterstatus =
       const EnumNameConverter(AssignmentStatus.values);
   static JsonTypeConverter2<AssignmentStatus?, String?, String?>
@@ -4138,12 +4050,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
-  final String? name;
-  final String? displayName;
-  final String? code;
   final String activity;
   final String team;
   final String orgUnit;
@@ -4173,10 +4079,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
-      this.name,
-      this.displayName,
-      this.code,
       required this.activity,
       required this.team,
       required this.orgUnit,
@@ -4194,19 +4096,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $AssignmentsTable.$converteroptionSetsn.toSql(optionSets));
-    }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || displayName != null) {
-      map['display_name'] = Variable<String>(displayName);
-    }
-    if (!nullToAbsent || code != null) {
-      map['code'] = Variable<String>(code);
-    }
     map['activity'] = Variable<String>(activity);
     map['team'] = Variable<String>(team);
     map['org_unit'] = Variable<String>(orgUnit);
@@ -4245,14 +4134,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      displayName: displayName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(displayName),
-      code: code == null && nullToAbsent ? const Value.absent() : Value(code),
       activity: Value(activity),
       team: Value(team),
       orgUnit: Value(orgUnit),
@@ -4281,10 +4162,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
-      name: serializer.fromJson<String?>(json['name']),
-      displayName: serializer.fromJson<String?>(json['displayName']),
-      code: serializer.fromJson<String?>(json['code']),
       activity: serializer.fromJson<String>(json['activity']),
       team: serializer.fromJson<String>(json['team']),
       orgUnit: serializer.fromJson<String>(json['orgUnit']),
@@ -4308,10 +4185,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
-      'name': serializer.toJson<String?>(name),
-      'displayName': serializer.toJson<String?>(displayName),
-      'code': serializer.toJson<String?>(code),
       'activity': serializer.toJson<String>(activity),
       'team': serializer.toJson<String>(team),
       'orgUnit': serializer.toJson<String>(orgUnit),
@@ -4333,10 +4206,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
-          Value<String?> name = const Value.absent(),
-          Value<String?> displayName = const Value.absent(),
-          Value<String?> code = const Value.absent(),
           String? activity,
           String? team,
           String? orgUnit,
@@ -4352,10 +4221,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
-        name: name.present ? name.value : this.name,
-        displayName: displayName.present ? displayName.value : this.displayName,
-        code: code.present ? code.value : this.code,
         activity: activity ?? this.activity,
         team: team ?? this.team,
         orgUnit: orgUnit ?? this.orgUnit,
@@ -4376,12 +4241,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
-      name: data.name.present ? data.name.value : this.name,
-      displayName:
-          data.displayName.present ? data.displayName.value : this.displayName,
-      code: data.code.present ? data.code.value : this.code,
       activity: data.activity.present ? data.activity.value : this.activity,
       team: data.team.present ? data.team.value : this.team,
       orgUnit: data.orgUnit.present ? data.orgUnit.value : this.orgUnit,
@@ -4404,10 +4263,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
           ..write('activity: $activity, ')
           ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
@@ -4428,10 +4283,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
-      name,
-      displayName,
-      code,
       activity,
       team,
       orgUnit,
@@ -4450,10 +4301,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
-          other.name == this.name &&
-          other.displayName == this.displayName &&
-          other.code == this.code &&
           other.activity == this.activity &&
           other.team == this.team &&
           other.orgUnit == this.orgUnit &&
@@ -4471,10 +4318,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
-  final Value<String?> name;
-  final Value<String?> displayName;
-  final Value<String?> code;
   final Value<String> activity;
   final Value<String> team;
   final Value<String> orgUnit;
@@ -4491,10 +4334,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
     this.activity = const Value.absent(),
     this.team = const Value.absent(),
     this.orgUnit = const Value.absent(),
@@ -4512,10 +4351,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
     required String activity,
     required String team,
     required String orgUnit,
@@ -4537,10 +4372,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
-    Expression<String>? name,
-    Expression<String>? displayName,
-    Expression<String>? code,
     Expression<String>? activity,
     Expression<String>? team,
     Expression<String>? orgUnit,
@@ -4558,10 +4389,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
-      if (name != null) 'name': name,
-      if (displayName != null) 'display_name': displayName,
-      if (code != null) 'code': code,
       if (activity != null) 'activity': activity,
       if (team != null) 'team': team,
       if (orgUnit != null) 'org_unit': orgUnit,
@@ -4581,10 +4408,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
-      Value<String?>? name,
-      Value<String?>? displayName,
-      Value<String?>? code,
       Value<String>? activity,
       Value<String>? team,
       Value<String>? orgUnit,
@@ -4601,10 +4424,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
-      name: name ?? this.name,
-      displayName: displayName ?? this.displayName,
-      code: code ?? this.code,
       activity: activity ?? this.activity,
       team: team ?? this.team,
       orgUnit: orgUnit ?? this.orgUnit,
@@ -4633,19 +4452,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $AssignmentsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (displayName.present) {
-      map['display_name'] = Variable<String>(displayName.value);
-    }
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
     }
     if (activity.present) {
       map['activity'] = Variable<String>(activity.value);
@@ -4695,10 +4501,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
           ..write('activity: $activity, ')
           ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
@@ -4750,14 +4552,6 @@ class $FormTemplatesTable extends FormTemplates
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $FormTemplatesTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -4774,6 +4568,14 @@ class $FormTemplatesTable extends FormTemplates
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $FormTemplatesTable.$convertertranslationsn);
   static const VerificationMeta _labelMeta = const VerificationMeta('label');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, String>, String>
@@ -4795,10 +4597,10 @@ class $FormTemplatesTable extends FormTemplates
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         label,
         version
       ];
@@ -4835,7 +4637,6 @@ class $FormTemplatesTable extends FormTemplates
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -4850,6 +4651,7 @@ class $FormTemplatesTable extends FormTemplates
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     context.handle(_labelMeta, const VerificationResult.success());
     if (data.containsKey('version')) {
       context.handle(_versionMeta,
@@ -4874,15 +4676,15 @@ class $FormTemplatesTable extends FormTemplates
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $FormTemplatesTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $FormTemplatesTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       label: $FormTemplatesTable.$converterlabel.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}label'])!),
@@ -4896,10 +4698,10 @@ class $FormTemplatesTable extends FormTemplates
     return $FormTemplatesTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<Map<String, String>, String> $converterlabel =
       const MapConverter<String>();
 }
@@ -4909,12 +4711,12 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final Map<String, String> label;
 
   /// Version is an integer.
@@ -4924,10 +4726,10 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       required this.label,
       required this.version});
   @override
@@ -4937,10 +4739,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $FormTemplatesTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -4949,6 +4747,10 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $FormTemplatesTable.$convertertranslationsn.toSql(translations));
     }
     {
       map['label'] =
@@ -4964,14 +4766,14 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       label: Value(label),
       version: Value(version),
     );
@@ -4985,10 +4787,11 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       label: serializer.fromJson<Map<String, String>>(json['label']),
       version: serializer.fromJson<int>(json['version']),
     );
@@ -5001,10 +4804,10 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'label': serializer.toJson<Map<String, String>>(label),
       'version': serializer.toJson<int>(version),
     };
@@ -5015,10 +4818,10 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           Map<String, String>? label,
           int? version}) =>
       FormTemplate(
@@ -5026,10 +4829,11 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         label: label ?? this.label,
         version: version ?? this.version,
       );
@@ -5042,12 +4846,13 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       label: data.label.present ? data.label.value : this.label,
       version: data.version.present ? data.version.value : this.version,
     );
@@ -5060,10 +4865,10 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('label: $label, ')
           ..write('version: $version')
           ..write(')'))
@@ -5072,7 +4877,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
 
   @override
   int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      optionSets, name, displayName, code, label, version);
+      name, displayName, code, translations, label, version);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5081,10 +4886,10 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.label == this.label &&
           other.version == this.version);
 }
@@ -5094,10 +4899,10 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<Map<String, String>> label;
   final Value<int> version;
   final Value<int> rowid;
@@ -5106,10 +4911,10 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.label = const Value.absent(),
     this.version = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -5119,10 +4924,10 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.label = const Value.absent(),
     required int version,
     this.rowid = const Value.absent(),
@@ -5134,10 +4939,10 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<String>? label,
     Expression<int>? version,
     Expression<int>? rowid,
@@ -5147,10 +4952,10 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (label != null) 'label': label,
       if (version != null) 'version': version,
       if (rowid != null) 'rowid': rowid,
@@ -5162,10 +4967,10 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<Map<String, String>>? label,
       Value<int>? version,
       Value<int>? rowid}) {
@@ -5174,10 +4979,10 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       label: label ?? this.label,
       version: version ?? this.version,
       rowid: rowid ?? this.rowid,
@@ -5199,10 +5004,6 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $FormTemplatesTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -5211,6 +5012,11 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>($FormTemplatesTable
+          .$convertertranslationsn
+          .toSql(translations.value));
     }
     if (label.present) {
       map['label'] = Variable<String>(
@@ -5232,10 +5038,10 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('label: $label, ')
           ..write('version: $version, ')
           ..write('rowid: $rowid')
@@ -5279,14 +5085,6 @@ class $FormVersionsTable extends FormVersions
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<DOptionSet>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<DOptionSet>?>(
-              $FormVersionsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -5303,6 +5101,14 @@ class $FormVersionsTable extends FormVersions
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $FormVersionsTable.$convertertranslationsn);
   static const VerificationMeta _optionSetMeta =
       const VerificationMeta('optionSet');
   @override
@@ -5330,6 +5136,14 @@ class $FormVersionsTable extends FormVersions
               defaultValue: Constant('[]'))
           .withConverter<List<FormOption>>(
               $FormVersionsTable.$converteroptions);
+  static const VerificationMeta _optionSetsMeta =
+      const VerificationMeta('optionSets');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<DOptionSet>?, String>
+      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<DOptionSet>?>(
+              $FormVersionsTable.$converteroptionSetsn);
   static const VerificationMeta _labelMeta = const VerificationMeta('label');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, String>, String>
@@ -5388,13 +5202,14 @@ class $FormVersionsTable extends FormVersions
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         optionSet,
         treeFields,
         options,
+        optionSets,
         label,
         defaultLocal,
         fieldsConf,
@@ -5436,7 +5251,6 @@ class $FormVersionsTable extends FormVersions
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -5451,6 +5265,7 @@ class $FormVersionsTable extends FormVersions
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('option_set')) {
       context.handle(_optionSetMeta,
           optionSet.isAcceptableOrUnknown(data['option_set']!, _optionSetMeta));
@@ -5459,6 +5274,7 @@ class $FormVersionsTable extends FormVersions
     }
     context.handle(_treeFieldsMeta, const VerificationResult.success());
     context.handle(_optionsMeta, const VerificationResult.success());
+    context.handle(_optionSetsMeta, const VerificationResult.success());
     context.handle(_labelMeta, const VerificationResult.success());
     if (data.containsKey('default_local')) {
       context.handle(
@@ -5500,15 +5316,15 @@ class $FormVersionsTable extends FormVersions
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $FormVersionsTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $FormVersionsTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       optionSet: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}option_set'])!,
       treeFields: $FormVersionsTable.$convertertreeFieldsn.fromSql(
@@ -5517,6 +5333,9 @@ class $FormVersionsTable extends FormVersions
       options: $FormVersionsTable.$converteroptions.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}options'])!),
+      optionSets: $FormVersionsTable.$converteroptionSetsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       label: $FormVersionsTable.$converterlabel.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}label'])!),
@@ -5543,16 +5362,20 @@ class $FormVersionsTable extends FormVersions
     return $FormVersionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<DOptionSet>, String> $converteroptionSets =
-      const DOptionSetListConverter();
-  static TypeConverter<List<DOptionSet>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>, String> $convertertranslations =
+      const TranslationConverter();
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<List<Template>, String> $convertertreeFields =
       const TemplateListConverter();
   static TypeConverter<List<Template>?, String?> $convertertreeFieldsn =
       NullAwareTypeConverter.wrap($convertertreeFields);
   static TypeConverter<List<FormOption>, String> $converteroptions =
       const FormOptionListConverter();
+  static TypeConverter<List<DOptionSet>, String> $converteroptionSets =
+      const DOptionSetListConverter();
+  static TypeConverter<List<DOptionSet>?, String?> $converteroptionSetsn =
+      NullAwareTypeConverter.wrap($converteroptionSets);
   static TypeConverter<Map<String, String>, String> $converterlabel =
       const MapConverter<String>();
   static TypeConverter<List<Template>, String> $converterfieldsConf =
@@ -5573,12 +5396,12 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of DOptionSet objects, stored as JSON.
-  final List<DOptionSet>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final String optionSet;
 
   /// List of Template objects (as List<Template>), stored as JSON.
@@ -5586,6 +5409,9 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
 
   /// List of FormOption objects, stored as JSON.
   final List<FormOption> options;
+
+  /// List of DOptionSet objects, stored as JSON.
+  final List<DOptionSet>? optionSets;
 
   /// Label map is non-null.
   final Map<String, String> label;
@@ -5612,13 +5438,14 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       required this.optionSet,
       this.treeFields,
       required this.options,
+      this.optionSets,
       required this.label,
       required this.defaultLocal,
       this.fieldsConf,
@@ -5633,10 +5460,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $FormVersionsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -5646,6 +5469,10 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $FormVersionsTable.$convertertranslationsn.toSql(translations));
+    }
     map['option_set'] = Variable<String>(optionSet);
     if (!nullToAbsent || treeFields != null) {
       map['tree_fields'] = Variable<String>(
@@ -5654,6 +5481,10 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
     {
       map['options'] =
           Variable<String>($FormVersionsTable.$converteroptions.toSql(options));
+    }
+    if (!nullToAbsent || optionSets != null) {
+      map['option_sets'] = Variable<String>(
+          $FormVersionsTable.$converteroptionSetsn.toSql(optionSets));
     }
     {
       map['label'] =
@@ -5686,19 +5517,22 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       optionSet: Value(optionSet),
       treeFields: treeFields == null && nullToAbsent
           ? const Value.absent()
           : Value(treeFields),
       options: Value(options),
+      optionSets: optionSets == null && nullToAbsent
+          ? const Value.absent()
+          : Value(optionSets),
       label: Value(label),
       defaultLocal: Value(defaultLocal),
       fieldsConf: fieldsConf == null && nullToAbsent
@@ -5723,13 +5557,15 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<DOptionSet>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       optionSet: serializer.fromJson<String>(json['optionSet']),
       treeFields: serializer.fromJson<List<Template>?>(json['treeFields']),
       options: serializer.fromJson<List<FormOption>>(json['options']),
+      optionSets: serializer.fromJson<List<DOptionSet>?>(json['optionSets']),
       label: serializer.fromJson<Map<String, String>>(json['label']),
       defaultLocal: serializer.fromJson<String>(json['defaultLocal']),
       fieldsConf: serializer.fromJson<List<Template>?>(json['fieldsConf']),
@@ -5748,13 +5584,14 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<DOptionSet>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'optionSet': serializer.toJson<String>(optionSet),
       'treeFields': serializer.toJson<List<Template>?>(treeFields),
       'options': serializer.toJson<List<FormOption>>(options),
+      'optionSets': serializer.toJson<List<DOptionSet>?>(optionSets),
       'label': serializer.toJson<Map<String, String>>(label),
       'defaultLocal': serializer.toJson<String>(defaultLocal),
       'fieldsConf': serializer.toJson<List<Template>?>(fieldsConf),
@@ -5772,13 +5609,14 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<DOptionSet>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           String? optionSet,
           Value<List<Template>?> treeFields = const Value.absent(),
           List<FormOption>? options,
+          Value<List<DOptionSet>?> optionSets = const Value.absent(),
           Map<String, String>? label,
           String? defaultLocal,
           Value<List<Template>?> fieldsConf = const Value.absent(),
@@ -5791,13 +5629,15 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         optionSet: optionSet ?? this.optionSet,
         treeFields: treeFields.present ? treeFields.value : this.treeFields,
         options: options ?? this.options,
+        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         label: label ?? this.label,
         defaultLocal: defaultLocal ?? this.defaultLocal,
         fieldsConf: fieldsConf.present ? fieldsConf.value : this.fieldsConf,
@@ -5815,16 +5655,19 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       optionSet: data.optionSet.present ? data.optionSet.value : this.optionSet,
       treeFields:
           data.treeFields.present ? data.treeFields.value : this.treeFields,
       options: data.options.present ? data.options.value : this.options,
+      optionSets:
+          data.optionSets.present ? data.optionSets.value : this.optionSets,
       label: data.label.present ? data.label.value : this.label,
       defaultLocal: data.defaultLocal.present
           ? data.defaultLocal.value
@@ -5848,13 +5691,14 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('optionSet: $optionSet, ')
           ..write('treeFields: $treeFields, ')
           ..write('options: $options, ')
+          ..write('optionSets: $optionSets, ')
           ..write('label: $label, ')
           ..write('defaultLocal: $defaultLocal, ')
           ..write('fieldsConf: $fieldsConf, ')
@@ -5872,13 +5716,14 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
       name,
       displayName,
       code,
+      translations,
       optionSet,
       treeFields,
       options,
+      optionSets,
       label,
       defaultLocal,
       fieldsConf,
@@ -5894,13 +5739,14 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.optionSet == this.optionSet &&
           other.treeFields == this.treeFields &&
           other.options == this.options &&
+          other.optionSets == this.optionSets &&
           other.label == this.label &&
           other.defaultLocal == this.defaultLocal &&
           other.fieldsConf == this.fieldsConf &&
@@ -5915,13 +5761,14 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<DOptionSet>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<String> optionSet;
   final Value<List<Template>?> treeFields;
   final Value<List<FormOption>> options;
+  final Value<List<DOptionSet>?> optionSets;
   final Value<Map<String, String>> label;
   final Value<String> defaultLocal;
   final Value<List<Template>?> fieldsConf;
@@ -5935,13 +5782,14 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.optionSet = const Value.absent(),
     this.treeFields = const Value.absent(),
     this.options = const Value.absent(),
+    this.optionSets = const Value.absent(),
     this.label = const Value.absent(),
     this.defaultLocal = const Value.absent(),
     this.fieldsConf = const Value.absent(),
@@ -5956,13 +5804,14 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     required String optionSet,
     this.treeFields = const Value.absent(),
     this.options = const Value.absent(),
+    this.optionSets = const Value.absent(),
     this.label = const Value.absent(),
     required String defaultLocal,
     this.fieldsConf = const Value.absent(),
@@ -5982,13 +5831,14 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<String>? optionSet,
     Expression<String>? treeFields,
     Expression<String>? options,
+    Expression<String>? optionSets,
     Expression<String>? label,
     Expression<String>? defaultLocal,
     Expression<String>? fieldsConf,
@@ -6003,13 +5853,14 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (optionSet != null) 'option_set': optionSet,
       if (treeFields != null) 'tree_fields': treeFields,
       if (options != null) 'options': options,
+      if (optionSets != null) 'option_sets': optionSets,
       if (label != null) 'label': label,
       if (defaultLocal != null) 'default_local': defaultLocal,
       if (fieldsConf != null) 'fields_conf': fieldsConf,
@@ -6026,13 +5877,14 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<DOptionSet>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<String>? optionSet,
       Value<List<Template>?>? treeFields,
       Value<List<FormOption>>? options,
+      Value<List<DOptionSet>?>? optionSets,
       Value<Map<String, String>>? label,
       Value<String>? defaultLocal,
       Value<List<Template>?>? fieldsConf,
@@ -6046,13 +5898,14 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       optionSet: optionSet ?? this.optionSet,
       treeFields: treeFields ?? this.treeFields,
       options: options ?? this.options,
+      optionSets: optionSets ?? this.optionSets,
       label: label ?? this.label,
       defaultLocal: defaultLocal ?? this.defaultLocal,
       fieldsConf: fieldsConf ?? this.fieldsConf,
@@ -6079,10 +5932,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $FormVersionsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -6091,6 +5940,10 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>(
+          $FormVersionsTable.$convertertranslationsn.toSql(translations.value));
     }
     if (optionSet.present) {
       map['option_set'] = Variable<String>(optionSet.value);
@@ -6102,6 +5955,10 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     if (options.present) {
       map['options'] = Variable<String>(
           $FormVersionsTable.$converteroptions.toSql(options.value));
+    }
+    if (optionSets.present) {
+      map['option_sets'] = Variable<String>(
+          $FormVersionsTable.$converteroptionSetsn.toSql(optionSets.value));
     }
     if (label.present) {
       map['label'] = Variable<String>(
@@ -6142,13 +5999,14 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('optionSet: $optionSet, ')
           ..write('treeFields: $treeFields, ')
           ..write('options: $options, ')
+          ..write('optionSets: $optionSets, ')
           ..write('label: $label, ')
           ..write('defaultLocal: $defaultLocal, ')
           ..write('fieldsConf: $fieldsConf, ')
@@ -6197,14 +6055,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $MetadataSubmissionsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -6221,6 +6071,14 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $MetadataSubmissionsTable.$convertertranslationsn);
   static const VerificationMeta _resourceTypeMeta =
       const VerificationMeta('resourceType');
   @override
@@ -6280,10 +6138,10 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         resourceType,
         metadataSchema,
         serialNumber,
@@ -6326,7 +6184,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -6341,6 +6198,7 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     context.handle(_resourceTypeMeta, const VerificationResult.success());
     if (data.containsKey('metadata_schema')) {
       context.handle(
@@ -6400,15 +6258,15 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $MetadataSubmissionsTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $MetadataSubmissionsTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       resourceType: $MetadataSubmissionsTable.$converterresourceType.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}resource_type'])!),
@@ -6435,10 +6293,10 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
     return $MetadataSubmissionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
   static JsonTypeConverter2<MetadataResourceType, String, String>
       $converterresourceType =
       const EnumNameConverter(MetadataResourceType.values);
@@ -6454,12 +6312,12 @@ class MetadataSubmission extends DataClass
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
 
   /// Resource type (non-null), stored as text using a converter.
   final MetadataResourceType resourceType;
@@ -6489,10 +6347,10 @@ class MetadataSubmission extends DataClass
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       required this.resourceType,
       required this.metadataSchema,
       required this.serialNumber,
@@ -6508,10 +6366,6 @@ class MetadataSubmission extends DataClass
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $MetadataSubmissionsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -6520,6 +6374,11 @@ class MetadataSubmission extends DataClass
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>($MetadataSubmissionsTable
+          .$convertertranslationsn
+          .toSql(translations));
     }
     {
       map['resource_type'] = Variable<String>(
@@ -6548,14 +6407,14 @@ class MetadataSubmission extends DataClass
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       resourceType: Value(resourceType),
       metadataSchema: Value(metadataSchema),
       serialNumber: Value(serialNumber),
@@ -6581,10 +6440,11 @@ class MetadataSubmission extends DataClass
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       resourceType: $MetadataSubmissionsTable.$converterresourceType
           .fromJson(serializer.fromJson<String>(json['resourceType'])),
       metadataSchema: serializer.fromJson<String>(json['metadataSchema']),
@@ -6604,10 +6464,10 @@ class MetadataSubmission extends DataClass
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'resourceType': serializer.toJson<String>($MetadataSubmissionsTable
           .$converterresourceType
           .toJson(resourceType)),
@@ -6626,10 +6486,10 @@ class MetadataSubmission extends DataClass
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           MetadataResourceType? resourceType,
           String? metadataSchema,
           int? serialNumber,
@@ -6643,10 +6503,11 @@ class MetadataSubmission extends DataClass
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         resourceType: resourceType ?? this.resourceType,
         metadataSchema: metadataSchema ?? this.metadataSchema,
         serialNumber: serialNumber ?? this.serialNumber,
@@ -6666,12 +6527,13 @@ class MetadataSubmission extends DataClass
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       resourceType: data.resourceType.present
           ? data.resourceType.value
           : this.resourceType,
@@ -6699,10 +6561,10 @@ class MetadataSubmission extends DataClass
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('resourceType: $resourceType, ')
           ..write('metadataSchema: $metadataSchema, ')
           ..write('serialNumber: $serialNumber, ')
@@ -6721,10 +6583,10 @@ class MetadataSubmission extends DataClass
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
       name,
       displayName,
       code,
+      translations,
       resourceType,
       metadataSchema,
       serialNumber,
@@ -6741,10 +6603,10 @@ class MetadataSubmission extends DataClass
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.resourceType == this.resourceType &&
           other.metadataSchema == this.metadataSchema &&
           other.serialNumber == this.serialNumber &&
@@ -6760,10 +6622,10 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<MetadataResourceType> resourceType;
   final Value<String> metadataSchema;
   final Value<int> serialNumber;
@@ -6778,10 +6640,10 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.resourceType = const Value.absent(),
     this.metadataSchema = const Value.absent(),
     this.serialNumber = const Value.absent(),
@@ -6797,10 +6659,10 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     required MetadataResourceType resourceType,
     required String metadataSchema,
     required int serialNumber,
@@ -6822,10 +6684,10 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<String>? resourceType,
     Expression<String>? metadataSchema,
     Expression<int>? serialNumber,
@@ -6841,10 +6703,10 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (resourceType != null) 'resource_type': resourceType,
       if (metadataSchema != null) 'metadata_schema': metadataSchema,
       if (serialNumber != null) 'serial_number': serialNumber,
@@ -6862,10 +6724,10 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<MetadataResourceType>? resourceType,
       Value<String>? metadataSchema,
       Value<int>? serialNumber,
@@ -6880,10 +6742,10 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       resourceType: resourceType ?? this.resourceType,
       metadataSchema: metadataSchema ?? this.metadataSchema,
       serialNumber: serialNumber ?? this.serialNumber,
@@ -6911,11 +6773,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>($MetadataSubmissionsTable
-          .$converteroptionSetsn
-          .toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -6924,6 +6781,11 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>($MetadataSubmissionsTable
+          .$convertertranslationsn
+          .toSql(translations.value));
     }
     if (resourceType.present) {
       map['resource_type'] = Variable<String>($MetadataSubmissionsTable
@@ -6965,10 +6827,10 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('resourceType: $resourceType, ')
           ..write('metadataSchema: $metadataSchema, ')
           ..write('serialNumber: $serialNumber, ')
@@ -7018,30 +6880,6 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataFormSubmissionsTable.$converteroptionSetsn);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _displayNameMeta =
-      const VerificationMeta('displayName');
-  @override
-  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
-      'display_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _deletedMeta =
       const VerificationMeta('deleted');
   @override
@@ -7179,10 +7017,6 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
-        name,
-        displayName,
-        code,
         deleted,
         synced,
         syncFailed,
@@ -7233,21 +7067,6 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
           _createdDateMeta,
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
-    }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    }
-    if (data.containsKey('display_name')) {
-      context.handle(
-          _displayNameMeta,
-          displayName.isAcceptableOrUnknown(
-              data['display_name']!, _displayNameMeta));
-    }
-    if (data.containsKey('code')) {
-      context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
     if (data.containsKey('deleted')) {
       context.handle(_deletedMeta,
@@ -7346,15 +7165,6 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $DataFormSubmissionsTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
-      displayName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code']),
       deleted: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}deleted'])!,
       synced: attachedDatabase.typeMapping
@@ -7399,10 +7209,6 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
     return $DataFormSubmissionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
-      const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
   static JsonTypeConverter2<AssignmentStatus, String, String> $converterstatus =
       const EnumNameConverter(AssignmentStatus.values);
   static JsonTypeConverter2<AssignmentStatus?, String?, String?>
@@ -7419,12 +7225,6 @@ class DataFormSubmission extends DataClass
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
-  final String? name;
-  final String? displayName;
-  final String? code;
 
   /// Bool columns (nullable)
   final bool deleted;
@@ -7467,10 +7267,6 @@ class DataFormSubmission extends DataClass
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
-      this.name,
-      this.displayName,
-      this.code,
       required this.deleted,
       this.synced,
       required this.syncFailed,
@@ -7495,19 +7291,6 @@ class DataFormSubmission extends DataClass
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $DataFormSubmissionsTable.$converteroptionSetsn.toSql(optionSets));
-    }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || displayName != null) {
-      map['display_name'] = Variable<String>(displayName);
-    }
-    if (!nullToAbsent || code != null) {
-      map['code'] = Variable<String>(code);
-    }
     map['deleted'] = Variable<bool>(deleted);
     if (!nullToAbsent || synced != null) {
       map['synced'] = Variable<bool>(synced);
@@ -7558,14 +7341,6 @@ class DataFormSubmission extends DataClass
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      displayName: displayName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(displayName),
-      code: code == null && nullToAbsent ? const Value.absent() : Value(code),
       deleted: Value(deleted),
       synced:
           synced == null && nullToAbsent ? const Value.absent() : Value(synced),
@@ -7610,10 +7385,6 @@ class DataFormSubmission extends DataClass
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
-      name: serializer.fromJson<String?>(json['name']),
-      displayName: serializer.fromJson<String?>(json['displayName']),
-      code: serializer.fromJson<String?>(json['code']),
       deleted: serializer.fromJson<bool>(json['deleted']),
       synced: serializer.fromJson<bool?>(json['synced']),
       syncFailed: serializer.fromJson<bool>(json['syncFailed']),
@@ -7643,10 +7414,6 @@ class DataFormSubmission extends DataClass
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
-      'name': serializer.toJson<String?>(name),
-      'displayName': serializer.toJson<String?>(displayName),
-      'code': serializer.toJson<String?>(code),
       'deleted': serializer.toJson<bool>(deleted),
       'synced': serializer.toJson<bool?>(synced),
       'syncFailed': serializer.toJson<bool>(syncFailed),
@@ -7673,10 +7440,6 @@ class DataFormSubmission extends DataClass
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
-          Value<String?> name = const Value.absent(),
-          Value<String?> displayName = const Value.absent(),
-          Value<String?> code = const Value.absent(),
           bool? deleted,
           Value<bool?> synced = const Value.absent(),
           bool? syncFailed,
@@ -7699,10 +7462,6 @@ class DataFormSubmission extends DataClass
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
-        name: name.present ? name.value : this.name,
-        displayName: displayName.present ? displayName.value : this.displayName,
-        code: code.present ? code.value : this.code,
         deleted: deleted ?? this.deleted,
         synced: synced.present ? synced.value : this.synced,
         syncFailed: syncFailed ?? this.syncFailed,
@@ -7735,12 +7494,6 @@ class DataFormSubmission extends DataClass
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
-      name: data.name.present ? data.name.value : this.name,
-      displayName:
-          data.displayName.present ? data.displayName.value : this.displayName,
-      code: data.code.present ? data.code.value : this.code,
       deleted: data.deleted.present ? data.deleted.value : this.deleted,
       synced: data.synced.present ? data.synced.value : this.synced,
       syncFailed:
@@ -7779,10 +7532,6 @@ class DataFormSubmission extends DataClass
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
           ..write('deleted: $deleted, ')
           ..write('synced: $synced, ')
           ..write('syncFailed: $syncFailed, ')
@@ -7810,10 +7559,6 @@ class DataFormSubmission extends DataClass
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
-        name,
-        displayName,
-        code,
         deleted,
         synced,
         syncFailed,
@@ -7840,10 +7585,6 @@ class DataFormSubmission extends DataClass
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
-          other.name == this.name &&
-          other.displayName == this.displayName &&
-          other.code == this.code &&
           other.deleted == this.deleted &&
           other.synced == this.synced &&
           other.syncFailed == this.syncFailed &&
@@ -7868,10 +7609,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
-  final Value<String?> name;
-  final Value<String?> displayName;
-  final Value<String?> code;
   final Value<bool> deleted;
   final Value<bool?> synced;
   final Value<bool> syncFailed;
@@ -7895,10 +7632,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
     this.deleted = const Value.absent(),
     this.synced = const Value.absent(),
     this.syncFailed = const Value.absent(),
@@ -7923,10 +7656,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
     this.deleted = const Value.absent(),
     this.synced = const Value.absent(),
     this.syncFailed = const Value.absent(),
@@ -7954,10 +7683,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
-    Expression<String>? name,
-    Expression<String>? displayName,
-    Expression<String>? code,
     Expression<bool>? deleted,
     Expression<bool>? synced,
     Expression<bool>? syncFailed,
@@ -7982,10 +7707,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
-      if (name != null) 'name': name,
-      if (displayName != null) 'display_name': displayName,
-      if (code != null) 'code': code,
       if (deleted != null) 'deleted': deleted,
       if (synced != null) 'synced': synced,
       if (syncFailed != null) 'sync_failed': syncFailed,
@@ -8012,10 +7733,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
-      Value<String?>? name,
-      Value<String?>? displayName,
-      Value<String?>? code,
       Value<bool>? deleted,
       Value<bool?>? synced,
       Value<bool>? syncFailed,
@@ -8039,10 +7756,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
-      name: name ?? this.name,
-      displayName: displayName ?? this.displayName,
-      code: code ?? this.code,
       deleted: deleted ?? this.deleted,
       synced: synced ?? this.synced,
       syncFailed: syncFailed ?? this.syncFailed,
@@ -8078,20 +7791,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>($DataFormSubmissionsTable
-          .$converteroptionSetsn
-          .toSql(optionSets.value));
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (displayName.present) {
-      map['display_name'] = Variable<String>(displayName.value);
-    }
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
     }
     if (deleted.present) {
       map['deleted'] = Variable<bool>(deleted.value);
@@ -8159,10 +7858,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
           ..write('deleted: $deleted, ')
           ..write('synced: $synced, ')
           ..write('syncFailed: $syncFailed, ')
@@ -8221,14 +7916,6 @@ class $RepeatInstancesTable extends RepeatInstances
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $RepeatInstancesTable.$converteroptionSetsn);
   static const VerificationMeta _submissionMeta =
       const VerificationMeta('submission');
   @override
@@ -8264,7 +7951,6 @@ class $RepeatInstancesTable extends RepeatInstances
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         submission,
         templatePath,
         parent,
@@ -8303,7 +7989,6 @@ class $RepeatInstancesTable extends RepeatInstances
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('submission')) {
       context.handle(
           _submissionMeta,
@@ -8349,9 +8034,6 @@ class $RepeatInstancesTable extends RepeatInstances
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $RepeatInstancesTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       submission: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}submission'])!,
       templatePath: attachedDatabase.typeMapping
@@ -8367,11 +8049,6 @@ class $RepeatInstancesTable extends RepeatInstances
   $RepeatInstancesTable createAlias(String alias) {
     return $RepeatInstancesTable(attachedDatabase, alias);
   }
-
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
-      const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
 }
 
 class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
@@ -8379,9 +8056,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String submission;
 
   /// Path of the Repeat in the FormTemplate (non-null)
@@ -8397,7 +8071,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       required this.submission,
       required this.templatePath,
       this.parent,
@@ -8409,10 +8082,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $RepeatInstancesTable.$converteroptionSetsn.toSql(optionSets));
-    }
     map['submission'] = Variable<String>(submission);
     map['template_path'] = Variable<String>(templatePath);
     if (!nullToAbsent || parent != null) {
@@ -8428,9 +8097,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       submission: Value(submission),
       templatePath: Value(templatePath),
       parent:
@@ -8447,7 +8113,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       submission: serializer.fromJson<String>(json['submission']),
       templatePath: serializer.fromJson<String>(json['templatePath']),
       parent: serializer.fromJson<String?>(json['parent']),
@@ -8462,7 +8127,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'submission': serializer.toJson<String>(submission),
       'templatePath': serializer.toJson<String>(templatePath),
       'parent': serializer.toJson<String?>(parent),
@@ -8475,7 +8139,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           String? submission,
           String? templatePath,
           Value<String?> parent = const Value.absent(),
@@ -8485,7 +8148,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         submission: submission ?? this.submission,
         templatePath: templatePath ?? this.templatePath,
         parent: parent.present ? parent.value : this.parent,
@@ -8500,8 +8162,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       submission:
           data.submission.present ? data.submission.value : this.submission,
       templatePath: data.templatePath.present
@@ -8520,7 +8180,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('submission: $submission, ')
           ..write('templatePath: $templatePath, ')
           ..write('parent: $parent, ')
@@ -8531,7 +8190,7 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
 
   @override
   int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      optionSets, submission, templatePath, parent, repeatIndex);
+      submission, templatePath, parent, repeatIndex);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8540,7 +8199,6 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.submission == this.submission &&
           other.templatePath == this.templatePath &&
           other.parent == this.parent &&
@@ -8552,7 +8210,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String> submission;
   final Value<String> templatePath;
   final Value<String?> parent;
@@ -8563,7 +8220,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.submission = const Value.absent(),
     this.templatePath = const Value.absent(),
     this.parent = const Value.absent(),
@@ -8575,7 +8231,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     required String submission,
     required String templatePath,
     this.parent = const Value.absent(),
@@ -8591,7 +8246,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? submission,
     Expression<String>? templatePath,
     Expression<String>? parent,
@@ -8603,7 +8257,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (submission != null) 'submission': submission,
       if (templatePath != null) 'template_path': templatePath,
       if (parent != null) 'parent': parent,
@@ -8617,7 +8270,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String>? submission,
       Value<String>? templatePath,
       Value<String?>? parent,
@@ -8628,7 +8280,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       submission: submission ?? this.submission,
       templatePath: templatePath ?? this.templatePath,
       parent: parent ?? this.parent,
@@ -8651,10 +8302,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $RepeatInstancesTable.$converteroptionSetsn.toSql(optionSets.value));
     }
     if (submission.present) {
       map['submission'] = Variable<String>(submission.value);
@@ -8681,7 +8328,6 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('submission: $submission, ')
           ..write('templatePath: $templatePath, ')
           ..write('parent: $parent, ')
@@ -8727,14 +8373,6 @@ class $DataElementsTable extends DataElements
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataElementsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -8751,6 +8389,14 @@ class $DataElementsTable extends DataElements
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $DataElementsTable.$convertertranslationsn);
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -8827,10 +8473,10 @@ class $DataElementsTable extends DataElements
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         description,
         type,
         mandatory,
@@ -8874,7 +8520,6 @@ class $DataElementsTable extends DataElements
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -8889,6 +8534,7 @@ class $DataElementsTable extends DataElements
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
@@ -8939,15 +8585,15 @@ class $DataElementsTable extends DataElements
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $DataElementsTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $DataElementsTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
       type: $DataElementsTable.$convertertypen.fromSql(attachedDatabase
@@ -8979,10 +8625,10 @@ class $DataElementsTable extends DataElements
     return $DataElementsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
   static JsonTypeConverter2<ValueType, String, String> $convertertype =
       const EnumNameConverter(ValueType.values);
   static JsonTypeConverter2<ValueType?, String?, String?> $convertertypen =
@@ -9005,12 +8651,12 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final String? description;
   final ValueType? type;
 
@@ -9039,10 +8685,10 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       this.description,
       this.type,
       required this.mandatory,
@@ -9059,10 +8705,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $DataElementsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -9071,6 +8713,10 @@ class DataElement extends DataClass implements Insertable<DataElement> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $DataElementsTable.$convertertranslationsn.toSql(translations));
     }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
@@ -9110,14 +8756,14 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
@@ -9148,10 +8794,11 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       description: serializer.fromJson<String?>(json['description']),
       type: $DataElementsTable.$convertertypen
           .fromJson(serializer.fromJson<String?>(json['type'])),
@@ -9176,10 +8823,10 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'description': serializer.toJson<String?>(description),
       'type': serializer
           .toJson<String?>($DataElementsTable.$convertertypen.toJson(type)),
@@ -9202,10 +8849,10 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           Value<String?> description = const Value.absent(),
           Value<ValueType?> type = const Value.absent(),
           bool? mandatory,
@@ -9221,10 +8868,11 @@ class DataElement extends DataClass implements Insertable<DataElement> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         description: description.present ? description.value : this.description,
         type: type.present ? type.value : this.type,
         mandatory: mandatory ?? this.mandatory,
@@ -9250,12 +8898,13 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       description:
           data.description.present ? data.description.value : this.description,
       type: data.type.present ? data.type.value : this.type,
@@ -9285,10 +8934,10 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('description: $description, ')
           ..write('type: $type, ')
           ..write('mandatory: $mandatory, ')
@@ -9308,10 +8957,10 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
       name,
       displayName,
       code,
+      translations,
       description,
       type,
       mandatory,
@@ -9329,10 +8978,10 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.description == this.description &&
           other.type == this.type &&
           other.mandatory == this.mandatory &&
@@ -9349,10 +8998,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<String?> description;
   final Value<ValueType?> type;
   final Value<bool> mandatory;
@@ -9368,10 +9017,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.description = const Value.absent(),
     this.type = const Value.absent(),
     this.mandatory = const Value.absent(),
@@ -9388,10 +9037,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.description = const Value.absent(),
     this.type = const Value.absent(),
     this.mandatory = const Value.absent(),
@@ -9409,10 +9058,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<String>? description,
     Expression<String>? type,
     Expression<bool>? mandatory,
@@ -9429,10 +9078,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (description != null) 'description': description,
       if (type != null) 'type': type,
       if (mandatory != null) 'mandatory': mandatory,
@@ -9453,10 +9102,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<String?>? description,
       Value<ValueType?>? type,
       Value<bool>? mandatory,
@@ -9472,10 +9121,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       description: description ?? this.description,
       type: type ?? this.type,
       mandatory: mandatory ?? this.mandatory,
@@ -9506,10 +9155,6 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $DataElementsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -9518,6 +9163,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>(
+          $DataElementsTable.$convertertranslationsn.toSql(translations.value));
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -9565,10 +9214,10 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('description: $description, ')
           ..write('type: $type, ')
           ..write('mandatory: $mandatory, ')
@@ -9619,14 +9268,6 @@ class $DataValuesTable extends DataValues
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataValuesTable.$converteroptionSetsn);
   static const VerificationMeta _templatePathMeta =
       const VerificationMeta('templatePath');
   @override
@@ -9670,7 +9311,6 @@ class $DataValuesTable extends DataValues
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         templatePath,
         parent,
         submission,
@@ -9710,7 +9350,6 @@ class $DataValuesTable extends DataValues
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('template_path')) {
       context.handle(
           _templatePathMeta,
@@ -9760,9 +9399,6 @@ class $DataValuesTable extends DataValues
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $DataValuesTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       templatePath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}template_path'])!,
       parent: attachedDatabase.typeMapping
@@ -9780,11 +9416,6 @@ class $DataValuesTable extends DataValues
   $DataValuesTable createAlias(String alias) {
     return $DataValuesTable(attachedDatabase, alias);
   }
-
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
-      const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
 }
 
 class DataValue extends DataClass implements Insertable<DataValue> {
@@ -9792,9 +9423,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
 
   /// Path of the Repeat in the FormTemplate – non-null.
   final String templatePath;
@@ -9815,7 +9443,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       required this.templatePath,
       this.parent,
       required this.submission,
@@ -9828,10 +9455,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $DataValuesTable.$converteroptionSetsn.toSql(optionSets));
-    }
     map['template_path'] = Variable<String>(templatePath);
     if (!nullToAbsent || parent != null) {
       map['parent'] = Variable<String>(parent);
@@ -9850,9 +9473,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       templatePath: Value(templatePath),
       parent:
           parent == null && nullToAbsent ? const Value.absent() : Value(parent),
@@ -9871,7 +9491,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       templatePath: serializer.fromJson<String>(json['templatePath']),
       parent: serializer.fromJson<String?>(json['parent']),
       submission: serializer.fromJson<String>(json['submission']),
@@ -9887,7 +9506,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'templatePath': serializer.toJson<String>(templatePath),
       'parent': serializer.toJson<String?>(parent),
       'submission': serializer.toJson<String>(submission),
@@ -9901,7 +9519,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           String? templatePath,
           Value<String?> parent = const Value.absent(),
           String? submission,
@@ -9912,7 +9529,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         templatePath: templatePath ?? this.templatePath,
         parent: parent.present ? parent.value : this.parent,
         submission: submission ?? this.submission,
@@ -9928,8 +9544,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       templatePath: data.templatePath.present
           ? data.templatePath.value
           : this.templatePath,
@@ -9949,7 +9563,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('templatePath: $templatePath, ')
           ..write('parent: $parent, ')
           ..write('submission: $submission, ')
@@ -9961,7 +9574,7 @@ class DataValue extends DataClass implements Insertable<DataValue> {
 
   @override
   int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      optionSets, templatePath, parent, submission, dataElement, value);
+      templatePath, parent, submission, dataElement, value);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -9970,7 +9583,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.templatePath == this.templatePath &&
           other.parent == this.parent &&
           other.submission == this.submission &&
@@ -9983,7 +9595,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String> templatePath;
   final Value<String?> parent;
   final Value<String> submission;
@@ -9995,7 +9606,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.templatePath = const Value.absent(),
     this.parent = const Value.absent(),
     this.submission = const Value.absent(),
@@ -10008,7 +9618,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     required String templatePath,
     this.parent = const Value.absent(),
     required String submission,
@@ -10025,7 +9634,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? templatePath,
     Expression<String>? parent,
     Expression<String>? submission,
@@ -10038,7 +9646,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (templatePath != null) 'template_path': templatePath,
       if (parent != null) 'parent': parent,
       if (submission != null) 'submission': submission,
@@ -10053,7 +9660,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String>? templatePath,
       Value<String?>? parent,
       Value<String>? submission,
@@ -10065,7 +9671,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       templatePath: templatePath ?? this.templatePath,
       parent: parent ?? this.parent,
       submission: submission ?? this.submission,
@@ -10089,10 +9694,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $DataValuesTable.$converteroptionSetsn.toSql(optionSets.value));
     }
     if (templatePath.present) {
       map['template_path'] = Variable<String>(templatePath.value);
@@ -10122,7 +9723,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('templatePath: $templatePath, ')
           ..write('parent: $parent, ')
           ..write('submission: $submission, ')
@@ -10169,14 +9769,6 @@ class $DataOptionSetsTable extends DataOptionSets
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataOptionSetsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -10193,16 +9785,24 @@ class $DataOptionSetsTable extends DataOptionSets
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $DataOptionSetsTable.$convertertranslationsn);
   @override
   List<GeneratedColumn> get $columns => [
         id,
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
-        code
+        code,
+        translations
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -10237,7 +9837,6 @@ class $DataOptionSetsTable extends DataOptionSets
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -10252,6 +9851,7 @@ class $DataOptionSetsTable extends DataOptionSets
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -10269,15 +9869,15 @@ class $DataOptionSetsTable extends DataOptionSets
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $DataOptionSetsTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $DataOptionSetsTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
     );
   }
 
@@ -10286,10 +9886,10 @@ class $DataOptionSetsTable extends DataOptionSets
     return $DataOptionSetsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
 }
 
 class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
@@ -10297,21 +9897,21 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   const DataOptionSet(
       {required this.id,
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
-      this.code});
+      this.code,
+      this.translations});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -10319,10 +9919,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $DataOptionSetsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -10331,6 +9927,10 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $DataOptionSetsTable.$convertertranslationsn.toSql(translations));
     }
     return map;
   }
@@ -10341,14 +9941,14 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
     );
   }
 
@@ -10360,10 +9960,11 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
     );
   }
   @override
@@ -10374,10 +9975,10 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
     };
   }
 
@@ -10386,19 +9987,20 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
-          Value<String?> code = const Value.absent()}) =>
+          Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent()}) =>
       DataOptionSet(
         id: id ?? this.id,
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
       );
   DataOptionSet copyWithCompanion(DataOptionSetsCompanion data) {
     return DataOptionSet(
@@ -10409,12 +10011,13 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
     );
   }
 
@@ -10425,17 +10028,17 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
-          ..write('code: $code')
+          ..write('code: $code, ')
+          ..write('translations: $translations')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      optionSets, name, displayName, code);
+      name, displayName, code, translations);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -10444,10 +10047,10 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
-          other.code == this.code);
+          other.code == this.code &&
+          other.translations == this.translations);
 }
 
 class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
@@ -10455,20 +10058,20 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<int> rowid;
   const DataOptionSetsCompanion({
     this.id = const Value.absent(),
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DataOptionSetsCompanion.insert({
@@ -10476,10 +10079,10 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         dirty = Value(dirty);
@@ -10488,10 +10091,10 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -10499,10 +10102,10 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -10512,20 +10115,20 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<int>? rowid}) {
     return DataOptionSetsCompanion(
       id: id ?? this.id,
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -10545,10 +10148,6 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $DataOptionSetsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -10557,6 +10156,11 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>($DataOptionSetsTable
+          .$convertertranslationsn
+          .toSql(translations.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -10571,10 +10175,10 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10616,14 +10220,6 @@ class $DataOptionsTable extends DataOptions
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      optionSets = GeneratedColumn<String>('option_sets', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataOptionsTable.$converteroptionSetsn);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -10640,6 +10236,14 @@ class $DataOptionsTable extends DataOptions
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _translationsMeta =
+      const VerificationMeta('translations');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<Translation>?>(
+              $DataOptionsTable.$convertertranslationsn);
   static const VerificationMeta _optionSetMeta =
       const VerificationMeta('optionSet');
   @override
@@ -10689,10 +10293,10 @@ class $DataOptionsTable extends DataOptions
         dirty,
         lastModifiedDate,
         createdDate,
-        optionSets,
         name,
         displayName,
         code,
+        translations,
         optionSet,
         listName,
         order,
@@ -10733,7 +10337,6 @@ class $DataOptionsTable extends DataOptions
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    context.handle(_optionSetsMeta, const VerificationResult.success());
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -10748,6 +10351,7 @@ class $DataOptionsTable extends DataOptions
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
+    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('option_set')) {
       context.handle(_optionSetMeta,
           optionSet.isAcceptableOrUnknown(data['option_set']!, _optionSetMeta));
@@ -10791,15 +10395,15 @@ class $DataOptionsTable extends DataOptions
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      optionSets: $DataOptionsTable.$converteroptionSetsn.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}option_sets'])),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
+      translations: $DataOptionsTable.$convertertranslationsn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}translations'])),
       optionSet: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}option_set'])!,
       listName: attachedDatabase.typeMapping
@@ -10822,10 +10426,10 @@ class $DataOptionsTable extends DataOptions
     return $DataOptionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<Translation>, String> $converteroptionSets =
+  static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $converteroptionSetsn =
-      NullAwareTypeConverter.wrap($converteroptionSets);
+  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
+      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<Map<String, String>, String> $converterlabel =
       const MapConverter<String>();
   static TypeConverter<Map<String, dynamic>, String> $converterproperties =
@@ -10839,12 +10443,12 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// List of Translations
-  final List<Translation>? optionSets;
   final String? name;
   final String? displayName;
   final String? code;
+
+  /// List of Translations
+  final List<Translation>? translations;
   final String optionSet;
   final String listName;
   final int order;
@@ -10856,10 +10460,10 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      this.optionSets,
       this.name,
       this.displayName,
       this.code,
+      this.translations,
       required this.optionSet,
       required this.listName,
       required this.order,
@@ -10873,10 +10477,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
     map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    if (!nullToAbsent || optionSets != null) {
-      map['option_sets'] = Variable<String>(
-          $DataOptionsTable.$converteroptionSetsn.toSql(optionSets));
-    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -10885,6 +10485,10 @@ class DataOption extends DataClass implements Insertable<DataOption> {
     }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
+    }
+    if (!nullToAbsent || translations != null) {
+      map['translations'] = Variable<String>(
+          $DataOptionsTable.$convertertranslationsn.toSql(translations));
     }
     map['option_set'] = Variable<String>(optionSet);
     map['list_name'] = Variable<String>(listName);
@@ -10909,14 +10513,14 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
+      translations: translations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(translations),
       optionSet: Value(optionSet),
       listName: Value(listName),
       order: Value(order),
@@ -10938,10 +10542,11 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      optionSets: serializer.fromJson<List<Translation>?>(json['optionSets']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
+      translations:
+          serializer.fromJson<List<Translation>?>(json['translations']),
       optionSet: serializer.fromJson<String>(json['optionSet']),
       listName: serializer.fromJson<String>(json['listName']),
       order: serializer.fromJson<int>(json['order']),
@@ -10959,10 +10564,10 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'optionSets': serializer.toJson<List<Translation>?>(optionSets),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
+      'translations': serializer.toJson<List<Translation>?>(translations),
       'optionSet': serializer.toJson<String>(optionSet),
       'listName': serializer.toJson<String>(listName),
       'order': serializer.toJson<int>(order),
@@ -10977,10 +10582,10 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          Value<List<Translation>?> optionSets = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
+          Value<List<Translation>?> translations = const Value.absent(),
           String? optionSet,
           String? listName,
           int? order,
@@ -10992,10 +10597,11 @@ class DataOption extends DataClass implements Insertable<DataOption> {
         dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
+        translations:
+            translations.present ? translations.value : this.translations,
         optionSet: optionSet ?? this.optionSet,
         listName: listName ?? this.listName,
         order: order ?? this.order,
@@ -11014,12 +10620,13 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      optionSets:
-          data.optionSets.present ? data.optionSets.value : this.optionSets,
       name: data.name.present ? data.name.value : this.name,
       displayName:
           data.displayName.present ? data.displayName.value : this.displayName,
       code: data.code.present ? data.code.value : this.code,
+      translations: data.translations.present
+          ? data.translations.value
+          : this.translations,
       optionSet: data.optionSet.present ? data.optionSet.value : this.optionSet,
       listName: data.listName.present ? data.listName.value : this.listName,
       order: data.order.present ? data.order.value : this.order,
@@ -11039,10 +10646,10 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('optionSet: $optionSet, ')
           ..write('listName: $listName, ')
           ..write('order: $order, ')
@@ -11059,10 +10666,10 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       dirty,
       lastModifiedDate,
       createdDate,
-      optionSets,
       name,
       displayName,
       code,
+      translations,
       optionSet,
       listName,
       order,
@@ -11077,10 +10684,10 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.optionSets == this.optionSets &&
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
+          other.translations == this.translations &&
           other.optionSet == this.optionSet &&
           other.listName == this.listName &&
           other.order == this.order &&
@@ -11094,10 +10701,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<List<Translation>?> optionSets;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
+  final Value<List<Translation>?> translations;
   final Value<String> optionSet;
   final Value<String> listName;
   final Value<int> order;
@@ -11110,10 +10717,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     this.optionSet = const Value.absent(),
     this.listName = const Value.absent(),
     this.order = const Value.absent(),
@@ -11127,10 +10734,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.optionSets = const Value.absent(),
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
+    this.translations = const Value.absent(),
     required String optionSet,
     required String listName,
     required int order,
@@ -11148,10 +10755,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? optionSets,
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? code,
+    Expression<String>? translations,
     Expression<String>? optionSet,
     Expression<String>? listName,
     Expression<int>? order,
@@ -11165,10 +10772,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
       if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (optionSets != null) 'option_sets': optionSets,
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
+      if (translations != null) 'translations': translations,
       if (optionSet != null) 'option_set': optionSet,
       if (listName != null) 'list_name': listName,
       if (order != null) 'order': order,
@@ -11184,10 +10791,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
       Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<List<Translation>?>? optionSets,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
+      Value<List<Translation>?>? translations,
       Value<String>? optionSet,
       Value<String>? listName,
       Value<int>? order,
@@ -11200,10 +10807,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
       dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      optionSets: optionSets ?? this.optionSets,
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
+      translations: translations ?? this.translations,
       optionSet: optionSet ?? this.optionSet,
       listName: listName ?? this.listName,
       order: order ?? this.order,
@@ -11229,10 +10836,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (optionSets.present) {
-      map['option_sets'] = Variable<String>(
-          $DataOptionsTable.$converteroptionSetsn.toSql(optionSets.value));
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -11241,6 +10844,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (translations.present) {
+      map['translations'] = Variable<String>(
+          $DataOptionsTable.$convertertranslationsn.toSql(translations.value));
     }
     if (optionSet.present) {
       map['option_set'] = Variable<String>(optionSet.value);
@@ -11275,10 +10882,10 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
           ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('optionSets: $optionSets, ')
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
+          ..write('translations: $translations, ')
           ..write('optionSet: $optionSet, ')
           ..write('listName: $listName, ')
           ..write('order: $order, ')
@@ -11375,7 +10982,6 @@ typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   required String username,
   required String password,
   Value<String?> firstName,
@@ -11393,7 +10999,6 @@ typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String> username,
   Value<String> password,
   Value<String?> firstName,
@@ -11427,11 +11032,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
 
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<String> get username => $composableBuilder(
       column: $table.username, builder: (column) => ColumnFilters(column));
@@ -11488,9 +11088,6 @@ class $$UsersTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get username => $composableBuilder(
       column: $table.username, builder: (column) => ColumnOrderings(column));
 
@@ -11542,10 +11139,6 @@ class $$UsersTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
 
   GeneratedColumn<String> get username =>
       $composableBuilder(column: $table.username, builder: (column) => column);
@@ -11606,7 +11199,6 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String> username = const Value.absent(),
             Value<String> password = const Value.absent(),
             Value<String?> firstName = const Value.absent(),
@@ -11624,7 +11216,6 @@ class $$UsersTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             username: username,
             password: password,
             firstName: firstName,
@@ -11642,7 +11233,6 @@ class $$UsersTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             required String username,
             required String password,
             Value<String?> firstName = const Value.absent(),
@@ -11660,7 +11250,6 @@ class $$UsersTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             username: username,
             password: password,
             firstName: firstName,
@@ -11697,10 +11286,10 @@ typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<String?> path,
   Value<Map<String, String>> label,
   Value<String?> parent,
@@ -11714,10 +11303,10 @@ typedef $$OrgUnitsTableUpdateCompanionBuilder = OrgUnitsCompanion Function({
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<String?> path,
   Value<Map<String, String>> label,
   Value<String?> parent,
@@ -11787,11 +11376,6 @@ class $$OrgUnitsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -11800,6 +11384,11 @@ class $$OrgUnitsTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<String> get path => $composableBuilder(
       column: $table.path, builder: (column) => ColumnFilters(column));
@@ -11887,9 +11476,6 @@ class $$OrgUnitsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -11898,6 +11484,10 @@ class $$OrgUnitsTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get path => $composableBuilder(
       column: $table.path, builder: (column) => ColumnOrderings(column));
@@ -11939,10 +11529,6 @@ class $$OrgUnitsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -11951,6 +11537,10 @@ class $$OrgUnitsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumn<String> get path =>
       $composableBuilder(column: $table.path, builder: (column) => column);
@@ -12043,10 +11633,10 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<String?> path = const Value.absent(),
             Value<Map<String, String>> label = const Value.absent(),
             Value<String?> parent = const Value.absent(),
@@ -12060,10 +11650,10 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             path: path,
             label: label,
             parent: parent,
@@ -12077,10 +11667,10 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<String?> path = const Value.absent(),
             Value<Map<String, String>> label = const Value.absent(),
             Value<String?> parent = const Value.absent(),
@@ -12094,10 +11684,10 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             path: path,
             label: label,
             parent: parent,
@@ -12170,10 +11760,10 @@ typedef $$OuLevelsTableCreateCompanionBuilder = OuLevelsCompanion Function({
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   required int level,
   Value<int?> offlineLevels,
   Value<int> rowid,
@@ -12183,10 +11773,10 @@ typedef $$OuLevelsTableUpdateCompanionBuilder = OuLevelsCompanion Function({
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<int> level,
   Value<int?> offlineLevels,
   Value<int> rowid,
@@ -12214,11 +11804,6 @@ class $$OuLevelsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -12227,6 +11812,11 @@ class $$OuLevelsTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<int> get level => $composableBuilder(
       column: $table.level, builder: (column) => ColumnFilters(column));
@@ -12257,9 +11847,6 @@ class $$OuLevelsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -12268,6 +11855,10 @@ class $$OuLevelsTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get level => $composableBuilder(
       column: $table.level, builder: (column) => ColumnOrderings(column));
@@ -12298,10 +11889,6 @@ class $$OuLevelsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -12310,6 +11897,10 @@ class $$OuLevelsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumn<int> get level =>
       $composableBuilder(column: $table.level, builder: (column) => column);
@@ -12345,10 +11936,10 @@ class $$OuLevelsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<int> level = const Value.absent(),
             Value<int?> offlineLevels = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -12358,10 +11949,10 @@ class $$OuLevelsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             level: level,
             offlineLevels: offlineLevels,
             rowid: rowid,
@@ -12371,10 +11962,10 @@ class $$OuLevelsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             required int level,
             Value<int?> offlineLevels = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -12384,10 +11975,10 @@ class $$OuLevelsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             level: level,
             offlineLevels: offlineLevels,
             rowid: rowid,
@@ -12416,10 +12007,10 @@ typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   required bool disabled,
   Value<int> rowid,
 });
@@ -12428,10 +12019,10 @@ typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<bool> disabled,
   Value<int> rowid,
 });
@@ -12478,11 +12069,6 @@ class $$ProjectsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -12491,6 +12077,11 @@ class $$ProjectsTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<bool> get disabled => $composableBuilder(
       column: $table.disabled, builder: (column) => ColumnFilters(column));
@@ -12539,9 +12130,6 @@ class $$ProjectsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -12550,6 +12138,10 @@ class $$ProjectsTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<bool> get disabled => $composableBuilder(
       column: $table.disabled, builder: (column) => ColumnOrderings(column));
@@ -12576,10 +12168,6 @@ class $$ProjectsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -12588,6 +12176,10 @@ class $$ProjectsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumn<bool> get disabled =>
       $composableBuilder(column: $table.disabled, builder: (column) => column);
@@ -12641,10 +12233,10 @@ class $$ProjectsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<bool> disabled = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -12653,10 +12245,10 @@ class $$ProjectsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             disabled: disabled,
             rowid: rowid,
           ),
@@ -12665,10 +12257,10 @@ class $$ProjectsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             required bool disabled,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -12677,10 +12269,10 @@ class $$ProjectsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             disabled: disabled,
             rowid: rowid,
           ),
@@ -12731,10 +12323,10 @@ typedef $$ActivitiesTableCreateCompanionBuilder = ActivitiesCompanion Function({
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   required String project,
   required bool disabled,
   Value<String?> description,
@@ -12747,10 +12339,10 @@ typedef $$ActivitiesTableUpdateCompanionBuilder = ActivitiesCompanion Function({
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<String> project,
   Value<bool> disabled,
   Value<String?> description,
@@ -12827,11 +12419,6 @@ class $$ActivitiesTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -12840,6 +12427,11 @@ class $$ActivitiesTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<bool> get disabled => $composableBuilder(
       column: $table.disabled, builder: (column) => ColumnFilters(column));
@@ -12938,9 +12530,6 @@ class $$ActivitiesTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -12949,6 +12538,10 @@ class $$ActivitiesTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<bool> get disabled => $composableBuilder(
       column: $table.disabled, builder: (column) => ColumnOrderings(column));
@@ -13004,10 +12597,6 @@ class $$ActivitiesTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -13016,6 +12605,10 @@ class $$ActivitiesTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumn<bool> get disabled =>
       $composableBuilder(column: $table.disabled, builder: (column) => column);
@@ -13120,10 +12713,10 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<String> project = const Value.absent(),
             Value<bool> disabled = const Value.absent(),
             Value<String?> description = const Value.absent(),
@@ -13136,10 +12729,10 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             project: project,
             disabled: disabled,
             description: description,
@@ -13152,10 +12745,10 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             required String project,
             required bool disabled,
             Value<String?> description = const Value.absent(),
@@ -13168,10 +12761,10 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             project: project,
             disabled: disabled,
             description: description,
@@ -13270,10 +12863,10 @@ typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   required String activity,
   Value<bool> disabled,
   Value<bool> deleteClientData,
@@ -13287,10 +12880,10 @@ typedef $$TeamsTableUpdateCompanionBuilder = TeamsCompanion Function({
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<String> activity,
   Value<bool> disabled,
   Value<bool> deleteClientData,
@@ -13370,11 +12963,6 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -13383,6 +12971,11 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<bool> get disabled => $composableBuilder(
       column: $table.disabled, builder: (column) => ColumnFilters(column));
@@ -13493,9 +13086,6 @@ class $$TeamsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -13504,6 +13094,10 @@ class $$TeamsTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<bool> get disabled => $composableBuilder(
       column: $table.disabled, builder: (column) => ColumnOrderings(column));
@@ -13564,10 +13158,6 @@ class $$TeamsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -13576,6 +13166,10 @@ class $$TeamsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumn<bool> get disabled =>
       $composableBuilder(column: $table.disabled, builder: (column) => column);
@@ -13687,10 +13281,10 @@ class $$TeamsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<String> activity = const Value.absent(),
             Value<bool> disabled = const Value.absent(),
             Value<bool> deleteClientData = const Value.absent(),
@@ -13705,10 +13299,10 @@ class $$TeamsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             activity: activity,
             disabled: disabled,
             deleteClientData: deleteClientData,
@@ -13722,10 +13316,10 @@ class $$TeamsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             required String activity,
             Value<bool> disabled = const Value.absent(),
             Value<bool> deleteClientData = const Value.absent(),
@@ -13740,10 +13334,10 @@ class $$TeamsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             activity: activity,
             disabled: disabled,
             deleteClientData: deleteClientData,
@@ -13843,10 +13437,6 @@ typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
   required String activity,
   required String team,
   required String orgUnit,
@@ -13865,10 +13455,6 @@ typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
   Value<String> activity,
   Value<String> team,
   Value<String> orgUnit,
@@ -13978,20 +13564,6 @@ class $$AssignmentsTableFilterComposer
 
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get startDay => $composableBuilder(
       column: $table.startDay, builder: (column) => ColumnFilters(column));
@@ -14144,18 +13716,6 @@ class $$AssignmentsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<int> get startDay => $composableBuilder(
       column: $table.startDay, builder: (column) => ColumnOrderings(column));
 
@@ -14276,19 +13836,6 @@ class $$AssignmentsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => column);
-
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
 
   GeneratedColumn<int> get startDay =>
       $composableBuilder(column: $table.startDay, builder: (column) => column);
@@ -14445,10 +13992,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
             Value<String> activity = const Value.absent(),
             Value<String> team = const Value.absent(),
             Value<String> orgUnit = const Value.absent(),
@@ -14467,10 +14010,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
-            name: name,
-            displayName: displayName,
-            code: code,
             activity: activity,
             team: team,
             orgUnit: orgUnit,
@@ -14488,10 +14027,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
             required String activity,
             required String team,
             required String orgUnit,
@@ -14510,10 +14045,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
-            name: name,
-            displayName: displayName,
-            code: code,
             activity: activity,
             team: team,
             orgUnit: orgUnit,
@@ -14643,10 +14174,10 @@ typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<Map<String, String>> label,
   required int version,
   Value<int> rowid,
@@ -14657,10 +14188,10 @@ typedef $$FormTemplatesTableUpdateCompanionBuilder = FormTemplatesCompanion
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<Map<String, String>> label,
   Value<int> version,
   Value<int> rowid,
@@ -14709,11 +14240,6 @@ class $$FormTemplatesTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -14722,6 +14248,11 @@ class $$FormTemplatesTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<Map<String, String>, Map<String, String>,
           String>
@@ -14776,9 +14307,6 @@ class $$FormTemplatesTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -14787,6 +14315,10 @@ class $$FormTemplatesTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get label => $composableBuilder(
       column: $table.label, builder: (column) => ColumnOrderings(column));
@@ -14816,10 +14348,6 @@ class $$FormTemplatesTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -14828,6 +14356,10 @@ class $$FormTemplatesTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<Map<String, String>, String> get label =>
       $composableBuilder(column: $table.label, builder: (column) => column);
@@ -14884,10 +14416,10 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<Map<String, String>> label = const Value.absent(),
             Value<int> version = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -14897,10 +14429,10 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             label: label,
             version: version,
             rowid: rowid,
@@ -14910,10 +14442,10 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<Map<String, String>> label = const Value.absent(),
             required int version,
             Value<int> rowid = const Value.absent(),
@@ -14923,10 +14455,10 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             label: label,
             version: version,
             rowid: rowid,
@@ -14981,13 +14513,14 @@ typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<DOptionSet>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   required String optionSet,
   Value<List<Template>?> treeFields,
   Value<List<FormOption>> options,
+  Value<List<DOptionSet>?> optionSets,
   Value<Map<String, String>> label,
   required String defaultLocal,
   Value<List<Template>?> fieldsConf,
@@ -15003,13 +14536,14 @@ typedef $$FormVersionsTableUpdateCompanionBuilder = FormVersionsCompanion
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<DOptionSet>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<String> optionSet,
   Value<List<Template>?> treeFields,
   Value<List<FormOption>> options,
+  Value<List<DOptionSet>?> optionSets,
   Value<Map<String, String>> label,
   Value<String> defaultLocal,
   Value<List<Template>?> fieldsConf,
@@ -15078,11 +14612,6 @@ class $$FormVersionsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<DOptionSet>?, List<DOptionSet>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -15092,6 +14621,11 @@ class $$FormVersionsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
   ColumnWithTypeConverterFilters<List<Template>?, List<Template>, String>
       get treeFields => $composableBuilder(
           column: $table.treeFields,
@@ -15100,6 +14634,11 @@ class $$FormVersionsTableFilterComposer
   ColumnWithTypeConverterFilters<List<FormOption>, List<FormOption>, String>
       get options => $composableBuilder(
           column: $table.options,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<List<DOptionSet>?, List<DOptionSet>, String>
+      get optionSets => $composableBuilder(
+          column: $table.optionSets,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<Map<String, String>, Map<String, String>,
@@ -15196,9 +14735,6 @@ class $$FormVersionsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -15208,11 +14744,18 @@ class $$FormVersionsTableOrderingComposer
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get treeFields => $composableBuilder(
       column: $table.treeFields, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get options => $composableBuilder(
       column: $table.options, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get optionSets => $composableBuilder(
+      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get label => $composableBuilder(
       column: $table.label, builder: (column) => ColumnOrderings(column));
@@ -15279,10 +14822,6 @@ class $$FormVersionsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<DOptionSet>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -15292,12 +14831,20 @@ class $$FormVersionsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<List<Template>?, String> get treeFields =>
       $composableBuilder(
           column: $table.treeFields, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<List<FormOption>, String> get options =>
       $composableBuilder(column: $table.options, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<DOptionSet>?, String> get optionSets =>
+      $composableBuilder(
+          column: $table.optionSets, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<Map<String, String>, String> get label =>
       $composableBuilder(column: $table.label, builder: (column) => column);
@@ -15393,13 +14940,14 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<DOptionSet>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<String> optionSet = const Value.absent(),
             Value<List<Template>?> treeFields = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
+            Value<List<DOptionSet>?> optionSets = const Value.absent(),
             Value<Map<String, String>> label = const Value.absent(),
             Value<String> defaultLocal = const Value.absent(),
             Value<List<Template>?> fieldsConf = const Value.absent(),
@@ -15414,13 +14962,14 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             optionSet: optionSet,
             treeFields: treeFields,
             options: options,
+            optionSets: optionSets,
             label: label,
             defaultLocal: defaultLocal,
             fieldsConf: fieldsConf,
@@ -15435,13 +14984,14 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<DOptionSet>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             required String optionSet,
             Value<List<Template>?> treeFields = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
+            Value<List<DOptionSet>?> optionSets = const Value.absent(),
             Value<Map<String, String>> label = const Value.absent(),
             required String defaultLocal,
             Value<List<Template>?> fieldsConf = const Value.absent(),
@@ -15456,13 +15006,14 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             optionSet: optionSet,
             treeFields: treeFields,
             options: options,
+            optionSets: optionSets,
             label: label,
             defaultLocal: defaultLocal,
             fieldsConf: fieldsConf,
@@ -15550,10 +15101,10 @@ typedef $$MetadataSubmissionsTableCreateCompanionBuilder
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   required MetadataResourceType resourceType,
   required String metadataSchema,
   required int serialNumber,
@@ -15570,10 +15121,10 @@ typedef $$MetadataSubmissionsTableUpdateCompanionBuilder
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<MetadataResourceType> resourceType,
   Value<String> metadataSchema,
   Value<int> serialNumber,
@@ -15607,11 +15158,6 @@ class $$MetadataSubmissionsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -15620,6 +15166,11 @@ class $$MetadataSubmissionsTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<MetadataResourceType, MetadataResourceType,
           String>
@@ -15676,9 +15227,6 @@ class $$MetadataSubmissionsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -15687,6 +15235,10 @@ class $$MetadataSubmissionsTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get resourceType => $composableBuilder(
       column: $table.resourceType,
@@ -15738,10 +15290,6 @@ class $$MetadataSubmissionsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -15750,6 +15298,10 @@ class $$MetadataSubmissionsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<MetadataResourceType, String>
       get resourceType => $composableBuilder(
@@ -15812,10 +15364,10 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<MetadataResourceType> resourceType = const Value.absent(),
             Value<String> metadataSchema = const Value.absent(),
             Value<int> serialNumber = const Value.absent(),
@@ -15831,10 +15383,10 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             resourceType: resourceType,
             metadataSchema: metadataSchema,
             serialNumber: serialNumber,
@@ -15850,10 +15402,10 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             required MetadataResourceType resourceType,
             required String metadataSchema,
             required int serialNumber,
@@ -15869,10 +15421,10 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             resourceType: resourceType,
             metadataSchema: metadataSchema,
             serialNumber: serialNumber,
@@ -15912,10 +15464,6 @@ typedef $$DataFormSubmissionsTableCreateCompanionBuilder
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
   Value<bool> deleted,
   Value<bool?> synced,
   Value<bool> syncFailed,
@@ -15941,10 +15489,6 @@ typedef $$DataFormSubmissionsTableUpdateCompanionBuilder
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
   Value<bool> deleted,
   Value<bool?> synced,
   Value<bool> syncFailed,
@@ -16078,20 +15622,6 @@ class $$DataFormSubmissionsTableFilterComposer
 
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get deleted => $composableBuilder(
       column: $table.deleted, builder: (column) => ColumnFilters(column));
@@ -16285,18 +15815,6 @@ class $$DataFormSubmissionsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<bool> get deleted => $composableBuilder(
       column: $table.deleted, builder: (column) => ColumnOrderings(column));
 
@@ -16441,19 +15959,6 @@ class $$DataFormSubmissionsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => column);
-
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
 
   GeneratedColumn<bool> get deleted =>
       $composableBuilder(column: $table.deleted, builder: (column) => column);
@@ -16654,10 +16159,6 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
             Value<bool?> synced = const Value.absent(),
             Value<bool> syncFailed = const Value.absent(),
@@ -16682,10 +16183,6 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
-            name: name,
-            displayName: displayName,
-            code: code,
             deleted: deleted,
             synced: synced,
             syncFailed: syncFailed,
@@ -16710,10 +16207,6 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
             Value<bool?> synced = const Value.absent(),
             Value<bool> syncFailed = const Value.absent(),
@@ -16738,10 +16231,6 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
-            name: name,
-            displayName: displayName,
-            code: code,
             deleted: deleted,
             synced: synced,
             syncFailed: syncFailed,
@@ -16896,7 +16385,6 @@ typedef $$RepeatInstancesTableCreateCompanionBuilder = RepeatInstancesCompanion
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   required String submission,
   required String templatePath,
   Value<String?> parent,
@@ -16909,7 +16397,6 @@ typedef $$RepeatInstancesTableUpdateCompanionBuilder = RepeatInstancesCompanion
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String> submission,
   Value<String> templatePath,
   Value<String?> parent,
@@ -16988,11 +16475,6 @@ class $$RepeatInstancesTableFilterComposer
 
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<String> get templatePath => $composableBuilder(
       column: $table.templatePath, builder: (column) => ColumnFilters(column));
@@ -17084,9 +16566,6 @@ class $$RepeatInstancesTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get templatePath => $composableBuilder(
       column: $table.templatePath,
       builder: (column) => ColumnOrderings(column));
@@ -17156,10 +16635,6 @@ class $$RepeatInstancesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
 
   GeneratedColumn<String> get templatePath => $composableBuilder(
       column: $table.templatePath, builder: (column) => column);
@@ -17259,7 +16734,6 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String> submission = const Value.absent(),
             Value<String> templatePath = const Value.absent(),
             Value<String?> parent = const Value.absent(),
@@ -17271,7 +16745,6 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             submission: submission,
             templatePath: templatePath,
             parent: parent,
@@ -17283,7 +16756,6 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             required String submission,
             required String templatePath,
             Value<String?> parent = const Value.absent(),
@@ -17295,7 +16767,6 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             submission: submission,
             templatePath: templatePath,
             parent: parent,
@@ -17390,10 +16861,10 @@ typedef $$DataElementsTableCreateCompanionBuilder = DataElementsCompanion
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<String?> description,
   Value<ValueType?> type,
   Value<bool> mandatory,
@@ -17411,10 +16882,10 @@ typedef $$DataElementsTableUpdateCompanionBuilder = DataElementsCompanion
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<String?> description,
   Value<ValueType?> type,
   Value<bool> mandatory,
@@ -17469,11 +16940,6 @@ class $$DataElementsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -17482,6 +16948,11 @@ class $$DataElementsTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnFilters(column));
@@ -17566,9 +17037,6 @@ class $$DataElementsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -17577,6 +17045,10 @@ class $$DataElementsTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnOrderings(column));
@@ -17631,10 +17103,6 @@ class $$DataElementsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -17643,6 +17111,10 @@ class $$DataElementsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => column);
@@ -17722,10 +17194,10 @@ class $$DataElementsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<ValueType?> type = const Value.absent(),
             Value<bool> mandatory = const Value.absent(),
@@ -17743,10 +17215,10 @@ class $$DataElementsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             description: description,
             type: type,
             mandatory: mandatory,
@@ -17763,10 +17235,10 @@ class $$DataElementsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<ValueType?> type = const Value.absent(),
             Value<bool> mandatory = const Value.absent(),
@@ -17784,10 +17256,10 @@ class $$DataElementsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             description: description,
             type: type,
             mandatory: mandatory,
@@ -17848,7 +17320,6 @@ typedef $$DataValuesTableCreateCompanionBuilder = DataValuesCompanion Function({
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   required String templatePath,
   Value<String?> parent,
   required String submission,
@@ -17861,7 +17332,6 @@ typedef $$DataValuesTableUpdateCompanionBuilder = DataValuesCompanion Function({
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String> templatePath,
   Value<String?> parent,
   Value<String> submission,
@@ -17938,11 +17408,6 @@ class $$DataValuesTableFilterComposer
 
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<String> get templatePath => $composableBuilder(
       column: $table.templatePath, builder: (column) => ColumnFilters(column));
@@ -18033,9 +17498,6 @@ class $$DataValuesTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get templatePath => $composableBuilder(
       column: $table.templatePath,
       builder: (column) => ColumnOrderings(column));
@@ -18125,10 +17587,6 @@ class $$DataValuesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
 
   GeneratedColumn<String> get templatePath => $composableBuilder(
       column: $table.templatePath, builder: (column) => column);
@@ -18225,7 +17683,6 @@ class $$DataValuesTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String> templatePath = const Value.absent(),
             Value<String?> parent = const Value.absent(),
             Value<String> submission = const Value.absent(),
@@ -18238,7 +17695,6 @@ class $$DataValuesTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             templatePath: templatePath,
             parent: parent,
             submission: submission,
@@ -18251,7 +17707,6 @@ class $$DataValuesTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             required String templatePath,
             Value<String?> parent = const Value.absent(),
             required String submission,
@@ -18264,7 +17719,6 @@ class $$DataValuesTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             templatePath: templatePath,
             parent: parent,
             submission: submission,
@@ -18355,10 +17809,10 @@ typedef $$DataOptionSetsTableCreateCompanionBuilder = DataOptionSetsCompanion
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<int> rowid,
 });
 typedef $$DataOptionSetsTableUpdateCompanionBuilder = DataOptionSetsCompanion
@@ -18367,10 +17821,10 @@ typedef $$DataOptionSetsTableUpdateCompanionBuilder = DataOptionSetsCompanion
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<int> rowid,
 });
 
@@ -18417,11 +17871,6 @@ class $$DataOptionSetsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -18430,6 +17879,11 @@ class $$DataOptionSetsTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   Expression<bool> dataOptionsRefs(
       Expression<bool> Function($$DataOptionsTableFilterComposer f) f) {
@@ -18475,9 +17929,6 @@ class $$DataOptionSetsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -18486,6 +17937,10 @@ class $$DataOptionSetsTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$DataOptionSetsTableAnnotationComposer
@@ -18509,10 +17964,6 @@ class $$DataOptionSetsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -18521,6 +17972,10 @@ class $$DataOptionSetsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   Expression<T> dataOptionsRefs<T extends Object>(
       Expression<T> Function($$DataOptionsTableAnnotationComposer a) f) {
@@ -18572,10 +18027,10 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               DataOptionSetsCompanion(
@@ -18583,10 +18038,10 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -18594,10 +18049,10 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               DataOptionSetsCompanion.insert(
@@ -18605,10 +18060,10 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -18661,10 +18116,10 @@ typedef $$DataOptionsTableCreateCompanionBuilder = DataOptionsCompanion
   required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   required String optionSet,
   required String listName,
   required int order,
@@ -18679,10 +18134,10 @@ typedef $$DataOptionsTableUpdateCompanionBuilder = DataOptionsCompanion
   Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<List<Translation>?> optionSets,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
+  Value<List<Translation>?> translations,
   Value<String> optionSet,
   Value<String> listName,
   Value<int> order,
@@ -18732,11 +18187,6 @@ class $$DataOptionsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
-      get optionSets => $composableBuilder(
-          column: $table.optionSets,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -18745,6 +18195,11 @@ class $$DataOptionsTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+      get translations => $composableBuilder(
+          column: $table.translations,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<String> get listName => $composableBuilder(
       column: $table.listName, builder: (column) => ColumnFilters(column));
@@ -18811,9 +18266,6 @@ class $$DataOptionsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get optionSets => $composableBuilder(
-      column: $table.optionSets, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -18822,6 +18274,10 @@ class $$DataOptionsTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translations => $composableBuilder(
+      column: $table.translations,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get listName => $composableBuilder(
       column: $table.listName, builder: (column) => ColumnOrderings(column));
@@ -18881,10 +18337,6 @@ class $$DataOptionsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String> get optionSets =>
-      $composableBuilder(
-          column: $table.optionSets, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -18893,6 +18345,10 @@ class $$DataOptionsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+      get translations => $composableBuilder(
+          column: $table.translations, builder: (column) => column);
 
   GeneratedColumn<String> get listName =>
       $composableBuilder(column: $table.listName, builder: (column) => column);
@@ -18958,10 +18414,10 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             Value<String> optionSet = const Value.absent(),
             Value<String> listName = const Value.absent(),
             Value<int> order = const Value.absent(),
@@ -18975,10 +18431,10 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             optionSet: optionSet,
             listName: listName,
             order: order,
@@ -18992,10 +18448,10 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<List<Translation>?> optionSets = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
+            Value<List<Translation>?> translations = const Value.absent(),
             required String optionSet,
             required String listName,
             required int order,
@@ -19009,10 +18465,10 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            optionSets: optionSets,
             name: name,
             displayName: displayName,
             code: code,
+            translations: translations,
             optionSet: optionSet,
             listName: listName,
             order: order,

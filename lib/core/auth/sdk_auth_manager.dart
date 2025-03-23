@@ -45,8 +45,8 @@ class SdkAuthManager implements AuthManager {
       final User authUser = authResult;
 
       // 2. Initialize user-specific database
-      final db = await _dbManager.connectForUser(
-        userName: authUser.username,
+      final db = await _dbManager.switchDatabase(
+        username: authUser.username,
         server: server,
       );
 
@@ -71,17 +71,17 @@ class SdkAuthManager implements AuthManager {
   @override
   Future<void> logout(
       {LogoutStrategy strategy = LogoutStrategy.deleteLocalData}) async {
-    final currentState = _authController.value;
-
-    // 1. Execute logout strategy
-    final handler = _getLogoutHandler(strategy);
-    await handler.handle(currentState.userKey!, currentState.activeServerUrl!);
-
-    // 2. Clear secure storage
-    await _storageManager.removeCurrentCachedUser();
-
-    // 3. Update auth state
-    _authController.add(AuthState.initial());
+    // final currentState = _authController.value;
+    //
+    // // 1. Execute logout strategy
+    // final handler = _getLogoutHandler(strategy);
+    // await handler.handle(currentState.userKey!, currentState.activeServerUrl!);
+    //
+    // // 2. Clear secure storage
+    // await _storageManager.removeCurrentCachedUser();
+    //
+    // // 3. Update auth state
+    // _authController.add(AuthState.initial());
   }
 
   LogoutHandler _getLogoutHandler(LogoutStrategy strategy) {
@@ -102,8 +102,8 @@ class SdkAuthManager implements AuthManager {
           errorCode: DRunErrorCode.noLoggedInUser,
           message: 'user ${user.username} is not logged in');
 
-    await _dbManager.connectForUser(
-      userName: user.username,
+    await _dbManager.switchDatabase(
+      username: user.username,
       server: server,
     );
   }

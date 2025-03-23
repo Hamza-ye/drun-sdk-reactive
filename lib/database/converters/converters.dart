@@ -7,4 +7,6 @@ export 'map.converter.dart';
 export 'option_set_list.converter.dart'; 
 export 'scanned_code_properties.converter.dart'; 
 export 'team_form_permission.converter.dart'; 
-export 'template_list.converter.dart'; 
+export 'template_list.converter.dart';
+export 'translation.converter.dart';
+
