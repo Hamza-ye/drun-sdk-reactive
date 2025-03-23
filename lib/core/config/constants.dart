@@ -1,5 +1,4 @@
 import 'package:d_sdk/core/config/environment.dart';
-import 'package:d_sdk/core/config/server_config.dart';
 
 abstract interface class SdkConstants {
   static const Environment environment = Environment.production;

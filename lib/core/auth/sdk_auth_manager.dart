@@ -9,7 +9,6 @@ import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/user_session/session_storage_manager.dart';
 import 'package:d_sdk/core/utilities/list_extensions.dart';
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/data_base_manager.dart';
 import 'package:d_sdk/database/db_manager.dart';
 import 'package:d_sdk/use_cases/logout_strategies/logout_strategies.dart';
 import 'package:multiple_result/multiple_result.dart';

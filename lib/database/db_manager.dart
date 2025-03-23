@@ -2,7 +2,6 @@ import 'package:d_sdk/core/config/server_config.dart';
 import 'package:d_sdk/core/platform/platform.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 
 class DbManager {
   static final _instance = DbManager._internal();
