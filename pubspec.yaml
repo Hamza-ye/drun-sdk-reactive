@@ -10,16 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  datarun_shared:
-    path: ../datarun_shared/
-  #  http: ^0.13.4
-  #  async: ^2.8.2
-  #  queue: ^3.1.0+2
   expressions: ^0.2.5+2
   dio: 5.0.0
-  #  xml2json: ^5.3.2
-  #  mime: ^1.0.2
-  #  http_parser: ^4.0.0
   equatable: ^2.0.5
   fast_immutable_collections: ^10.2.4
   intl: ^0.19.0
