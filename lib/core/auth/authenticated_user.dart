@@ -1,25 +1,28 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:equatable/equatable.dart';
 
-class AuthenticationResult with EquatableMixin {
-  final bool success;
-  final User? sessionUser;
+class AuthState with EquatableMixin {
+  final User? user;
+  final bool loggedIn;
+  final String? activeServerUrl;
 
-  const AuthenticationResult({
-    this.success = false,
-    this.sessionUser,
+  const AuthState({
+    this.user,
+    this.loggedIn = false,
+    this.activeServerUrl,
   });
 
-  AuthenticationResult copyWith({
-    bool? success,
-    User? sessionUser,
+  AuthState copyWith({
+    User? user,
+    bool? loggedIn,
+    String? activeServerUrl,
   }) {
-    return AuthenticationResult(
-      success: success ?? this.success,
-      sessionUser: sessionUser ?? this.sessionUser,
-    );
+    return AuthState(
+        loggedIn: loggedIn ?? this.loggedIn,
+        user: user ?? this.user,
+        activeServerUrl: activeServerUrl ?? this.activeServerUrl);
   }
 
   @override
-  List<Object?> get props => [success, sessionUser];
+  List<Object?> get props => [loggedIn, user, activeServerUrl];
 }

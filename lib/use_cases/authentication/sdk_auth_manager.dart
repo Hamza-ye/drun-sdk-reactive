@@ -1,5 +1,5 @@
 import 'package:d_sdk/core/auth/auth_manager.dart';
-import 'package:d_sdk/core/auth/auth_state.dart';
+import 'package:d_sdk/core/auth/authenticated_user.dart';
 import 'package:d_sdk/core/auth/authentication_params.dart';
 import 'package:d_sdk/core/auth/authentication_service.dart';
 import 'package:d_sdk/core/cache/cached_user.dart';
@@ -74,9 +74,9 @@ class SdkAuthManager implements AuthManager {
       _userSubject.add(authUser);
 
       return Success(AuthState(
-        username: username,
+        user: authUser,
         activeServerUrl: server.baseUrl,
-        isLoggedIn: true,
+        loggedIn: true,
       ));
     } on AuthFailure catch (e) {
       logError(e.message, data: e.toMap());

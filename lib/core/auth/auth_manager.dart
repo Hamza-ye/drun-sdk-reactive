@@ -1,4 +1,4 @@
-import 'package:d_sdk/core/auth/auth_state.dart';
+import 'package:d_sdk/core/auth/authenticated_user.dart';
 import 'package:d_sdk/core/cache/cached_user.dart';
 import 'package:d_sdk/core/config/server_config.dart';
 import 'package:d_sdk/core/exception/api_exceptions.dart';
