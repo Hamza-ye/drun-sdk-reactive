@@ -53,6 +53,8 @@ class AppDatabase extends _$AppDatabase {
               ),
         );
 
+  void gg() {
+  }
   @override
   int get schemaVersion => 1;
 }

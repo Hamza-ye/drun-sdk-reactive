@@ -3,18 +3,16 @@ import 'package:d_sdk/core/config/environment.dart';
 class CachedUser {
   final String username;
   final String baseUrl;
-  final Environment environment;
+  // final Environment environment;
 
   const CachedUser(
       {required this.username,
-      required this.baseUrl,
-      required this.environment});
+      required this.baseUrl});
 
   factory CachedUser.fromJson(Map<String, dynamic> json) {
     return CachedUser(
       username: json['username'],
       baseUrl: json['baseUrl'],
-      environment: Environment.getValue(json['environment']),
     );
   }
 
@@ -22,7 +20,6 @@ class CachedUser {
     return <String, dynamic>{
       'username': username,
       'baseUrl': baseUrl,
-      'environment': environment.name,
     };
   }
 
@@ -34,7 +31,6 @@ class CachedUser {
       CachedUser(
         username: username ?? this.username,
         baseUrl: baseUrl ?? this.baseUrl,
-        environment: environment ?? this.environment,
       );
 
   @override
@@ -42,7 +38,6 @@ class CachedUser {
     return (StringBuffer('User(')
           ..write('username: $username, ')
           ..write('baseUrl: $baseUrl, ')
-          ..write('environment: $environment, ')
           ..write(')'))
         .toString();
   }
@@ -51,7 +46,6 @@ class CachedUser {
   int get hashCode => Object.hashAll([
         username,
         baseUrl,
-        environment,
       ]);
 
   @override
@@ -59,6 +53,5 @@ class CachedUser {
       identical(this, other) ||
       (other is CachedUser &&
           other.username == this.username &&
-          other.baseUrl == this.baseUrl &&
-          other.environment == this.environment);
+          other.baseUrl == this.baseUrl);
 }

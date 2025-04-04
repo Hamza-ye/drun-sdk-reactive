@@ -1,11 +1,13 @@
 import 'dart:convert';
 
-import 'package:d_sdk/core/auth/cached_user.dart';
 import 'package:d_sdk/core/cache/cache_storage.dart';
+import 'package:d_sdk/core/cache/cached_user.dart';
 import 'package:d_sdk/core/config/constants.dart';
 import 'package:d_sdk/core/user_session/session_storage_manager.dart';
 import 'package:d_sdk/core/utilities/list_extensions.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: SessionStorageManager)
 class SdkSessionStorageManager implements SessionStorageManager {
   final CacheStorage _cacheStorage;
 

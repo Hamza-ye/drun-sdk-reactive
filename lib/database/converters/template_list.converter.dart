@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:drift/drift.dart';
 import 'package:d_sdk/database/shared/value_type.dart';
+import 'package:drift/drift.dart';
 
 import '../../core/form/field_template/field_template.dart';
 

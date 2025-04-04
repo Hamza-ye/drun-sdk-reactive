@@ -9,6 +9,14 @@ class DDatabaseException extends DError {
   }) : super(message: message, errorComponent: DErrorComponent.Database);
 }
 
+class NoActiveDatabaseInstance extends DDatabaseException {
+  NoActiveDatabaseInstance({Exception? cause, StackTrace? stackTrace})
+      : super("Failed to connect to the database, no Active user database.",
+            cause: cause,
+            stackTrace: stackTrace,
+            errorCode: DRunErrorCode.noActiveDatabaseInstance);
+}
+
 class DDatabaseConnectionException extends DDatabaseException {
   DDatabaseConnectionException({Exception? cause, StackTrace? stackTrace})
       : super("Failed to connect to the database.",

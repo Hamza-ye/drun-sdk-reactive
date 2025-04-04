@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:drift/drift.dart';
+
 import 'package:d_sdk/database/shared/shared.dart';
+import 'package:drift/drift.dart';
 
 /// Converter for List<AllowedAction> <-> String
 class AllowedActionListConverter

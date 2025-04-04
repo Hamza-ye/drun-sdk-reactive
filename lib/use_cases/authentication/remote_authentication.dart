@@ -1,19 +1,24 @@
 import 'dart:io';
 
 import 'package:d_sdk/core/auth/authentication_params.dart';
+import 'package:d_sdk/core/auth/authentication_service.dart';
+import 'package:d_sdk/core/config/app_environment_instance.dart';
 import 'package:d_sdk/core/exception/exception.dart';
 import 'package:d_sdk/core/http/http-details.util.dart';
+import 'package:d_sdk/core/http/http_adapter.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/core/auth/authentication_service.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: AuthenticationService)
 class RemoteAuthentication implements AuthenticationService {
   final HttpClient httpClient;
-  final String authResourceName;
+  final AppEnvironmentInstance envInstance;
 
   RemoteAuthentication(
-      {required this.httpClient, required this.authResourceName});
+      {@Named.from(HttpAdapter) required this.httpClient,
+      required this.envInstance});
 
   Future<User> auth(AuthenticationParams params) async {
     HttpDetails httpDetails =
@@ -25,7 +30,9 @@ class RemoteAuthentication implements AuthenticationService {
 
     try {
       final httpResponse = await httpClient.request(
-          resourceName: authResourceName, method: 'get', headers: authHeaders);
+          resourceName: envInstance.apiUserAuthResource,
+          method: 'get',
+          headers: authHeaders);
 
       return User.fromJson({
         ...httpResponse.data,

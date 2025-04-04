@@ -22,6 +22,7 @@ enum DRunErrorCode {
   accountDisabled,
 
   // Database-related errors
+  noActiveDatabaseInstance, // Failed to connect to the database
   databaseConnectionFailed, // Failed to connect to the database
   databaseQueryFailed, // Database query failed
   databaseInternalError, // Internal database error

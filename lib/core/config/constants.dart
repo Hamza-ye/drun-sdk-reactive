@@ -1,14 +1,13 @@
-import 'package:d_sdk/core/config/environment.dart';
 
-abstract interface class SdkConstants {
-  static const Environment environment = Environment.production;
-}
+// abstract interface class SdkConstants {
+//   static const Environment environment = Environment.production;
+// }
 
 abstract interface class ApiConstants {
-  static const String kApiProductionBaseUrl = 'https://api.nmcpye.org';
-  static const String kApiStagingBaseUrl = 'https://play.nmcpye.org';
-  static const String kApiLocal = 'http://localhost:8080';
-  static const String kApiPath = '/api/custom';
+  // static const String kApiProductionBaseUrl = 'https://api.nmcpye.org';
+  // static const String kApiStagingBaseUrl = 'https://play.nmcpye.org';
+  // static const String kApiLocal = 'http://localhost:8080';
+  // static const String kApiPath = '/api/custom';
 
   // // App-specific configuration (move in app/)
   // static const serverInstances = const {

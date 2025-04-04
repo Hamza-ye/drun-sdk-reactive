@@ -1,4 +1,4 @@
-// import 'package:d_sdk/remote/dee/sync_options.dart';
+// import 'package:d_sdk/datasource/dee/sync_options.dart';
 //
 // class SyncService {
 //   final Map<Type, SyncRepository> _repositories;

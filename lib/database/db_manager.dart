@@ -2,15 +2,12 @@ import 'package:d_sdk/core/config/server_config.dart';
 import 'package:d_sdk/core/platform/platform.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 
+@lazySingleton
 class DbManager {
-  static final _instance = DbManager._internal();
   final Map<String, AppDatabase> _databases = {};
   AppDatabase? _activeDb;
-
-  DbManager._internal();
-
-  factory DbManager() => _instance;
 
   Future<AppDatabase> switchDatabase({
     required String username,
@@ -40,7 +37,6 @@ class DbManager {
       });
     } finally {
       await _activeDb?.customStatement('PRAGMA foreign_keys = OFF');
-      ;
     }
   }
 

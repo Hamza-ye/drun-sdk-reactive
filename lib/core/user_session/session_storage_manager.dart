@@ -1,4 +1,4 @@
-import 'package:d_sdk/core/auth/cached_user.dart';
+import 'package:d_sdk/core/cache/cached_user.dart';
 
 abstract class SessionStorageManager {
   Future<CachedUser?> loadCurrentUser();

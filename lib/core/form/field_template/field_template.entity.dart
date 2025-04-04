@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:d_sdk/core/form/attribute_type.dart';
+import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
 import 'package:d_sdk/core/form/template_path_walking_service.dart';
 import 'package:d_sdk/core/utilities/parsing_helpers.dart';
@@ -9,7 +10,6 @@ import 'package:d_sdk/database/shared/form_option.dart';
 import 'package:d_sdk/database/shared/metadata_resource_type.dart';
 import 'package:d_sdk/database/shared/scanned_code_properties.dart';
 import 'package:d_sdk/database/shared/value_type.dart';
-import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 mixin ElementAttributesMixin {

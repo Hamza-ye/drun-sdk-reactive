@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:d_sdk/core/form/field_template/container_template.dart';
 import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
+import 'package:d_sdk/core/utilities/parsing_helpers.dart';
 import 'package:d_sdk/database/converters/template_list.converter.dart';
 import 'package:d_sdk/database/shared/shared.dart';
-import 'package:d_sdk/core/utilities/parsing_helpers.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class SectionTemplate extends ContainerTemplate {
