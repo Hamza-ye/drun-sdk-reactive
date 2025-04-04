@@ -11,12 +11,14 @@ enum SyncProgressState {
 }
 
 class SyncProgressEvent {
+  final String resourceName;
   final SyncProgressState syncProgressState;
   final String message;
   final double percentage;
   final bool completed;
 
   const SyncProgressEvent({
+    required this.resourceName,
     required this.syncProgressState,
     required this.message,
     required this.percentage,
@@ -25,7 +27,8 @@ class SyncProgressEvent {
 
   Map<String, dynamic> toMap() {
     return {
-      'resourceName': this.syncProgressState.name,
+      'resourceName': this.resourceName,
+      'syncProgressState': this.syncProgressState.name,
       'percentage': this.percentage,
       'completed': this.completed,
     };

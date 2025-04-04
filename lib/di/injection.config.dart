@@ -11,7 +11,6 @@
 import 'package:d_sdk/core/auth/auth_manager.dart' as _i253;
 import 'package:d_sdk/core/auth/authentication_service.dart' as _i882;
 import 'package:d_sdk/core/cache/cache.dart' as _i505;
-import 'package:d_sdk/core/cache/cache_storage.dart' as _i167;
 import 'package:d_sdk/core/config/app_environment_instance.dart' as _i132;
 import 'package:d_sdk/core/http/authorize_http_client_decorator.dart' as _i147;
 import 'package:d_sdk/core/http/http_adapter.dart' as _i69;
@@ -93,8 +92,6 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
       () => thirdPartyServicesModule.dio(gh<_i132.AppEnvironmentInstance>()));
   gh.lazySingleton<_i505.CacheStorage>(() => thirdPartyServicesModule
       .cachedStorage(gh<_i132.AppEnvironmentInstance>()));
-  gh.lazySingleton<_i389.SessionStorageManager>(() =>
-      _i287.SdkSessionStorageManager(cacheStorage: gh<_i167.CacheStorage>()));
   gh.lazySingleton<_i8.HttpClient<dynamic>>(
     () => _i69.HttpAdapter(gh<_i361.Dio>()),
     instanceName: 'HttpAdapter',
@@ -104,6 +101,8 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
         httpClient: gh<_i8.HttpClient<dynamic>>(instanceName: 'HttpAdapter'),
         envInstance: gh<_i132.AppEnvironmentInstance>(),
       ));
+  gh.lazySingleton<_i389.SessionStorageManager>(() =>
+      _i287.SdkSessionStorageManager(cacheStorage: gh<_i505.CacheStorage>()));
   gh.lazySingleton<_i253.AuthManager>(
     () => _i751.SdkAuthManager(
       storageManager: gh<_i389.SessionStorageManager>(),

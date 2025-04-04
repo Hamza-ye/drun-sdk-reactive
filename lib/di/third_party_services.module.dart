@@ -1,6 +1,4 @@
 import 'package:d_sdk/core/cache/cache.dart';
-import 'package:d_sdk/core/cache/secure_cache_storage_adapter.dart';
-import 'package:d_sdk/core/cache/shared_cache_storage_adapter.dart';
 import 'package:d_sdk/core/config/app_environment_instance.dart';
 import 'package:d_sdk/di/injection.dart';
 import 'package:dio/dio.dart';

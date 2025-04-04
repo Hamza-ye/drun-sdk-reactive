@@ -23,8 +23,9 @@ class SyncManager {
     int resourceIndex = 0;
 
     _progressController.add(SyncProgressEvent(
+      resourceName: '$totalResources resources',
       syncProgressState: SyncProgressState.ENQUEUED,
-      message: 'Starting download of $totalResources resources...',
+      message: 'Starting download...',
       percentage: 0,
     ));
 
@@ -35,6 +36,7 @@ class SyncManager {
       final basePercentage = ((resourceIndex - 1) / totalResources) * 100;
 
       _progressController.add(SyncProgressEvent(
+        resourceName: remoteDataSource.apiResourceName,
         syncProgressState: SyncProgressState.RUNNING,
         message: 'Starting sync for ${remoteDataSource.apiResourceName}...',
         percentage: basePercentage,
@@ -48,8 +50,9 @@ class SyncManager {
             final overallProgress = basePercentage +
                 (resourceProgress / 100) * (100 / totalResources);
             _progressController.add(SyncProgressEvent(
+              resourceName: remoteDataSource.apiResourceName,
               syncProgressState: SyncProgressState.SUCCEEDED,
-              message: 'Syncing ${remoteDataSource.apiResourceName}...',
+              message: '✔',
               percentage: overallProgress,
               completed: false,
             ));
@@ -58,17 +61,18 @@ class SyncManager {
 
         final overallProgress = (resourceIndex / totalResources) * 100;
         _progressController.add(SyncProgressEvent(
+          resourceName: remoteDataSource.apiResourceName,
           syncProgressState: SyncProgressState.ENQUEUED,
-          message:
-              '${onlineData.length} records downloaded from ${remoteDataSource.apiResourceName}',
+          message: '${onlineData.length} records downloaded',
           percentage: overallProgress,
           completed: true,
         ));
       } catch (e) {
         final overallProgress = (resourceIndex / totalResources) * 100;
         _progressController.add(SyncProgressEvent(
+          resourceName: remoteDataSource.apiResourceName,
           syncProgressState: SyncProgressState.FAILED,
-          message: 'Error syncing ${remoteDataSource.apiResourceName}: $e',
+          message: '❌ Sync error: $e',
           percentage: overallProgress,
           completed: false,
         ));
