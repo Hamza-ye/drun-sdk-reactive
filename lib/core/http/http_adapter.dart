@@ -42,9 +42,14 @@ class HttpAdapter extends HttpClient {
     Future<Response>? futureResponse;
     try {
       if (method == 'post') {
+        dioClient.options.copyWith(
+            headers: defaultHeaders,
+            receiveTimeout: Duration(milliseconds: 100000));
+
         futureResponse = dioClient.post(resourcePath,
             data: data,
             options: Options(
+                sendTimeout: dioClient.options.sendTimeout,
                 receiveTimeout: Duration(milliseconds: 100000),
                 headers: defaultHeaders));
       } else if (method == 'get') {
