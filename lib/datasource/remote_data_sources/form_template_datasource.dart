@@ -1,13 +1,14 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/db_manager.dart';
-import 'package:d_sdk/datasource/d_datasource.dart';
-import 'package:d_sdk/datasource/generic_datasource.dart';
+import 'package:d_sdk/datasource/abstract_datasource.dart';
+import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: DDatasource)
+@Order(90)
+@LazySingleton(as: AbstractDatasource)
 class FormTemplateDatasource
-    extends GenericDataSource<$FormTemplatesTable, FormTemplate>
+    extends BaseDataSource<$FormTemplatesTable, FormTemplate>
     implements MetaDataSource<FormTemplate> {
   FormTemplateDatasource(
       {required super.apiClient, required DbManager dbManager})
@@ -19,5 +20,6 @@ class FormTemplateDatasource
   String get apiResourceName => 'dataFormTemplates';
 
   @override
-  FromJsonCallback<FormTemplate> get fromJsonCallback => FormTemplate.fromJson;
+  FormTemplate fromApiJson(Map<String, dynamic> data) =>
+      FormTemplate.fromJson(data);
 }

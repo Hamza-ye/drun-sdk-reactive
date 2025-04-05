@@ -1,22 +1,23 @@
 import 'package:d_sdk/api/data-run-url-generator.util.dart';
+import 'package:d_sdk/core/exception/api_exceptions.dart';
 import 'package:d_sdk/core/exception/database_exceptions.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/db_manager.dart';
-import 'package:d_sdk/datasource/d_datasource.dart';
+import 'package:d_sdk/datasource/abstract_datasource.dart';
 import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 
 typedef ProgressCallback = void Function(double progress);
 
-abstract class GenericDataSource<T extends TableInfo<T, D>,
-    D extends Insertable<D>> extends DDatasource<D> {
+abstract class BaseDataSource<T extends TableInfo<T, D>,
+    D extends Insertable<D>> extends AbstractDatasource<D> {
   final HttpClient _apiClient;
   final DbManager _dbManager;
   TableInfo<T, D> table;
 
-  GenericDataSource(
+  BaseDataSource(
       {required HttpClient apiClient,
       required DbManager dbManager,
       required this.table})
@@ -52,7 +53,6 @@ abstract class GenericDataSource<T extends TableInfo<T, D>,
 
   Future<List<D>> _getOnline() async {
     final dataRunResourceUrl = await this.dataRunResourceUrl();
-
     final response = await _apiClient.request(
         resourceName: dataRunResourceUrl, method: 'get');
 
@@ -64,7 +64,7 @@ abstract class GenericDataSource<T extends TableInfo<T, D>,
       dataItem['dirty'] = false;
       dataItem['synced'] = true;
 
-      var x = fromJsonCallback.call(dataItem);
+      var x = fromApiJson(dataItem);
 
       return x;
     }).toList();

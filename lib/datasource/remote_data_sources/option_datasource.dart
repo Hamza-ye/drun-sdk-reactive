@@ -1,12 +1,13 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/db_manager.dart';
-import 'package:d_sdk/datasource/d_datasource.dart';
-import 'package:d_sdk/datasource/generic_datasource.dart';
+import 'package:d_sdk/datasource/abstract_datasource.dart';
+import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: DDatasource)
-class OptionDatasource extends GenericDataSource<$DataOptionsTable, DataOption>
+@Order(60)
+@LazySingleton(as: AbstractDatasource)
+class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
     implements MetaDataSource<DataOption> {
   OptionDatasource({required super.apiClient, required DbManager dbManager})
       : super(
@@ -16,5 +17,6 @@ class OptionDatasource extends GenericDataSource<$DataOptionsTable, DataOption>
   String get apiResourceName => 'options';
 
   @override
-  FromJsonCallback<DataOption> get fromJsonCallback => DataOption.fromJson;
+  DataOption fromApiJson(Map<String, dynamic> data) =>
+      DataOption.fromJson(data);
 }

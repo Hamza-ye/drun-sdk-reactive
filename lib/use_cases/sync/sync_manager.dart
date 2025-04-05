@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/model/sync_progress_event.dart';
-import 'package:d_sdk/datasource/generic_datasource.dart';
+import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable()
 class SyncManager {
   SyncManager({required this.remoteDataSources});
 
-  final Iterable<GenericDataSource> remoteDataSources;
+  final Iterable<BaseDataSource> remoteDataSources;
 
   /// A stream controller for progress events.
   final StreamController<SyncProgressEvent> _progressController =

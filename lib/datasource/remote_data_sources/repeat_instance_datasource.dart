@@ -1,13 +1,14 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/db_manager.dart';
-import 'package:d_sdk/datasource/d_datasource.dart';
-import 'package:d_sdk/datasource/generic_datasource.dart';
+import 'package:d_sdk/datasource/abstract_datasource.dart';
+import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: DDatasource)
+@Order(130)
+@LazySingleton(as: AbstractDatasource)
 class RepeatInstanceDatasource
-    extends GenericDataSource<$RepeatInstancesTable, RepeatInstance>
+    extends BaseDataSource<$RepeatInstancesTable, RepeatInstance>
     implements MetaDataSource<RepeatInstance> {
   RepeatInstanceDatasource(
       {required super.apiClient, required DbManager dbManager})
@@ -19,6 +20,6 @@ class RepeatInstanceDatasource
   String get apiResourceName => 'repeatInstances';
 
   @override
-  FromJsonCallback<RepeatInstance> get fromJsonCallback =>
-      RepeatInstance.fromJson;
+  RepeatInstance fromApiJson(Map<String, dynamic> data) =>
+      RepeatInstance.fromJson(data);
 }

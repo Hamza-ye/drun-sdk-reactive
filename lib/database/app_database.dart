@@ -1,6 +1,7 @@
 import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/database/converters/converters.dart';
+import 'package:d_sdk/database/dao/activity_dao.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
@@ -26,7 +27,7 @@ part 'app_database.g.dart';
   DataOptionSets,
   DataOptions,
   DataFormSubmissions,
-])
+], daos: [ActivitiesDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase({QueryExecutor? executor, String? databaseName})
       : super(

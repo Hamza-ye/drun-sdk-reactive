@@ -1,12 +1,13 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/db_manager.dart';
-import 'package:d_sdk/datasource/d_datasource.dart';
-import 'package:d_sdk/datasource/generic_datasource.dart';
+import 'package:d_sdk/datasource/abstract_datasource.dart';
+import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: DDatasource)
-class OrgUnitDatasource extends GenericDataSource<$OrgUnitsTable, OrgUnit>
+@Order(30)
+@LazySingleton(as: AbstractDatasource)
+class OrgUnitDatasource extends BaseDataSource<$OrgUnitsTable, OrgUnit>
     implements MetaDataSource<OrgUnit> {
   OrgUnitDatasource({required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.getActiveDb()!.orgUnits);
@@ -15,5 +16,5 @@ class OrgUnitDatasource extends GenericDataSource<$OrgUnitsTable, OrgUnit>
   String get apiResourceName => 'orgUnits';
 
   @override
-  FromJsonCallback<OrgUnit> get fromJsonCallback => OrgUnit.fromJson;
+  OrgUnit fromApiJson(Map<String, dynamic> data) => OrgUnit.fromJson(data);
 }

@@ -20,8 +20,8 @@ import 'package:d_sdk/core/user_session/sdk_session_storage_manager.dart'
 import 'package:d_sdk/core/user_session/session_storage_manager.dart' as _i389;
 import 'package:d_sdk/database/app_database.dart' as _i648;
 import 'package:d_sdk/database/db_manager.dart' as _i932;
-import 'package:d_sdk/datasource/d_datasource.dart' as _i391;
-import 'package:d_sdk/datasource/generic_datasource.dart' as _i290;
+import 'package:d_sdk/datasource/abstract_datasource.dart' as _i458;
+import 'package:d_sdk/datasource/base_datasource.dart' as _i635;
 import 'package:d_sdk/datasource/remote_data_sources/activity_datasource.dart'
     as _i434;
 import 'package:d_sdk/datasource/remote_data_sources/assignment_datasource.dart'
@@ -82,16 +82,16 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
     preResolve: true,
   );
   gh.lazySingleton<_i932.DbManager>(() => _i932.DbManager());
-  gh.factory<_i981.SyncManager>(() => _i981.SyncManager(
-      remoteDataSources: gh<
-          Iterable<
-              _i290.GenericDataSource<
-                  _i500.TableInfo<dynamic, _i500.Insertable<dynamic>>,
-                  _i500.Insertable<dynamic>>>>()));
   gh.lazySingleton<_i361.Dio>(
       () => thirdPartyServicesModule.dio(gh<_i132.AppEnvironmentInstance>()));
   gh.lazySingleton<_i505.CacheStorage>(() => thirdPartyServicesModule
       .cachedStorage(gh<_i132.AppEnvironmentInstance>()));
+  gh.factory<_i981.SyncManager>(() => _i981.SyncManager(
+      remoteDataSources: gh<
+          Iterable<
+              _i635.BaseDataSource<
+                  _i500.TableInfo<dynamic, _i500.Insertable<dynamic>>,
+                  _i500.Insertable<dynamic>>>>()));
   gh.lazySingleton<_i8.HttpClient<dynamic>>(
     () => _i69.HttpAdapter(gh<_i361.Dio>()),
     instanceName: 'HttpAdapter',
@@ -116,81 +116,83 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
             gh<_i253.AuthManager>(),
             gh<_i8.HttpClient<dynamic>>(instanceName: 'HttpAdapter'),
           ));
-  gh.lazySingleton<_i391.DDatasource<_i648.FormVersion>>(
-      () => _i474.FormVersionDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.FormTemplate>>(
-      () => _i569.FormTemplateDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.Team>>(() => _i143.TeamDatasource(
-        apiClient: gh<_i8.HttpClient<dynamic>>(),
-        dbManager: gh<_i932.DbManager>(),
-      ));
-  gh.lazySingleton<_i391.DDatasource<_i648.DataValue>>(
-      () => _i239.DataValueDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.RepeatInstance>>(
-      () => _i125.RepeatInstanceDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.OuLevel>>(
-      () => _i790.OuLevelDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.MetadataSubmission>>(
-      () => _i1071.MetadataSubmissionDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.OrgUnit>>(
-      () => _i185.OrgUnitDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.Project>>(
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.Project>>(
       () => _i589.ProjectDatasource(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i932.DbManager>(),
           ));
-  gh.lazySingleton<_i391.DDatasource<_i648.DataFormSubmission>>(
-      () => _i646.DataSubmissionDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.DataElement>>(
-      () => _i827.DataElementDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.DataOption>>(
-      () => _i525.OptionDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i932.DbManager>(),
-          ));
-  gh.lazySingleton<_i391.DDatasource<_i648.Activity>>(
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.Activity>>(
       () => _i434.ActivityDatasource(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i932.DbManager>(),
           ));
-  gh.lazySingleton<_i391.DDatasource<_i648.Assignment>>(
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.OuLevel>>(
+      () => _i790.OuLevelDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.OrgUnit>>(
+      () => _i185.OrgUnitDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.User>>(
+      () => _i822.UserDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.DataOptionSet>>(
+      () => _i756.OptionSetDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.DataOption>>(
+      () => _i525.OptionDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.DataElement>>(
+      () => _i827.DataElementDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.Team>>(
+      () => _i143.TeamDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.FormTemplate>>(
+      () => _i569.FormTemplateDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.FormVersion>>(
+      () => _i474.FormVersionDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.Assignment>>(
       () => _i90.AssignmentDatasource(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i932.DbManager>(),
           ));
-  gh.lazySingleton<_i391.DDatasource<_i648.User>>(() => _i822.UserDatasource(
-        apiClient: gh<_i8.HttpClient<dynamic>>(),
-        dbManager: gh<_i932.DbManager>(),
-      ));
-  gh.lazySingleton<_i391.DDatasource<_i648.DataOptionSet>>(
-      () => _i756.OptionSetDatasource(
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.DataFormSubmission>>(
+      () => _i646.DataSubmissionDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.RepeatInstance>>(
+      () => _i125.RepeatInstanceDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.DataValue>>(
+      () => _i239.DataValueDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i932.DbManager>(),
+          ));
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.MetadataSubmission>>(
+      () => _i1071.MetadataSubmissionDatasource(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i932.DbManager>(),
           ));

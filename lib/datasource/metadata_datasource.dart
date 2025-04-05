@@ -1,3 +1,3 @@
-import 'package:d_sdk/datasource/d_datasource.dart';
+import 'package:d_sdk/datasource/abstract_datasource.dart';
 
-abstract class MetaDataSource<D> extends DDatasource<D> {}
+abstract class MetaDataSource<D> extends AbstractDatasource<D> {}

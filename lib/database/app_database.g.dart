@@ -5109,15 +5109,20 @@ class $FormVersionsTable extends FormVersions
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<Translation>?>(
               $FormVersionsTable.$convertertranslationsn);
-  static const VerificationMeta _optionSetMeta =
-      const VerificationMeta('optionSet');
+  static const VerificationMeta _formMeta = const VerificationMeta('form');
   @override
-  late final GeneratedColumn<String> optionSet = GeneratedColumn<String>(
-      'option_set', aliasedName, false,
+  late final GeneratedColumn<String> form = GeneratedColumn<String>(
+      'form', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES form_templates (id)'));
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _treeFieldsMeta =
       const VerificationMeta('treeFields');
   @override
@@ -5190,12 +5195,6 @@ class $FormVersionsTable extends FormVersions
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<ValidationStrategy>(
               $FormVersionsTable.$convertervalidationStrategy);
-  static const VerificationMeta _versionMeta =
-      const VerificationMeta('version');
-  @override
-  late final GeneratedColumn<int> version = GeneratedColumn<int>(
-      'version', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -5206,7 +5205,8 @@ class $FormVersionsTable extends FormVersions
         displayName,
         code,
         translations,
-        optionSet,
+        form,
+        version,
         treeFields,
         options,
         optionSets,
@@ -5215,8 +5215,7 @@ class $FormVersionsTable extends FormVersions
         fieldsConf,
         sections,
         description,
-        validationStrategy,
-        version
+        validationStrategy
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5266,11 +5265,17 @@ class $FormVersionsTable extends FormVersions
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
     context.handle(_translationsMeta, const VerificationResult.success());
-    if (data.containsKey('option_set')) {
-      context.handle(_optionSetMeta,
-          optionSet.isAcceptableOrUnknown(data['option_set']!, _optionSetMeta));
+    if (data.containsKey('form')) {
+      context.handle(
+          _formMeta, form.isAcceptableOrUnknown(data['form']!, _formMeta));
     } else if (isInserting) {
-      context.missing(_optionSetMeta);
+      context.missing(_formMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    } else if (isInserting) {
+      context.missing(_versionMeta);
     }
     context.handle(_treeFieldsMeta, const VerificationResult.success());
     context.handle(_optionsMeta, const VerificationResult.success());
@@ -5293,12 +5298,6 @@ class $FormVersionsTable extends FormVersions
               data['description']!, _descriptionMeta));
     }
     context.handle(_validationStrategyMeta, const VerificationResult.success());
-    if (data.containsKey('version')) {
-      context.handle(_versionMeta,
-          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
-    } else if (isInserting) {
-      context.missing(_versionMeta);
-    }
     return context;
   }
 
@@ -5325,8 +5324,10 @@ class $FormVersionsTable extends FormVersions
       translations: $FormVersionsTable.$convertertranslationsn.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}translations'])),
-      optionSet: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}option_set'])!,
+      form: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}form'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
       treeFields: $FormVersionsTable.$convertertreeFieldsn.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}tree_fields'])),
@@ -5352,8 +5353,6 @@ class $FormVersionsTable extends FormVersions
       validationStrategy: $FormVersionsTable.$convertervalidationStrategy
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
               data['${effectivePrefix}validation_strategy'])!),
-      version: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
     );
   }
 
@@ -5402,7 +5401,10 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
 
   /// List of Translations
   final List<Translation>? translations;
-  final String optionSet;
+  final String form;
+
+  /// Version is an integer.
+  final int version;
 
   /// List of Template objects (as List<Template>), stored as JSON.
   final List<Template>? treeFields;
@@ -5430,9 +5432,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
 
   /// Validation strategy stored as text via a converter.
   final ValidationStrategy validationStrategy;
-
-  /// Version is an integer.
-  final int version;
   const FormVersion(
       {required this.id,
       required this.dirty,
@@ -5442,7 +5441,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       this.displayName,
       this.code,
       this.translations,
-      required this.optionSet,
+      required this.form,
+      required this.version,
       this.treeFields,
       required this.options,
       this.optionSets,
@@ -5451,8 +5451,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       this.fieldsConf,
       this.sections,
       this.description,
-      required this.validationStrategy,
-      required this.version});
+      required this.validationStrategy});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -5473,7 +5472,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       map['translations'] = Variable<String>(
           $FormVersionsTable.$convertertranslationsn.toSql(translations));
     }
-    map['option_set'] = Variable<String>(optionSet);
+    map['form'] = Variable<String>(form);
+    map['version'] = Variable<int>(version);
     if (!nullToAbsent || treeFields != null) {
       map['tree_fields'] = Variable<String>(
           $FormVersionsTable.$convertertreeFieldsn.toSql(treeFields));
@@ -5507,7 +5507,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           .$convertervalidationStrategy
           .toSql(validationStrategy));
     }
-    map['version'] = Variable<int>(version);
     return map;
   }
 
@@ -5525,7 +5524,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       translations: translations == null && nullToAbsent
           ? const Value.absent()
           : Value(translations),
-      optionSet: Value(optionSet),
+      form: Value(form),
+      version: Value(version),
       treeFields: treeFields == null && nullToAbsent
           ? const Value.absent()
           : Value(treeFields),
@@ -5545,7 +5545,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           ? const Value.absent()
           : Value(description),
       validationStrategy: Value(validationStrategy),
-      version: Value(version),
     );
   }
 
@@ -5562,7 +5561,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       code: serializer.fromJson<String?>(json['code']),
       translations:
           serializer.fromJson<List<Translation>?>(json['translations']),
-      optionSet: serializer.fromJson<String>(json['optionSet']),
+      form: serializer.fromJson<String>(json['form']),
+      version: serializer.fromJson<int>(json['version']),
       treeFields: serializer.fromJson<List<Template>?>(json['treeFields']),
       options: serializer.fromJson<List<FormOption>>(json['options']),
       optionSets: serializer.fromJson<List<DOptionSet>?>(json['optionSets']),
@@ -5573,7 +5573,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       description: serializer.fromJson<String?>(json['description']),
       validationStrategy: $FormVersionsTable.$convertervalidationStrategy
           .fromJson(serializer.fromJson<String>(json['validationStrategy'])),
-      version: serializer.fromJson<int>(json['version']),
     );
   }
   @override
@@ -5588,7 +5587,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
       'translations': serializer.toJson<List<Translation>?>(translations),
-      'optionSet': serializer.toJson<String>(optionSet),
+      'form': serializer.toJson<String>(form),
+      'version': serializer.toJson<int>(version),
       'treeFields': serializer.toJson<List<Template>?>(treeFields),
       'options': serializer.toJson<List<FormOption>>(options),
       'optionSets': serializer.toJson<List<DOptionSet>?>(optionSets),
@@ -5600,7 +5600,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       'validationStrategy': serializer.toJson<String>($FormVersionsTable
           .$convertervalidationStrategy
           .toJson(validationStrategy)),
-      'version': serializer.toJson<int>(version),
     };
   }
 
@@ -5613,7 +5612,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<List<Translation>?> translations = const Value.absent(),
-          String? optionSet,
+          String? form,
+          int? version,
           Value<List<Template>?> treeFields = const Value.absent(),
           List<FormOption>? options,
           Value<List<DOptionSet>?> optionSets = const Value.absent(),
@@ -5622,8 +5622,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           Value<List<Template>?> fieldsConf = const Value.absent(),
           Value<List<Template>?> sections = const Value.absent(),
           Value<String?> description = const Value.absent(),
-          ValidationStrategy? validationStrategy,
-          int? version}) =>
+          ValidationStrategy? validationStrategy}) =>
       FormVersion(
         id: id ?? this.id,
         dirty: dirty ?? this.dirty,
@@ -5634,7 +5633,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
         code: code.present ? code.value : this.code,
         translations:
             translations.present ? translations.value : this.translations,
-        optionSet: optionSet ?? this.optionSet,
+        form: form ?? this.form,
+        version: version ?? this.version,
         treeFields: treeFields.present ? treeFields.value : this.treeFields,
         options: options ?? this.options,
         optionSets: optionSets.present ? optionSets.value : this.optionSets,
@@ -5644,7 +5644,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
         sections: sections.present ? sections.value : this.sections,
         description: description.present ? description.value : this.description,
         validationStrategy: validationStrategy ?? this.validationStrategy,
-        version: version ?? this.version,
       );
   FormVersion copyWithCompanion(FormVersionsCompanion data) {
     return FormVersion(
@@ -5662,7 +5661,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       translations: data.translations.present
           ? data.translations.value
           : this.translations,
-      optionSet: data.optionSet.present ? data.optionSet.value : this.optionSet,
+      form: data.form.present ? data.form.value : this.form,
+      version: data.version.present ? data.version.value : this.version,
       treeFields:
           data.treeFields.present ? data.treeFields.value : this.treeFields,
       options: data.options.present ? data.options.value : this.options,
@@ -5680,7 +5680,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       validationStrategy: data.validationStrategy.present
           ? data.validationStrategy.value
           : this.validationStrategy,
-      version: data.version.present ? data.version.value : this.version,
     );
   }
 
@@ -5695,7 +5694,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
           ..write('translations: $translations, ')
-          ..write('optionSet: $optionSet, ')
+          ..write('form: $form, ')
+          ..write('version: $version, ')
           ..write('treeFields: $treeFields, ')
           ..write('options: $options, ')
           ..write('optionSets: $optionSets, ')
@@ -5704,8 +5704,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           ..write('fieldsConf: $fieldsConf, ')
           ..write('sections: $sections, ')
           ..write('description: $description, ')
-          ..write('validationStrategy: $validationStrategy, ')
-          ..write('version: $version')
+          ..write('validationStrategy: $validationStrategy')
           ..write(')'))
         .toString();
   }
@@ -5720,7 +5719,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       displayName,
       code,
       translations,
-      optionSet,
+      form,
+      version,
       treeFields,
       options,
       optionSets,
@@ -5729,8 +5729,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       fieldsConf,
       sections,
       description,
-      validationStrategy,
-      version);
+      validationStrategy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5743,7 +5742,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           other.displayName == this.displayName &&
           other.code == this.code &&
           other.translations == this.translations &&
-          other.optionSet == this.optionSet &&
+          other.form == this.form &&
+          other.version == this.version &&
           other.treeFields == this.treeFields &&
           other.options == this.options &&
           other.optionSets == this.optionSets &&
@@ -5752,8 +5752,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           other.fieldsConf == this.fieldsConf &&
           other.sections == this.sections &&
           other.description == this.description &&
-          other.validationStrategy == this.validationStrategy &&
-          other.version == this.version);
+          other.validationStrategy == this.validationStrategy);
 }
 
 class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
@@ -5765,7 +5764,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   final Value<String?> displayName;
   final Value<String?> code;
   final Value<List<Translation>?> translations;
-  final Value<String> optionSet;
+  final Value<String> form;
+  final Value<int> version;
   final Value<List<Template>?> treeFields;
   final Value<List<FormOption>> options;
   final Value<List<DOptionSet>?> optionSets;
@@ -5775,7 +5775,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   final Value<List<Template>?> sections;
   final Value<String?> description;
   final Value<ValidationStrategy> validationStrategy;
-  final Value<int> version;
   final Value<int> rowid;
   const FormVersionsCompanion({
     this.id = const Value.absent(),
@@ -5786,7 +5785,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.translations = const Value.absent(),
-    this.optionSet = const Value.absent(),
+    this.form = const Value.absent(),
+    this.version = const Value.absent(),
     this.treeFields = const Value.absent(),
     this.options = const Value.absent(),
     this.optionSets = const Value.absent(),
@@ -5796,7 +5796,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     this.sections = const Value.absent(),
     this.description = const Value.absent(),
     this.validationStrategy = const Value.absent(),
-    this.version = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FormVersionsCompanion.insert({
@@ -5808,7 +5807,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.translations = const Value.absent(),
-    required String optionSet,
+    required String form,
+    required int version,
     this.treeFields = const Value.absent(),
     this.options = const Value.absent(),
     this.optionSets = const Value.absent(),
@@ -5818,14 +5818,13 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     this.sections = const Value.absent(),
     this.description = const Value.absent(),
     required ValidationStrategy validationStrategy,
-    required int version,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         dirty = Value(dirty),
-        optionSet = Value(optionSet),
+        form = Value(form),
+        version = Value(version),
         defaultLocal = Value(defaultLocal),
-        validationStrategy = Value(validationStrategy),
-        version = Value(version);
+        validationStrategy = Value(validationStrategy);
   static Insertable<FormVersion> custom({
     Expression<String>? id,
     Expression<bool>? dirty,
@@ -5835,7 +5834,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     Expression<String>? displayName,
     Expression<String>? code,
     Expression<String>? translations,
-    Expression<String>? optionSet,
+    Expression<String>? form,
+    Expression<int>? version,
     Expression<String>? treeFields,
     Expression<String>? options,
     Expression<String>? optionSets,
@@ -5845,7 +5845,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     Expression<String>? sections,
     Expression<String>? description,
     Expression<String>? validationStrategy,
-    Expression<int>? version,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5857,7 +5856,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
       if (translations != null) 'translations': translations,
-      if (optionSet != null) 'option_set': optionSet,
+      if (form != null) 'form': form,
+      if (version != null) 'version': version,
       if (treeFields != null) 'tree_fields': treeFields,
       if (options != null) 'options': options,
       if (optionSets != null) 'option_sets': optionSets,
@@ -5867,7 +5867,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       if (sections != null) 'sections': sections,
       if (description != null) 'description': description,
       if (validationStrategy != null) 'validation_strategy': validationStrategy,
-      if (version != null) 'version': version,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5881,7 +5880,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       Value<String?>? displayName,
       Value<String?>? code,
       Value<List<Translation>?>? translations,
-      Value<String>? optionSet,
+      Value<String>? form,
+      Value<int>? version,
       Value<List<Template>?>? treeFields,
       Value<List<FormOption>>? options,
       Value<List<DOptionSet>?>? optionSets,
@@ -5891,7 +5891,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       Value<List<Template>?>? sections,
       Value<String?>? description,
       Value<ValidationStrategy>? validationStrategy,
-      Value<int>? version,
       Value<int>? rowid}) {
     return FormVersionsCompanion(
       id: id ?? this.id,
@@ -5902,7 +5901,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
       translations: translations ?? this.translations,
-      optionSet: optionSet ?? this.optionSet,
+      form: form ?? this.form,
+      version: version ?? this.version,
       treeFields: treeFields ?? this.treeFields,
       options: options ?? this.options,
       optionSets: optionSets ?? this.optionSets,
@@ -5912,7 +5912,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       sections: sections ?? this.sections,
       description: description ?? this.description,
       validationStrategy: validationStrategy ?? this.validationStrategy,
-      version: version ?? this.version,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5945,8 +5944,11 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       map['translations'] = Variable<String>(
           $FormVersionsTable.$convertertranslationsn.toSql(translations.value));
     }
-    if (optionSet.present) {
-      map['option_set'] = Variable<String>(optionSet.value);
+    if (form.present) {
+      map['form'] = Variable<String>(form.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
     }
     if (treeFields.present) {
       map['tree_fields'] = Variable<String>(
@@ -5983,9 +5985,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
           .$convertervalidationStrategy
           .toSql(validationStrategy.value));
     }
-    if (version.present) {
-      map['version'] = Variable<int>(version.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -6003,7 +6002,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
           ..write('translations: $translations, ')
-          ..write('optionSet: $optionSet, ')
+          ..write('form: $form, ')
+          ..write('version: $version, ')
           ..write('treeFields: $treeFields, ')
           ..write('options: $options, ')
           ..write('optionSets: $optionSets, ')
@@ -6013,7 +6013,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
           ..write('sections: $sections, ')
           ..write('description: $description, ')
           ..write('validationStrategy: $validationStrategy, ')
-          ..write('version: $version, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10940,6 +10939,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE INDEX submission_status ON data_form_submissions (status)');
   late final Index submissionDeleted = Index('submission_deleted',
       'CREATE INDEX submission_deleted ON data_form_submissions (deleted)');
+  late final ActivitiesDao activitiesDao = ActivitiesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -14203,14 +14203,14 @@ final class $$FormTemplatesTableReferences
       super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$FormVersionsTable, List<FormVersion>>
-      _formVersionsRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.formVersions,
-              aliasName: $_aliasNameGenerator(
-                  db.formTemplates.id, db.formVersions.optionSet));
+      _formVersionsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.formVersions,
+          aliasName:
+              $_aliasNameGenerator(db.formTemplates.id, db.formVersions.form));
 
   $$FormVersionsTableProcessedTableManager get formVersionsRefs {
     final manager = $$FormVersionsTableTableManager($_db, $_db.formVersions)
-        .filter((f) => f.optionSet.id($_item.id));
+        .filter((f) => f.form.id($_item.id));
 
     final cache = $_typedResult.readTableOrNull(_formVersionsRefsTable($_db));
     return ProcessedTableManager(
@@ -14269,7 +14269,7 @@ class $$FormTemplatesTableFilterComposer
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.formVersions,
-        getReferencedColumn: (t) => t.optionSet,
+        getReferencedColumn: (t) => t.form,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -14373,7 +14373,7 @@ class $$FormTemplatesTableAnnotationComposer
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.formVersions,
-        getReferencedColumn: (t) => t.optionSet,
+        getReferencedColumn: (t) => t.form,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -14485,8 +14485,8 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
                             $$FormTemplatesTableReferences(db, table, p0)
                                 .formVersionsRefs,
                         referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.optionSet == item.id),
+                            (item, referencedItems) =>
+                                referencedItems.where((e) => e.form == item.id),
                         typedResults: items)
                 ];
               },
@@ -14517,7 +14517,8 @@ typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
   Value<String?> displayName,
   Value<String?> code,
   Value<List<Translation>?> translations,
-  required String optionSet,
+  required String form,
+  required int version,
   Value<List<Template>?> treeFields,
   Value<List<FormOption>> options,
   Value<List<DOptionSet>?> optionSets,
@@ -14527,7 +14528,6 @@ typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
   Value<List<Template>?> sections,
   Value<String?> description,
   required ValidationStrategy validationStrategy,
-  required int version,
   Value<int> rowid,
 });
 typedef $$FormVersionsTableUpdateCompanionBuilder = FormVersionsCompanion
@@ -14540,7 +14540,8 @@ typedef $$FormVersionsTableUpdateCompanionBuilder = FormVersionsCompanion
   Value<String?> displayName,
   Value<String?> code,
   Value<List<Translation>?> translations,
-  Value<String> optionSet,
+  Value<String> form,
+  Value<int> version,
   Value<List<Template>?> treeFields,
   Value<List<FormOption>> options,
   Value<List<DOptionSet>?> optionSets,
@@ -14550,7 +14551,6 @@ typedef $$FormVersionsTableUpdateCompanionBuilder = FormVersionsCompanion
   Value<List<Template>?> sections,
   Value<String?> description,
   Value<ValidationStrategy> validationStrategy,
-  Value<int> version,
   Value<int> rowid,
 });
 
@@ -14558,14 +14558,14 @@ final class $$FormVersionsTableReferences
     extends BaseReferences<_$AppDatabase, $FormVersionsTable, FormVersion> {
   $$FormVersionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $FormTemplatesTable _optionSetTable(_$AppDatabase db) =>
+  static $FormTemplatesTable _formTable(_$AppDatabase db) =>
       db.formTemplates.createAlias(
-          $_aliasNameGenerator(db.formVersions.optionSet, db.formTemplates.id));
+          $_aliasNameGenerator(db.formVersions.form, db.formTemplates.id));
 
-  $$FormTemplatesTableProcessedTableManager get optionSet {
+  $$FormTemplatesTableProcessedTableManager get form {
     final manager = $$FormTemplatesTableTableManager($_db, $_db.formTemplates)
-        .filter((f) => f.id($_item.optionSet));
-    final item = $_typedResult.readTableOrNull(_optionSetTable($_db));
+        .filter((f) => f.id($_item.form));
+    final item = $_typedResult.readTableOrNull(_formTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -14626,6 +14626,9 @@ class $$FormVersionsTableFilterComposer
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+
   ColumnWithTypeConverterFilters<List<Template>?, List<Template>, String>
       get treeFields => $composableBuilder(
           column: $table.treeFields,
@@ -14668,13 +14671,10 @@ class $$FormVersionsTableFilterComposer
           column: $table.validationStrategy,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<int> get version => $composableBuilder(
-      column: $table.version, builder: (column) => ColumnFilters(column));
-
-  $$FormTemplatesTableFilterComposer get optionSet {
+  $$FormTemplatesTableFilterComposer get form {
     final $$FormTemplatesTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.optionSet,
+        getCurrentColumn: (t) => t.form,
         referencedTable: $db.formTemplates,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
@@ -14748,6 +14748,9 @@ class $$FormVersionsTableOrderingComposer
       column: $table.translations,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get treeFields => $composableBuilder(
       column: $table.treeFields, builder: (column) => ColumnOrderings(column));
 
@@ -14777,13 +14780,10 @@ class $$FormVersionsTableOrderingComposer
       column: $table.validationStrategy,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get version => $composableBuilder(
-      column: $table.version, builder: (column) => ColumnOrderings(column));
-
-  $$FormTemplatesTableOrderingComposer get optionSet {
+  $$FormTemplatesTableOrderingComposer get form {
     final $$FormTemplatesTableOrderingComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.optionSet,
+        getCurrentColumn: (t) => t.form,
         referencedTable: $db.formTemplates,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
@@ -14835,6 +14835,9 @@ class $$FormVersionsTableAnnotationComposer
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<List<Template>?, String> get treeFields =>
       $composableBuilder(
           column: $table.treeFields, builder: (column) => column);
@@ -14866,13 +14869,10 @@ class $$FormVersionsTableAnnotationComposer
       get validationStrategy => $composableBuilder(
           column: $table.validationStrategy, builder: (column) => column);
 
-  GeneratedColumn<int> get version =>
-      $composableBuilder(column: $table.version, builder: (column) => column);
-
-  $$FormTemplatesTableAnnotationComposer get optionSet {
+  $$FormTemplatesTableAnnotationComposer get form {
     final $$FormTemplatesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.optionSet,
+        getCurrentColumn: (t) => t.form,
         referencedTable: $db.formTemplates,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
@@ -14924,7 +14924,7 @@ class $$FormVersionsTableTableManager extends RootTableManager<
     $$FormVersionsTableUpdateCompanionBuilder,
     (FormVersion, $$FormVersionsTableReferences),
     FormVersion,
-    PrefetchHooks Function({bool optionSet, bool dataFormSubmissionsRefs})> {
+    PrefetchHooks Function({bool form, bool dataFormSubmissionsRefs})> {
   $$FormVersionsTableTableManager(_$AppDatabase db, $FormVersionsTable table)
       : super(TableManagerState(
           db: db,
@@ -14944,7 +14944,8 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<List<Translation>?> translations = const Value.absent(),
-            Value<String> optionSet = const Value.absent(),
+            Value<String> form = const Value.absent(),
+            Value<int> version = const Value.absent(),
             Value<List<Template>?> treeFields = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
             Value<List<DOptionSet>?> optionSets = const Value.absent(),
@@ -14954,7 +14955,6 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             Value<List<Template>?> sections = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<ValidationStrategy> validationStrategy = const Value.absent(),
-            Value<int> version = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               FormVersionsCompanion(
@@ -14966,7 +14966,8 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             displayName: displayName,
             code: code,
             translations: translations,
-            optionSet: optionSet,
+            form: form,
+            version: version,
             treeFields: treeFields,
             options: options,
             optionSets: optionSets,
@@ -14976,7 +14977,6 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             sections: sections,
             description: description,
             validationStrategy: validationStrategy,
-            version: version,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -14988,7 +14988,8 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<List<Translation>?> translations = const Value.absent(),
-            required String optionSet,
+            required String form,
+            required int version,
             Value<List<Template>?> treeFields = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
             Value<List<DOptionSet>?> optionSets = const Value.absent(),
@@ -14998,7 +14999,6 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             Value<List<Template>?> sections = const Value.absent(),
             Value<String?> description = const Value.absent(),
             required ValidationStrategy validationStrategy,
-            required int version,
             Value<int> rowid = const Value.absent(),
           }) =>
               FormVersionsCompanion.insert(
@@ -15010,7 +15010,8 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             displayName: displayName,
             code: code,
             translations: translations,
-            optionSet: optionSet,
+            form: form,
+            version: version,
             treeFields: treeFields,
             options: options,
             optionSets: optionSets,
@@ -15020,7 +15021,6 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             sections: sections,
             description: description,
             validationStrategy: validationStrategy,
-            version: version,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -15030,7 +15030,7 @@ class $$FormVersionsTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {optionSet = false, dataFormSubmissionsRefs = false}) {
+              {form = false, dataFormSubmissionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -15049,14 +15049,14 @@ class $$FormVersionsTableTableManager extends RootTableManager<
                       dynamic,
                       dynamic,
                       dynamic>>(state) {
-                if (optionSet) {
+                if (form) {
                   state = state.withJoin(
                     currentTable: table,
-                    currentColumn: table.optionSet,
+                    currentColumn: table.form,
                     referencedTable:
-                        $$FormVersionsTableReferences._optionSetTable(db),
+                        $$FormVersionsTableReferences._formTable(db),
                     referencedColumn:
-                        $$FormVersionsTableReferences._optionSetTable(db).id,
+                        $$FormVersionsTableReferences._formTable(db).id,
                   ) as T;
                 }
 
@@ -15094,7 +15094,7 @@ typedef $$FormVersionsTableProcessedTableManager = ProcessedTableManager<
     $$FormVersionsTableUpdateCompanionBuilder,
     (FormVersion, $$FormVersionsTableReferences),
     FormVersion,
-    PrefetchHooks Function({bool optionSet, bool dataFormSubmissionsRefs})>;
+    PrefetchHooks Function({bool form, bool dataFormSubmissionsRefs})>;
 typedef $$MetadataSubmissionsTableCreateCompanionBuilder
     = MetadataSubmissionsCompanion Function({
   required String id,

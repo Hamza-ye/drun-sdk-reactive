@@ -5,7 +5,10 @@ import 'package:drift/drift.dart';
 
 /// --- Drift Table Definition ---
 class FormVersions extends Table with BaseTableMixin, IdentifiableMixin {
-  late final TextColumn optionSet = text().references(FormTemplates, #id)();
+  late final TextColumn form = text().references(FormTemplates, #id)();
+
+  /// Version is an integer.
+  late final IntColumn version = integer()();
 
   /// List of Template objects (as List<Template>), stored as JSON.
   late final TextColumn treeFields =
@@ -40,7 +43,4 @@ class FormVersions extends Table with BaseTableMixin, IdentifiableMixin {
   /// Validation strategy stored as text via a converter.
   late final TextColumn validationStrategy =
       text().map(const EnumNameConverter(ValidationStrategy.values))();
-
-  /// Version is an integer.
-  late final IntColumn version = integer()();
 }

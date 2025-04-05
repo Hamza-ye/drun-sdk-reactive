@@ -1,12 +1,13 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/db_manager.dart';
-import 'package:d_sdk/datasource/d_datasource.dart';
-import 'package:d_sdk/datasource/generic_datasource.dart';
+import 'package:d_sdk/datasource/abstract_datasource.dart';
+import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: DDatasource)
-class ProjectDatasource extends GenericDataSource<$ProjectsTable, Project>
+@Order(10)
+@LazySingleton(as: AbstractDatasource)
+class ProjectDatasource extends BaseDataSource<$ProjectsTable, Project>
     implements MetaDataSource<Project> {
   ProjectDatasource({required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.getActiveDb()!.projects);
@@ -15,5 +16,5 @@ class ProjectDatasource extends GenericDataSource<$ProjectsTable, Project>
   String get apiResourceName => 'projects';
 
   @override
-  FromJsonCallback<Project> get fromJsonCallback => Project.fromJson;
+  Project fromApiJson(Map<String, dynamic> data) => Project.fromJson(data);
 }
