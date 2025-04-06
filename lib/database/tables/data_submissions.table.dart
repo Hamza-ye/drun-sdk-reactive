@@ -3,60 +3,50 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'submission_synced', columns: {#synced})
-@TableIndex(name: 'submission_is_final', columns: {#isFinal})
-@TableIndex(name: 'submission_dirty', columns: {#dirty})
 @TableIndex(name: 'submission_status', columns: {#status})
 @TableIndex(name: 'submission_deleted', columns: {#deleted})
-class DataFormSubmissions extends Table with BaseTableMixin {
-  /// Bool columns (nullable)
-  late final BoolColumn deleted =
-      boolean().withDefault(const Constant(false))();
+class DataSubmissions extends Table with BaseTableMixin {
+  BoolColumn get deleted => boolean().withDefault(const Constant(false))();
 
-  late final BoolColumn synced = boolean().nullable()();
+  /// Form template id is stored as text (nullable).
+  TextColumn get form => text().nullable()();
 
-  late final BoolColumn syncFailed =
-      boolean().withDefault(const Constant(false))();
+  /// Many-to-one references stored as text.
+  TextColumn get formVersion => text().references(FormVersions, #id)();
 
-  /// isFinal is non-nullable; default to false (adjust default as needed)
-  late final BoolColumn isFinal =
-      boolean().withDefault(const Constant(false))();
+  /// Version is non-nullable integer.
+  IntColumn get version => integer()();
+
+  /// Nullable assignment reference.
+  TextColumn get assignment => text().nullable().references(Assignments, #id)();
+
+  /// Many-to-one references stored as text.
+  TextColumn get team => text().nullable().references(Teams, #id)();
+
+  /// Nullable orgUnit reference.
+  TextColumn get orgUnit => text().nullable().references(OrgUnits, #id)();
+
+  /// Progress Status stored as text via a converter; nullable.
+  TextColumn get progressStatus =>
+      text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
+
+  // Use a single state field with a converter to/from enum
+  TextColumn get status => text()
+      .map(const EnumNameConverter(SubmissionStatus.values))
+      .withDefault(Constant(SubmissionStatus.draft.name))();
 
   DateTimeColumn get lastSyncDate => dateTime().nullable()();
 
-  late final TextColumn lastSyncMessage = text().nullable()();
+  TextColumn get lastSyncMessage => text().nullable()();
 
   DateTimeColumn get startEntryTime =>
       dateTime().withDefault(currentDateAndTime)();
 
+  /// last finalized time
   DateTimeColumn get finishedEntryTime => dateTime().nullable()();
 
-  late final TextColumn createdBy = text().nullable()();
-
-  /// Status stored as text via a converter; nullable.
-  late final TextColumn status =
-      text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
-
-  /// Many-to-one references stored as text.
-  late final TextColumn team = text().nullable().references(Teams, #id)();
-
-  /// Form template id is stored as text (nullable).
-  late final TextColumn form = text().nullable()();
-
-  /// Many-to-one references stored as text.
-  late final TextColumn formVersion = text().references(FormVersions, #id)();
-
-  /// Version is non-nullable integer.
-  late final IntColumn version = integer()();
-
-  /// Nullable assignment reference.
-  late final TextColumn assignment =
-      text().nullable().references(Assignments, #id)();
-
-  /// Nullable orgUnit reference.
-  late final TextColumn orgUnit = text().nullable().references(OrgUnits, #id)();
+  TextColumn get createdBy => text().nullable()();
 
   /// formData is stored as a JSON string.
-  late final TextColumn formData =
-      text().map(const MapConverter()).nullable()();
+  TextColumn get formData => text().map(const MapConverter()).nullable()();
 }

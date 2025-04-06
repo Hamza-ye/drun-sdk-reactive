@@ -5,28 +5,27 @@ import 'package:drift/drift.dart';
 
 class MetadataSubmissions extends Table with BaseTableMixin, IdentifiableMixin {
   /// Resource type (non-null), stored as text using a converter.
-  late final TextColumn resourceType =
+  TextColumn get resourceType =>
       text().map(const EnumNameConverter(MetadataResourceType.values))();
 
   /// Metadata schema (non-null text).
-  late final TextColumn metadataSchema = text()();
+  TextColumn get metadataSchema => text()();
 
   /// Serial number (non-null integer).
-  late final IntColumn serialNumber = integer()();
+  IntColumn get serialNumber => integer()();
 
   /// Version (non-null integer).
-  late final IntColumn version = integer()();
+  IntColumn get version => integer()();
 
   /// Resource ID (non-null text).
-  late final TextColumn resourceId = text()();
+  TextColumn get resourceId => text()();
 
   /// formData stored as a JSON string (nullable).
-  late final TextColumn formData =
-      text().map(const MapConverter()).nullable()();
+  TextColumn get formData => text().map(const MapConverter()).nullable()();
 
   /// createdBy (nullable text).
-  late final TextColumn createdBy = text().nullable()();
+  TextColumn get createdBy => text().nullable()();
 
   /// lastModifiedBy (nullable text).
-  late final TextColumn lastModifiedBy = text().nullable()();
+  TextColumn get lastModifiedBy => text().nullable()();
 }

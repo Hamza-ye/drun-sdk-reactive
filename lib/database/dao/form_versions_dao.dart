@@ -1,6 +1,4 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/tables/activities.table.dart';
-import 'package:d_sdk/database/tables/assignments.table.dart';
 import 'package:d_sdk/database/tables/form_versions.table.dart';
 import 'package:drift/drift.dart';
 

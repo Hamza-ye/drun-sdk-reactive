@@ -3,10 +3,7 @@ import 'package:drift/drift.dart';
 
 /// OuLevel Table
 class OuLevels extends Table with BaseTableMixin, IdentifiableMixin {
-  late final IntColumn level = integer()();
+  IntColumn get level => integer()();
 
-  late final IntColumn offlineLevels = integer().nullable()();
-
-  @override
-  Set<Column> get primaryKey => {id};
+  IntColumn get offlineLevels => integer().nullable()();
 }

@@ -3,24 +3,24 @@ import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
 class Users extends Table with BaseTableMixin {
-  late final TextColumn username = text().unique()();
-  late final TextColumn password = text()();
-  // late final TextColumn baseUrl = text().nullable()();
-  // late final BoolColumn isLoggedIn =
-  //     boolean().withDefault(const Constant(false))();
-  late final TextColumn firstName = text().nullable()();
-  late final TextColumn lastname = text().nullable()();
-  late final TextColumn mobile = text().nullable()();
-  late final TextColumn email = text().nullable()();
-  late final TextColumn langKey = text().withDefault(const Constant('ar'))();
-  late final BoolColumn activated =
-      boolean().withDefault(const Constant(false))();
-  late final TextColumn imageUrl = text().nullable()();
-  late final TextColumn authorities =
-      text().map(const ListConverter<String>()).nullable()();
+  TextColumn get username => text().unique()();
 
-  // @override
-  // List<Set<Column>> get uniqueKeys => [
-  //       {username, baseUrl}
-  //     ];
+  TextColumn get password => text()();
+
+  TextColumn get firstName => text().nullable()();
+
+  TextColumn get lastname => text().nullable()();
+
+  TextColumn get mobile => text().nullable()();
+
+  TextColumn get email => text().nullable()();
+
+  TextColumn get langKey => text().withDefault(const Constant('ar'))();
+
+  BoolColumn get activated => boolean().withDefault(const Constant(false))();
+
+  TextColumn get imageUrl => text().nullable()();
+
+  TextColumn get authorities =>
+      text().map(const ListConverter<String>()).nullable()();
 }

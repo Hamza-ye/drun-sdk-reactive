@@ -8,23 +8,23 @@ import 'package:injectable/injectable.dart';
 @Order(120)
 @LazySingleton(as: AbstractDatasource)
 class DataSubmissionDatasource
-    extends BaseDataSource<$DataFormSubmissionsTable, DataFormSubmission>
-    implements MetaDataSource<DataFormSubmission> {
+    extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
+    implements MetaDataSource<DataSubmission> {
   DataSubmissionDatasource(
       {required super.apiClient, required DbManager dbManager})
       : super(
             dbManager: dbManager,
-            table: dbManager.getActiveDb()!.dataFormSubmissions);
+            table: dbManager.getActiveDb()!.dataSubmissions);
 
   @override
   String get apiResourceName => 'dataSubmission';
 
   @override
-  DataFormSubmission fromApiJson(Map<String, dynamic> data) {
+  DataSubmission fromApiJson(Map<String, dynamic> data) {
     final String formVersion = data['form'] != null && data['version'] != null
         ? '${data['form']}_${data['version']}'
         : data['formVersion'];
-    return DataFormSubmission.fromJson({
+    return DataSubmission.fromJson({
       ...data,
       'formVersion': formVersion,
       'assignment': data['assignment']?['id'],

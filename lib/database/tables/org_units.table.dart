@@ -4,16 +4,16 @@ import 'package:drift/drift.dart';
 
 /// OrgUnit Table
 class OrgUnits extends Table with BaseTableMixin, IdentifiableMixin {
-  late final TextColumn path = text().nullable()();
+  TextColumn get path => text().nullable()();
 
-  late final TextColumn label =
-  text().map(const MapConverter<String>()).withDefault(Constant('{}'))();
+  TextColumn get label =>
+      text().map(const MapConverter<String>()).withDefault(Constant('{}'))();
 
-  late final TextColumn parent = text().nullable()();
+  TextColumn get parent => text().nullable()();
 
-  late final TextColumn ancestors = text().nullable()();
+  TextColumn get ancestors => text().nullable()();
 
-  late final TextColumn geometry = text().nullable()();
+  TextColumn get geometry => text().nullable()();
 
-  late final TextColumn scope = text().nullable()();
+  TextColumn get scope => text().nullable()();
 }

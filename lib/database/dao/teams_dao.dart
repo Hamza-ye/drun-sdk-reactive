@@ -1,9 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/tables/activities.table.dart';
-import 'package:d_sdk/database/tables/assignments.table.dart';
-import 'package:d_sdk/database/tables/repeat_instances.table.dart';
 import 'package:d_sdk/database/tables/teams.table.dart';
-import 'package:d_sdk/database/tables/users.table.dart';
 import 'package:drift/drift.dart';
 
 part 'teams_dao.g.dart';

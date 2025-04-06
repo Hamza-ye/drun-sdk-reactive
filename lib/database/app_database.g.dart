@@ -13,14 +13,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -107,7 +99,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         username,
@@ -135,12 +126,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -206,8 +191,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     return User(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -247,7 +230,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 
 class User extends DataClass implements Insertable<User> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String username;
@@ -262,7 +244,6 @@ class User extends DataClass implements Insertable<User> {
   final List<String> authorities;
   const User(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       required this.username,
@@ -279,7 +260,6 @@ class User extends DataClass implements Insertable<User> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     map['username'] = Variable<String>(username);
@@ -311,7 +291,6 @@ class User extends DataClass implements Insertable<User> {
   UsersCompanion toCompanion(bool nullToAbsent) {
     return UsersCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       username: Value(username),
@@ -340,7 +319,6 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return User(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       username: serializer.fromJson<String>(json['username']),
@@ -360,7 +338,6 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'username': serializer.toJson<String>(username),
@@ -378,7 +355,6 @@ class User extends DataClass implements Insertable<User> {
 
   User copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           String? username,
@@ -393,7 +369,6 @@ class User extends DataClass implements Insertable<User> {
           List<String>? authorities}) =>
       User(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         username: username ?? this.username,
@@ -410,7 +385,6 @@ class User extends DataClass implements Insertable<User> {
   User copyWithCompanion(UsersCompanion data) {
     return User(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -434,7 +408,6 @@ class User extends DataClass implements Insertable<User> {
   String toString() {
     return (StringBuffer('User(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('username: $username, ')
@@ -454,7 +427,6 @@ class User extends DataClass implements Insertable<User> {
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       username,
@@ -472,7 +444,6 @@ class User extends DataClass implements Insertable<User> {
       identical(this, other) ||
       (other is User &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.username == this.username &&
@@ -489,7 +460,6 @@ class User extends DataClass implements Insertable<User> {
 
 class UsersCompanion extends UpdateCompanion<User> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String> username;
@@ -505,7 +475,6 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<int> rowid;
   const UsersCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.username = const Value.absent(),
@@ -522,7 +491,6 @@ class UsersCompanion extends UpdateCompanion<User> {
   });
   UsersCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     required String username,
@@ -537,12 +505,10 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.authorities = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         username = Value(username),
         password = Value(password);
   static Insertable<User> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? username,
@@ -559,7 +525,6 @@ class UsersCompanion extends UpdateCompanion<User> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (username != null) 'username': username,
@@ -578,7 +543,6 @@ class UsersCompanion extends UpdateCompanion<User> {
 
   UsersCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String>? username,
@@ -594,7 +558,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       Value<int>? rowid}) {
     return UsersCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       username: username ?? this.username,
@@ -616,9 +579,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -667,7 +627,6 @@ class UsersCompanion extends UpdateCompanion<User> {
   String toString() {
     return (StringBuffer('UsersCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('username: $username, ')
@@ -696,14 +655,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -782,7 +733,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -810,12 +760,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -876,8 +820,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
     return OrgUnit(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -921,7 +863,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
 
 class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -938,7 +879,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   final String? scope;
   const OrgUnit(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -955,7 +895,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -996,7 +935,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   OrgUnitsCompanion toCompanion(bool nullToAbsent) {
     return OrgUnitsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -1027,7 +965,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return OrgUnit(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -1048,7 +985,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -1066,7 +1002,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
 
   OrgUnit copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -1081,7 +1016,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           Value<String?> scope = const Value.absent()}) =>
       OrgUnit(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -1099,7 +1033,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   OrgUnit copyWithCompanion(OrgUnitsCompanion data) {
     return OrgUnit(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -1125,7 +1058,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   String toString() {
     return (StringBuffer('OrgUnit(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -1145,7 +1077,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       name,
@@ -1163,7 +1094,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       identical(this, other) ||
       (other is OrgUnit &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -1180,7 +1110,6 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
 
 class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -1196,7 +1125,6 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   final Value<int> rowid;
   const OrgUnitsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -1213,7 +1141,6 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   });
   OrgUnitsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -1227,11 +1154,9 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     this.geometry = const Value.absent(),
     this.scope = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        dirty = Value(dirty);
+  }) : id = Value(id);
   static Insertable<OrgUnit> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -1248,7 +1173,6 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -1267,7 +1191,6 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
 
   OrgUnitsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -1283,7 +1206,6 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
       Value<int>? rowid}) {
     return OrgUnitsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -1305,9 +1227,6 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -1357,7 +1276,6 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   String toString() {
     return (StringBuffer('OrgUnitsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -1386,14 +1304,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -1448,7 +1358,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -1472,12 +1381,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -1529,8 +1432,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
     return OuLevel(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -1564,7 +1465,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
 
 class OuLevel extends DataClass implements Insertable<OuLevel> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -1577,7 +1477,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   final int? offlineLevels;
   const OuLevel(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -1590,7 +1489,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -1616,7 +1514,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   OuLevelsCompanion toCompanion(bool nullToAbsent) {
     return OuLevelsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -1639,7 +1536,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return OuLevel(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -1656,7 +1552,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -1670,7 +1565,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
 
   OuLevel copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -1681,7 +1575,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           Value<int?> offlineLevels = const Value.absent()}) =>
       OuLevel(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -1696,7 +1589,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   OuLevel copyWithCompanion(OuLevelsCompanion data) {
     return OuLevel(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -1720,7 +1612,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   String toString() {
     return (StringBuffer('OuLevel(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -1734,14 +1625,13 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   }
 
   @override
-  int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      name, displayName, code, translations, level, offlineLevels);
+  int get hashCode => Object.hash(id, lastModifiedDate, createdDate, name,
+      displayName, code, translations, level, offlineLevels);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is OuLevel &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -1754,7 +1644,6 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
 
 class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -1766,7 +1655,6 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   final Value<int> rowid;
   const OuLevelsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -1779,7 +1667,6 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   });
   OuLevelsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -1790,11 +1677,9 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     this.offlineLevels = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         level = Value(level);
   static Insertable<OuLevel> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -1807,7 +1692,6 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -1822,7 +1706,6 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
 
   OuLevelsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -1834,7 +1717,6 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
       Value<int>? rowid}) {
     return OuLevelsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -1852,9 +1734,6 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -1891,7 +1770,6 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   String toString() {
     return (StringBuffer('OuLevelsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -1916,14 +1794,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -1976,7 +1846,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -1999,12 +1868,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -2050,8 +1913,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
     return Project(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -2083,7 +1944,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
 
 class Project extends DataClass implements Insertable<Project> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -2095,7 +1955,6 @@ class Project extends DataClass implements Insertable<Project> {
   final bool disabled;
   const Project(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -2107,7 +1966,6 @@ class Project extends DataClass implements Insertable<Project> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -2130,7 +1988,6 @@ class Project extends DataClass implements Insertable<Project> {
   ProjectsCompanion toCompanion(bool nullToAbsent) {
     return ProjectsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -2150,7 +2007,6 @@ class Project extends DataClass implements Insertable<Project> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Project(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -2166,7 +2022,6 @@ class Project extends DataClass implements Insertable<Project> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -2179,7 +2034,6 @@ class Project extends DataClass implements Insertable<Project> {
 
   Project copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -2189,7 +2043,6 @@ class Project extends DataClass implements Insertable<Project> {
           bool? disabled}) =>
       Project(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -2202,7 +2055,6 @@ class Project extends DataClass implements Insertable<Project> {
   Project copyWithCompanion(ProjectsCompanion data) {
     return Project(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -2223,7 +2075,6 @@ class Project extends DataClass implements Insertable<Project> {
   String toString() {
     return (StringBuffer('Project(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -2236,14 +2087,13 @@ class Project extends DataClass implements Insertable<Project> {
   }
 
   @override
-  int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      name, displayName, code, translations, disabled);
+  int get hashCode => Object.hash(id, lastModifiedDate, createdDate, name,
+      displayName, code, translations, disabled);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Project &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -2255,7 +2105,6 @@ class Project extends DataClass implements Insertable<Project> {
 
 class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -2266,7 +2115,6 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<int> rowid;
   const ProjectsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -2278,7 +2126,6 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   });
   ProjectsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -2288,11 +2135,9 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     required bool disabled,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         disabled = Value(disabled);
   static Insertable<Project> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -2304,7 +2149,6 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -2318,7 +2162,6 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
 
   ProjectsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -2329,7 +2172,6 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       Value<int>? rowid}) {
     return ProjectsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -2346,9 +2188,6 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -2382,7 +2221,6 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   String toString() {
     return (StringBuffer('ProjectsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -2407,14 +2245,6 @@ class $ActivitiesTable extends Activities
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -2473,12 +2303,6 @@ class $ActivitiesTable extends Activities
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("disabled" IN (0, 1))'));
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
-  @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _startDateMeta =
       const VerificationMeta('startDate');
   @override
@@ -2491,10 +2315,15 @@ class $ActivitiesTable extends Activities
   late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
       'end_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -2503,9 +2332,9 @@ class $ActivitiesTable extends Activities
         translations,
         project,
         disabled,
-        description,
         startDate,
-        endDate
+        endDate,
+        description
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2521,12 +2350,6 @@ class $ActivitiesTable extends Activities
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -2567,12 +2390,6 @@ class $ActivitiesTable extends Activities
     } else if (isInserting) {
       context.missing(_disabledMeta);
     }
-    if (data.containsKey('description')) {
-      context.handle(
-          _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
-    }
     if (data.containsKey('start_date')) {
       context.handle(_startDateMeta,
           startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta));
@@ -2580,6 +2397,12 @@ class $ActivitiesTable extends Activities
     if (data.containsKey('end_date')) {
       context.handle(_endDateMeta,
           endDate.isAcceptableOrUnknown(data['end_date']!, _endDateMeta));
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
     }
     return context;
   }
@@ -2592,8 +2415,6 @@ class $ActivitiesTable extends Activities
     return Activity(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -2611,12 +2432,12 @@ class $ActivitiesTable extends Activities
           .read(DriftSqlType.string, data['${effectivePrefix}project'])!,
       disabled: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}disabled'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       startDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}start_date']),
       endDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}end_date']),
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
     );
   }
 
@@ -2633,7 +2454,6 @@ class $ActivitiesTable extends Activities
 
 class Activity extends DataClass implements Insertable<Activity> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -2644,12 +2464,11 @@ class Activity extends DataClass implements Insertable<Activity> {
   final List<Translation>? translations;
   final String project;
   final bool disabled;
-  final String? description;
   final DateTime? startDate;
   final DateTime? endDate;
+  final String? description;
   const Activity(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -2658,14 +2477,13 @@ class Activity extends DataClass implements Insertable<Activity> {
       this.translations,
       required this.project,
       required this.disabled,
-      this.description,
       this.startDate,
-      this.endDate});
+      this.endDate,
+      this.description});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -2683,14 +2501,14 @@ class Activity extends DataClass implements Insertable<Activity> {
     }
     map['project'] = Variable<String>(project);
     map['disabled'] = Variable<bool>(disabled);
-    if (!nullToAbsent || description != null) {
-      map['description'] = Variable<String>(description);
-    }
     if (!nullToAbsent || startDate != null) {
       map['start_date'] = Variable<DateTime>(startDate);
     }
     if (!nullToAbsent || endDate != null) {
       map['end_date'] = Variable<DateTime>(endDate);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
     }
     return map;
   }
@@ -2698,7 +2516,6 @@ class Activity extends DataClass implements Insertable<Activity> {
   ActivitiesCompanion toCompanion(bool nullToAbsent) {
     return ActivitiesCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -2711,15 +2528,15 @@ class Activity extends DataClass implements Insertable<Activity> {
           : Value(translations),
       project: Value(project),
       disabled: Value(disabled),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
       startDate: startDate == null && nullToAbsent
           ? const Value.absent()
           : Value(startDate),
       endDate: endDate == null && nullToAbsent
           ? const Value.absent()
           : Value(endDate),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
     );
   }
 
@@ -2728,7 +2545,6 @@ class Activity extends DataClass implements Insertable<Activity> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Activity(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -2738,9 +2554,9 @@ class Activity extends DataClass implements Insertable<Activity> {
           serializer.fromJson<List<Translation>?>(json['translations']),
       project: serializer.fromJson<String>(json['project']),
       disabled: serializer.fromJson<bool>(json['disabled']),
-      description: serializer.fromJson<String?>(json['description']),
       startDate: serializer.fromJson<DateTime?>(json['startDate']),
       endDate: serializer.fromJson<DateTime?>(json['endDate']),
+      description: serializer.fromJson<String?>(json['description']),
     );
   }
   @override
@@ -2748,7 +2564,6 @@ class Activity extends DataClass implements Insertable<Activity> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -2757,15 +2572,14 @@ class Activity extends DataClass implements Insertable<Activity> {
       'translations': serializer.toJson<List<Translation>?>(translations),
       'project': serializer.toJson<String>(project),
       'disabled': serializer.toJson<bool>(disabled),
-      'description': serializer.toJson<String?>(description),
       'startDate': serializer.toJson<DateTime?>(startDate),
       'endDate': serializer.toJson<DateTime?>(endDate),
+      'description': serializer.toJson<String?>(description),
     };
   }
 
   Activity copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -2774,12 +2588,11 @@ class Activity extends DataClass implements Insertable<Activity> {
           Value<List<Translation>?> translations = const Value.absent(),
           String? project,
           bool? disabled,
-          Value<String?> description = const Value.absent(),
           Value<DateTime?> startDate = const Value.absent(),
-          Value<DateTime?> endDate = const Value.absent()}) =>
+          Value<DateTime?> endDate = const Value.absent(),
+          Value<String?> description = const Value.absent()}) =>
       Activity(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -2789,14 +2602,13 @@ class Activity extends DataClass implements Insertable<Activity> {
             translations.present ? translations.value : this.translations,
         project: project ?? this.project,
         disabled: disabled ?? this.disabled,
-        description: description.present ? description.value : this.description,
         startDate: startDate.present ? startDate.value : this.startDate,
         endDate: endDate.present ? endDate.value : this.endDate,
+        description: description.present ? description.value : this.description,
       );
   Activity copyWithCompanion(ActivitiesCompanion data) {
     return Activity(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -2811,10 +2623,10 @@ class Activity extends DataClass implements Insertable<Activity> {
           : this.translations,
       project: data.project.present ? data.project.value : this.project,
       disabled: data.disabled.present ? data.disabled.value : this.disabled,
-      description:
-          data.description.present ? data.description.value : this.description,
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
       endDate: data.endDate.present ? data.endDate.value : this.endDate,
+      description:
+          data.description.present ? data.description.value : this.description,
     );
   }
 
@@ -2822,7 +2634,6 @@ class Activity extends DataClass implements Insertable<Activity> {
   String toString() {
     return (StringBuffer('Activity(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -2831,9 +2642,9 @@ class Activity extends DataClass implements Insertable<Activity> {
           ..write('translations: $translations, ')
           ..write('project: $project, ')
           ..write('disabled: $disabled, ')
-          ..write('description: $description, ')
           ..write('startDate: $startDate, ')
-          ..write('endDate: $endDate')
+          ..write('endDate: $endDate, ')
+          ..write('description: $description')
           ..write(')'))
         .toString();
   }
@@ -2841,7 +2652,6 @@ class Activity extends DataClass implements Insertable<Activity> {
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       name,
@@ -2850,15 +2660,14 @@ class Activity extends DataClass implements Insertable<Activity> {
       translations,
       project,
       disabled,
-      description,
       startDate,
-      endDate);
+      endDate,
+      description);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Activity &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -2867,14 +2676,13 @@ class Activity extends DataClass implements Insertable<Activity> {
           other.translations == this.translations &&
           other.project == this.project &&
           other.disabled == this.disabled &&
-          other.description == this.description &&
           other.startDate == this.startDate &&
-          other.endDate == this.endDate);
+          other.endDate == this.endDate &&
+          other.description == this.description);
 }
 
 class ActivitiesCompanion extends UpdateCompanion<Activity> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -2883,13 +2691,12 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
   final Value<List<Translation>?> translations;
   final Value<String> project;
   final Value<bool> disabled;
-  final Value<String?> description;
   final Value<DateTime?> startDate;
   final Value<DateTime?> endDate;
+  final Value<String?> description;
   final Value<int> rowid;
   const ActivitiesCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -2898,14 +2705,13 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     this.translations = const Value.absent(),
     this.project = const Value.absent(),
     this.disabled = const Value.absent(),
-    this.description = const Value.absent(),
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
+    this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ActivitiesCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -2914,17 +2720,15 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     this.translations = const Value.absent(),
     required String project,
     required bool disabled,
-    this.description = const Value.absent(),
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
+    this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         project = Value(project),
         disabled = Value(disabled);
   static Insertable<Activity> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -2933,14 +2737,13 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     Expression<String>? translations,
     Expression<String>? project,
     Expression<bool>? disabled,
-    Expression<String>? description,
     Expression<DateTime>? startDate,
     Expression<DateTime>? endDate,
+    Expression<String>? description,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -2949,16 +2752,15 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       if (translations != null) 'translations': translations,
       if (project != null) 'project': project,
       if (disabled != null) 'disabled': disabled,
-      if (description != null) 'description': description,
       if (startDate != null) 'start_date': startDate,
       if (endDate != null) 'end_date': endDate,
+      if (description != null) 'description': description,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   ActivitiesCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -2967,13 +2769,12 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       Value<List<Translation>?>? translations,
       Value<String>? project,
       Value<bool>? disabled,
-      Value<String?>? description,
       Value<DateTime?>? startDate,
       Value<DateTime?>? endDate,
+      Value<String?>? description,
       Value<int>? rowid}) {
     return ActivitiesCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -2982,9 +2783,9 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       translations: translations ?? this.translations,
       project: project ?? this.project,
       disabled: disabled ?? this.disabled,
-      description: description ?? this.description,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      description: description ?? this.description,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2994,9 +2795,6 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -3023,14 +2821,14 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     if (disabled.present) {
       map['disabled'] = Variable<bool>(disabled.value);
     }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
-    }
     if (startDate.present) {
       map['start_date'] = Variable<DateTime>(startDate.value);
     }
     if (endDate.present) {
       map['end_date'] = Variable<DateTime>(endDate.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -3042,7 +2840,6 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
   String toString() {
     return (StringBuffer('ActivitiesCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -3051,9 +2848,9 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
           ..write('translations: $translations, ')
           ..write('project: $project, ')
           ..write('disabled: $disabled, ')
-          ..write('description: $description, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
+          ..write('description: $description, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3070,14 +2867,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -3173,7 +2962,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -3201,12 +2989,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -3265,8 +3047,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
     return Team(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -3320,7 +3100,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
 
 class Team extends DataClass implements Insertable<Team> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -3345,7 +3124,6 @@ class Team extends DataClass implements Insertable<Team> {
   final EntityScope? scope;
   const Team(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -3362,7 +3140,6 @@ class Team extends DataClass implements Insertable<Team> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -3399,7 +3176,6 @@ class Team extends DataClass implements Insertable<Team> {
   TeamsCompanion toCompanion(bool nullToAbsent) {
     return TeamsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -3427,7 +3203,6 @@ class Team extends DataClass implements Insertable<Team> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Team(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -3451,7 +3226,6 @@ class Team extends DataClass implements Insertable<Team> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -3471,7 +3245,6 @@ class Team extends DataClass implements Insertable<Team> {
 
   Team copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -3486,7 +3259,6 @@ class Team extends DataClass implements Insertable<Team> {
           Value<EntityScope?> scope = const Value.absent()}) =>
       Team(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -3504,7 +3276,6 @@ class Team extends DataClass implements Insertable<Team> {
   Team copyWithCompanion(TeamsCompanion data) {
     return Team(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -3535,7 +3306,6 @@ class Team extends DataClass implements Insertable<Team> {
   String toString() {
     return (StringBuffer('Team(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -3555,7 +3325,6 @@ class Team extends DataClass implements Insertable<Team> {
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       name,
@@ -3573,7 +3342,6 @@ class Team extends DataClass implements Insertable<Team> {
       identical(this, other) ||
       (other is Team &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -3590,7 +3358,6 @@ class Team extends DataClass implements Insertable<Team> {
 
 class TeamsCompanion extends UpdateCompanion<Team> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -3606,7 +3373,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
   final Value<int> rowid;
   const TeamsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -3623,7 +3389,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
   });
   TeamsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -3638,11 +3403,9 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     this.scope = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         activity = Value(activity);
   static Insertable<Team> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -3659,7 +3422,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -3678,7 +3440,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
 
   TeamsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -3694,7 +3455,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
       Value<int>? rowid}) {
     return TeamsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -3716,9 +3476,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -3770,7 +3527,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
   String toString() {
     return (StringBuffer('TeamsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -3800,14 +3556,6 @@ class $AssignmentsTable extends Assignments
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -3901,7 +3649,6 @@ class $AssignmentsTable extends Assignments
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         activity,
@@ -3929,12 +3676,6 @@ class $AssignmentsTable extends Assignments
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -3993,8 +3734,6 @@ class $AssignmentsTable extends Assignments
     return Assignment(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -4047,7 +3786,6 @@ class $AssignmentsTable extends Assignments
 
 class Assignment extends DataClass implements Insertable<Assignment> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String activity;
@@ -4076,7 +3814,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   final EntityScope? scope;
   const Assignment(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       required this.activity,
@@ -4093,7 +3830,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     map['activity'] = Variable<String>(activity);
@@ -4131,7 +3867,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   AssignmentsCompanion toCompanion(bool nullToAbsent) {
     return AssignmentsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       activity: Value(activity),
@@ -4159,7 +3894,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Assignment(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       activity: serializer.fromJson<String>(json['activity']),
@@ -4182,7 +3916,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'activity': serializer.toJson<String>(activity),
@@ -4203,7 +3936,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
 
   Assignment copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           String? activity,
@@ -4218,7 +3950,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           Value<EntityScope?> scope = const Value.absent()}) =>
       Assignment(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         activity: activity ?? this.activity,
@@ -4235,7 +3966,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   Assignment copyWithCompanion(AssignmentsCompanion data) {
     return Assignment(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -4260,7 +3990,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   String toString() {
     return (StringBuffer('Assignment(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('activity: $activity, ')
@@ -4280,7 +4009,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       activity,
@@ -4298,7 +4026,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       identical(this, other) ||
       (other is Assignment &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.activity == this.activity &&
@@ -4315,7 +4042,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
 
 class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String> activity;
@@ -4331,7 +4057,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<int> rowid;
   const AssignmentsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.activity = const Value.absent(),
@@ -4348,7 +4073,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   });
   AssignmentsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     required String activity,
@@ -4363,13 +4087,11 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     this.scope = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         activity = Value(activity),
         team = Value(team),
         orgUnit = Value(orgUnit);
   static Insertable<Assignment> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? activity,
@@ -4386,7 +4108,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (activity != null) 'activity': activity,
@@ -4405,7 +4126,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
 
   AssignmentsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String>? activity,
@@ -4421,7 +4141,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       Value<int>? rowid}) {
     return AssignmentsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       activity: activity ?? this.activity,
@@ -4443,9 +4162,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -4498,7 +4214,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   String toString() {
     return (StringBuffer('AssignmentsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('activity: $activity, ')
@@ -4528,14 +4243,6 @@ class $FormTemplatesTable extends FormTemplates
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -4594,7 +4301,6 @@ class $FormTemplatesTable extends FormTemplates
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -4618,12 +4324,6 @@ class $FormTemplatesTable extends FormTemplates
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -4670,8 +4370,6 @@ class $FormTemplatesTable extends FormTemplates
     return FormTemplate(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -4708,7 +4406,6 @@ class $FormTemplatesTable extends FormTemplates
 
 class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -4723,7 +4420,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   final int version;
   const FormTemplate(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -4736,7 +4432,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -4763,7 +4458,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   FormTemplatesCompanion toCompanion(bool nullToAbsent) {
     return FormTemplatesCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -4784,7 +4478,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return FormTemplate(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -4801,7 +4494,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -4815,7 +4507,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
 
   FormTemplate copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -4826,7 +4517,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
           int? version}) =>
       FormTemplate(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -4840,7 +4530,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   FormTemplate copyWithCompanion(FormTemplatesCompanion data) {
     return FormTemplate(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -4862,7 +4551,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   String toString() {
     return (StringBuffer('FormTemplate(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -4876,14 +4564,13 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   }
 
   @override
-  int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      name, displayName, code, translations, label, version);
+  int get hashCode => Object.hash(id, lastModifiedDate, createdDate, name,
+      displayName, code, translations, label, version);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is FormTemplate &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -4896,7 +4583,6 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
 
 class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -4908,7 +4594,6 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   final Value<int> rowid;
   const FormTemplatesCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -4921,7 +4606,6 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   });
   FormTemplatesCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -4932,11 +4616,9 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     required int version,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         version = Value(version);
   static Insertable<FormTemplate> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -4949,7 +4631,6 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -4964,7 +4645,6 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
 
   FormTemplatesCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -4976,7 +4656,6 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
       Value<int>? rowid}) {
     return FormTemplatesCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -4994,9 +4673,6 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -5035,7 +4711,6 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   String toString() {
     return (StringBuffer('FormTemplatesCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -5061,14 +4736,6 @@ class $FormVersionsTable extends FormVersions
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -5198,7 +4865,6 @@ class $FormVersionsTable extends FormVersions
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -5231,12 +4897,6 @@ class $FormVersionsTable extends FormVersions
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -5309,8 +4969,6 @@ class $FormVersionsTable extends FormVersions
     return FormVersion(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -5392,7 +5050,6 @@ class $FormVersionsTable extends FormVersions
 
 class FormVersion extends DataClass implements Insertable<FormVersion> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -5434,7 +5091,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   final ValidationStrategy validationStrategy;
   const FormVersion(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -5456,7 +5112,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -5513,7 +5168,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   FormVersionsCompanion toCompanion(bool nullToAbsent) {
     return FormVersionsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -5553,7 +5207,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return FormVersion(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -5580,7 +5233,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -5605,7 +5257,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
 
   FormVersion copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -5625,7 +5276,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           ValidationStrategy? validationStrategy}) =>
       FormVersion(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -5648,7 +5298,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   FormVersion copyWithCompanion(FormVersionsCompanion data) {
     return FormVersion(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -5687,7 +5336,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   String toString() {
     return (StringBuffer('FormVersion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -5712,7 +5360,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       name,
@@ -5735,7 +5382,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       identical(this, other) ||
       (other is FormVersion &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -5757,7 +5403,6 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
 
 class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -5778,7 +5423,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   final Value<int> rowid;
   const FormVersionsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -5800,7 +5444,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   });
   FormVersionsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -5820,14 +5463,12 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     required ValidationStrategy validationStrategy,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         form = Value(form),
         version = Value(version),
         defaultLocal = Value(defaultLocal),
         validationStrategy = Value(validationStrategy);
   static Insertable<FormVersion> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -5849,7 +5490,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -5873,7 +5513,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
 
   FormVersionsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -5894,7 +5533,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       Value<int>? rowid}) {
     return FormVersionsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -5921,9 +5559,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -5995,7 +5630,6 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   String toString() {
     return (StringBuffer('FormVersionsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -6030,14 +5664,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -6134,7 +5760,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -6164,12 +5789,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -6251,8 +5870,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
     return MetadataSubmission(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -6308,7 +5925,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
 class MetadataSubmission extends DataClass
     implements Insertable<MetadataSubmission> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -6343,7 +5959,6 @@ class MetadataSubmission extends DataClass
   final String? lastModifiedBy;
   const MetadataSubmission(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -6362,7 +5977,6 @@ class MetadataSubmission extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -6403,7 +6017,6 @@ class MetadataSubmission extends DataClass
   MetadataSubmissionsCompanion toCompanion(bool nullToAbsent) {
     return MetadataSubmissionsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -6436,7 +6049,6 @@ class MetadataSubmission extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MetadataSubmission(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -6460,7 +6072,6 @@ class MetadataSubmission extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -6482,7 +6093,6 @@ class MetadataSubmission extends DataClass
 
   MetadataSubmission copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -6499,7 +6109,6 @@ class MetadataSubmission extends DataClass
           Value<String?> lastModifiedBy = const Value.absent()}) =>
       MetadataSubmission(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -6520,7 +6129,6 @@ class MetadataSubmission extends DataClass
   MetadataSubmission copyWithCompanion(MetadataSubmissionsCompanion data) {
     return MetadataSubmission(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -6557,7 +6165,6 @@ class MetadataSubmission extends DataClass
   String toString() {
     return (StringBuffer('MetadataSubmission(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -6579,7 +6186,6 @@ class MetadataSubmission extends DataClass
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       name,
@@ -6599,7 +6205,6 @@ class MetadataSubmission extends DataClass
       identical(this, other) ||
       (other is MetadataSubmission &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -6618,7 +6223,6 @@ class MetadataSubmission extends DataClass
 
 class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -6636,7 +6240,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   final Value<int> rowid;
   const MetadataSubmissionsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -6655,7 +6258,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   });
   MetadataSubmissionsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -6672,7 +6274,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     this.lastModifiedBy = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         resourceType = Value(resourceType),
         metadataSchema = Value(metadataSchema),
         serialNumber = Value(serialNumber),
@@ -6680,7 +6281,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
         resourceId = Value(resourceId);
   static Insertable<MetadataSubmission> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -6699,7 +6299,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -6720,7 +6319,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
 
   MetadataSubmissionsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -6738,7 +6336,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
       Value<int>? rowid}) {
     return MetadataSubmissionsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -6762,9 +6359,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -6823,7 +6417,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   String toString() {
     return (StringBuffer('MetadataSubmissionsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -6844,25 +6437,17 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   }
 }
 
-class $DataFormSubmissionsTable extends DataFormSubmissions
-    with TableInfo<$DataFormSubmissionsTable, DataFormSubmission> {
+class $DataSubmissionsTable extends DataSubmissions
+    with TableInfo<$DataSubmissionsTable, DataSubmission> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DataFormSubmissionsTable(this.attachedDatabase, [this._alias]);
+  $DataSubmissionsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -6889,61 +6474,6 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("deleted" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
-  @override
-  late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
-      'synced', aliasedName, true,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("synced" IN (0, 1))'));
-  static const VerificationMeta _syncFailedMeta =
-      const VerificationMeta('syncFailed');
-  @override
-  late final GeneratedColumn<bool> syncFailed = GeneratedColumn<bool>(
-      'sync_failed', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("sync_failed" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _isFinalMeta =
-      const VerificationMeta('isFinal');
-  @override
-  late final GeneratedColumn<bool> isFinal = GeneratedColumn<bool>(
-      'is_final', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_final" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _lastSyncMessageMeta =
-      const VerificationMeta('lastSyncMessage');
-  @override
-  late final GeneratedColumn<String> lastSyncMessage = GeneratedColumn<String>(
-      'last_sync_message', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _createdByMeta =
-      const VerificationMeta('createdBy');
-  @override
-  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
-      'created_by', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _statusMeta = const VerificationMeta('status');
-  @override
-  late final GeneratedColumnWithTypeConverter<AssignmentStatus?, String>
-      status = GeneratedColumn<String>('status', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<AssignmentStatus?>(
-              $DataFormSubmissionsTable.$converterstatusn);
-  static const VerificationMeta _teamMeta = const VerificationMeta('team');
-  @override
-  late final GeneratedColumn<String> team = GeneratedColumn<String>(
-      'team', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES teams (id)'));
   static const VerificationMeta _formMeta = const VerificationMeta('form');
   @override
   late final GeneratedColumn<String> form = GeneratedColumn<String>(
@@ -6973,6 +6503,14 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES assignments (id)'));
+  static const VerificationMeta _teamMeta = const VerificationMeta('team');
+  @override
+  late final GeneratedColumn<String> team = GeneratedColumn<String>(
+      'team', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES teams (id)'));
   static const VerificationMeta _orgUnitMeta =
       const VerificationMeta('orgUnit');
   @override
@@ -6982,20 +6520,36 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES org_units (id)'));
-  static const VerificationMeta _formDataMeta =
-      const VerificationMeta('formData');
+  static const VerificationMeta _progressStatusMeta =
+      const VerificationMeta('progressStatus');
   @override
-  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      formData = GeneratedColumn<String>('form_data', aliasedName, true,
+  late final GeneratedColumnWithTypeConverter<AssignmentStatus?, String>
+      progressStatus = GeneratedColumn<String>(
+              'progress_status', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<Map<String, dynamic>?>(
-              $DataFormSubmissionsTable.$converterformDatan);
+          .withConverter<AssignmentStatus?>(
+              $DataSubmissionsTable.$converterprogressStatusn);
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumnWithTypeConverter<SubmissionStatus, String> status =
+      GeneratedColumn<String>('status', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(SubmissionStatus.draft.name))
+          .withConverter<SubmissionStatus>(
+              $DataSubmissionsTable.$converterstatus);
   static const VerificationMeta _lastSyncDateMeta =
       const VerificationMeta('lastSyncDate');
   @override
   late final GeneratedColumn<DateTime> lastSyncDate = GeneratedColumn<DateTime>(
       'last_sync_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _lastSyncMessageMeta =
+      const VerificationMeta('lastSyncMessage');
+  @override
+  late final GeneratedColumn<String> lastSyncMessage = GeneratedColumn<String>(
+      'last_sync_message', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _startEntryTimeMeta =
       const VerificationMeta('startEntryTime');
   @override
@@ -7010,37 +6564,48 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
   late final GeneratedColumn<DateTime> finishedEntryTime =
       GeneratedColumn<DateTime>('finished_entry_time', aliasedName, true,
           type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _createdByMeta =
+      const VerificationMeta('createdBy');
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+      'created_by', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _formDataMeta =
+      const VerificationMeta('formData');
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+      formData = GeneratedColumn<String>('form_data', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<Map<String, dynamic>?>(
+              $DataSubmissionsTable.$converterformDatan);
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         deleted,
-        synced,
-        syncFailed,
-        isFinal,
-        lastSyncMessage,
-        createdBy,
-        status,
-        team,
         form,
         formVersion,
         version,
         assignment,
+        team,
         orgUnit,
-        formData,
+        progressStatus,
+        status,
         lastSyncDate,
+        lastSyncMessage,
         startEntryTime,
-        finishedEntryTime
+        finishedEntryTime,
+        createdBy,
+        formData
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'data_form_submissions';
+  static const String $name = 'data_submissions';
   @override
-  VerificationContext validateIntegrity(Insertable<DataFormSubmission> instance,
+  VerificationContext validateIntegrity(Insertable<DataSubmission> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -7048,12 +6613,6 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -7070,35 +6629,6 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
     if (data.containsKey('deleted')) {
       context.handle(_deletedMeta,
           deleted.isAcceptableOrUnknown(data['deleted']!, _deletedMeta));
-    }
-    if (data.containsKey('synced')) {
-      context.handle(_syncedMeta,
-          synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta));
-    }
-    if (data.containsKey('sync_failed')) {
-      context.handle(
-          _syncFailedMeta,
-          syncFailed.isAcceptableOrUnknown(
-              data['sync_failed']!, _syncFailedMeta));
-    }
-    if (data.containsKey('is_final')) {
-      context.handle(_isFinalMeta,
-          isFinal.isAcceptableOrUnknown(data['is_final']!, _isFinalMeta));
-    }
-    if (data.containsKey('last_sync_message')) {
-      context.handle(
-          _lastSyncMessageMeta,
-          lastSyncMessage.isAcceptableOrUnknown(
-              data['last_sync_message']!, _lastSyncMessageMeta));
-    }
-    if (data.containsKey('created_by')) {
-      context.handle(_createdByMeta,
-          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
-    }
-    context.handle(_statusMeta, const VerificationResult.success());
-    if (data.containsKey('team')) {
-      context.handle(
-          _teamMeta, team.isAcceptableOrUnknown(data['team']!, _teamMeta));
     }
     if (data.containsKey('form')) {
       context.handle(
@@ -7124,16 +6654,27 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
           assignment.isAcceptableOrUnknown(
               data['assignment']!, _assignmentMeta));
     }
+    if (data.containsKey('team')) {
+      context.handle(
+          _teamMeta, team.isAcceptableOrUnknown(data['team']!, _teamMeta));
+    }
     if (data.containsKey('org_unit')) {
       context.handle(_orgUnitMeta,
           orgUnit.isAcceptableOrUnknown(data['org_unit']!, _orgUnitMeta));
     }
-    context.handle(_formDataMeta, const VerificationResult.success());
+    context.handle(_progressStatusMeta, const VerificationResult.success());
+    context.handle(_statusMeta, const VerificationResult.success());
     if (data.containsKey('last_sync_date')) {
       context.handle(
           _lastSyncDateMeta,
           lastSyncDate.isAcceptableOrUnknown(
               data['last_sync_date']!, _lastSyncDateMeta));
+    }
+    if (data.containsKey('last_sync_message')) {
+      context.handle(
+          _lastSyncMessageMeta,
+          lastSyncMessage.isAcceptableOrUnknown(
+              data['last_sync_message']!, _lastSyncMessageMeta));
     }
     if (data.containsKey('start_entry_time')) {
       context.handle(
@@ -7147,40 +6688,28 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
           finishedEntryTime.isAcceptableOrUnknown(
               data['finished_entry_time']!, _finishedEntryTimeMeta));
     }
+    if (data.containsKey('created_by')) {
+      context.handle(_createdByMeta,
+          createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
+    }
+    context.handle(_formDataMeta, const VerificationResult.success());
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  DataFormSubmission map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DataSubmission map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DataFormSubmission(
+    return DataSubmission(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       deleted: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}deleted'])!,
-      synced: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}synced']),
-      syncFailed: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}sync_failed'])!,
-      isFinal: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_final'])!,
-      lastSyncMessage: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}last_sync_message']),
-      createdBy: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}created_by']),
-      status: $DataFormSubmissionsTable.$converterstatusn.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}status'])),
-      team: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}team']),
       form: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}form']),
       formVersion: attachedDatabase.typeMapping
@@ -7189,57 +6718,56 @@ class $DataFormSubmissionsTable extends DataFormSubmissions
           .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
       assignment: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}assignment']),
+      team: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}team']),
       orgUnit: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}org_unit']),
-      formData: $DataFormSubmissionsTable.$converterformDatan.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}form_data'])),
+      progressStatus: $DataSubmissionsTable.$converterprogressStatusn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}progress_status'])),
+      status: $DataSubmissionsTable.$converterstatus.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}status'])!),
       lastSyncDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_sync_date']),
+      lastSyncMessage: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}last_sync_message']),
       startEntryTime: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}start_entry_time'])!,
       finishedEntryTime: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}finished_entry_time']),
+      createdBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}created_by']),
+      formData: $DataSubmissionsTable.$converterformDatan.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.string, data['${effectivePrefix}form_data'])),
     );
   }
 
   @override
-  $DataFormSubmissionsTable createAlias(String alias) {
-    return $DataFormSubmissionsTable(attachedDatabase, alias);
+  $DataSubmissionsTable createAlias(String alias) {
+    return $DataSubmissionsTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<AssignmentStatus, String, String> $converterstatus =
+  static JsonTypeConverter2<AssignmentStatus, String, String>
+      $converterprogressStatus =
       const EnumNameConverter(AssignmentStatus.values);
   static JsonTypeConverter2<AssignmentStatus?, String?, String?>
-      $converterstatusn = JsonTypeConverter2.asNullable($converterstatus);
+      $converterprogressStatusn =
+      JsonTypeConverter2.asNullable($converterprogressStatus);
+  static JsonTypeConverter2<SubmissionStatus, String, String> $converterstatus =
+      const EnumNameConverter(SubmissionStatus.values);
   static TypeConverter<Map<String, dynamic>, String> $converterformData =
       const MapConverter();
   static TypeConverter<Map<String, dynamic>?, String?> $converterformDatan =
       NullAwareTypeConverter.wrap($converterformData);
 }
 
-class DataFormSubmission extends DataClass
-    implements Insertable<DataFormSubmission> {
+class DataSubmission extends DataClass implements Insertable<DataSubmission> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-
-  /// Bool columns (nullable)
   final bool deleted;
-  final bool? synced;
-  final bool syncFailed;
-
-  /// isFinal is non-nullable; default to false (adjust default as needed)
-  final bool isFinal;
-  final String? lastSyncMessage;
-  final String? createdBy;
-
-  /// Status stored as text via a converter; nullable.
-  final AssignmentStatus? status;
-
-  /// Many-to-one references stored as text.
-  final String? team;
 
   /// Form template id is stored as text (nullable).
   final String? form;
@@ -7253,62 +6781,51 @@ class DataFormSubmission extends DataClass
   /// Nullable assignment reference.
   final String? assignment;
 
+  /// Many-to-one references stored as text.
+  final String? team;
+
   /// Nullable orgUnit reference.
   final String? orgUnit;
 
+  /// Progress Status stored as text via a converter; nullable.
+  final AssignmentStatus? progressStatus;
+  final SubmissionStatus status;
+  final DateTime? lastSyncDate;
+  final String? lastSyncMessage;
+  final DateTime startEntryTime;
+
+  /// last finalized time
+  final DateTime? finishedEntryTime;
+  final String? createdBy;
+
   /// formData is stored as a JSON string.
   final Map<String, dynamic>? formData;
-  final DateTime? lastSyncDate;
-  final DateTime startEntryTime;
-  final DateTime? finishedEntryTime;
-  const DataFormSubmission(
+  const DataSubmission(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       required this.deleted,
-      this.synced,
-      required this.syncFailed,
-      required this.isFinal,
-      this.lastSyncMessage,
-      this.createdBy,
-      this.status,
-      this.team,
       this.form,
       required this.formVersion,
       required this.version,
       this.assignment,
+      this.team,
       this.orgUnit,
-      this.formData,
+      this.progressStatus,
+      required this.status,
       this.lastSyncDate,
+      this.lastSyncMessage,
       required this.startEntryTime,
-      this.finishedEntryTime});
+      this.finishedEntryTime,
+      this.createdBy,
+      this.formData});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     map['deleted'] = Variable<bool>(deleted);
-    if (!nullToAbsent || synced != null) {
-      map['synced'] = Variable<bool>(synced);
-    }
-    map['sync_failed'] = Variable<bool>(syncFailed);
-    map['is_final'] = Variable<bool>(isFinal);
-    if (!nullToAbsent || lastSyncMessage != null) {
-      map['last_sync_message'] = Variable<String>(lastSyncMessage);
-    }
-    if (!nullToAbsent || createdBy != null) {
-      map['created_by'] = Variable<String>(createdBy);
-    }
-    if (!nullToAbsent || status != null) {
-      map['status'] = Variable<String>(
-          $DataFormSubmissionsTable.$converterstatusn.toSql(status));
-    }
-    if (!nullToAbsent || team != null) {
-      map['team'] = Variable<String>(team);
-    }
     if (!nullToAbsent || form != null) {
       map['form'] = Variable<String>(form);
     }
@@ -7317,92 +6834,105 @@ class DataFormSubmission extends DataClass
     if (!nullToAbsent || assignment != null) {
       map['assignment'] = Variable<String>(assignment);
     }
+    if (!nullToAbsent || team != null) {
+      map['team'] = Variable<String>(team);
+    }
     if (!nullToAbsent || orgUnit != null) {
       map['org_unit'] = Variable<String>(orgUnit);
     }
-    if (!nullToAbsent || formData != null) {
-      map['form_data'] = Variable<String>(
-          $DataFormSubmissionsTable.$converterformDatan.toSql(formData));
+    if (!nullToAbsent || progressStatus != null) {
+      map['progress_status'] = Variable<String>($DataSubmissionsTable
+          .$converterprogressStatusn
+          .toSql(progressStatus));
+    }
+    {
+      map['status'] = Variable<String>(
+          $DataSubmissionsTable.$converterstatus.toSql(status));
     }
     if (!nullToAbsent || lastSyncDate != null) {
       map['last_sync_date'] = Variable<DateTime>(lastSyncDate);
+    }
+    if (!nullToAbsent || lastSyncMessage != null) {
+      map['last_sync_message'] = Variable<String>(lastSyncMessage);
     }
     map['start_entry_time'] = Variable<DateTime>(startEntryTime);
     if (!nullToAbsent || finishedEntryTime != null) {
       map['finished_entry_time'] = Variable<DateTime>(finishedEntryTime);
     }
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<String>(createdBy);
+    }
+    if (!nullToAbsent || formData != null) {
+      map['form_data'] = Variable<String>(
+          $DataSubmissionsTable.$converterformDatan.toSql(formData));
+    }
     return map;
   }
 
-  DataFormSubmissionsCompanion toCompanion(bool nullToAbsent) {
-    return DataFormSubmissionsCompanion(
+  DataSubmissionsCompanion toCompanion(bool nullToAbsent) {
+    return DataSubmissionsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       deleted: Value(deleted),
-      synced:
-          synced == null && nullToAbsent ? const Value.absent() : Value(synced),
-      syncFailed: Value(syncFailed),
-      isFinal: Value(isFinal),
-      lastSyncMessage: lastSyncMessage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastSyncMessage),
-      createdBy: createdBy == null && nullToAbsent
-          ? const Value.absent()
-          : Value(createdBy),
-      status:
-          status == null && nullToAbsent ? const Value.absent() : Value(status),
-      team: team == null && nullToAbsent ? const Value.absent() : Value(team),
       form: form == null && nullToAbsent ? const Value.absent() : Value(form),
       formVersion: Value(formVersion),
       version: Value(version),
       assignment: assignment == null && nullToAbsent
           ? const Value.absent()
           : Value(assignment),
+      team: team == null && nullToAbsent ? const Value.absent() : Value(team),
       orgUnit: orgUnit == null && nullToAbsent
           ? const Value.absent()
           : Value(orgUnit),
-      formData: formData == null && nullToAbsent
+      progressStatus: progressStatus == null && nullToAbsent
           ? const Value.absent()
-          : Value(formData),
+          : Value(progressStatus),
+      status: Value(status),
       lastSyncDate: lastSyncDate == null && nullToAbsent
           ? const Value.absent()
           : Value(lastSyncDate),
+      lastSyncMessage: lastSyncMessage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncMessage),
       startEntryTime: Value(startEntryTime),
       finishedEntryTime: finishedEntryTime == null && nullToAbsent
           ? const Value.absent()
           : Value(finishedEntryTime),
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      formData: formData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(formData),
     );
   }
 
-  factory DataFormSubmission.fromJson(Map<String, dynamic> json,
+  factory DataSubmission.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DataFormSubmission(
+    return DataSubmission(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       deleted: serializer.fromJson<bool>(json['deleted']),
-      synced: serializer.fromJson<bool?>(json['synced']),
-      syncFailed: serializer.fromJson<bool>(json['syncFailed']),
-      isFinal: serializer.fromJson<bool>(json['isFinal']),
-      lastSyncMessage: serializer.fromJson<String?>(json['lastSyncMessage']),
-      createdBy: serializer.fromJson<String?>(json['createdBy']),
-      status: $DataFormSubmissionsTable.$converterstatusn
-          .fromJson(serializer.fromJson<String?>(json['status'])),
-      team: serializer.fromJson<String?>(json['team']),
       form: serializer.fromJson<String?>(json['form']),
       formVersion: serializer.fromJson<String>(json['formVersion']),
       version: serializer.fromJson<int>(json['version']),
       assignment: serializer.fromJson<String?>(json['assignment']),
+      team: serializer.fromJson<String?>(json['team']),
       orgUnit: serializer.fromJson<String?>(json['orgUnit']),
-      formData: serializer.fromJson<Map<String, dynamic>?>(json['formData']),
+      progressStatus: $DataSubmissionsTable.$converterprogressStatusn
+          .fromJson(serializer.fromJson<String?>(json['progressStatus'])),
+      status: $DataSubmissionsTable.$converterstatus
+          .fromJson(serializer.fromJson<String>(json['status'])),
       lastSyncDate: serializer.fromJson<DateTime?>(json['lastSyncDate']),
+      lastSyncMessage: serializer.fromJson<String?>(json['lastSyncMessage']),
       startEntryTime: serializer.fromJson<DateTime>(json['startEntryTime']),
       finishedEntryTime:
           serializer.fromJson<DateTime?>(json['finishedEntryTime']),
+      createdBy: serializer.fromJson<String?>(json['createdBy']),
+      formData: serializer.fromJson<Map<String, dynamic>?>(json['formData']),
     );
   }
   @override
@@ -7410,368 +6940,328 @@ class DataFormSubmission extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'deleted': serializer.toJson<bool>(deleted),
-      'synced': serializer.toJson<bool?>(synced),
-      'syncFailed': serializer.toJson<bool>(syncFailed),
-      'isFinal': serializer.toJson<bool>(isFinal),
-      'lastSyncMessage': serializer.toJson<String?>(lastSyncMessage),
-      'createdBy': serializer.toJson<String?>(createdBy),
-      'status': serializer.toJson<String?>(
-          $DataFormSubmissionsTable.$converterstatusn.toJson(status)),
-      'team': serializer.toJson<String?>(team),
       'form': serializer.toJson<String?>(form),
       'formVersion': serializer.toJson<String>(formVersion),
       'version': serializer.toJson<int>(version),
       'assignment': serializer.toJson<String?>(assignment),
+      'team': serializer.toJson<String?>(team),
       'orgUnit': serializer.toJson<String?>(orgUnit),
-      'formData': serializer.toJson<Map<String, dynamic>?>(formData),
+      'progressStatus': serializer.toJson<String?>($DataSubmissionsTable
+          .$converterprogressStatusn
+          .toJson(progressStatus)),
+      'status': serializer.toJson<String>(
+          $DataSubmissionsTable.$converterstatus.toJson(status)),
       'lastSyncDate': serializer.toJson<DateTime?>(lastSyncDate),
+      'lastSyncMessage': serializer.toJson<String?>(lastSyncMessage),
       'startEntryTime': serializer.toJson<DateTime>(startEntryTime),
       'finishedEntryTime': serializer.toJson<DateTime?>(finishedEntryTime),
+      'createdBy': serializer.toJson<String?>(createdBy),
+      'formData': serializer.toJson<Map<String, dynamic>?>(formData),
     };
   }
 
-  DataFormSubmission copyWith(
+  DataSubmission copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           bool? deleted,
-          Value<bool?> synced = const Value.absent(),
-          bool? syncFailed,
-          bool? isFinal,
-          Value<String?> lastSyncMessage = const Value.absent(),
-          Value<String?> createdBy = const Value.absent(),
-          Value<AssignmentStatus?> status = const Value.absent(),
-          Value<String?> team = const Value.absent(),
           Value<String?> form = const Value.absent(),
           String? formVersion,
           int? version,
           Value<String?> assignment = const Value.absent(),
+          Value<String?> team = const Value.absent(),
           Value<String?> orgUnit = const Value.absent(),
-          Value<Map<String, dynamic>?> formData = const Value.absent(),
+          Value<AssignmentStatus?> progressStatus = const Value.absent(),
+          SubmissionStatus? status,
           Value<DateTime?> lastSyncDate = const Value.absent(),
+          Value<String?> lastSyncMessage = const Value.absent(),
           DateTime? startEntryTime,
-          Value<DateTime?> finishedEntryTime = const Value.absent()}) =>
-      DataFormSubmission(
+          Value<DateTime?> finishedEntryTime = const Value.absent(),
+          Value<String?> createdBy = const Value.absent(),
+          Value<Map<String, dynamic>?> formData = const Value.absent()}) =>
+      DataSubmission(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         deleted: deleted ?? this.deleted,
-        synced: synced.present ? synced.value : this.synced,
-        syncFailed: syncFailed ?? this.syncFailed,
-        isFinal: isFinal ?? this.isFinal,
-        lastSyncMessage: lastSyncMessage.present
-            ? lastSyncMessage.value
-            : this.lastSyncMessage,
-        createdBy: createdBy.present ? createdBy.value : this.createdBy,
-        status: status.present ? status.value : this.status,
-        team: team.present ? team.value : this.team,
         form: form.present ? form.value : this.form,
         formVersion: formVersion ?? this.formVersion,
         version: version ?? this.version,
         assignment: assignment.present ? assignment.value : this.assignment,
+        team: team.present ? team.value : this.team,
         orgUnit: orgUnit.present ? orgUnit.value : this.orgUnit,
-        formData: formData.present ? formData.value : this.formData,
+        progressStatus:
+            progressStatus.present ? progressStatus.value : this.progressStatus,
+        status: status ?? this.status,
         lastSyncDate:
             lastSyncDate.present ? lastSyncDate.value : this.lastSyncDate,
+        lastSyncMessage: lastSyncMessage.present
+            ? lastSyncMessage.value
+            : this.lastSyncMessage,
         startEntryTime: startEntryTime ?? this.startEntryTime,
         finishedEntryTime: finishedEntryTime.present
             ? finishedEntryTime.value
             : this.finishedEntryTime,
+        createdBy: createdBy.present ? createdBy.value : this.createdBy,
+        formData: formData.present ? formData.value : this.formData,
       );
-  DataFormSubmission copyWithCompanion(DataFormSubmissionsCompanion data) {
-    return DataFormSubmission(
+  DataSubmission copyWithCompanion(DataSubmissionsCompanion data) {
+    return DataSubmission(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
       deleted: data.deleted.present ? data.deleted.value : this.deleted,
-      synced: data.synced.present ? data.synced.value : this.synced,
-      syncFailed:
-          data.syncFailed.present ? data.syncFailed.value : this.syncFailed,
-      isFinal: data.isFinal.present ? data.isFinal.value : this.isFinal,
-      lastSyncMessage: data.lastSyncMessage.present
-          ? data.lastSyncMessage.value
-          : this.lastSyncMessage,
-      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
-      status: data.status.present ? data.status.value : this.status,
-      team: data.team.present ? data.team.value : this.team,
       form: data.form.present ? data.form.value : this.form,
       formVersion:
           data.formVersion.present ? data.formVersion.value : this.formVersion,
       version: data.version.present ? data.version.value : this.version,
       assignment:
           data.assignment.present ? data.assignment.value : this.assignment,
+      team: data.team.present ? data.team.value : this.team,
       orgUnit: data.orgUnit.present ? data.orgUnit.value : this.orgUnit,
-      formData: data.formData.present ? data.formData.value : this.formData,
+      progressStatus: data.progressStatus.present
+          ? data.progressStatus.value
+          : this.progressStatus,
+      status: data.status.present ? data.status.value : this.status,
       lastSyncDate: data.lastSyncDate.present
           ? data.lastSyncDate.value
           : this.lastSyncDate,
+      lastSyncMessage: data.lastSyncMessage.present
+          ? data.lastSyncMessage.value
+          : this.lastSyncMessage,
       startEntryTime: data.startEntryTime.present
           ? data.startEntryTime.value
           : this.startEntryTime,
       finishedEntryTime: data.finishedEntryTime.present
           ? data.finishedEntryTime.value
           : this.finishedEntryTime,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      formData: data.formData.present ? data.formData.value : this.formData,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('DataFormSubmission(')
+    return (StringBuffer('DataSubmission(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('deleted: $deleted, ')
-          ..write('synced: $synced, ')
-          ..write('syncFailed: $syncFailed, ')
-          ..write('isFinal: $isFinal, ')
-          ..write('lastSyncMessage: $lastSyncMessage, ')
-          ..write('createdBy: $createdBy, ')
-          ..write('status: $status, ')
-          ..write('team: $team, ')
           ..write('form: $form, ')
           ..write('formVersion: $formVersion, ')
           ..write('version: $version, ')
           ..write('assignment: $assignment, ')
+          ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
-          ..write('formData: $formData, ')
+          ..write('progressStatus: $progressStatus, ')
+          ..write('status: $status, ')
           ..write('lastSyncDate: $lastSyncDate, ')
+          ..write('lastSyncMessage: $lastSyncMessage, ')
           ..write('startEntryTime: $startEntryTime, ')
-          ..write('finishedEntryTime: $finishedEntryTime')
+          ..write('finishedEntryTime: $finishedEntryTime, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('formData: $formData')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hashAll([
-        id,
-        dirty,
-        lastModifiedDate,
-        createdDate,
-        deleted,
-        synced,
-        syncFailed,
-        isFinal,
-        lastSyncMessage,
-        createdBy,
-        status,
-        team,
-        form,
-        formVersion,
-        version,
-        assignment,
-        orgUnit,
-        formData,
-        lastSyncDate,
-        startEntryTime,
-        finishedEntryTime
-      ]);
+  int get hashCode => Object.hash(
+      id,
+      lastModifiedDate,
+      createdDate,
+      deleted,
+      form,
+      formVersion,
+      version,
+      assignment,
+      team,
+      orgUnit,
+      progressStatus,
+      status,
+      lastSyncDate,
+      lastSyncMessage,
+      startEntryTime,
+      finishedEntryTime,
+      createdBy,
+      formData);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is DataFormSubmission &&
+      (other is DataSubmission &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.deleted == this.deleted &&
-          other.synced == this.synced &&
-          other.syncFailed == this.syncFailed &&
-          other.isFinal == this.isFinal &&
-          other.lastSyncMessage == this.lastSyncMessage &&
-          other.createdBy == this.createdBy &&
-          other.status == this.status &&
-          other.team == this.team &&
           other.form == this.form &&
           other.formVersion == this.formVersion &&
           other.version == this.version &&
           other.assignment == this.assignment &&
+          other.team == this.team &&
           other.orgUnit == this.orgUnit &&
-          other.formData == this.formData &&
+          other.progressStatus == this.progressStatus &&
+          other.status == this.status &&
           other.lastSyncDate == this.lastSyncDate &&
+          other.lastSyncMessage == this.lastSyncMessage &&
           other.startEntryTime == this.startEntryTime &&
-          other.finishedEntryTime == this.finishedEntryTime);
+          other.finishedEntryTime == this.finishedEntryTime &&
+          other.createdBy == this.createdBy &&
+          other.formData == this.formData);
 }
 
-class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
+class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<bool> deleted;
-  final Value<bool?> synced;
-  final Value<bool> syncFailed;
-  final Value<bool> isFinal;
-  final Value<String?> lastSyncMessage;
-  final Value<String?> createdBy;
-  final Value<AssignmentStatus?> status;
-  final Value<String?> team;
   final Value<String?> form;
   final Value<String> formVersion;
   final Value<int> version;
   final Value<String?> assignment;
+  final Value<String?> team;
   final Value<String?> orgUnit;
-  final Value<Map<String, dynamic>?> formData;
+  final Value<AssignmentStatus?> progressStatus;
+  final Value<SubmissionStatus> status;
   final Value<DateTime?> lastSyncDate;
+  final Value<String?> lastSyncMessage;
   final Value<DateTime> startEntryTime;
   final Value<DateTime?> finishedEntryTime;
+  final Value<String?> createdBy;
+  final Value<Map<String, dynamic>?> formData;
   final Value<int> rowid;
-  const DataFormSubmissionsCompanion({
+  const DataSubmissionsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.deleted = const Value.absent(),
-    this.synced = const Value.absent(),
-    this.syncFailed = const Value.absent(),
-    this.isFinal = const Value.absent(),
-    this.lastSyncMessage = const Value.absent(),
-    this.createdBy = const Value.absent(),
-    this.status = const Value.absent(),
-    this.team = const Value.absent(),
     this.form = const Value.absent(),
     this.formVersion = const Value.absent(),
     this.version = const Value.absent(),
     this.assignment = const Value.absent(),
+    this.team = const Value.absent(),
     this.orgUnit = const Value.absent(),
-    this.formData = const Value.absent(),
+    this.progressStatus = const Value.absent(),
+    this.status = const Value.absent(),
     this.lastSyncDate = const Value.absent(),
+    this.lastSyncMessage = const Value.absent(),
     this.startEntryTime = const Value.absent(),
     this.finishedEntryTime = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.formData = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  DataFormSubmissionsCompanion.insert({
+  DataSubmissionsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.deleted = const Value.absent(),
-    this.synced = const Value.absent(),
-    this.syncFailed = const Value.absent(),
-    this.isFinal = const Value.absent(),
-    this.lastSyncMessage = const Value.absent(),
-    this.createdBy = const Value.absent(),
-    this.status = const Value.absent(),
-    this.team = const Value.absent(),
     this.form = const Value.absent(),
     required String formVersion,
     required int version,
     this.assignment = const Value.absent(),
+    this.team = const Value.absent(),
     this.orgUnit = const Value.absent(),
-    this.formData = const Value.absent(),
+    this.progressStatus = const Value.absent(),
+    this.status = const Value.absent(),
     this.lastSyncDate = const Value.absent(),
+    this.lastSyncMessage = const Value.absent(),
     this.startEntryTime = const Value.absent(),
     this.finishedEntryTime = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.formData = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         formVersion = Value(formVersion),
         version = Value(version);
-  static Insertable<DataFormSubmission> custom({
+  static Insertable<DataSubmission> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<bool>? deleted,
-    Expression<bool>? synced,
-    Expression<bool>? syncFailed,
-    Expression<bool>? isFinal,
-    Expression<String>? lastSyncMessage,
-    Expression<String>? createdBy,
-    Expression<String>? status,
-    Expression<String>? team,
     Expression<String>? form,
     Expression<String>? formVersion,
     Expression<int>? version,
     Expression<String>? assignment,
+    Expression<String>? team,
     Expression<String>? orgUnit,
-    Expression<String>? formData,
+    Expression<String>? progressStatus,
+    Expression<String>? status,
     Expression<DateTime>? lastSyncDate,
+    Expression<String>? lastSyncMessage,
     Expression<DateTime>? startEntryTime,
     Expression<DateTime>? finishedEntryTime,
+    Expression<String>? createdBy,
+    Expression<String>? formData,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (deleted != null) 'deleted': deleted,
-      if (synced != null) 'synced': synced,
-      if (syncFailed != null) 'sync_failed': syncFailed,
-      if (isFinal != null) 'is_final': isFinal,
-      if (lastSyncMessage != null) 'last_sync_message': lastSyncMessage,
-      if (createdBy != null) 'created_by': createdBy,
-      if (status != null) 'status': status,
-      if (team != null) 'team': team,
       if (form != null) 'form': form,
       if (formVersion != null) 'form_version': formVersion,
       if (version != null) 'version': version,
       if (assignment != null) 'assignment': assignment,
+      if (team != null) 'team': team,
       if (orgUnit != null) 'org_unit': orgUnit,
-      if (formData != null) 'form_data': formData,
+      if (progressStatus != null) 'progress_status': progressStatus,
+      if (status != null) 'status': status,
       if (lastSyncDate != null) 'last_sync_date': lastSyncDate,
+      if (lastSyncMessage != null) 'last_sync_message': lastSyncMessage,
       if (startEntryTime != null) 'start_entry_time': startEntryTime,
       if (finishedEntryTime != null) 'finished_entry_time': finishedEntryTime,
+      if (createdBy != null) 'created_by': createdBy,
+      if (formData != null) 'form_data': formData,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  DataFormSubmissionsCompanion copyWith(
+  DataSubmissionsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<bool>? deleted,
-      Value<bool?>? synced,
-      Value<bool>? syncFailed,
-      Value<bool>? isFinal,
-      Value<String?>? lastSyncMessage,
-      Value<String?>? createdBy,
-      Value<AssignmentStatus?>? status,
-      Value<String?>? team,
       Value<String?>? form,
       Value<String>? formVersion,
       Value<int>? version,
       Value<String?>? assignment,
+      Value<String?>? team,
       Value<String?>? orgUnit,
-      Value<Map<String, dynamic>?>? formData,
+      Value<AssignmentStatus?>? progressStatus,
+      Value<SubmissionStatus>? status,
       Value<DateTime?>? lastSyncDate,
+      Value<String?>? lastSyncMessage,
       Value<DateTime>? startEntryTime,
       Value<DateTime?>? finishedEntryTime,
+      Value<String?>? createdBy,
+      Value<Map<String, dynamic>?>? formData,
       Value<int>? rowid}) {
-    return DataFormSubmissionsCompanion(
+    return DataSubmissionsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       deleted: deleted ?? this.deleted,
-      synced: synced ?? this.synced,
-      syncFailed: syncFailed ?? this.syncFailed,
-      isFinal: isFinal ?? this.isFinal,
-      lastSyncMessage: lastSyncMessage ?? this.lastSyncMessage,
-      createdBy: createdBy ?? this.createdBy,
-      status: status ?? this.status,
-      team: team ?? this.team,
       form: form ?? this.form,
       formVersion: formVersion ?? this.formVersion,
       version: version ?? this.version,
       assignment: assignment ?? this.assignment,
+      team: team ?? this.team,
       orgUnit: orgUnit ?? this.orgUnit,
-      formData: formData ?? this.formData,
+      progressStatus: progressStatus ?? this.progressStatus,
+      status: status ?? this.status,
       lastSyncDate: lastSyncDate ?? this.lastSyncDate,
+      lastSyncMessage: lastSyncMessage ?? this.lastSyncMessage,
       startEntryTime: startEntryTime ?? this.startEntryTime,
       finishedEntryTime: finishedEntryTime ?? this.finishedEntryTime,
+      createdBy: createdBy ?? this.createdBy,
+      formData: formData ?? this.formData,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7782,9 +7272,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
-    }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
     }
@@ -7793,28 +7280,6 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
     }
     if (deleted.present) {
       map['deleted'] = Variable<bool>(deleted.value);
-    }
-    if (synced.present) {
-      map['synced'] = Variable<bool>(synced.value);
-    }
-    if (syncFailed.present) {
-      map['sync_failed'] = Variable<bool>(syncFailed.value);
-    }
-    if (isFinal.present) {
-      map['is_final'] = Variable<bool>(isFinal.value);
-    }
-    if (lastSyncMessage.present) {
-      map['last_sync_message'] = Variable<String>(lastSyncMessage.value);
-    }
-    if (createdBy.present) {
-      map['created_by'] = Variable<String>(createdBy.value);
-    }
-    if (status.present) {
-      map['status'] = Variable<String>(
-          $DataFormSubmissionsTable.$converterstatusn.toSql(status.value));
-    }
-    if (team.present) {
-      map['team'] = Variable<String>(team.value);
     }
     if (form.present) {
       map['form'] = Variable<String>(form.value);
@@ -7828,21 +7293,39 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
     if (assignment.present) {
       map['assignment'] = Variable<String>(assignment.value);
     }
+    if (team.present) {
+      map['team'] = Variable<String>(team.value);
+    }
     if (orgUnit.present) {
       map['org_unit'] = Variable<String>(orgUnit.value);
     }
-    if (formData.present) {
-      map['form_data'] = Variable<String>(
-          $DataFormSubmissionsTable.$converterformDatan.toSql(formData.value));
+    if (progressStatus.present) {
+      map['progress_status'] = Variable<String>($DataSubmissionsTable
+          .$converterprogressStatusn
+          .toSql(progressStatus.value));
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(
+          $DataSubmissionsTable.$converterstatus.toSql(status.value));
     }
     if (lastSyncDate.present) {
       map['last_sync_date'] = Variable<DateTime>(lastSyncDate.value);
+    }
+    if (lastSyncMessage.present) {
+      map['last_sync_message'] = Variable<String>(lastSyncMessage.value);
     }
     if (startEntryTime.present) {
       map['start_entry_time'] = Variable<DateTime>(startEntryTime.value);
     }
     if (finishedEntryTime.present) {
       map['finished_entry_time'] = Variable<DateTime>(finishedEntryTime.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
+    if (formData.present) {
+      map['form_data'] = Variable<String>(
+          $DataSubmissionsTable.$converterformDatan.toSql(formData.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -7852,28 +7335,25 @@ class DataFormSubmissionsCompanion extends UpdateCompanion<DataFormSubmission> {
 
   @override
   String toString() {
-    return (StringBuffer('DataFormSubmissionsCompanion(')
+    return (StringBuffer('DataSubmissionsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('deleted: $deleted, ')
-          ..write('synced: $synced, ')
-          ..write('syncFailed: $syncFailed, ')
-          ..write('isFinal: $isFinal, ')
-          ..write('lastSyncMessage: $lastSyncMessage, ')
-          ..write('createdBy: $createdBy, ')
-          ..write('status: $status, ')
-          ..write('team: $team, ')
           ..write('form: $form, ')
           ..write('formVersion: $formVersion, ')
           ..write('version: $version, ')
           ..write('assignment: $assignment, ')
+          ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
-          ..write('formData: $formData, ')
+          ..write('progressStatus: $progressStatus, ')
+          ..write('status: $status, ')
           ..write('lastSyncDate: $lastSyncDate, ')
+          ..write('lastSyncMessage: $lastSyncMessage, ')
           ..write('startEntryTime: $startEntryTime, ')
           ..write('finishedEntryTime: $finishedEntryTime, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('formData: $formData, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -7891,14 +7371,6 @@ class $RepeatInstancesTable extends RepeatInstances
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -7915,6 +7387,12 @@ class $RepeatInstancesTable extends RepeatInstances
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
+  static const VerificationMeta _templatePathMeta =
+      const VerificationMeta('templatePath');
+  @override
+  late final GeneratedColumn<String> templatePath = GeneratedColumn<String>(
+      'template_path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _submissionMeta =
       const VerificationMeta('submission');
   @override
@@ -7923,13 +7401,7 @@ class $RepeatInstancesTable extends RepeatInstances
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES data_form_submissions (id)'));
-  static const VerificationMeta _templatePathMeta =
-      const VerificationMeta('templatePath');
-  @override
-  late final GeneratedColumn<String> templatePath = GeneratedColumn<String>(
-      'template_path', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+          'REFERENCES data_submissions (id)'));
   static const VerificationMeta _parentMeta = const VerificationMeta('parent');
   @override
   late final GeneratedColumn<String> parent = GeneratedColumn<String>(
@@ -7947,11 +7419,10 @@ class $RepeatInstancesTable extends RepeatInstances
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
-        submission,
         templatePath,
+        submission,
         parent,
         repeatIndex
       ];
@@ -7970,12 +7441,6 @@ class $RepeatInstancesTable extends RepeatInstances
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
-    }
     if (data.containsKey('last_modified_date')) {
       context.handle(
           _lastModifiedDateMeta,
@@ -7988,14 +7453,6 @@ class $RepeatInstancesTable extends RepeatInstances
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    if (data.containsKey('submission')) {
-      context.handle(
-          _submissionMeta,
-          submission.isAcceptableOrUnknown(
-              data['submission']!, _submissionMeta));
-    } else if (isInserting) {
-      context.missing(_submissionMeta);
-    }
     if (data.containsKey('template_path')) {
       context.handle(
           _templatePathMeta,
@@ -8003,6 +7460,14 @@ class $RepeatInstancesTable extends RepeatInstances
               data['template_path']!, _templatePathMeta));
     } else if (isInserting) {
       context.missing(_templatePathMeta);
+    }
+    if (data.containsKey('submission')) {
+      context.handle(
+          _submissionMeta,
+          submission.isAcceptableOrUnknown(
+              data['submission']!, _submissionMeta));
+    } else if (isInserting) {
+      context.missing(_submissionMeta);
     }
     if (data.containsKey('parent')) {
       context.handle(_parentMeta,
@@ -8027,16 +7492,14 @@ class $RepeatInstancesTable extends RepeatInstances
     return RepeatInstance(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      submission: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}submission'])!,
       templatePath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}template_path'])!,
+      submission: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}submission'])!,
       parent: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}parent']),
       repeatIndex: attachedDatabase.typeMapping
@@ -8052,13 +7515,12 @@ class $RepeatInstancesTable extends RepeatInstances
 
 class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
-  final String submission;
 
   /// Path of the Repeat in the FormTemplate (non-null)
   final String templatePath;
+  final String submission;
 
   /// reference to nearest parent RepeatInstance (nullable)
   final String? parent;
@@ -8067,22 +7529,20 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   final int repeatIndex;
   const RepeatInstance(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
-      required this.submission,
       required this.templatePath,
+      required this.submission,
       this.parent,
       required this.repeatIndex});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
-    map['submission'] = Variable<String>(submission);
     map['template_path'] = Variable<String>(templatePath);
+    map['submission'] = Variable<String>(submission);
     if (!nullToAbsent || parent != null) {
       map['parent'] = Variable<String>(parent);
     }
@@ -8093,11 +7553,10 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   RepeatInstancesCompanion toCompanion(bool nullToAbsent) {
     return RepeatInstancesCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
-      submission: Value(submission),
       templatePath: Value(templatePath),
+      submission: Value(submission),
       parent:
           parent == null && nullToAbsent ? const Value.absent() : Value(parent),
       repeatIndex: Value(repeatIndex),
@@ -8109,11 +7568,10 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RepeatInstance(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
-      submission: serializer.fromJson<String>(json['submission']),
       templatePath: serializer.fromJson<String>(json['templatePath']),
+      submission: serializer.fromJson<String>(json['submission']),
       parent: serializer.fromJson<String?>(json['parent']),
       repeatIndex: serializer.fromJson<int>(json['repeatIndex']),
     );
@@ -8123,11 +7581,10 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
-      'submission': serializer.toJson<String>(submission),
       'templatePath': serializer.toJson<String>(templatePath),
+      'submission': serializer.toJson<String>(submission),
       'parent': serializer.toJson<String?>(parent),
       'repeatIndex': serializer.toJson<int>(repeatIndex),
     };
@@ -8135,37 +7592,34 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
 
   RepeatInstance copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
-          String? submission,
           String? templatePath,
+          String? submission,
           Value<String?> parent = const Value.absent(),
           int? repeatIndex}) =>
       RepeatInstance(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
-        submission: submission ?? this.submission,
         templatePath: templatePath ?? this.templatePath,
+        submission: submission ?? this.submission,
         parent: parent.present ? parent.value : this.parent,
         repeatIndex: repeatIndex ?? this.repeatIndex,
       );
   RepeatInstance copyWithCompanion(RepeatInstancesCompanion data) {
     return RepeatInstance(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      submission:
-          data.submission.present ? data.submission.value : this.submission,
       templatePath: data.templatePath.present
           ? data.templatePath.value
           : this.templatePath,
+      submission:
+          data.submission.present ? data.submission.value : this.submission,
       parent: data.parent.present ? data.parent.value : this.parent,
       repeatIndex:
           data.repeatIndex.present ? data.repeatIndex.value : this.repeatIndex,
@@ -8176,11 +7630,10 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   String toString() {
     return (StringBuffer('RepeatInstance(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('submission: $submission, ')
           ..write('templatePath: $templatePath, ')
+          ..write('submission: $submission, ')
           ..write('parent: $parent, ')
           ..write('repeatIndex: $repeatIndex')
           ..write(')'))
@@ -8188,76 +7641,69 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   }
 
   @override
-  int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      submission, templatePath, parent, repeatIndex);
+  int get hashCode => Object.hash(id, lastModifiedDate, createdDate,
+      templatePath, submission, parent, repeatIndex);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RepeatInstance &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.submission == this.submission &&
           other.templatePath == this.templatePath &&
+          other.submission == this.submission &&
           other.parent == this.parent &&
           other.repeatIndex == this.repeatIndex);
 }
 
 class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
-  final Value<String> submission;
   final Value<String> templatePath;
+  final Value<String> submission;
   final Value<String?> parent;
   final Value<int> repeatIndex;
   final Value<int> rowid;
   const RepeatInstancesCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.submission = const Value.absent(),
     this.templatePath = const Value.absent(),
+    this.submission = const Value.absent(),
     this.parent = const Value.absent(),
     this.repeatIndex = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   RepeatInstancesCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    required String submission,
     required String templatePath,
+    required String submission,
     this.parent = const Value.absent(),
     required int repeatIndex,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
-        submission = Value(submission),
         templatePath = Value(templatePath),
+        submission = Value(submission),
         repeatIndex = Value(repeatIndex);
   static Insertable<RepeatInstance> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? submission,
     Expression<String>? templatePath,
+    Expression<String>? submission,
     Expression<String>? parent,
     Expression<int>? repeatIndex,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (submission != null) 'submission': submission,
       if (templatePath != null) 'template_path': templatePath,
+      if (submission != null) 'submission': submission,
       if (parent != null) 'parent': parent,
       if (repeatIndex != null) 'repeat_index': repeatIndex,
       if (rowid != null) 'rowid': rowid,
@@ -8266,21 +7712,19 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
 
   RepeatInstancesCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
-      Value<String>? submission,
       Value<String>? templatePath,
+      Value<String>? submission,
       Value<String?>? parent,
       Value<int>? repeatIndex,
       Value<int>? rowid}) {
     return RepeatInstancesCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      submission: submission ?? this.submission,
       templatePath: templatePath ?? this.templatePath,
+      submission: submission ?? this.submission,
       parent: parent ?? this.parent,
       repeatIndex: repeatIndex ?? this.repeatIndex,
       rowid: rowid ?? this.rowid,
@@ -8293,20 +7737,17 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
-    }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
     }
-    if (submission.present) {
-      map['submission'] = Variable<String>(submission.value);
-    }
     if (templatePath.present) {
       map['template_path'] = Variable<String>(templatePath.value);
+    }
+    if (submission.present) {
+      map['submission'] = Variable<String>(submission.value);
     }
     if (parent.present) {
       map['parent'] = Variable<String>(parent.value);
@@ -8324,11 +7765,10 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
   String toString() {
     return (StringBuffer('RepeatInstancesCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('submission: $submission, ')
           ..write('templatePath: $templatePath, ')
+          ..write('submission: $submission, ')
           ..write('parent: $parent, ')
           ..write('repeatIndex: $repeatIndex, ')
           ..write('rowid: $rowid')
@@ -8348,14 +7788,6 @@ class $DataElementsTable extends DataElements
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -8469,7 +7901,6 @@ class $DataElementsTable extends DataElements
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -8500,12 +7931,6 @@ class $DataElementsTable extends DataElements
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -8578,8 +8003,6 @@ class $DataElementsTable extends DataElements
     return DataElement(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -8647,7 +8070,6 @@ class $DataElementsTable extends DataElements
 
 class DataElement extends DataClass implements Insertable<DataElement> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -8681,7 +8103,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   final String? resourceMetadataSchema;
   const DataElement(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -8701,7 +8122,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -8752,7 +8172,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   DataElementsCompanion toCompanion(bool nullToAbsent) {
     return DataElementsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -8790,7 +8209,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataElement(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -8819,7 +8237,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -8845,7 +8262,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
 
   DataElement copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -8864,7 +8280,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           Value<String?> resourceMetadataSchema = const Value.absent()}) =>
       DataElement(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -8891,7 +8306,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   DataElement copyWithCompanion(DataElementsCompanion data) {
     return DataElement(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -8930,7 +8344,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   String toString() {
     return (StringBuffer('DataElement(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -8953,7 +8366,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       name,
@@ -8974,7 +8386,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       identical(this, other) ||
       (other is DataElement &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -8994,7 +8405,6 @@ class DataElement extends DataClass implements Insertable<DataElement> {
 
 class DataElementsCompanion extends UpdateCompanion<DataElement> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -9013,7 +8423,6 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
   final Value<int> rowid;
   const DataElementsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -9033,7 +8442,6 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
   });
   DataElementsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -9050,11 +8458,9 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     this.resourceType = const Value.absent(),
     this.resourceMetadataSchema = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        dirty = Value(dirty);
+  }) : id = Value(id);
   static Insertable<DataElement> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -9074,7 +8480,6 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -9098,7 +8503,6 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
 
   DataElementsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -9117,7 +8521,6 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
       Value<int>? rowid}) {
     return DataElementsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -9144,9 +8547,6 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -9210,7 +8610,6 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
   String toString() {
     return (StringBuffer('DataElementsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -9243,14 +8642,6 @@ class $DataValuesTable extends DataValues
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -9289,7 +8680,7 @@ class $DataValuesTable extends DataValues
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES data_form_submissions (id)'));
+          'REFERENCES data_submissions (id)'));
   static const VerificationMeta _dataElementMeta =
       const VerificationMeta('dataElement');
   @override
@@ -9307,7 +8698,6 @@ class $DataValuesTable extends DataValues
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         templatePath,
@@ -9330,12 +8720,6 @@ class $DataValuesTable extends DataValues
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -9392,8 +8776,6 @@ class $DataValuesTable extends DataValues
     return DataValue(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -9419,7 +8801,6 @@ class $DataValuesTable extends DataValues
 
 class DataValue extends DataClass implements Insertable<DataValue> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
 
@@ -9439,7 +8820,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   final String? value;
   const DataValue(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       required this.templatePath,
@@ -9451,7 +8831,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     map['template_path'] = Variable<String>(templatePath);
@@ -9469,7 +8848,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   DataValuesCompanion toCompanion(bool nullToAbsent) {
     return DataValuesCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       templatePath: Value(templatePath),
@@ -9487,7 +8865,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataValue(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       templatePath: serializer.fromJson<String>(json['templatePath']),
@@ -9502,7 +8879,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'templatePath': serializer.toJson<String>(templatePath),
@@ -9515,7 +8891,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
 
   DataValue copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           String? templatePath,
@@ -9525,7 +8900,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
           Value<String?> value = const Value.absent()}) =>
       DataValue(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         templatePath: templatePath ?? this.templatePath,
@@ -9537,7 +8911,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   DataValue copyWithCompanion(DataValuesCompanion data) {
     return DataValue(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -9559,7 +8932,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   String toString() {
     return (StringBuffer('DataValue(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('templatePath: $templatePath, ')
@@ -9572,14 +8944,13 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   }
 
   @override
-  int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
+  int get hashCode => Object.hash(id, lastModifiedDate, createdDate,
       templatePath, parent, submission, dataElement, value);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DataValue &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.templatePath == this.templatePath &&
@@ -9591,7 +8962,6 @@ class DataValue extends DataClass implements Insertable<DataValue> {
 
 class DataValuesCompanion extends UpdateCompanion<DataValue> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String> templatePath;
@@ -9602,7 +8972,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
   final Value<int> rowid;
   const DataValuesCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.templatePath = const Value.absent(),
@@ -9614,7 +8983,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
   });
   DataValuesCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     required String templatePath,
@@ -9624,13 +8992,11 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
     this.value = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         templatePath = Value(templatePath),
         submission = Value(submission),
         dataElement = Value(dataElement);
   static Insertable<DataValue> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? templatePath,
@@ -9642,7 +9008,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (templatePath != null) 'template_path': templatePath,
@@ -9656,7 +9021,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
 
   DataValuesCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String>? templatePath,
@@ -9667,7 +9031,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
       Value<int>? rowid}) {
     return DataValuesCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       templatePath: templatePath ?? this.templatePath,
@@ -9684,9 +9047,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -9719,7 +9079,6 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
   String toString() {
     return (StringBuffer('DataValuesCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('templatePath: $templatePath, ')
@@ -9744,14 +9103,6 @@ class $DataOptionSetsTable extends DataOptionSets
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -9795,7 +9146,6 @@ class $DataOptionSetsTable extends DataOptionSets
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -9817,12 +9167,6 @@ class $DataOptionSetsTable extends DataOptionSets
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -9862,8 +9206,6 @@ class $DataOptionSetsTable extends DataOptionSets
     return DataOptionSet(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -9893,7 +9235,6 @@ class $DataOptionSetsTable extends DataOptionSets
 
 class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -9904,7 +9245,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   final List<Translation>? translations;
   const DataOptionSet(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -9915,7 +9255,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -9937,7 +9276,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   DataOptionSetsCompanion toCompanion(bool nullToAbsent) {
     return DataOptionSetsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -9956,7 +9294,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataOptionSet(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -9971,7 +9308,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -9983,7 +9319,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
 
   DataOptionSet copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -9992,7 +9327,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           Value<List<Translation>?> translations = const Value.absent()}) =>
       DataOptionSet(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -10004,7 +9338,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   DataOptionSet copyWithCompanion(DataOptionSetsCompanion data) {
     return DataOptionSet(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -10024,7 +9357,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   String toString() {
     return (StringBuffer('DataOptionSet(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -10036,14 +9368,13 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   }
 
   @override
-  int get hashCode => Object.hash(id, dirty, lastModifiedDate, createdDate,
-      name, displayName, code, translations);
+  int get hashCode => Object.hash(
+      id, lastModifiedDate, createdDate, name, displayName, code, translations);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DataOptionSet &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -10054,7 +9385,6 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
 
 class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -10064,7 +9394,6 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   final Value<int> rowid;
   const DataOptionSetsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -10075,7 +9404,6 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   });
   DataOptionSetsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -10083,11 +9411,9 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     this.code = const Value.absent(),
     this.translations = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        dirty = Value(dirty);
+  }) : id = Value(id);
   static Insertable<DataOptionSet> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -10098,7 +9424,6 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -10111,7 +9436,6 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
 
   DataOptionSetsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -10121,7 +9445,6 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
       Value<int>? rowid}) {
     return DataOptionSetsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -10137,9 +9460,6 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -10171,7 +9491,6 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   String toString() {
     return (StringBuffer('DataOptionSetsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -10195,14 +9514,6 @@ class $DataOptionsTable extends DataOptions
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
-  @override
-  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
-      'dirty', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("dirty" IN (0, 1))'));
   static const VerificationMeta _lastModifiedDateMeta =
       const VerificationMeta('lastModifiedDate');
   @override
@@ -10289,7 +9600,6 @@ class $DataOptionsTable extends DataOptions
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        dirty,
         lastModifiedDate,
         createdDate,
         name,
@@ -10317,12 +9627,6 @@ class $DataOptionsTable extends DataOptions
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('dirty')) {
-      context.handle(
-          _dirtyMeta, dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta));
-    } else if (isInserting) {
-      context.missing(_dirtyMeta);
     }
     if (data.containsKey('last_modified_date')) {
       context.handle(
@@ -10388,8 +9692,6 @@ class $DataOptionsTable extends DataOptions
     return DataOption(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      dirty: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}dirty'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
       createdDate: attachedDatabase.typeMapping
@@ -10439,7 +9741,6 @@ class $DataOptionsTable extends DataOptions
 
 class DataOption extends DataClass implements Insertable<DataOption> {
   final String id;
-  final bool dirty;
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String? name;
@@ -10456,7 +9757,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   final Map<String, dynamic>? properties;
   const DataOption(
       {required this.id,
-      required this.dirty,
       required this.lastModifiedDate,
       required this.createdDate,
       this.name,
@@ -10473,7 +9773,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['dirty'] = Variable<bool>(dirty);
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || name != null) {
@@ -10509,7 +9808,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   DataOptionsCompanion toCompanion(bool nullToAbsent) {
     return DataOptionsCompanion(
       id: Value(id),
-      dirty: Value(dirty),
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -10538,7 +9836,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataOption(
       id: serializer.fromJson<String>(json['id']),
-      dirty: serializer.fromJson<bool>(json['dirty']),
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
@@ -10560,7 +9857,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'dirty': serializer.toJson<bool>(dirty),
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'name': serializer.toJson<String?>(name),
@@ -10578,7 +9874,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
 
   DataOption copyWith(
           {String? id,
-          bool? dirty,
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           Value<String?> name = const Value.absent(),
@@ -10593,7 +9888,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           Value<Map<String, dynamic>?> properties = const Value.absent()}) =>
       DataOption(
         id: id ?? this.id,
-        dirty: dirty ?? this.dirty,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         name: name.present ? name.value : this.name,
@@ -10613,7 +9907,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   DataOption copyWithCompanion(DataOptionsCompanion data) {
     return DataOption(
       id: data.id.present ? data.id.value : this.id,
-      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       lastModifiedDate: data.lastModifiedDate.present
           ? data.lastModifiedDate.value
           : this.lastModifiedDate,
@@ -10642,7 +9935,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   String toString() {
     return (StringBuffer('DataOption(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -10662,7 +9954,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   @override
   int get hashCode => Object.hash(
       id,
-      dirty,
       lastModifiedDate,
       createdDate,
       name,
@@ -10680,7 +9971,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       identical(this, other) ||
       (other is DataOption &&
           other.id == this.id &&
-          other.dirty == this.dirty &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.name == this.name &&
@@ -10697,7 +9987,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
 
 class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   final Value<String> id;
-  final Value<bool> dirty;
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String?> name;
@@ -10713,7 +10002,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   final Value<int> rowid;
   const DataOptionsCompanion({
     this.id = const Value.absent(),
-    this.dirty = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -10730,7 +10018,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   });
   DataOptionsCompanion.insert({
     required String id,
-    required bool dirty,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.name = const Value.absent(),
@@ -10745,13 +10032,11 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     this.properties = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        dirty = Value(dirty),
         optionSet = Value(optionSet),
         listName = Value(listName),
         order = Value(order);
   static Insertable<DataOption> custom({
     Expression<String>? id,
-    Expression<bool>? dirty,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? name,
@@ -10768,7 +10053,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (dirty != null) 'dirty': dirty,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (name != null) 'name': name,
@@ -10787,7 +10071,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
 
   DataOptionsCompanion copyWith(
       {Value<String>? id,
-      Value<bool>? dirty,
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String?>? name,
@@ -10803,7 +10086,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
       Value<int>? rowid}) {
     return DataOptionsCompanion(
       id: id ?? this.id,
-      dirty: dirty ?? this.dirty,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       name: name ?? this.name,
@@ -10825,9 +10107,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (dirty.present) {
-      map['dirty'] = Variable<bool>(dirty.value);
     }
     if (lastModifiedDate.present) {
       map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
@@ -10878,7 +10157,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   String toString() {
     return (StringBuffer('DataOptionsCompanion(')
           ..write('id: $id, ')
-          ..write('dirty: $dirty, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('name: $name, ')
@@ -10911,8 +10189,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FormVersionsTable formVersions = $FormVersionsTable(this);
   late final $MetadataSubmissionsTable metadataSubmissions =
       $MetadataSubmissionsTable(this);
-  late final $DataFormSubmissionsTable dataFormSubmissions =
-      $DataFormSubmissionsTable(this);
+  late final $DataSubmissionsTable dataSubmissions =
+      $DataSubmissionsTable(this);
   late final $RepeatInstancesTable repeatInstances =
       $RepeatInstancesTable(this);
   late final $DataElementsTable dataElements = $DataElementsTable(this);
@@ -10929,21 +10207,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE INDEX repeat_template_path ON repeat_instances (template_path)');
   late final Index dataValueTemplatePath = Index('data_value_template_path',
       'CREATE INDEX data_value_template_path ON data_values (template_path)');
-  late final Index submissionSynced = Index('submission_synced',
-      'CREATE INDEX submission_synced ON data_form_submissions (synced)');
-  late final Index submissionIsFinal = Index('submission_is_final',
-      'CREATE INDEX submission_is_final ON data_form_submissions (is_final)');
-  late final Index submissionDirty = Index('submission_dirty',
-      'CREATE INDEX submission_dirty ON data_form_submissions (dirty)');
   late final Index submissionStatus = Index('submission_status',
-      'CREATE INDEX submission_status ON data_form_submissions (status)');
+      'CREATE INDEX submission_status ON data_submissions (status)');
   late final Index submissionDeleted = Index('submission_deleted',
-      'CREATE INDEX submission_deleted ON data_form_submissions (deleted)');
+      'CREATE INDEX submission_deleted ON data_submissions (deleted)');
   late final ActivitiesDao activitiesDao = ActivitiesDao(this as AppDatabase);
   late final AssignmentsDao assignmentsDao =
       AssignmentsDao(this as AppDatabase);
-  late final DataFormSubmissionsDao dataFormSubmissionsDao =
-      DataFormSubmissionsDao(this as AppDatabase);
+  late final DataSubmissionsDao dataSubmissionsDao =
+      DataSubmissionsDao(this as AppDatabase);
   late final DataValuesDao dataValuesDao = DataValuesDao(this as AppDatabase);
   late final FormVersionsDao formVersionsDao =
       FormVersionsDao(this as AppDatabase);
@@ -10969,7 +10241,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         formTemplates,
         formVersions,
         metadataSubmissions,
-        dataFormSubmissions,
+        dataSubmissions,
         repeatInstances,
         dataElements,
         dataValues,
@@ -10980,9 +10252,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         assignmentScope,
         repeatTemplatePath,
         dataValueTemplatePath,
-        submissionSynced,
-        submissionIsFinal,
-        submissionDirty,
         submissionStatus,
         submissionDeleted
       ];
@@ -10993,7 +10262,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 
 typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   required String username,
@@ -11010,7 +10278,6 @@ typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
 });
 typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String> username,
@@ -11036,9 +10303,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -11092,9 +10356,6 @@ class $$UsersTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -11144,9 +10405,6 @@ class $$UsersTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -11210,7 +10468,6 @@ class $$UsersTableTableManager extends RootTableManager<
               $$UsersTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String> username = const Value.absent(),
@@ -11227,7 +10484,6 @@ class $$UsersTableTableManager extends RootTableManager<
           }) =>
               UsersCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             username: username,
@@ -11244,7 +10500,6 @@ class $$UsersTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             required String username,
@@ -11261,7 +10516,6 @@ class $$UsersTableTableManager extends RootTableManager<
           }) =>
               UsersCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             username: username,
@@ -11297,7 +10551,6 @@ typedef $$UsersTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function()>;
 typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -11314,7 +10567,6 @@ typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
 });
 typedef $$OrgUnitsTableUpdateCompanionBuilder = OrgUnitsCompanion Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -11349,20 +10601,19 @@ final class $$OrgUnitsTableReferences
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$DataFormSubmissionsTable,
-      List<DataFormSubmission>> _dataFormSubmissionsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.dataFormSubmissions,
-          aliasName: $_aliasNameGenerator(
-              db.orgUnits.id, db.dataFormSubmissions.orgUnit));
+  static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
+      _dataSubmissionsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.dataSubmissions,
+              aliasName: $_aliasNameGenerator(
+                  db.orgUnits.id, db.dataSubmissions.orgUnit));
 
-  $$DataFormSubmissionsTableProcessedTableManager get dataFormSubmissionsRefs {
+  $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
     final manager =
-        $$DataFormSubmissionsTableTableManager($_db, $_db.dataFormSubmissions)
+        $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
             .filter((f) => f.orgUnit.id($_item.id));
 
     final cache =
-        $_typedResult.readTableOrNull(_dataFormSubmissionsRefsTable($_db));
+        $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -11379,9 +10630,6 @@ class $$OrgUnitsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -11446,19 +10694,19 @@ class $$OrgUnitsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> dataFormSubmissionsRefs(
-      Expression<bool> Function($$DataFormSubmissionsTableFilterComposer f) f) {
-    final $$DataFormSubmissionsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> dataSubmissionsRefs(
+      Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
+    final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataFormSubmissions,
+        referencedTable: $db.dataSubmissions,
         getReferencedColumn: (t) => t.orgUnit,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$DataFormSubmissionsTableFilterComposer(
+            $$DataSubmissionsTableFilterComposer(
               $db: $db,
-              $table: $db.dataFormSubmissions,
+              $table: $db.dataSubmissions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -11479,9 +10727,6 @@ class $$OrgUnitsTableOrderingComposer
   });
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -11533,9 +10778,6 @@ class $$OrgUnitsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -11595,26 +10837,24 @@ class $$OrgUnitsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> dataFormSubmissionsRefs<T extends Object>(
-      Expression<T> Function($$DataFormSubmissionsTableAnnotationComposer a)
-          f) {
-    final $$DataFormSubmissionsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.dataFormSubmissions,
-            getReferencedColumn: (t) => t.orgUnit,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormSubmissionsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.dataFormSubmissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  Expression<T> dataSubmissionsRefs<T extends Object>(
+      Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
+    final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.orgUnit,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return f(composer);
   }
 }
@@ -11630,8 +10870,7 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
     $$OrgUnitsTableUpdateCompanionBuilder,
     (OrgUnit, $$OrgUnitsTableReferences),
     OrgUnit,
-    PrefetchHooks Function(
-        {bool assignmentsRefs, bool dataFormSubmissionsRefs})> {
+    PrefetchHooks Function({bool assignmentsRefs, bool dataSubmissionsRefs})> {
   $$OrgUnitsTableTableManager(_$AppDatabase db, $OrgUnitsTable table)
       : super(TableManagerState(
           db: db,
@@ -11644,7 +10883,6 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
               $$OrgUnitsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -11661,7 +10899,6 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
           }) =>
               OrgUnitsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -11678,7 +10915,6 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -11695,7 +10931,6 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
           }) =>
               OrgUnitsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -11715,12 +10950,12 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
                   (e.readTable(table), $$OrgUnitsTableReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: (
-              {assignmentsRefs = false, dataFormSubmissionsRefs = false}) {
+              {assignmentsRefs = false, dataSubmissionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (assignmentsRefs) db.assignments,
-                if (dataFormSubmissionsRefs) db.dataFormSubmissions
+                if (dataSubmissionsRefs) db.dataSubmissions
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -11737,14 +10972,14 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
                                 referencedItems) =>
                             referencedItems.where((e) => e.orgUnit == item.id),
                         typedResults: items),
-                  if (dataFormSubmissionsRefs)
+                  if (dataSubmissionsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
                         referencedTable: $$OrgUnitsTableReferences
-                            ._dataFormSubmissionsRefsTable(db),
+                            ._dataSubmissionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$OrgUnitsTableReferences(db, table, p0)
-                                .dataFormSubmissionsRefs,
+                                .dataSubmissionsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.orgUnit == item.id),
@@ -11767,11 +11002,9 @@ typedef $$OrgUnitsTableProcessedTableManager = ProcessedTableManager<
     $$OrgUnitsTableUpdateCompanionBuilder,
     (OrgUnit, $$OrgUnitsTableReferences),
     OrgUnit,
-    PrefetchHooks Function(
-        {bool assignmentsRefs, bool dataFormSubmissionsRefs})>;
+    PrefetchHooks Function({bool assignmentsRefs, bool dataSubmissionsRefs})>;
 typedef $$OuLevelsTableCreateCompanionBuilder = OuLevelsCompanion Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -11784,7 +11017,6 @@ typedef $$OuLevelsTableCreateCompanionBuilder = OuLevelsCompanion Function({
 });
 typedef $$OuLevelsTableUpdateCompanionBuilder = OuLevelsCompanion Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -11807,9 +11039,6 @@ class $$OuLevelsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -11851,9 +11080,6 @@ class $$OuLevelsTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -11893,9 +11119,6 @@ class $$OuLevelsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -11947,7 +11170,6 @@ class $$OuLevelsTableTableManager extends RootTableManager<
               $$OuLevelsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -11960,7 +11182,6 @@ class $$OuLevelsTableTableManager extends RootTableManager<
           }) =>
               OuLevelsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -11973,7 +11194,6 @@ class $$OuLevelsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -11986,7 +11206,6 @@ class $$OuLevelsTableTableManager extends RootTableManager<
           }) =>
               OuLevelsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -12018,7 +11237,6 @@ typedef $$OuLevelsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function()>;
 typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -12030,7 +11248,6 @@ typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
 });
 typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -12072,9 +11289,6 @@ class $$ProjectsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -12134,9 +11348,6 @@ class $$ProjectsTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -12172,9 +11383,6 @@ class $$ProjectsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -12244,7 +11452,6 @@ class $$ProjectsTableTableManager extends RootTableManager<
               $$ProjectsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -12256,7 +11463,6 @@ class $$ProjectsTableTableManager extends RootTableManager<
           }) =>
               ProjectsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -12268,7 +11474,6 @@ class $$ProjectsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -12280,7 +11485,6 @@ class $$ProjectsTableTableManager extends RootTableManager<
           }) =>
               ProjectsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -12334,7 +11538,6 @@ typedef $$ProjectsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function({bool activitiesRefs})>;
 typedef $$ActivitiesTableCreateCompanionBuilder = ActivitiesCompanion Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -12343,14 +11546,13 @@ typedef $$ActivitiesTableCreateCompanionBuilder = ActivitiesCompanion Function({
   Value<List<Translation>?> translations,
   required String project,
   required bool disabled,
-  Value<String?> description,
   Value<DateTime?> startDate,
   Value<DateTime?> endDate,
+  Value<String?> description,
   Value<int> rowid,
 });
 typedef $$ActivitiesTableUpdateCompanionBuilder = ActivitiesCompanion Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -12359,9 +11561,9 @@ typedef $$ActivitiesTableUpdateCompanionBuilder = ActivitiesCompanion Function({
   Value<List<Translation>?> translations,
   Value<String> project,
   Value<bool> disabled,
-  Value<String?> description,
   Value<DateTime?> startDate,
   Value<DateTime?> endDate,
+  Value<String?> description,
   Value<int> rowid,
 });
 
@@ -12423,9 +11625,6 @@ class $$ActivitiesTableFilterComposer
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnFilters(column));
@@ -12450,14 +11649,14 @@ class $$ActivitiesTableFilterComposer
   ColumnFilters<bool> get disabled => $composableBuilder(
       column: $table.disabled, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<DateTime> get startDate => $composableBuilder(
       column: $table.startDate, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get endDate => $composableBuilder(
       column: $table.endDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
 
   $$ProjectsTableFilterComposer get project {
     final $$ProjectsTableFilterComposer composer = $composerBuilder(
@@ -12534,9 +11733,6 @@ class $$ActivitiesTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -12560,14 +11756,14 @@ class $$ActivitiesTableOrderingComposer
   ColumnOrderings<bool> get disabled => $composableBuilder(
       column: $table.disabled, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get startDate => $composableBuilder(
       column: $table.startDate, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get endDate => $composableBuilder(
       column: $table.endDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
 
   $$ProjectsTableOrderingComposer get project {
     final $$ProjectsTableOrderingComposer composer = $composerBuilder(
@@ -12602,9 +11798,6 @@ class $$ActivitiesTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
-
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
 
@@ -12627,14 +11820,14 @@ class $$ActivitiesTableAnnotationComposer
   GeneratedColumn<bool> get disabled =>
       $composableBuilder(column: $table.disabled, builder: (column) => column);
 
-  GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
-
   GeneratedColumn<DateTime> get startDate =>
       $composableBuilder(column: $table.startDate, builder: (column) => column);
 
   GeneratedColumn<DateTime> get endDate =>
       $composableBuilder(column: $table.endDate, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
 
   $$ProjectsTableAnnotationComposer get project {
     final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
@@ -12724,7 +11917,6 @@ class $$ActivitiesTableTableManager extends RootTableManager<
               $$ActivitiesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -12733,14 +11925,13 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             Value<List<Translation>?> translations = const Value.absent(),
             Value<String> project = const Value.absent(),
             Value<bool> disabled = const Value.absent(),
-            Value<String?> description = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
             Value<DateTime?> endDate = const Value.absent(),
+            Value<String?> description = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ActivitiesCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -12749,14 +11940,13 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             translations: translations,
             project: project,
             disabled: disabled,
-            description: description,
             startDate: startDate,
             endDate: endDate,
+            description: description,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -12765,14 +11955,13 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             Value<List<Translation>?> translations = const Value.absent(),
             required String project,
             required bool disabled,
-            Value<String?> description = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
             Value<DateTime?> endDate = const Value.absent(),
+            Value<String?> description = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ActivitiesCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -12781,9 +11970,9 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             translations: translations,
             project: project,
             disabled: disabled,
-            description: description,
             startDate: startDate,
             endDate: endDate,
+            description: description,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -12874,7 +12063,6 @@ typedef $$ActivitiesTableProcessedTableManager = ProcessedTableManager<
         {bool project, bool teamsRefs, bool assignmentsRefs})>;
 typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -12891,7 +12079,6 @@ typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
 });
 typedef $$TeamsTableUpdateCompanionBuilder = TeamsCompanion Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -12937,20 +12124,19 @@ final class $$TeamsTableReferences
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$DataFormSubmissionsTable,
-      List<DataFormSubmission>> _dataFormSubmissionsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.dataFormSubmissions,
-          aliasName:
-              $_aliasNameGenerator(db.teams.id, db.dataFormSubmissions.team));
+  static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
+      _dataSubmissionsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.dataSubmissions,
+              aliasName:
+                  $_aliasNameGenerator(db.teams.id, db.dataSubmissions.team));
 
-  $$DataFormSubmissionsTableProcessedTableManager get dataFormSubmissionsRefs {
+  $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
     final manager =
-        $$DataFormSubmissionsTableTableManager($_db, $_db.dataFormSubmissions)
+        $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
             .filter((f) => f.team.id($_item.id));
 
     final cache =
-        $_typedResult.readTableOrNull(_dataFormSubmissionsRefsTable($_db));
+        $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -12966,9 +12152,6 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -13056,19 +12239,19 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
     return f(composer);
   }
 
-  Expression<bool> dataFormSubmissionsRefs(
-      Expression<bool> Function($$DataFormSubmissionsTableFilterComposer f) f) {
-    final $$DataFormSubmissionsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> dataSubmissionsRefs(
+      Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
+    final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataFormSubmissions,
+        referencedTable: $db.dataSubmissions,
         getReferencedColumn: (t) => t.team,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$DataFormSubmissionsTableFilterComposer(
+            $$DataSubmissionsTableFilterComposer(
               $db: $db,
-              $table: $db.dataFormSubmissions,
+              $table: $db.dataSubmissions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13089,9 +12272,6 @@ class $$TeamsTableOrderingComposer
   });
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -13162,9 +12342,6 @@ class $$TeamsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -13243,26 +12420,24 @@ class $$TeamsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> dataFormSubmissionsRefs<T extends Object>(
-      Expression<T> Function($$DataFormSubmissionsTableAnnotationComposer a)
-          f) {
-    final $$DataFormSubmissionsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.dataFormSubmissions,
-            getReferencedColumn: (t) => t.team,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormSubmissionsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.dataFormSubmissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  Expression<T> dataSubmissionsRefs<T extends Object>(
+      Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
+    final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.team,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return f(composer);
   }
 }
@@ -13279,7 +12454,7 @@ class $$TeamsTableTableManager extends RootTableManager<
     (Team, $$TeamsTableReferences),
     Team,
     PrefetchHooks Function(
-        {bool activity, bool assignmentsRefs, bool dataFormSubmissionsRefs})> {
+        {bool activity, bool assignmentsRefs, bool dataSubmissionsRefs})> {
   $$TeamsTableTableManager(_$AppDatabase db, $TeamsTable table)
       : super(TableManagerState(
           db: db,
@@ -13292,7 +12467,6 @@ class $$TeamsTableTableManager extends RootTableManager<
               $$TeamsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -13310,7 +12484,6 @@ class $$TeamsTableTableManager extends RootTableManager<
           }) =>
               TeamsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -13327,7 +12500,6 @@ class $$TeamsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -13345,7 +12517,6 @@ class $$TeamsTableTableManager extends RootTableManager<
           }) =>
               TeamsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -13367,12 +12538,12 @@ class $$TeamsTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {activity = false,
               assignmentsRefs = false,
-              dataFormSubmissionsRefs = false}) {
+              dataSubmissionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (assignmentsRefs) db.assignments,
-                if (dataFormSubmissionsRefs) db.dataFormSubmissions
+                if (dataSubmissionsRefs) db.dataSubmissions
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -13413,14 +12584,14 @@ class $$TeamsTableTableManager extends RootTableManager<
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.team == item.id),
                         typedResults: items),
-                  if (dataFormSubmissionsRefs)
+                  if (dataSubmissionsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
                         referencedTable: $$TeamsTableReferences
-                            ._dataFormSubmissionsRefsTable(db),
+                            ._dataSubmissionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$TeamsTableReferences(db, table, p0)
-                                .dataFormSubmissionsRefs,
+                                .dataSubmissionsRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.team == item.id),
@@ -13444,11 +12615,10 @@ typedef $$TeamsTableProcessedTableManager = ProcessedTableManager<
     (Team, $$TeamsTableReferences),
     Team,
     PrefetchHooks Function(
-        {bool activity, bool assignmentsRefs, bool dataFormSubmissionsRefs})>;
+        {bool activity, bool assignmentsRefs, bool dataSubmissionsRefs})>;
 typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
     Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   required String activity,
@@ -13466,7 +12636,6 @@ typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
 typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
     Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String> activity,
@@ -13538,20 +12707,19 @@ final class $$AssignmentsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$DataFormSubmissionsTable,
-      List<DataFormSubmission>> _dataFormSubmissionsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.dataFormSubmissions,
-          aliasName: $_aliasNameGenerator(
-              db.assignments.id, db.dataFormSubmissions.assignment));
+  static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
+      _dataSubmissionsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.dataSubmissions,
+              aliasName: $_aliasNameGenerator(
+                  db.assignments.id, db.dataSubmissions.assignment));
 
-  $$DataFormSubmissionsTableProcessedTableManager get dataFormSubmissionsRefs {
+  $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
     final manager =
-        $$DataFormSubmissionsTableTableManager($_db, $_db.dataFormSubmissions)
+        $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
             .filter((f) => f.assignment.id($_item.id));
 
     final cache =
-        $_typedResult.readTableOrNull(_dataFormSubmissionsRefsTable($_db));
+        $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -13568,9 +12736,6 @@ class $$AssignmentsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -13686,19 +12851,19 @@ class $$AssignmentsTableFilterComposer
     return composer;
   }
 
-  Expression<bool> dataFormSubmissionsRefs(
-      Expression<bool> Function($$DataFormSubmissionsTableFilterComposer f) f) {
-    final $$DataFormSubmissionsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> dataSubmissionsRefs(
+      Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
+    final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataFormSubmissions,
+        referencedTable: $db.dataSubmissions,
         getReferencedColumn: (t) => t.assignment,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$DataFormSubmissionsTableFilterComposer(
+            $$DataSubmissionsTableFilterComposer(
               $db: $db,
-              $table: $db.dataFormSubmissions,
+              $table: $db.dataSubmissions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13719,9 +12884,6 @@ class $$AssignmentsTableOrderingComposer
   });
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -13842,9 +13004,6 @@ class $$AssignmentsTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
-
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
 
@@ -13950,26 +13109,24 @@ class $$AssignmentsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> dataFormSubmissionsRefs<T extends Object>(
-      Expression<T> Function($$DataFormSubmissionsTableAnnotationComposer a)
-          f) {
-    final $$DataFormSubmissionsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.dataFormSubmissions,
-            getReferencedColumn: (t) => t.assignment,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormSubmissionsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.dataFormSubmissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  Expression<T> dataSubmissionsRefs<T extends Object>(
+      Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
+    final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.assignment,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return f(composer);
   }
 }
@@ -13990,7 +13147,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
         bool team,
         bool orgUnit,
         bool parent,
-        bool dataFormSubmissionsRefs})> {
+        bool dataSubmissionsRefs})> {
   $$AssignmentsTableTableManager(_$AppDatabase db, $AssignmentsTable table)
       : super(TableManagerState(
           db: db,
@@ -14003,7 +13160,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
               $$AssignmentsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String> activity = const Value.absent(),
@@ -14021,7 +13177,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
           }) =>
               AssignmentsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             activity: activity,
@@ -14038,7 +13193,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             required String activity,
@@ -14056,7 +13210,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
           }) =>
               AssignmentsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             activity: activity,
@@ -14082,11 +13235,11 @@ class $$AssignmentsTableTableManager extends RootTableManager<
               team = false,
               orgUnit = false,
               parent = false,
-              dataFormSubmissionsRefs = false}) {
+              dataSubmissionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (dataFormSubmissionsRefs) db.dataFormSubmissions
+                if (dataSubmissionsRefs) db.dataSubmissions
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -14146,14 +13299,14 @@ class $$AssignmentsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (dataFormSubmissionsRefs)
+                  if (dataSubmissionsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
                         referencedTable: $$AssignmentsTableReferences
-                            ._dataFormSubmissionsRefsTable(db),
+                            ._dataSubmissionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$AssignmentsTableReferences(db, table, p0)
-                                .dataFormSubmissionsRefs,
+                                .dataSubmissionsRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.assignment == item.id),
@@ -14181,11 +13334,10 @@ typedef $$AssignmentsTableProcessedTableManager = ProcessedTableManager<
         bool team,
         bool orgUnit,
         bool parent,
-        bool dataFormSubmissionsRefs})>;
+        bool dataSubmissionsRefs})>;
 typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
     Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -14199,7 +13351,6 @@ typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
 typedef $$FormTemplatesTableUpdateCompanionBuilder = FormTemplatesCompanion
     Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -14243,9 +13394,6 @@ class $$FormTemplatesTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -14311,9 +13459,6 @@ class $$FormTemplatesTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -14352,9 +13497,6 @@ class $$FormTemplatesTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -14427,7 +13569,6 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
               $$FormTemplatesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -14440,7 +13581,6 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
           }) =>
               FormTemplatesCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -14453,7 +13593,6 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -14466,7 +13605,6 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
           }) =>
               FormTemplatesCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -14524,7 +13662,6 @@ typedef $$FormTemplatesTableProcessedTableManager = ProcessedTableManager<
 typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
     Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -14547,7 +13684,6 @@ typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
 typedef $$FormVersionsTableUpdateCompanionBuilder = FormVersionsCompanion
     Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -14585,20 +13721,19 @@ final class $$FormVersionsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$DataFormSubmissionsTable,
-      List<DataFormSubmission>> _dataFormSubmissionsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.dataFormSubmissions,
-          aliasName: $_aliasNameGenerator(
-              db.formVersions.id, db.dataFormSubmissions.formVersion));
+  static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
+      _dataSubmissionsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.dataSubmissions,
+              aliasName: $_aliasNameGenerator(
+                  db.formVersions.id, db.dataSubmissions.formVersion));
 
-  $$DataFormSubmissionsTableProcessedTableManager get dataFormSubmissionsRefs {
+  $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
     final manager =
-        $$DataFormSubmissionsTableTableManager($_db, $_db.dataFormSubmissions)
+        $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
             .filter((f) => f.formVersion.id($_item.id));
 
     final cache =
-        $_typedResult.readTableOrNull(_dataFormSubmissionsRefsTable($_db));
+        $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -14615,9 +13750,6 @@ class $$FormVersionsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -14705,19 +13837,19 @@ class $$FormVersionsTableFilterComposer
     return composer;
   }
 
-  Expression<bool> dataFormSubmissionsRefs(
-      Expression<bool> Function($$DataFormSubmissionsTableFilterComposer f) f) {
-    final $$DataFormSubmissionsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> dataSubmissionsRefs(
+      Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
+    final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataFormSubmissions,
+        referencedTable: $db.dataSubmissions,
         getReferencedColumn: (t) => t.formVersion,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$DataFormSubmissionsTableFilterComposer(
+            $$DataSubmissionsTableFilterComposer(
               $db: $db,
-              $table: $db.dataFormSubmissions,
+              $table: $db.dataSubmissions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -14738,9 +13870,6 @@ class $$FormVersionsTableOrderingComposer
   });
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -14827,9 +13956,6 @@ class $$FormVersionsTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
-
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
 
@@ -14903,26 +14029,24 @@ class $$FormVersionsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> dataFormSubmissionsRefs<T extends Object>(
-      Expression<T> Function($$DataFormSubmissionsTableAnnotationComposer a)
-          f) {
-    final $$DataFormSubmissionsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.dataFormSubmissions,
-            getReferencedColumn: (t) => t.formVersion,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormSubmissionsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.dataFormSubmissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  Expression<T> dataSubmissionsRefs<T extends Object>(
+      Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
+    final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.formVersion,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return f(composer);
   }
 }
@@ -14938,7 +14062,7 @@ class $$FormVersionsTableTableManager extends RootTableManager<
     $$FormVersionsTableUpdateCompanionBuilder,
     (FormVersion, $$FormVersionsTableReferences),
     FormVersion,
-    PrefetchHooks Function({bool form, bool dataFormSubmissionsRefs})> {
+    PrefetchHooks Function({bool form, bool dataSubmissionsRefs})> {
   $$FormVersionsTableTableManager(_$AppDatabase db, $FormVersionsTable table)
       : super(TableManagerState(
           db: db,
@@ -14951,7 +14075,6 @@ class $$FormVersionsTableTableManager extends RootTableManager<
               $$FormVersionsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -14973,7 +14096,6 @@ class $$FormVersionsTableTableManager extends RootTableManager<
           }) =>
               FormVersionsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -14995,7 +14117,6 @@ class $$FormVersionsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -15017,7 +14138,6 @@ class $$FormVersionsTableTableManager extends RootTableManager<
           }) =>
               FormVersionsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -15043,12 +14163,11 @@ class $$FormVersionsTableTableManager extends RootTableManager<
                     $$FormVersionsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: (
-              {form = false, dataFormSubmissionsRefs = false}) {
+          prefetchHooksCallback: ({form = false, dataSubmissionsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (dataFormSubmissionsRefs) db.dataFormSubmissions
+                if (dataSubmissionsRefs) db.dataSubmissions
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -15078,14 +14197,14 @@ class $$FormVersionsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (dataFormSubmissionsRefs)
+                  if (dataSubmissionsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
                         referencedTable: $$FormVersionsTableReferences
-                            ._dataFormSubmissionsRefsTable(db),
+                            ._dataSubmissionsRefsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$FormVersionsTableReferences(db, table, p0)
-                                .dataFormSubmissionsRefs,
+                                .dataSubmissionsRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.formVersion == item.id),
@@ -15108,11 +14227,10 @@ typedef $$FormVersionsTableProcessedTableManager = ProcessedTableManager<
     $$FormVersionsTableUpdateCompanionBuilder,
     (FormVersion, $$FormVersionsTableReferences),
     FormVersion,
-    PrefetchHooks Function({bool form, bool dataFormSubmissionsRefs})>;
+    PrefetchHooks Function({bool form, bool dataSubmissionsRefs})>;
 typedef $$MetadataSubmissionsTableCreateCompanionBuilder
     = MetadataSubmissionsCompanion Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -15132,7 +14250,6 @@ typedef $$MetadataSubmissionsTableCreateCompanionBuilder
 typedef $$MetadataSubmissionsTableUpdateCompanionBuilder
     = MetadataSubmissionsCompanion Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -15161,9 +14278,6 @@ class $$MetadataSubmissionsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -15231,9 +14345,6 @@ class $$MetadataSubmissionsTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -15294,9 +14405,6 @@ class $$MetadataSubmissionsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -15375,7 +14483,6 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
                   $db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -15394,7 +14501,6 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
           }) =>
               MetadataSubmissionsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -15413,7 +14519,6 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -15432,7 +14537,6 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
           }) =>
               MetadataSubmissionsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -15472,78 +14576,59 @@ typedef $$MetadataSubmissionsTableProcessedTableManager = ProcessedTableManager<
     ),
     MetadataSubmission,
     PrefetchHooks Function()>;
-typedef $$DataFormSubmissionsTableCreateCompanionBuilder
-    = DataFormSubmissionsCompanion Function({
+typedef $$DataSubmissionsTableCreateCompanionBuilder = DataSubmissionsCompanion
+    Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<bool> deleted,
-  Value<bool?> synced,
-  Value<bool> syncFailed,
-  Value<bool> isFinal,
-  Value<String?> lastSyncMessage,
-  Value<String?> createdBy,
-  Value<AssignmentStatus?> status,
-  Value<String?> team,
   Value<String?> form,
   required String formVersion,
   required int version,
   Value<String?> assignment,
+  Value<String?> team,
   Value<String?> orgUnit,
-  Value<Map<String, dynamic>?> formData,
+  Value<AssignmentStatus?> progressStatus,
+  Value<SubmissionStatus> status,
   Value<DateTime?> lastSyncDate,
+  Value<String?> lastSyncMessage,
   Value<DateTime> startEntryTime,
   Value<DateTime?> finishedEntryTime,
+  Value<String?> createdBy,
+  Value<Map<String, dynamic>?> formData,
   Value<int> rowid,
 });
-typedef $$DataFormSubmissionsTableUpdateCompanionBuilder
-    = DataFormSubmissionsCompanion Function({
+typedef $$DataSubmissionsTableUpdateCompanionBuilder = DataSubmissionsCompanion
+    Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<bool> deleted,
-  Value<bool?> synced,
-  Value<bool> syncFailed,
-  Value<bool> isFinal,
-  Value<String?> lastSyncMessage,
-  Value<String?> createdBy,
-  Value<AssignmentStatus?> status,
-  Value<String?> team,
   Value<String?> form,
   Value<String> formVersion,
   Value<int> version,
   Value<String?> assignment,
+  Value<String?> team,
   Value<String?> orgUnit,
-  Value<Map<String, dynamic>?> formData,
+  Value<AssignmentStatus?> progressStatus,
+  Value<SubmissionStatus> status,
   Value<DateTime?> lastSyncDate,
+  Value<String?> lastSyncMessage,
   Value<DateTime> startEntryTime,
   Value<DateTime?> finishedEntryTime,
+  Value<String?> createdBy,
+  Value<Map<String, dynamic>?> formData,
   Value<int> rowid,
 });
 
-final class $$DataFormSubmissionsTableReferences extends BaseReferences<
-    _$AppDatabase, $DataFormSubmissionsTable, DataFormSubmission> {
-  $$DataFormSubmissionsTableReferences(
+final class $$DataSubmissionsTableReferences extends BaseReferences<
+    _$AppDatabase, $DataSubmissionsTable, DataSubmission> {
+  $$DataSubmissionsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
-
-  static $TeamsTable _teamTable(_$AppDatabase db) => db.teams.createAlias(
-      $_aliasNameGenerator(db.dataFormSubmissions.team, db.teams.id));
-
-  $$TeamsTableProcessedTableManager? get team {
-    if ($_item.team == null) return null;
-    final manager = $$TeamsTableTableManager($_db, $_db.teams)
-        .filter((f) => f.id($_item.team!));
-    final item = $_typedResult.readTableOrNull(_teamTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
 
   static $FormVersionsTable _formVersionTable(_$AppDatabase db) =>
       db.formVersions.createAlias($_aliasNameGenerator(
-          db.dataFormSubmissions.formVersion, db.formVersions.id));
+          db.dataSubmissions.formVersion, db.formVersions.id));
 
   $$FormVersionsTableProcessedTableManager get formVersion {
     final manager = $$FormVersionsTableTableManager($_db, $_db.formVersions)
@@ -15556,7 +14641,7 @@ final class $$DataFormSubmissionsTableReferences extends BaseReferences<
 
   static $AssignmentsTable _assignmentTable(_$AppDatabase db) =>
       db.assignments.createAlias($_aliasNameGenerator(
-          db.dataFormSubmissions.assignment, db.assignments.id));
+          db.dataSubmissions.assignment, db.assignments.id));
 
   $$AssignmentsTableProcessedTableManager? get assignment {
     if ($_item.assignment == null) return null;
@@ -15568,9 +14653,22 @@ final class $$DataFormSubmissionsTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
+  static $TeamsTable _teamTable(_$AppDatabase db) => db.teams
+      .createAlias($_aliasNameGenerator(db.dataSubmissions.team, db.teams.id));
+
+  $$TeamsTableProcessedTableManager? get team {
+    if ($_item.team == null) return null;
+    final manager = $$TeamsTableTableManager($_db, $_db.teams)
+        .filter((f) => f.id($_item.team!));
+    final item = $_typedResult.readTableOrNull(_teamTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
   static $OrgUnitsTable _orgUnitTable(_$AppDatabase db) =>
       db.orgUnits.createAlias(
-          $_aliasNameGenerator(db.dataFormSubmissions.orgUnit, db.orgUnits.id));
+          $_aliasNameGenerator(db.dataSubmissions.orgUnit, db.orgUnits.id));
 
   $$OrgUnitsTableProcessedTableManager? get orgUnit {
     if ($_item.orgUnit == null) return null;
@@ -15586,7 +14684,7 @@ final class $$DataFormSubmissionsTableReferences extends BaseReferences<
       _repeatInstancesRefsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.repeatInstances,
               aliasName: $_aliasNameGenerator(
-                  db.dataFormSubmissions.id, db.repeatInstances.submission));
+                  db.dataSubmissions.id, db.repeatInstances.submission));
 
   $$RepeatInstancesTableProcessedTableManager get repeatInstancesRefs {
     final manager =
@@ -15603,7 +14701,7 @@ final class $$DataFormSubmissionsTableReferences extends BaseReferences<
       _dataValuesRefsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.dataValues,
               aliasName: $_aliasNameGenerator(
-                  db.dataFormSubmissions.id, db.dataValues.submission));
+                  db.dataSubmissions.id, db.dataValues.submission));
 
   $$DataValuesTableProcessedTableManager get dataValuesRefs {
     final manager = $$DataValuesTableTableManager($_db, $_db.dataValues)
@@ -15615,9 +14713,9 @@ final class $$DataFormSubmissionsTableReferences extends BaseReferences<
   }
 }
 
-class $$DataFormSubmissionsTableFilterComposer
-    extends Composer<_$AppDatabase, $DataFormSubmissionsTable> {
-  $$DataFormSubmissionsTableFilterComposer({
+class $$DataSubmissionsTableFilterComposer
+    extends Composer<_$AppDatabase, $DataSubmissionsTable> {
+  $$DataSubmissionsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15626,9 +14724,6 @@ class $$DataFormSubmissionsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -15640,41 +14735,28 @@ class $$DataFormSubmissionsTableFilterComposer
   ColumnFilters<bool> get deleted => $composableBuilder(
       column: $table.deleted, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get synced => $composableBuilder(
-      column: $table.synced, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get syncFailed => $composableBuilder(
-      column: $table.syncFailed, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isFinal => $composableBuilder(
-      column: $table.isFinal, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get lastSyncMessage => $composableBuilder(
-      column: $table.lastSyncMessage,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get createdBy => $composableBuilder(
-      column: $table.createdBy, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<AssignmentStatus?, AssignmentStatus, String>
-      get status => $composableBuilder(
-          column: $table.status,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<String> get form => $composableBuilder(
       column: $table.form, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get version => $composableBuilder(
       column: $table.version, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
-          String>
-      get formData => $composableBuilder(
-          column: $table.formData,
+  ColumnWithTypeConverterFilters<AssignmentStatus?, AssignmentStatus, String>
+      get progressStatus => $composableBuilder(
+          column: $table.progressStatus,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<SubmissionStatus, SubmissionStatus, String>
+      get status => $composableBuilder(
+          column: $table.status,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<DateTime> get lastSyncDate => $composableBuilder(
       column: $table.lastSyncDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get lastSyncMessage => $composableBuilder(
+      column: $table.lastSyncMessage,
+      builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get startEntryTime => $composableBuilder(
       column: $table.startEntryTime,
@@ -15684,25 +14766,14 @@ class $$DataFormSubmissionsTableFilterComposer
       column: $table.finishedEntryTime,
       builder: (column) => ColumnFilters(column));
 
-  $$TeamsTableFilterComposer get team {
-    final $$TeamsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.team,
-        referencedTable: $db.teams,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TeamsTableFilterComposer(
-              $db: $db,
-              $table: $db.teams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
+  ColumnFilters<String> get createdBy => $composableBuilder(
+      column: $table.createdBy, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
+          String>
+      get formData => $composableBuilder(
+          column: $table.formData,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   $$FormVersionsTableFilterComposer get formVersion {
     final $$FormVersionsTableFilterComposer composer = $composerBuilder(
@@ -15736,6 +14807,26 @@ class $$DataFormSubmissionsTableFilterComposer
             $$AssignmentsTableFilterComposer(
               $db: $db,
               $table: $db.assignments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$TeamsTableFilterComposer get team {
+    final $$TeamsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.team,
+        referencedTable: $db.teams,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TeamsTableFilterComposer(
+              $db: $db,
+              $table: $db.teams,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -15807,9 +14898,9 @@ class $$DataFormSubmissionsTableFilterComposer
   }
 }
 
-class $$DataFormSubmissionsTableOrderingComposer
-    extends Composer<_$AppDatabase, $DataFormSubmissionsTable> {
-  $$DataFormSubmissionsTableOrderingComposer({
+class $$DataSubmissionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DataSubmissionsTable> {
+  $$DataSubmissionsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15818,9 +14909,6 @@ class $$DataFormSubmissionsTableOrderingComposer
   });
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -15832,36 +14920,25 @@ class $$DataFormSubmissionsTableOrderingComposer
   ColumnOrderings<bool> get deleted => $composableBuilder(
       column: $table.deleted, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get synced => $composableBuilder(
-      column: $table.synced, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get syncFailed => $composableBuilder(
-      column: $table.syncFailed, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get isFinal => $composableBuilder(
-      column: $table.isFinal, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get lastSyncMessage => $composableBuilder(
-      column: $table.lastSyncMessage,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get createdBy => $composableBuilder(
-      column: $table.createdBy, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get form => $composableBuilder(
       column: $table.form, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get version => $composableBuilder(
       column: $table.version, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get formData => $composableBuilder(
-      column: $table.formData, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get progressStatus => $composableBuilder(
+      column: $table.progressStatus,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get lastSyncDate => $composableBuilder(
       column: $table.lastSyncDate,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get lastSyncMessage => $composableBuilder(
+      column: $table.lastSyncMessage,
       builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get startEntryTime => $composableBuilder(
@@ -15872,25 +14949,11 @@ class $$DataFormSubmissionsTableOrderingComposer
       column: $table.finishedEntryTime,
       builder: (column) => ColumnOrderings(column));
 
-  $$TeamsTableOrderingComposer get team {
-    final $$TeamsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.team,
-        referencedTable: $db.teams,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TeamsTableOrderingComposer(
-              $db: $db,
-              $table: $db.teams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+      column: $table.createdBy, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get formData => $composableBuilder(
+      column: $table.formData, builder: (column) => ColumnOrderings(column));
 
   $$FormVersionsTableOrderingComposer get formVersion {
     final $$FormVersionsTableOrderingComposer composer = $composerBuilder(
@@ -15932,6 +14995,26 @@ class $$DataFormSubmissionsTableOrderingComposer
     return composer;
   }
 
+  $$TeamsTableOrderingComposer get team {
+    final $$TeamsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.team,
+        referencedTable: $db.teams,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TeamsTableOrderingComposer(
+              $db: $db,
+              $table: $db.teams,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   $$OrgUnitsTableOrderingComposer get orgUnit {
     final $$OrgUnitsTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -15953,9 +15036,9 @@ class $$DataFormSubmissionsTableOrderingComposer
   }
 }
 
-class $$DataFormSubmissionsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $DataFormSubmissionsTable> {
-  $$DataFormSubmissionsTableAnnotationComposer({
+class $$DataSubmissionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DataSubmissionsTable> {
+  $$DataSubmissionsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15964,9 +15047,6 @@ class $$DataFormSubmissionsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -15977,36 +15057,24 @@ class $$DataFormSubmissionsTableAnnotationComposer
   GeneratedColumn<bool> get deleted =>
       $composableBuilder(column: $table.deleted, builder: (column) => column);
 
-  GeneratedColumn<bool> get synced =>
-      $composableBuilder(column: $table.synced, builder: (column) => column);
-
-  GeneratedColumn<bool> get syncFailed => $composableBuilder(
-      column: $table.syncFailed, builder: (column) => column);
-
-  GeneratedColumn<bool> get isFinal =>
-      $composableBuilder(column: $table.isFinal, builder: (column) => column);
-
-  GeneratedColumn<String> get lastSyncMessage => $composableBuilder(
-      column: $table.lastSyncMessage, builder: (column) => column);
-
-  GeneratedColumn<String> get createdBy =>
-      $composableBuilder(column: $table.createdBy, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<AssignmentStatus?, String> get status =>
-      $composableBuilder(column: $table.status, builder: (column) => column);
-
   GeneratedColumn<String> get form =>
       $composableBuilder(column: $table.form, builder: (column) => column);
 
   GeneratedColumn<int> get version =>
       $composableBuilder(column: $table.version, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      get formData => $composableBuilder(
-          column: $table.formData, builder: (column) => column);
+  GeneratedColumnWithTypeConverter<AssignmentStatus?, String>
+      get progressStatus => $composableBuilder(
+          column: $table.progressStatus, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SubmissionStatus, String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastSyncDate => $composableBuilder(
       column: $table.lastSyncDate, builder: (column) => column);
+
+  GeneratedColumn<String> get lastSyncMessage => $composableBuilder(
+      column: $table.lastSyncMessage, builder: (column) => column);
 
   GeneratedColumn<DateTime> get startEntryTime => $composableBuilder(
       column: $table.startEntryTime, builder: (column) => column);
@@ -16014,25 +15082,12 @@ class $$DataFormSubmissionsTableAnnotationComposer
   GeneratedColumn<DateTime> get finishedEntryTime => $composableBuilder(
       column: $table.finishedEntryTime, builder: (column) => column);
 
-  $$TeamsTableAnnotationComposer get team {
-    final $$TeamsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.team,
-        referencedTable: $db.teams,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TeamsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.teams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+      get formData => $composableBuilder(
+          column: $table.formData, builder: (column) => column);
 
   $$FormVersionsTableAnnotationComposer get formVersion {
     final $$FormVersionsTableAnnotationComposer composer = $composerBuilder(
@@ -16066,6 +15121,26 @@ class $$DataFormSubmissionsTableAnnotationComposer
             $$AssignmentsTableAnnotationComposer(
               $db: $db,
               $table: $db.assignments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$TeamsTableAnnotationComposer get team {
+    final $$TeamsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.team,
+        referencedTable: $db.teams,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TeamsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.teams,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -16137,143 +15212,129 @@ class $$DataFormSubmissionsTableAnnotationComposer
   }
 }
 
-class $$DataFormSubmissionsTableTableManager extends RootTableManager<
+class $$DataSubmissionsTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $DataFormSubmissionsTable,
-    DataFormSubmission,
-    $$DataFormSubmissionsTableFilterComposer,
-    $$DataFormSubmissionsTableOrderingComposer,
-    $$DataFormSubmissionsTableAnnotationComposer,
-    $$DataFormSubmissionsTableCreateCompanionBuilder,
-    $$DataFormSubmissionsTableUpdateCompanionBuilder,
-    (DataFormSubmission, $$DataFormSubmissionsTableReferences),
-    DataFormSubmission,
+    $DataSubmissionsTable,
+    DataSubmission,
+    $$DataSubmissionsTableFilterComposer,
+    $$DataSubmissionsTableOrderingComposer,
+    $$DataSubmissionsTableAnnotationComposer,
+    $$DataSubmissionsTableCreateCompanionBuilder,
+    $$DataSubmissionsTableUpdateCompanionBuilder,
+    (DataSubmission, $$DataSubmissionsTableReferences),
+    DataSubmission,
     PrefetchHooks Function(
-        {bool team,
-        bool formVersion,
+        {bool formVersion,
         bool assignment,
+        bool team,
         bool orgUnit,
         bool repeatInstancesRefs,
         bool dataValuesRefs})> {
-  $$DataFormSubmissionsTableTableManager(
-      _$AppDatabase db, $DataFormSubmissionsTable table)
+  $$DataSubmissionsTableTableManager(
+      _$AppDatabase db, $DataSubmissionsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$DataFormSubmissionsTableFilterComposer($db: db, $table: table),
+              $$DataSubmissionsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$DataFormSubmissionsTableOrderingComposer(
-                  $db: db, $table: table),
+              $$DataSubmissionsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$DataFormSubmissionsTableAnnotationComposer(
-                  $db: db, $table: table),
+              $$DataSubmissionsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
-            Value<bool?> synced = const Value.absent(),
-            Value<bool> syncFailed = const Value.absent(),
-            Value<bool> isFinal = const Value.absent(),
-            Value<String?> lastSyncMessage = const Value.absent(),
-            Value<String?> createdBy = const Value.absent(),
-            Value<AssignmentStatus?> status = const Value.absent(),
-            Value<String?> team = const Value.absent(),
             Value<String?> form = const Value.absent(),
             Value<String> formVersion = const Value.absent(),
             Value<int> version = const Value.absent(),
             Value<String?> assignment = const Value.absent(),
+            Value<String?> team = const Value.absent(),
             Value<String?> orgUnit = const Value.absent(),
-            Value<Map<String, dynamic>?> formData = const Value.absent(),
+            Value<AssignmentStatus?> progressStatus = const Value.absent(),
+            Value<SubmissionStatus> status = const Value.absent(),
             Value<DateTime?> lastSyncDate = const Value.absent(),
+            Value<String?> lastSyncMessage = const Value.absent(),
             Value<DateTime> startEntryTime = const Value.absent(),
             Value<DateTime?> finishedEntryTime = const Value.absent(),
+            Value<String?> createdBy = const Value.absent(),
+            Value<Map<String, dynamic>?> formData = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
-              DataFormSubmissionsCompanion(
+              DataSubmissionsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             deleted: deleted,
-            synced: synced,
-            syncFailed: syncFailed,
-            isFinal: isFinal,
-            lastSyncMessage: lastSyncMessage,
-            createdBy: createdBy,
-            status: status,
-            team: team,
             form: form,
             formVersion: formVersion,
             version: version,
             assignment: assignment,
+            team: team,
             orgUnit: orgUnit,
-            formData: formData,
+            progressStatus: progressStatus,
+            status: status,
             lastSyncDate: lastSyncDate,
+            lastSyncMessage: lastSyncMessage,
             startEntryTime: startEntryTime,
             finishedEntryTime: finishedEntryTime,
+            createdBy: createdBy,
+            formData: formData,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
-            Value<bool?> synced = const Value.absent(),
-            Value<bool> syncFailed = const Value.absent(),
-            Value<bool> isFinal = const Value.absent(),
-            Value<String?> lastSyncMessage = const Value.absent(),
-            Value<String?> createdBy = const Value.absent(),
-            Value<AssignmentStatus?> status = const Value.absent(),
-            Value<String?> team = const Value.absent(),
             Value<String?> form = const Value.absent(),
             required String formVersion,
             required int version,
             Value<String?> assignment = const Value.absent(),
+            Value<String?> team = const Value.absent(),
             Value<String?> orgUnit = const Value.absent(),
-            Value<Map<String, dynamic>?> formData = const Value.absent(),
+            Value<AssignmentStatus?> progressStatus = const Value.absent(),
+            Value<SubmissionStatus> status = const Value.absent(),
             Value<DateTime?> lastSyncDate = const Value.absent(),
+            Value<String?> lastSyncMessage = const Value.absent(),
             Value<DateTime> startEntryTime = const Value.absent(),
             Value<DateTime?> finishedEntryTime = const Value.absent(),
+            Value<String?> createdBy = const Value.absent(),
+            Value<Map<String, dynamic>?> formData = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
-              DataFormSubmissionsCompanion.insert(
+              DataSubmissionsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             deleted: deleted,
-            synced: synced,
-            syncFailed: syncFailed,
-            isFinal: isFinal,
-            lastSyncMessage: lastSyncMessage,
-            createdBy: createdBy,
-            status: status,
-            team: team,
             form: form,
             formVersion: formVersion,
             version: version,
             assignment: assignment,
+            team: team,
             orgUnit: orgUnit,
-            formData: formData,
+            progressStatus: progressStatus,
+            status: status,
             lastSyncDate: lastSyncDate,
+            lastSyncMessage: lastSyncMessage,
             startEntryTime: startEntryTime,
             finishedEntryTime: finishedEntryTime,
+            createdBy: createdBy,
+            formData: formData,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$DataFormSubmissionsTableReferences(db, table, e)
+                    $$DataSubmissionsTableReferences(db, table, e)
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {team = false,
-              formVersion = false,
+              {formVersion = false,
               assignment = false,
+              team = false,
               orgUnit = false,
               repeatInstancesRefs = false,
               dataValuesRefs = false}) {
@@ -16296,23 +15357,13 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
                       dynamic,
                       dynamic,
                       dynamic>>(state) {
-                if (team) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.team,
-                    referencedTable:
-                        $$DataFormSubmissionsTableReferences._teamTable(db),
-                    referencedColumn:
-                        $$DataFormSubmissionsTableReferences._teamTable(db).id,
-                  ) as T;
-                }
                 if (formVersion) {
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.formVersion,
-                    referencedTable: $$DataFormSubmissionsTableReferences
-                        ._formVersionTable(db),
-                    referencedColumn: $$DataFormSubmissionsTableReferences
+                    referencedTable:
+                        $$DataSubmissionsTableReferences._formVersionTable(db),
+                    referencedColumn: $$DataSubmissionsTableReferences
                         ._formVersionTable(db)
                         .id,
                   ) as T;
@@ -16321,11 +15372,21 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.assignment,
-                    referencedTable: $$DataFormSubmissionsTableReferences
-                        ._assignmentTable(db),
-                    referencedColumn: $$DataFormSubmissionsTableReferences
+                    referencedTable:
+                        $$DataSubmissionsTableReferences._assignmentTable(db),
+                    referencedColumn: $$DataSubmissionsTableReferences
                         ._assignmentTable(db)
                         .id,
+                  ) as T;
+                }
+                if (team) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.team,
+                    referencedTable:
+                        $$DataSubmissionsTableReferences._teamTable(db),
+                    referencedColumn:
+                        $$DataSubmissionsTableReferences._teamTable(db).id,
                   ) as T;
                 }
                 if (orgUnit) {
@@ -16333,10 +15394,9 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
                     currentTable: table,
                     currentColumn: table.orgUnit,
                     referencedTable:
-                        $$DataFormSubmissionsTableReferences._orgUnitTable(db),
-                    referencedColumn: $$DataFormSubmissionsTableReferences
-                        ._orgUnitTable(db)
-                        .id,
+                        $$DataSubmissionsTableReferences._orgUnitTable(db),
+                    referencedColumn:
+                        $$DataSubmissionsTableReferences._orgUnitTable(db).id,
                   ) as T;
                 }
 
@@ -16347,10 +15407,10 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
                   if (repeatInstancesRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
-                        referencedTable: $$DataFormSubmissionsTableReferences
+                        referencedTable: $$DataSubmissionsTableReferences
                             ._repeatInstancesRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$DataFormSubmissionsTableReferences(db, table, p0)
+                            $$DataSubmissionsTableReferences(db, table, p0)
                                 .repeatInstancesRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
@@ -16359,10 +15419,10 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
                   if (dataValuesRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
-                        referencedTable: $$DataFormSubmissionsTableReferences
+                        referencedTable: $$DataSubmissionsTableReferences
                             ._dataValuesRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$DataFormSubmissionsTableReferences(db, table, p0)
+                            $$DataSubmissionsTableReferences(db, table, p0)
                                 .dataValuesRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
@@ -16375,32 +15435,31 @@ class $$DataFormSubmissionsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$DataFormSubmissionsTableProcessedTableManager = ProcessedTableManager<
+typedef $$DataSubmissionsTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
-    $DataFormSubmissionsTable,
-    DataFormSubmission,
-    $$DataFormSubmissionsTableFilterComposer,
-    $$DataFormSubmissionsTableOrderingComposer,
-    $$DataFormSubmissionsTableAnnotationComposer,
-    $$DataFormSubmissionsTableCreateCompanionBuilder,
-    $$DataFormSubmissionsTableUpdateCompanionBuilder,
-    (DataFormSubmission, $$DataFormSubmissionsTableReferences),
-    DataFormSubmission,
+    $DataSubmissionsTable,
+    DataSubmission,
+    $$DataSubmissionsTableFilterComposer,
+    $$DataSubmissionsTableOrderingComposer,
+    $$DataSubmissionsTableAnnotationComposer,
+    $$DataSubmissionsTableCreateCompanionBuilder,
+    $$DataSubmissionsTableUpdateCompanionBuilder,
+    (DataSubmission, $$DataSubmissionsTableReferences),
+    DataSubmission,
     PrefetchHooks Function(
-        {bool team,
-        bool formVersion,
+        {bool formVersion,
         bool assignment,
+        bool team,
         bool orgUnit,
         bool repeatInstancesRefs,
         bool dataValuesRefs})>;
 typedef $$RepeatInstancesTableCreateCompanionBuilder = RepeatInstancesCompanion
     Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  required String submission,
   required String templatePath,
+  required String submission,
   Value<String?> parent,
   required int repeatIndex,
   Value<int> rowid,
@@ -16408,11 +15467,10 @@ typedef $$RepeatInstancesTableCreateCompanionBuilder = RepeatInstancesCompanion
 typedef $$RepeatInstancesTableUpdateCompanionBuilder = RepeatInstancesCompanion
     Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
-  Value<String> submission,
   Value<String> templatePath,
+  Value<String> submission,
   Value<String?> parent,
   Value<int> repeatIndex,
   Value<int> rowid,
@@ -16423,13 +15481,13 @@ final class $$RepeatInstancesTableReferences extends BaseReferences<
   $$RepeatInstancesTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DataFormSubmissionsTable _submissionTable(_$AppDatabase db) =>
-      db.dataFormSubmissions.createAlias($_aliasNameGenerator(
-          db.repeatInstances.submission, db.dataFormSubmissions.id));
+  static $DataSubmissionsTable _submissionTable(_$AppDatabase db) =>
+      db.dataSubmissions.createAlias($_aliasNameGenerator(
+          db.repeatInstances.submission, db.dataSubmissions.id));
 
-  $$DataFormSubmissionsTableProcessedTableManager get submission {
+  $$DataSubmissionsTableProcessedTableManager get submission {
     final manager =
-        $$DataFormSubmissionsTableTableManager($_db, $_db.dataFormSubmissions)
+        $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
             .filter((f) => f.id($_item.submission));
     final item = $_typedResult.readTableOrNull(_submissionTable($_db));
     if (item == null) return manager;
@@ -16480,9 +15538,6 @@ class $$RepeatInstancesTableFilterComposer
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnFilters(column));
@@ -16496,18 +15551,18 @@ class $$RepeatInstancesTableFilterComposer
   ColumnFilters<int> get repeatIndex => $composableBuilder(
       column: $table.repeatIndex, builder: (column) => ColumnFilters(column));
 
-  $$DataFormSubmissionsTableFilterComposer get submission {
-    final $$DataFormSubmissionsTableFilterComposer composer = $composerBuilder(
+  $$DataSubmissionsTableFilterComposer get submission {
+    final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.submission,
-        referencedTable: $db.dataFormSubmissions,
+        referencedTable: $db.dataSubmissions,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$DataFormSubmissionsTableFilterComposer(
+            $$DataSubmissionsTableFilterComposer(
               $db: $db,
-              $table: $db.dataFormSubmissions,
+              $table: $db.dataSubmissions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -16570,9 +15625,6 @@ class $$RepeatInstancesTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -16587,24 +15639,23 @@ class $$RepeatInstancesTableOrderingComposer
   ColumnOrderings<int> get repeatIndex => $composableBuilder(
       column: $table.repeatIndex, builder: (column) => ColumnOrderings(column));
 
-  $$DataFormSubmissionsTableOrderingComposer get submission {
-    final $$DataFormSubmissionsTableOrderingComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.submission,
-            referencedTable: $db.dataFormSubmissions,
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormSubmissionsTableOrderingComposer(
-                  $db: $db,
-                  $table: $db.dataFormSubmissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  $$DataSubmissionsTableOrderingComposer get submission {
+    final $$DataSubmissionsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.submission,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableOrderingComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return composer;
   }
 
@@ -16641,9 +15692,6 @@ class $$RepeatInstancesTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
-
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
 
@@ -16656,24 +15704,23 @@ class $$RepeatInstancesTableAnnotationComposer
   GeneratedColumn<int> get repeatIndex => $composableBuilder(
       column: $table.repeatIndex, builder: (column) => column);
 
-  $$DataFormSubmissionsTableAnnotationComposer get submission {
-    final $$DataFormSubmissionsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.submission,
-            referencedTable: $db.dataFormSubmissions,
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormSubmissionsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.dataFormSubmissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  $$DataSubmissionsTableAnnotationComposer get submission {
+    final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.submission,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return composer;
   }
 
@@ -16745,44 +15792,40 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
               $$RepeatInstancesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            Value<String> submission = const Value.absent(),
             Value<String> templatePath = const Value.absent(),
+            Value<String> submission = const Value.absent(),
             Value<String?> parent = const Value.absent(),
             Value<int> repeatIndex = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               RepeatInstancesCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            submission: submission,
             templatePath: templatePath,
+            submission: submission,
             parent: parent,
             repeatIndex: repeatIndex,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
-            required String submission,
             required String templatePath,
+            required String submission,
             Value<String?> parent = const Value.absent(),
             required int repeatIndex,
             Value<int> rowid = const Value.absent(),
           }) =>
               RepeatInstancesCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            submission: submission,
             templatePath: templatePath,
+            submission: submission,
             parent: parent,
             repeatIndex: repeatIndex,
             rowid: rowid,
@@ -16872,7 +15915,6 @@ typedef $$RepeatInstancesTableProcessedTableManager = ProcessedTableManager<
 typedef $$DataElementsTableCreateCompanionBuilder = DataElementsCompanion
     Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -16893,7 +15935,6 @@ typedef $$DataElementsTableCreateCompanionBuilder = DataElementsCompanion
 typedef $$DataElementsTableUpdateCompanionBuilder = DataElementsCompanion
     Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -16943,9 +15984,6 @@ class $$DataElementsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -17041,9 +16079,6 @@ class $$DataElementsTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -17107,9 +16142,6 @@ class $$DataElementsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -17205,7 +16237,6 @@ class $$DataElementsTableTableManager extends RootTableManager<
               $$DataElementsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -17226,7 +16257,6 @@ class $$DataElementsTableTableManager extends RootTableManager<
           }) =>
               DataElementsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -17246,7 +16276,6 @@ class $$DataElementsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -17267,7 +16296,6 @@ class $$DataElementsTableTableManager extends RootTableManager<
           }) =>
               DataElementsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -17331,7 +16359,6 @@ typedef $$DataElementsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function({bool dataValuesRefs})>;
 typedef $$DataValuesTableCreateCompanionBuilder = DataValuesCompanion Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   required String templatePath,
@@ -17343,7 +16370,6 @@ typedef $$DataValuesTableCreateCompanionBuilder = DataValuesCompanion Function({
 });
 typedef $$DataValuesTableUpdateCompanionBuilder = DataValuesCompanion Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String> templatePath,
@@ -17373,13 +16399,13 @@ final class $$DataValuesTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $DataFormSubmissionsTable _submissionTable(_$AppDatabase db) =>
-      db.dataFormSubmissions.createAlias($_aliasNameGenerator(
-          db.dataValues.submission, db.dataFormSubmissions.id));
+  static $DataSubmissionsTable _submissionTable(_$AppDatabase db) =>
+      db.dataSubmissions.createAlias($_aliasNameGenerator(
+          db.dataValues.submission, db.dataSubmissions.id));
 
-  $$DataFormSubmissionsTableProcessedTableManager get submission {
+  $$DataSubmissionsTableProcessedTableManager get submission {
     final manager =
-        $$DataFormSubmissionsTableTableManager($_db, $_db.dataFormSubmissions)
+        $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
             .filter((f) => f.id($_item.submission));
     final item = $_typedResult.readTableOrNull(_submissionTable($_db));
     if (item == null) return manager;
@@ -17412,9 +16438,6 @@ class $$DataValuesTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -17449,18 +16472,18 @@ class $$DataValuesTableFilterComposer
     return composer;
   }
 
-  $$DataFormSubmissionsTableFilterComposer get submission {
-    final $$DataFormSubmissionsTableFilterComposer composer = $composerBuilder(
+  $$DataSubmissionsTableFilterComposer get submission {
+    final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.submission,
-        referencedTable: $db.dataFormSubmissions,
+        referencedTable: $db.dataSubmissions,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$DataFormSubmissionsTableFilterComposer(
+            $$DataSubmissionsTableFilterComposer(
               $db: $db,
-              $table: $db.dataFormSubmissions,
+              $table: $db.dataSubmissions,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -17502,9 +16525,6 @@ class $$DataValuesTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -17539,24 +16559,23 @@ class $$DataValuesTableOrderingComposer
     return composer;
   }
 
-  $$DataFormSubmissionsTableOrderingComposer get submission {
-    final $$DataFormSubmissionsTableOrderingComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.submission,
-            referencedTable: $db.dataFormSubmissions,
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormSubmissionsTableOrderingComposer(
-                  $db: $db,
-                  $table: $db.dataFormSubmissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  $$DataSubmissionsTableOrderingComposer get submission {
+    final $$DataSubmissionsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.submission,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableOrderingComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return composer;
   }
 
@@ -17593,9 +16612,6 @@ class $$DataValuesTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
-
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
 
@@ -17628,24 +16644,23 @@ class $$DataValuesTableAnnotationComposer
     return composer;
   }
 
-  $$DataFormSubmissionsTableAnnotationComposer get submission {
-    final $$DataFormSubmissionsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.submission,
-            referencedTable: $db.dataFormSubmissions,
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormSubmissionsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.dataFormSubmissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  $$DataSubmissionsTableAnnotationComposer get submission {
+    final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.submission,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return composer;
   }
 
@@ -17694,7 +16709,6 @@ class $$DataValuesTableTableManager extends RootTableManager<
               $$DataValuesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String> templatePath = const Value.absent(),
@@ -17706,7 +16720,6 @@ class $$DataValuesTableTableManager extends RootTableManager<
           }) =>
               DataValuesCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             templatePath: templatePath,
@@ -17718,7 +16731,6 @@ class $$DataValuesTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             required String templatePath,
@@ -17730,7 +16742,6 @@ class $$DataValuesTableTableManager extends RootTableManager<
           }) =>
               DataValuesCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             templatePath: templatePath,
@@ -17820,7 +16831,6 @@ typedef $$DataValuesTableProcessedTableManager = ProcessedTableManager<
 typedef $$DataOptionSetsTableCreateCompanionBuilder = DataOptionSetsCompanion
     Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -17832,7 +16842,6 @@ typedef $$DataOptionSetsTableCreateCompanionBuilder = DataOptionSetsCompanion
 typedef $$DataOptionSetsTableUpdateCompanionBuilder = DataOptionSetsCompanion
     Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -17874,9 +16883,6 @@ class $$DataOptionSetsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -17933,9 +16939,6 @@ class $$DataOptionSetsTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -17968,9 +16971,6 @@ class $$DataOptionSetsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -18038,7 +17038,6 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
               $$DataOptionSetsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -18049,7 +17048,6 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
           }) =>
               DataOptionSetsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -18060,7 +17058,6 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -18071,7 +17068,6 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
           }) =>
               DataOptionSetsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -18127,7 +17123,6 @@ typedef $$DataOptionSetsTableProcessedTableManager = ProcessedTableManager<
 typedef $$DataOptionsTableCreateCompanionBuilder = DataOptionsCompanion
     Function({
   required String id,
-  required bool dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -18145,7 +17140,6 @@ typedef $$DataOptionsTableCreateCompanionBuilder = DataOptionsCompanion
 typedef $$DataOptionsTableUpdateCompanionBuilder = DataOptionsCompanion
     Function({
   Value<String> id,
-  Value<bool> dirty,
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String?> name,
@@ -18190,9 +17184,6 @@ class $$DataOptionsTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
@@ -18270,9 +17261,6 @@ class $$DataOptionsTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get dirty => $composableBuilder(
-      column: $table.dirty, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate,
       builder: (column) => ColumnOrderings(column));
@@ -18341,9 +17329,6 @@ class $$DataOptionsTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<bool> get dirty =>
-      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
       column: $table.lastModifiedDate, builder: (column) => column);
@@ -18425,7 +17410,6 @@ class $$DataOptionsTableTableManager extends RootTableManager<
               $$DataOptionsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<bool> dirty = const Value.absent(),
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -18442,7 +17426,6 @@ class $$DataOptionsTableTableManager extends RootTableManager<
           }) =>
               DataOptionsCompanion(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -18459,7 +17442,6 @@ class $$DataOptionsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required bool dirty,
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
@@ -18476,7 +17458,6 @@ class $$DataOptionsTableTableManager extends RootTableManager<
           }) =>
               DataOptionsCompanion.insert(
             id: id,
-            dirty: dirty,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             name: name,
@@ -18571,8 +17552,8 @@ class $AppDatabaseManager {
       $$FormVersionsTableTableManager(_db, _db.formVersions);
   $$MetadataSubmissionsTableTableManager get metadataSubmissions =>
       $$MetadataSubmissionsTableTableManager(_db, _db.metadataSubmissions);
-  $$DataFormSubmissionsTableTableManager get dataFormSubmissions =>
-      $$DataFormSubmissionsTableTableManager(_db, _db.dataFormSubmissions);
+  $$DataSubmissionsTableTableManager get dataSubmissions =>
+      $$DataSubmissionsTableTableManager(_db, _db.dataSubmissions);
   $$RepeatInstancesTableTableManager get repeatInstances =>
       $$RepeatInstancesTableTableManager(_db, _db.repeatInstances);
   $$DataElementsTableTableManager get dataElements =>

@@ -27,11 +27,11 @@ part 'app_database.g.dart';
   DataElements,
   DataOptionSets,
   DataOptions,
-  DataFormSubmissions,
+  DataSubmissions,
 ], daos: [
   ActivitiesDao,
   AssignmentsDao,
-  DataFormSubmissionsDao,
+  DataSubmissionsDao,
   DataValuesDao,
   FormVersionsDao,
   RepeatInstancesDao,

@@ -4,9 +4,9 @@ import 'package:d_sdk/database/tables/identifiable.entity.mixin.dart';
 import 'package:drift/drift.dart';
 
 class FormTemplates extends Table with BaseTableMixin, IdentifiableMixin {
-  late final TextColumn label =
-  text().map(const MapConverter<String>()).withDefault(Constant('{}'))();
+  TextColumn get label =>
+      text().map(const MapConverter<String>()).withDefault(Constant('{}'))();
 
   /// Version is an integer.
-  late final IntColumn version = integer()();
+  IntColumn get version => integer()();
 }

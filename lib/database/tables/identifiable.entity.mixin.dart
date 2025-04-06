@@ -4,13 +4,13 @@ import 'package:drift/drift.dart';
 import 'base.entity.mixin.dart';
 
 mixin IdentifiableMixin on BaseTableMixin {
-  late final name = text().nullable()();
+  TextColumn get name => text().nullable()();
 
-  late final displayName = text().nullable()();
+  TextColumn get displayName => text().nullable()();
 
-  late final code = text().nullable()();
+  TextColumn get code => text().nullable()();
 
   /// List of Translations
-  late final TextColumn translations =
+  TextColumn get translations =>
       text().map(const TranslationConverter()).nullable()();
 }

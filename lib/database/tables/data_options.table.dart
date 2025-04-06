@@ -3,17 +3,16 @@ import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
 class DataOptions extends Table with BaseTableMixin, IdentifiableMixin {
-  late final TextColumn optionSet = text().references(DataOptionSets, #id)();
+  TextColumn get optionSet => text().references(DataOptionSets, #id)();
 
-  late final TextColumn listName = text()();
+  TextColumn get listName => text()();
 
-  late final IntColumn order = integer()();
+  IntColumn get order => integer()();
 
-  late final TextColumn filterExpression = text().nullable()();
+  TextColumn get filterExpression => text().nullable()();
 
-  late final TextColumn label =
+  TextColumn get label =>
       text().map(const MapConverter<String>()).withDefault(Constant('{}'))();
 
-  late final TextColumn properties =
-      text().map(const MapConverter()).nullable()();
+  TextColumn get properties => text().map(const MapConverter()).nullable()();
 }

@@ -1,13 +1,13 @@
 import 'package:drift/drift.dart';
 
 mixin BaseTableMixin on Table {
-  late final id = text()();
+  TextColumn get id => text()();
 
-  late final dirty = boolean()();
+  DateTimeColumn get lastModifiedDate =>
+      dateTime().withDefault(currentDateAndTime)();
 
-  late final lastModifiedDate = dateTime().withDefault(currentDateAndTime)();
-
-  late final createdDate = dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdDate =>
+      dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

@@ -181,7 +181,7 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i932.DbManager>(),
           ));
-  gh.lazySingleton<_i458.AbstractDatasource<_i648.DataFormSubmission>>(
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.DataSubmission>>(
       () => _i646.DataSubmissionDatasource(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i932.DbManager>(),

@@ -7,35 +7,34 @@ import 'package:drift/drift.dart';
 @TableIndex(name: 'assignment_start_date', columns: {#startDate})
 @TableIndex(name: 'assignment_scope', columns: {#scope})
 class Assignments extends Table with BaseTableMixin {
-  late final TextColumn activity = text().references(Activities, #id)();
+  TextColumn get activity => text().references(Activities, #id)();
 
-  late final TextColumn team = text().references(Teams, #id)();
+  TextColumn get team => text().references(Teams, #id)();
 
-  late final TextColumn orgUnit = text().references(OrgUnits, #id)();
+  TextColumn get orgUnit => text().references(OrgUnits, #id)();
 
   /// Parent reference (stored as a text foreign key, if applicable)
-  late final TextColumn parent =
-      text().nullable().references(Assignments, #id)();
+  TextColumn get parent => text().nullable().references(Assignments, #id)();
 
   /// Start day as integer, nullable
-  late final IntColumn startDay = integer().nullable()();
+  IntColumn get startDay => integer().nullable()();
 
   /// Start date as text (ISO string, for example)
-  late final DateTimeColumn startDate = dateTime().nullable()();
+  DateTimeColumn get startDate => dateTime().nullable()();
 
   /// Assignment status stored as text via a converter
-  late final TextColumn status =
+  TextColumn get status =>
       text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
 
   /// allocatedResources stored as JSON string
-  late final TextColumn allocatedResources =
+  TextColumn get allocatedResources =>
       text().map(const AllocatedResourcesConverter()).nullable()();
 
   /// forms stored as JSON string representing a List<String>
-  late final TextColumn forms =
+  TextColumn get forms =>
       text().map(const ListConverter<String>()).nullable()();
 
   /// scope stored as text via a converter
-  late final TextColumn scope =
+  TextColumn get scope =>
       text().map(const EnumNameConverter(EntityScope.values)).nullable()();
 }
