@@ -87,12 +87,15 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
       () => thirdPartyServicesModule.dio(gh<_i132.AppEnvironmentInstance>()));
   gh.lazySingleton<_i505.CacheStorage>(() => thirdPartyServicesModule
       .cachedStorage(gh<_i132.AppEnvironmentInstance>()));
-  gh.factory<_i981.SyncManager>(() => _i981.SyncManager(
-      remoteDataSources: gh<
-          Iterable<
-              _i635.BaseDataSource<
-                  _i500.TableInfo<dynamic, _i500.Insertable<dynamic>>,
-                  _i500.Insertable<dynamic>>>>()));
+  gh.lazySingleton<_i981.SyncManager>(
+    () => _i981.SyncManager(
+        remoteDataSources: gh<
+            Iterable<
+                _i635.BaseDataSource<
+                    _i500.TableInfo<dynamic, _i500.Insertable<dynamic>>,
+                    _i500.Insertable<dynamic>>>>()),
+    dispose: (i) => i.dispose(),
+  );
   gh.lazySingleton<_i8.HttpClient<dynamic>>(
     () => _i69.HttpAdapter(gh<_i361.Dio>()),
     instanceName: 'HttpAdapter',
