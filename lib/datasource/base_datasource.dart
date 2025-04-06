@@ -1,5 +1,4 @@
 import 'package:d_sdk/api/data-run-url-generator.util.dart';
-import 'package:d_sdk/core/exception/api_exceptions.dart';
 import 'package:d_sdk/core/exception/database_exceptions.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/sync/model/sync_config.dart';
@@ -24,6 +23,8 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       : this._apiClient = apiClient,
         this._dbManager = dbManager;
 
+  AppDatabase get activeDb => _dbManager.getActiveDb()!;
+
   Future<List<D>> get({bool forceRefresh = false}) async {
     if (forceRefresh) {
       await syncWithRemote();
@@ -33,6 +34,23 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
     throwIf(db == null, NoActiveDatabaseInstance());
     return db!.select(table).get();
   }
+
+  Future<int> insertItem(Insertable<D> entry) {
+    return activeDb.into(table).insert(entry);
+  }
+
+  Future<bool> updateItem(D item) {
+    return activeDb.update(table).replace(item);
+  }
+
+  // Future<D?> getItemById(String id) {
+  //   return (activeDb.select(table)..where((tbl) => tbl.id.equals(id)))
+  //       .getSingleOrNull();
+  // }
+
+  // Future<int> deleteItem(String id) {
+  //   return (activeDb.delete(table)..where((tbl) => tbl.id.equals(id))).go();
+  // }
 
   Future<List<D>> syncWithRemote(
       {SyncConfig? options, ProgressCallback? progressCallback}) async {

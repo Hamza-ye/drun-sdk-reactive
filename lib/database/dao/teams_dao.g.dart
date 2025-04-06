@@ -1,9 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'activity_dao.dart';
+part of 'teams_dao.dart';
 
 // ignore_for_file: type=lint
-mixin _$ActivitiesDaoMixin on DatabaseAccessor<AppDatabase> {
+mixin _$TeamsDaoMixin on DatabaseAccessor<AppDatabase> {
   $ProjectsTable get projects => attachedDatabase.projects;
   $ActivitiesTable get activities => attachedDatabase.activities;
+  $TeamsTable get teams => attachedDatabase.teams;
 }

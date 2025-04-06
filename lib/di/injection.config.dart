@@ -15,6 +15,7 @@ import 'package:d_sdk/core/config/app_environment_instance.dart' as _i132;
 import 'package:d_sdk/core/http/authorize_http_client_decorator.dart' as _i147;
 import 'package:d_sdk/core/http/http_adapter.dart' as _i69;
 import 'package:d_sdk/core/http/http_client.dart' as _i8;
+import 'package:d_sdk/core/network/connectivy_service.dart' as _i345;
 import 'package:d_sdk/core/user_session/sdk_session_storage_manager.dart'
     as _i287;
 import 'package:d_sdk/core/user_session/session_storage_manager.dart' as _i389;
@@ -96,6 +97,10 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
     () => _i69.HttpAdapter(gh<_i361.Dio>()),
     instanceName: 'HttpAdapter',
   );
+  gh.lazySingleton<_i345.ConnectivityService>(() => _i345.ConnectivityService(
+        environmentInstance: gh<_i132.AppEnvironmentInstance>(),
+        httpClient: gh<_i8.HttpClient<dynamic>>(instanceName: 'HttpAdapter'),
+      ));
   gh.lazySingleton<_i882.AuthenticationService>(() =>
       _i654.RemoteAuthentication(
         httpClient: gh<_i8.HttpClient<dynamic>>(instanceName: 'HttpAdapter'),

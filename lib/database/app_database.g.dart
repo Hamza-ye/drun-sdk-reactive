@@ -10940,6 +10940,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index submissionDeleted = Index('submission_deleted',
       'CREATE INDEX submission_deleted ON data_form_submissions (deleted)');
   late final ActivitiesDao activitiesDao = ActivitiesDao(this as AppDatabase);
+  late final AssignmentsDao assignmentsDao =
+      AssignmentsDao(this as AppDatabase);
+  late final DataFormSubmissionsDao dataFormSubmissionsDao =
+      DataFormSubmissionsDao(this as AppDatabase);
+  late final DataValuesDao dataValuesDao = DataValuesDao(this as AppDatabase);
+  late final FormVersionsDao formVersionsDao =
+      FormVersionsDao(this as AppDatabase);
+  late final RepeatInstancesDao repeatInstancesDao =
+      RepeatInstancesDao(this as AppDatabase);
+  late final TeamsDao teamsDao = TeamsDao(this as AppDatabase);
+  late final DataOptionSetsDao dataOptionSetsDao =
+      DataOptionSetsDao(this as AppDatabase);
+  late final OrgUnitsDao orgUnitsDao = OrgUnitsDao(this as AppDatabase);
+  late final UsersDao usersDao = UsersDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

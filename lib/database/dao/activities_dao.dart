@@ -2,7 +2,7 @@ import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/tables/activities.table.dart';
 import 'package:drift/drift.dart';
 
-part 'activity_dao.g.dart';
+part 'activities_dao.g.dart';
 
 @DriftAccessor(tables: [Activities])
 class ActivitiesDao extends DatabaseAccessor<AppDatabase>
