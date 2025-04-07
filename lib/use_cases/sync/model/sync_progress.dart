@@ -4,19 +4,21 @@ import 'package:d_sdk/use_cases/sync/model/sync_status.dart';
 class SyncProgress {
   final SyncStatus status;
   final double percentage;
+  final int totalResources;
   final Object? error;
 
   const SyncProgress._({
     required this.status,
     this.percentage = 0,
+    this.totalResources = 0,
     this.error,
   });
 
   // Factory constructors
   factory SyncProgress.idle() => const SyncProgress._(status: SyncStatus.idle);
 
-  factory SyncProgress.starting() =>
-      const SyncProgress._(status: SyncStatus.starting);
+  factory SyncProgress.starting(int totalResources) => SyncProgress._(
+      status: SyncStatus.starting, totalResources: totalResources);
 
   factory SyncProgress.running(double percentage) =>
       SyncProgress._(status: SyncStatus.running, percentage: percentage);

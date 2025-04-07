@@ -7,14 +7,17 @@ import 'package:d_sdk/use_cases/sync/model/resource_state.dart';
 import 'package:d_sdk/use_cases/sync/model/sync_progress.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 
 @lazySingleton
 class SyncProgressNotifier {
-  final _progress = ValueNotifier<SyncProgress>(SyncProgress.idle());
+  // final _progress = ValueNotifier<SyncProgress>(SyncProgress.idle());
+  final BehaviorSubject<SyncProgress> _progress =
+      BehaviorSubject<SyncProgress>.seeded(SyncProgress.idle());
   final _resourceController = StreamController<ResourceProgress>.broadcast();
   final List<ResourceProgress> _resourceHistory = [];
 
-  ValueListenable<SyncProgress> get progress => _progress;
+  Stream<SyncProgress> get progress => _progress.stream;
 
   Stream<ResourceProgress> get resourceUpdates => _resourceController.stream;
 
@@ -26,7 +29,7 @@ class SyncProgressNotifier {
     int totalResources = 1,
   }) async {
     try {
-      _updateProgress(SyncProgress.starting());
+      _updateProgress(SyncProgress.starting(totalResources));
       await operation();
       _updateProgress(SyncProgress.complete());
     } catch (e, stack) {
@@ -56,7 +59,7 @@ class SyncProgressNotifier {
   }
 
   void _updateProgress(SyncProgress newProgress) {
-    _progress.value = newProgress;
+    _progress.add(newProgress);
   }
 
   void _addResourceProgress(ResourceProgress progress) {
@@ -76,7 +79,7 @@ class SyncProgressNotifier {
           _resourceHistory.where((p) => p.state is! ResourceStarting).length;
 
       final double percentage = total > 0 ? (completed / total) * 100 : 0;
-      _progress.value = SyncProgress.running(percentage);
+      _progress.add(SyncProgress.running(percentage));
     }
   }
 
@@ -87,39 +90,7 @@ class SyncProgressNotifier {
 
   @disposeMethod
   void dispose() {
-    _progress.dispose();
+    _progress.close();
     _resourceController.close();
   }
 }
-
-// class SyncProgressNotifier {
-//   final _progress = ValueNotifier<SyncProgress>(SyncProgress.idle());
-//   final _resourceController = StreamController<ResourceProgress>();
-//
-//   ValueListenable<SyncProgress> get progress => _progress;
-//   Stream<ResourceProgress> get resourceUpdates => _resourceController.stream;
-//
-//   Future<void> wrapOperation({
-//     required Future<void> Function() operation,
-//   }) async {
-//     try {
-//       _progress.value = SyncProgress.starting();
-//       await operation();
-//       _progress.value = SyncProgress.complete();
-//     } catch (e) {
-//       _progress.value = SyncProgress.failed(e);
-//     }
-//   }
-//
-//   Future<T> trackResource<T>(String name, Future<T> Function() operation) async {
-//     _resourceController.add(ResourceProgress.starting(name));
-//     try {
-//       final result = await operation();
-//       _resourceController.add(ResourceProgress.success(name));
-//       return result;
-//     } catch (e) {
-//       _resourceController.add(ResourceProgress.failure(name, e));
-//       rethrow;
-//     }
-//   }
-// }

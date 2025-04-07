@@ -15,6 +15,7 @@ class SyncExecutor {
 
   Future<void> performSync() async {
     await _progressNotifier.wrapOperation(
+      totalResources: _dataSources.length,
       operation: () async {
         for (final source in _dataSources) {
           await _progressNotifier.trackResource(source.apiResourceName, () {
