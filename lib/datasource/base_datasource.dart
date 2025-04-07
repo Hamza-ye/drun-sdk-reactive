@@ -12,7 +12,7 @@ typedef ProgressCallback = void Function(double progress);
 
 abstract class BaseDataSource<T extends TableInfo<T, D>,
     D extends Insertable<D>> extends AbstractDatasource<D> {
-  final HttpClient _apiClient;
+  final HttpClient apiClient;
   final DbManager _dbManager;
   TableInfo<T, D> table;
 
@@ -20,7 +20,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       {required HttpClient apiClient,
       required DbManager dbManager,
       required this.table})
-      : this._apiClient = apiClient,
+      : this.apiClient = apiClient,
         this._dbManager = dbManager;
 
   AppDatabase get activeDb => _dbManager.getActiveDb()!;
@@ -71,7 +71,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
 
   Future<List<D>> _getOnline() async {
     final dataRunResourceUrl = await this.dataRunResourceUrl();
-    final response = await _apiClient.request(
+    final response = await apiClient.request(
         resourceName: dataRunResourceUrl, method: 'get');
 
     List data = response.data != null

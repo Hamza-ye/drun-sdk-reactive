@@ -20,7 +20,7 @@ class AuthorizeHttpClientDecorator extends HttpClient {
   Future<HttpResponse> request({
     required String resourceName,
     required String method,
-    Map? data,
+    Object? data,
     Map? headers,
   }) async {
     final loggedInUser = await _sdkAuthManager.getCurrentUser();

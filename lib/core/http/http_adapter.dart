@@ -31,7 +31,7 @@ class HttpAdapter extends HttpClient {
       // required String url,
       required String resourceName,
       required String method,
-      Map? data,
+        Object? data,
       Map? headers}) async {
     final defaultHeaders = headers?.cast<String, String>() ?? {}
       ..addAll({HttpHeaders.contentTypeHeader: 'application/json'});
@@ -81,7 +81,7 @@ class HttpAdapter extends HttpClient {
   Response noResponse(
       {required String url,
       required String method,
-      Map? data,
+        Object? data,
       Map<String, dynamic>? headers}) {
     RequestOptions requestOptions = RequestOptions(
       method: method,

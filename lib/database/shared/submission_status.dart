@@ -5,6 +5,11 @@ enum SubmissionStatus {
   synced, // Successfully sent to the server
   syncFailed; // Tried to sync but failed
 
+  bool isToSync() => toSyncStatuses.contains(this);
+
+  static List<SubmissionStatus> get toSyncStatuses =>
+      [SubmissionStatus.finalized, SubmissionStatus.syncFailed];
+
   static SubmissionStatus getValue(String? status) {
     return switch (status?.toLowerCase()) {
       == 'draft' => SubmissionStatus.draft,

@@ -4,7 +4,7 @@ abstract class HttpClient<T> {
   Future<HttpResponse<T>> request({
     required String resourceName,
     required String method,
-    Map? data,
+    Object? data,
     Map? headers,
   });
 }
