@@ -9143,6 +9143,14 @@ class $DataOptionSetsTable extends DataOptionSets
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<Translation>?>(
               $DataOptionSetsTable.$convertertranslationsn);
+  static const VerificationMeta _optionsMeta =
+      const VerificationMeta('options');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<FormOption>?, String>
+      options = GeneratedColumn<String>('options', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<FormOption>?>(
+              $DataOptionSetsTable.$converteroptionsn);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -9151,7 +9159,8 @@ class $DataOptionSetsTable extends DataOptionSets
         name,
         displayName,
         code,
-        translations
+        translations,
+        options
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9195,6 +9204,7 @@ class $DataOptionSetsTable extends DataOptionSets
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
     context.handle(_translationsMeta, const VerificationResult.success());
+    context.handle(_optionsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -9219,6 +9229,9 @@ class $DataOptionSetsTable extends DataOptionSets
       translations: $DataOptionSetsTable.$convertertranslationsn.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}translations'])),
+      options: $DataOptionSetsTable.$converteroptionsn.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}options'])),
     );
   }
 
@@ -9231,6 +9244,10 @@ class $DataOptionSetsTable extends DataOptionSets
       const TranslationConverter();
   static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
       NullAwareTypeConverter.wrap($convertertranslations);
+  static TypeConverter<List<FormOption>, String> $converteroptions =
+      const FormOptionListConverter();
+  static TypeConverter<List<FormOption>?, String?> $converteroptionsn =
+      NullAwareTypeConverter.wrap($converteroptions);
 }
 
 class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
@@ -9243,6 +9260,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
 
   /// List of Translations
   final List<Translation>? translations;
+  final List<FormOption>? options;
   const DataOptionSet(
       {required this.id,
       required this.lastModifiedDate,
@@ -9250,7 +9268,8 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       this.name,
       this.displayName,
       this.code,
-      this.translations});
+      this.translations,
+      this.options});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -9270,6 +9289,10 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       map['translations'] = Variable<String>(
           $DataOptionSetsTable.$convertertranslationsn.toSql(translations));
     }
+    if (!nullToAbsent || options != null) {
+      map['options'] = Variable<String>(
+          $DataOptionSetsTable.$converteroptionsn.toSql(options));
+    }
     return map;
   }
 
@@ -9286,6 +9309,9 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       translations: translations == null && nullToAbsent
           ? const Value.absent()
           : Value(translations),
+      options: options == null && nullToAbsent
+          ? const Value.absent()
+          : Value(options),
     );
   }
 
@@ -9301,6 +9327,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       code: serializer.fromJson<String?>(json['code']),
       translations:
           serializer.fromJson<List<Translation>?>(json['translations']),
+      options: serializer.fromJson<List<FormOption>?>(json['options']),
     );
   }
   @override
@@ -9314,6 +9341,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
       'translations': serializer.toJson<List<Translation>?>(translations),
+      'options': serializer.toJson<List<FormOption>?>(options),
     };
   }
 
@@ -9324,7 +9352,8 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent()}) =>
+          Value<List<Translation>?> translations = const Value.absent(),
+          Value<List<FormOption>?> options = const Value.absent()}) =>
       DataOptionSet(
         id: id ?? this.id,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
@@ -9334,6 +9363,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
         code: code.present ? code.value : this.code,
         translations:
             translations.present ? translations.value : this.translations,
+        options: options.present ? options.value : this.options,
       );
   DataOptionSet copyWithCompanion(DataOptionSetsCompanion data) {
     return DataOptionSet(
@@ -9350,6 +9380,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       translations: data.translations.present
           ? data.translations.value
           : this.translations,
+      options: data.options.present ? data.options.value : this.options,
     );
   }
 
@@ -9362,14 +9393,15 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
-          ..write('translations: $translations')
+          ..write('translations: $translations, ')
+          ..write('options: $options')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, lastModifiedDate, createdDate, name, displayName, code, translations);
+  int get hashCode => Object.hash(id, lastModifiedDate, createdDate, name,
+      displayName, code, translations, options);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -9380,7 +9412,8 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           other.name == this.name &&
           other.displayName == this.displayName &&
           other.code == this.code &&
-          other.translations == this.translations);
+          other.translations == this.translations &&
+          other.options == this.options);
 }
 
 class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
@@ -9391,6 +9424,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   final Value<String?> displayName;
   final Value<String?> code;
   final Value<List<Translation>?> translations;
+  final Value<List<FormOption>?> options;
   final Value<int> rowid;
   const DataOptionSetsCompanion({
     this.id = const Value.absent(),
@@ -9400,6 +9434,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.translations = const Value.absent(),
+    this.options = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DataOptionSetsCompanion.insert({
@@ -9410,6 +9445,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.translations = const Value.absent(),
+    this.options = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id);
   static Insertable<DataOptionSet> custom({
@@ -9420,6 +9456,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     Expression<String>? displayName,
     Expression<String>? code,
     Expression<String>? translations,
+    Expression<String>? options,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -9430,6 +9467,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
       if (displayName != null) 'display_name': displayName,
       if (code != null) 'code': code,
       if (translations != null) 'translations': translations,
+      if (options != null) 'options': options,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -9442,6 +9480,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
       Value<String?>? displayName,
       Value<String?>? code,
       Value<List<Translation>?>? translations,
+      Value<List<FormOption>?>? options,
       Value<int>? rowid}) {
     return DataOptionSetsCompanion(
       id: id ?? this.id,
@@ -9451,6 +9490,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
       displayName: displayName ?? this.displayName,
       code: code ?? this.code,
       translations: translations ?? this.translations,
+      options: options ?? this.options,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -9481,6 +9521,10 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
           .$convertertranslationsn
           .toSql(translations.value));
     }
+    if (options.present) {
+      map['options'] = Variable<String>(
+          $DataOptionSetsTable.$converteroptionsn.toSql(options.value));
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -9497,6 +9541,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
           ..write('displayName: $displayName, ')
           ..write('code: $code, ')
           ..write('translations: $translations, ')
+          ..write('options: $options, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -16837,6 +16882,7 @@ typedef $$DataOptionSetsTableCreateCompanionBuilder = DataOptionSetsCompanion
   Value<String?> displayName,
   Value<String?> code,
   Value<List<Translation>?> translations,
+  Value<List<FormOption>?> options,
   Value<int> rowid,
 });
 typedef $$DataOptionSetsTableUpdateCompanionBuilder = DataOptionSetsCompanion
@@ -16848,6 +16894,7 @@ typedef $$DataOptionSetsTableUpdateCompanionBuilder = DataOptionSetsCompanion
   Value<String?> displayName,
   Value<String?> code,
   Value<List<Translation>?> translations,
+  Value<List<FormOption>?> options,
   Value<int> rowid,
 });
 
@@ -16905,6 +16952,11 @@ class $$DataOptionSetsTableFilterComposer
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
+  ColumnWithTypeConverterFilters<List<FormOption>?, List<FormOption>, String>
+      get options => $composableBuilder(
+          column: $table.options,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
   Expression<bool> dataOptionsRefs(
       Expression<bool> Function($$DataOptionsTableFilterComposer f) f) {
     final $$DataOptionsTableFilterComposer composer = $composerBuilder(
@@ -16958,6 +17010,9 @@ class $$DataOptionSetsTableOrderingComposer
   ColumnOrderings<String> get translations => $composableBuilder(
       column: $table.translations,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get options => $composableBuilder(
+      column: $table.options, builder: (column) => ColumnOrderings(column));
 }
 
 class $$DataOptionSetsTableAnnotationComposer
@@ -16990,6 +17045,9 @@ class $$DataOptionSetsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<List<Translation>?, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<FormOption>?, String> get options =>
+      $composableBuilder(column: $table.options, builder: (column) => column);
 
   Expression<T> dataOptionsRefs<T extends Object>(
       Expression<T> Function($$DataOptionsTableAnnotationComposer a) f) {
@@ -17044,6 +17102,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<FormOption>?> options = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               DataOptionSetsCompanion(
@@ -17054,6 +17113,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             displayName: displayName,
             code: code,
             translations: translations,
+            options: options,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -17064,6 +17124,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<FormOption>?> options = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               DataOptionSetsCompanion.insert(
@@ -17074,6 +17135,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             displayName: displayName,
             code: code,
             translations: translations,
+            options: options,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
