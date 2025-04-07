@@ -22,7 +22,6 @@ import 'package:d_sdk/core/user_session/session_storage_manager.dart' as _i389;
 import 'package:d_sdk/database/app_database.dart' as _i648;
 import 'package:d_sdk/database/db_manager.dart' as _i932;
 import 'package:d_sdk/datasource/abstract_datasource.dart' as _i458;
-import 'package:d_sdk/datasource/base_datasource.dart' as _i635;
 import 'package:d_sdk/datasource/remote_data_sources/activity_datasource.dart'
     as _i434;
 import 'package:d_sdk/datasource/remote_data_sources/assignment_datasource.dart'
@@ -59,13 +58,7 @@ import 'package:d_sdk/di/third_party_services.module.dart' as _i276;
 import 'package:d_sdk/use_cases/authentication/remote_authentication.dart'
     as _i654;
 import 'package:d_sdk/use_cases/authentication/sdk_auth_manager.dart' as _i751;
-import 'package:d_sdk/use_cases/sync/sync_coordinator.dart' as _i312;
-import 'package:d_sdk/use_cases/sync/sync_executor.dart' as _i432;
-import 'package:d_sdk/use_cases/sync/sync_metadata_repository.dart' as _i921;
-import 'package:d_sdk/use_cases/sync/sync_progress_notifier.dart' as _i836;
-import 'package:d_sdk/use_cases/sync/sync_scheduler.dart' as _i494;
 import 'package:dio/dio.dart' as _i361;
-import 'package:drift/drift.dart' as _i500;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
@@ -87,24 +80,10 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
     preResolve: true,
   );
   gh.lazySingleton<_i932.DbManager>(() => _i932.DbManager());
-  gh.lazySingleton<_i836.SyncProgressNotifier>(
-    () => _i836.SyncProgressNotifier(),
-    dispose: (i) => i.dispose(),
-  );
-  gh.lazySingleton<_i432.SyncExecutor>(() => _i432.SyncExecutor(
-        dataSources: gh<
-            List<
-                _i635.BaseDataSource<
-                    _i500.TableInfo<dynamic, _i500.Insertable<dynamic>>,
-                    _i500.Insertable<dynamic>>>>(),
-        progressNotifier: gh<_i836.SyncProgressNotifier>(),
-      ));
   gh.lazySingleton<_i361.Dio>(
       () => thirdPartyServicesModule.dio(gh<_i132.AppEnvironmentInstance>()));
   gh.lazySingleton<_i505.CacheStorage>(() => thirdPartyServicesModule
       .cachedStorage(gh<_i132.AppEnvironmentInstance>()));
-  gh.lazySingleton<_i921.SyncMetadataRepository>(() =>
-      _i921.SyncMetadataRepository(cacheStorage: gh<_i505.CacheStorage>()));
   gh.lazySingleton<_i8.HttpClient<dynamic>>(
     () => _i69.HttpAdapter(gh<_i361.Dio>()),
     instanceName: 'HttpAdapter',
@@ -120,15 +99,6 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
       ));
   gh.lazySingleton<_i389.SessionStorageManager>(() =>
       _i287.SdkSessionStorageManager(cacheStorage: gh<_i505.CacheStorage>()));
-  gh.lazySingleton<_i494.SyncScheduler>(() => _i494.SyncScheduler(
-        connectivity: gh<_i345.ConnectivityService>(),
-        metadataRepo: gh<_i921.SyncMetadataRepository>(),
-      ));
-  gh.lazySingleton<_i312.SyncCoordinator>(() => _i312.SyncCoordinator(
-        gh<_i921.SyncMetadataRepository>(),
-        gh<_i494.SyncScheduler>(),
-        gh<_i432.SyncExecutor>(),
-      ));
   gh.lazySingleton<_i253.AuthManager>(
     () => _i751.SdkAuthManager(
       storageManager: gh<_i389.SessionStorageManager>(),
