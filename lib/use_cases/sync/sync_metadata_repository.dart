@@ -1,5 +1,5 @@
 import 'package:d_sdk/core/cache/cache.dart';
-import 'package:d_sdk/use_cases/sync/sync_interval.dart';
+import 'package:d_sdk/use_cases/sync/model/sync_interval.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
