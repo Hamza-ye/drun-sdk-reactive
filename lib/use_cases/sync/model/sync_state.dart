@@ -6,7 +6,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 class SyncState with EquatableMixin {
   final double percentage;
   final SyncStatus status;
-  final ResourceProgress currentResource;
+  final ResourceProgress? currentResource;
   final IList<ResourceProgress> resourceHistory;
   final DateTime? lastSync;
   final Object? error;
@@ -14,7 +14,7 @@ class SyncState with EquatableMixin {
   SyncState({
     this.percentage = 0,
     this.status = SyncStatus.idle,
-    required this.currentResource,
+    this.currentResource,
     Iterable<ResourceProgress>? resourceHistory,
     this.lastSync,
     this.error,

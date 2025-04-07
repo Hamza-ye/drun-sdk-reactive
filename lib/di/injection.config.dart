@@ -61,7 +61,6 @@ import 'package:d_sdk/use_cases/authentication/remote_authentication.dart'
 import 'package:d_sdk/use_cases/authentication/sdk_auth_manager.dart' as _i751;
 import 'package:d_sdk/use_cases/sync/sync_coordinator.dart' as _i312;
 import 'package:d_sdk/use_cases/sync/sync_executor.dart' as _i432;
-import 'package:d_sdk/use_cases/sync/sync_manager.dart' as _i981;
 import 'package:d_sdk/use_cases/sync/sync_metadata_repository.dart' as _i921;
 import 'package:d_sdk/use_cases/sync/sync_progress_notifier.dart' as _i836;
 import 'package:d_sdk/use_cases/sync/sync_scheduler.dart' as _i494;
@@ -106,15 +105,6 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
       .cachedStorage(gh<_i132.AppEnvironmentInstance>()));
   gh.lazySingleton<_i921.SyncMetadataRepository>(() =>
       _i921.SyncMetadataRepository(cacheStorage: gh<_i505.CacheStorage>()));
-  gh.lazySingleton<_i981.SyncManager>(
-    () => _i981.SyncManager(
-        remoteDataSources: gh<
-            Iterable<
-                _i635.BaseDataSource<
-                    _i500.TableInfo<dynamic, _i500.Insertable<dynamic>>,
-                    _i500.Insertable<dynamic>>>>()),
-    dispose: (i) => i.dispose(),
-  );
   gh.lazySingleton<_i8.HttpClient<dynamic>>(
     () => _i69.HttpAdapter(gh<_i361.Dio>()),
     instanceName: 'HttpAdapter',
