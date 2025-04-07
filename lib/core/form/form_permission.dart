@@ -61,6 +61,9 @@ enum FormPermission {
     }
   }
 
+  static List<FormPermission> get approvingPermissions =>
+      [APPROVE_SUBMISSIONS, APPROVE_SUBMISSIONS_CONDITION];
+
   static FormPermission? getType(String? value) {
     switch (value) {
       case 'VIEW_SUBMISSIONS':
