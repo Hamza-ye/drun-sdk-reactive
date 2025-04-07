@@ -28,6 +28,7 @@ class SdkAuthManager implements AuthManager {
   Stream<User?> get userStream => _userSubject.stream;
 
   // Access current user directly.
+  @override
   User? get currentUser => _userSubject.value;
 
   SdkAuthManager({

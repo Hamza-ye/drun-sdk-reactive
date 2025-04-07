@@ -7,6 +7,8 @@ import 'package:d_sdk/use_cases/logout_strategies/logout_strategy.dart';
 import 'package:multiple_result/multiple_result.dart';
 
 abstract class AuthManager {
+  User? get currentUser;
+
   Future<bool> isLoggedIn();
 
   Future<Result<AuthState, AuthFailure>> authenticate(
