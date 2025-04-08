@@ -51,8 +51,8 @@ class SdkAuthManager implements AuthManager {
   @override
   Future<Result<AuthState, AuthFailure>> authenticate(
       {required String username,
-      required String password,
-      required ServerConfig server}) async {
+        required String password,
+        required ServerConfig server}) async {
     try {
       // Authenticate with server
       final User authResult = await _authenticationService
@@ -101,6 +101,7 @@ class SdkAuthManager implements AuthManager {
     // 1. Execute logout strategy
     final handler = _getLogoutHandler(strategy);
     if (cachedUser != null) {
+      await _sessionStorageManager.removeCurrentCachedUser();
       await handler.handle(cachedUser.username, cachedUser.baseUrl);
     }
   }
@@ -108,8 +109,7 @@ class SdkAuthManager implements AuthManager {
   LogoutHandler _getLogoutHandler(LogoutStrategy strategy) {
     return switch (strategy) {
       LogoutStrategy.deleteLocalData => DeleteLocalDataHandler(_dbManager),
-      LogoutStrategy.keepLocalData =>
-        KeepLocalDataHandler(_sessionStorageManager),
+      LogoutStrategy.keepLocalData => KeepLocalDataHandler(),
       LogoutStrategy.archiveAndDelete => BackupDataHandler(_dbManager),
     };
   }
@@ -118,7 +118,7 @@ class SdkAuthManager implements AuthManager {
   Future<void> switchUser(CachedUser user, ServerConfig server) async {
     final cachedUsers = await _sessionStorageManager.getCachedUsers();
     final cachedUser =
-        cachedUsers.firstOrNullWhere((u) => user.username == u.username);
+    cachedUsers.firstOrNullWhere((u) => user.username == u.username);
     if (cachedUser == null)
       throw DError(
           errorCode: DRunErrorCode.noLoggedInUser,
@@ -138,7 +138,7 @@ class SdkAuthManager implements AuthManager {
     if (currentCachedUser != null) {
       final db = _dbManager.getActiveDb();
       user = await (db?.select(db.users)
-            ?..where((t) => t.username.equals(currentCachedUser.username)))
+        ?..where((t) => t.username.equals(currentCachedUser.username)))
           ?.getSingleOrNull();
     }
 
