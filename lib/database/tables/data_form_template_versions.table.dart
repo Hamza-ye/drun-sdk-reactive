@@ -4,15 +4,12 @@ import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
 /// --- Drift Table Definition ---
-class FormVersions extends Table with BaseTableMixin, IdentifiableMixin {
+class DataFormTemplateVersions extends Table
+    with BaseTableMixin, IdentifiableMixin {
   TextColumn get form => text().generatedAs(id.substr(1, 11), stored: true)();
 
   /// Version is an integer.
   IntColumn get version => integer()();
-
-  /// List of Template objects (as List<Template>), stored as JSON.
-  TextColumn get treeFields =>
-      text().map(const TemplateListConverter()).nullable()();
 
   /// List of FormOption objects, stored as JSON.
   TextColumn get options =>
@@ -30,7 +27,7 @@ class FormVersions extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get defaultLocal => text()();
 
   /// fieldsConf stored as IList<Template>, as JSON.
-  TextColumn get fieldsConf =>
+  TextColumn get fields =>
       text().map(const TemplateListConverter()).nullable()();
 
   /// sections stored as IList<Template>, as JSON.

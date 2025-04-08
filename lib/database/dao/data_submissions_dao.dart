@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/status_aggregation_level.dart';
+import 'package:d_sdk/database/shared/status_aggregation_level.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/data_submissions.table.dart';
 import 'package:drift/drift.dart';

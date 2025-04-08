@@ -28,12 +28,12 @@ import 'package:d_sdk/datasource/remote_data_sources/assignment_datasource.dart'
     as _i90;
 import 'package:d_sdk/datasource/remote_data_sources/data_element_datasource.dart'
     as _i827;
+import 'package:d_sdk/datasource/remote_data_sources/data_form_template_version_datasource.dart'
+    as _i1014;
 import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.dart'
     as _i646;
 import 'package:d_sdk/datasource/remote_data_sources/data_value_datasource.dart'
     as _i239;
-import 'package:d_sdk/datasource/remote_data_sources/form_template_datasource.dart'
-    as _i569;
 import 'package:d_sdk/datasource/remote_data_sources/form_version_datasource.dart'
     as _i474;
 import 'package:d_sdk/datasource/remote_data_sources/metadata_submission_datasource.dart'
@@ -157,8 +157,8 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i932.DbManager>(),
           ));
-  gh.lazySingleton<_i458.AbstractDatasource<_i648.FormTemplate>>(
-      () => _i569.FormTemplateDatasource(
+  gh.lazySingleton<_i458.AbstractDatasource<_i648.DataFormTemplateVersion>>(
+      () => _i1014.DataFormTemplateDatasource(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i932.DbManager>(),
           ));

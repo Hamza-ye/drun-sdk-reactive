@@ -15,9 +15,9 @@ class Users extends Table with BaseTableMixin {
 
   TextColumn get email => text().nullable()();
 
-  TextColumn get langKey => text().withDefault(const Constant('ar'))();
+  TextColumn get langKey => text().clientDefault(() => 'ar')();
 
-  BoolColumn get activated => boolean().withDefault(const Constant(false))();
+  BoolColumn get activated => boolean().clientDefault(() => true)();
 
   TextColumn get imageUrl => text().nullable()();
 

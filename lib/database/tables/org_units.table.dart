@@ -7,7 +7,7 @@ class OrgUnits extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get path => text().nullable()();
 
   TextColumn get label =>
-      text().map(const MapConverter<String>()).withDefault(Constant('{}'))();
+      text().map(const MapConverter<String>()).clientDefault(() => '{}')();
 
   TextColumn get parent => text().nullable()();
 

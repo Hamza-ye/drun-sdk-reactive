@@ -1,7 +1,6 @@
 import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/database/converters/converters.dart';
-import 'package:d_sdk/database/dao/activities_dao.dart';
 import 'package:d_sdk/database/dao/dao.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
@@ -19,7 +18,6 @@ part 'app_database.g.dart';
   Activities,
   Teams,
   Assignments,
-  FormTemplates,
   FormVersions,
   MetadataSubmissions,
   RepeatInstances,
@@ -28,6 +26,7 @@ part 'app_database.g.dart';
   DataOptionSets,
   DataOptions,
   DataSubmissions,
+  DataFormTemplateVersions
 ], daos: [
   ActivitiesDao,
   AssignmentsDao,
@@ -43,28 +42,28 @@ part 'app_database.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase({QueryExecutor? executor, String? databaseName})
       : super(
-    executor ??
+          executor ??
 
-        /// no encryption, called if QueryExecutor is null
-        driftDatabase(
-          name: databaseName ?? 'drun-db',
-          native: const DriftNativeOptions(
-            databaseDirectory: getApplicationSupportDirectory,
-          ),
-          web: DriftWebOptions(
-            sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-            driftWorker: Uri.parse('drift_worker.js'),
-            onResult: (result) {
-              if (result.missingFeatures.isNotEmpty) {
-                logDebug(
-                  'Using ${result.chosenImplementation} due to unsupported '
-                      'browser features: ${result.missingFeatures}',
-                );
-              }
-            },
-          ),
-        ),
-  );
+              /// no encryption, called if QueryExecutor is null
+              driftDatabase(
+                name: databaseName ?? 'drun-db',
+                native: const DriftNativeOptions(
+                  databaseDirectory: getApplicationSupportDirectory,
+                ),
+                web: DriftWebOptions(
+                  sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+                  driftWorker: Uri.parse('drift_worker.js'),
+                  onResult: (result) {
+                    if (result.missingFeatures.isNotEmpty) {
+                      logDebug(
+                        'Using ${result.chosenImplementation} due to unsupported '
+                        'browser features: ${result.missingFeatures}',
+                      );
+                    }
+                  },
+                ),
+              ),
+        );
 
   @override
   int get schemaVersion => 1;

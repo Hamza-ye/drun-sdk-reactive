@@ -23,24 +23,27 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       : this.apiClient = apiClient,
         this._dbManager = dbManager;
 
-  AppDatabase get activeDb => _dbManager.getActiveDb()!;
+  AppDatabase? get _activeDb => _dbManager.getActiveDb();
+
+  AppDatabase get db {
+    throwIf(_activeDb == null, NoActiveDatabaseInstance());
+    return _activeDb!;
+  }
 
   Future<List<D>> get({bool forceRefresh = false}) async {
     if (forceRefresh) {
       await syncWithRemote();
     }
     // Return local data.
-    final AppDatabase? db = _dbManager.getActiveDb();
-    throwIf(db == null, NoActiveDatabaseInstance());
-    return db!.select(table).get();
+    return db.select(table).get();
   }
 
   Future<int> insertItem(Insertable<D> entry) {
-    return activeDb.into(table).insert(entry);
+    return db.into(table).insert(entry);
   }
 
   Future<bool> updateItem(D item) {
-    return activeDb.update(table).replace(item);
+    return db.update(table).replace(item);
   }
 
   // Future<D?> getItemById(String id) {
@@ -54,12 +57,10 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
 
   Future<List<D>> syncWithRemote(
       {SyncConfig? options, ProgressCallback? progressCallback}) async {
-    final remoteData = await _getOnline();
+    final remoteData = await getOnline();
     progressCallback?.call(60);
-    final AppDatabase? db = _dbManager.getActiveDb();
-    throwIf(db == null, NoActiveDatabaseInstance());
     if (remoteData.isNotEmpty) {
-      db!.transaction(() async {
+      db.transaction(() async {
         await db.batch((b) {
           b.insertAllOnConflictUpdate(table, remoteData);
         });
@@ -69,7 +70,8 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
     return remoteData;
   }
 
-  Future<List<D>> _getOnline() async {
+  @override
+  Future<List<D>> getOnline() async {
     final dataRunResourceUrl = await this.dataRunResourceUrl();
     final response = await apiClient.request(
         resourceName: dataRunResourceUrl, method: 'get');

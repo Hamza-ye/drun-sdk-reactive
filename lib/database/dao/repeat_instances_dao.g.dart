@@ -4,7 +4,6 @@ part of 'repeat_instances_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$RepeatInstancesDaoMixin on DatabaseAccessor<AppDatabase> {
-  $FormTemplatesTable get formTemplates => attachedDatabase.formTemplates;
   $FormVersionsTable get formVersions => attachedDatabase.formVersions;
   $ProjectsTable get projects => attachedDatabase.projects;
   $ActivitiesTable get activities => attachedDatabase.activities;

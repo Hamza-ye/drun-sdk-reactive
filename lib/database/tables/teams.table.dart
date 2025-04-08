@@ -7,10 +7,10 @@ class Teams extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get activity => text().references(Activities, #id)();
 
   /// Boolean columns with defaults.
-  BoolColumn get disabled => boolean().withDefault(const Constant(true))();
+  BoolColumn get disabled => boolean().clientDefault(() => false)();
 
   BoolColumn get deleteClientData =>
-      boolean().withDefault(const Constant(false))();
+      boolean().clientDefault(() => false)();
 
   /// Properties stored as a JSON string.
   TextColumn get properties =>

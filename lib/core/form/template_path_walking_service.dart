@@ -1,7 +1,6 @@
-import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/utilities/list_extensions.dart';
 
-mixin TreeElement on Template {
+mixin TreeElement /*on Template*/ {
   String? get path;
 
   String? get name;

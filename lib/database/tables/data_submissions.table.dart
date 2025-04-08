@@ -6,10 +6,12 @@ import 'package:drift/drift.dart';
 @TableIndex(name: 'submission_status', columns: {#status})
 @TableIndex(name: 'submission_deleted', columns: {#deleted})
 class DataSubmissions extends Table with BaseTableMixin {
-  BoolColumn get deleted => boolean().withDefault(const Constant(false))();
+  BoolColumn get deleted => boolean().clientDefault(() => false)();
+
+  TextColumn get form => text().generatedAs(formVersion.substr(1, 11))();
 
   /// Form template id is stored as text (nullable).
-  TextColumn get form => text().nullable()();
+  // TextColumn get form => text().nullable()();
 
   /// Many-to-one references stored as text.
   TextColumn get formVersion => text().references(FormVersions, #id)();
@@ -33,7 +35,7 @@ class DataSubmissions extends Table with BaseTableMixin {
   // Use a single state field with a converter to/from enum
   TextColumn get status => text()
       .map(const EnumNameConverter(SubmissionStatus.values))
-      .withDefault(Constant(SubmissionStatus.draft.name))();
+      .clientDefault(() => SubmissionStatus.draft.name)();
 
   DateTimeColumn get lastSyncDate => dateTime().nullable()();
 

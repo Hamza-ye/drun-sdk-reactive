@@ -10,21 +10,21 @@ class DataElements extends Table with BaseTableMixin, IdentifiableMixin {
       text().map(const EnumNameConverter(ValueType.values)).nullable()();
 
   /// Mandatory flag, defaulting to false.
-  BoolColumn get mandatory => boolean().withDefault(const Constant(false))();
+  BoolColumn get mandatory => boolean().clientDefault(() => false)();
 
   /// defaultValue stored as text (adjust converter if needed).
   TextColumn get defaultValue => text().nullable()();
 
   /// label is stored as JSON in a text column.
   TextColumn get label =>
-      text().map(const MapConverter<String>()).withDefault(Constant('{}'))();
+      text().map(const MapConverter<String>()).clientDefault(() => '{}')();
 
   /// scannedCodeProperties is stored as JSON.
   TextColumn get scannedCodeProperties =>
       text().map(const ScannedCodePropertiesConverter()).nullable()();
 
   /// gs1Enabled flag, defaulting to false.
-  BoolColumn get gs1Enabled => boolean().withDefault(const Constant(false))();
+  BoolColumn get gs1Enabled => boolean().clientDefault(() => false)();
 
   /// resourceType stored as text; we convert between MetadataResourceType and String.
   TextColumn get resourceType => text()

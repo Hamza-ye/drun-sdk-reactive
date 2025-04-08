@@ -41,7 +41,6 @@ class DataSubmissionDatasource
   }
 
   Future<List<DataSubmission>> upload(List<String> uids) async {
-    final db = activeDb;
     List<DataSubmission> submissions = await db.managers.dataSubmissions
         .filter((f) => f.status
             .isIn([SubmissionStatus.finalized, SubmissionStatus.syncFailed]))
