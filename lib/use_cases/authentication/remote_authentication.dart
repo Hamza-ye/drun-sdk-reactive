@@ -31,19 +31,26 @@ class RemoteAuthentication implements AuthenticationService {
     try {
       final httpResponse = await httpClient.request(
           resourceName:
-              '${envInstance.apiUserAuthResource}/${envInstance.apiPath}',
+              '${envInstance.apiPath}/${envInstance.apiUserAuthResource}',
           method: 'get',
           headers: authHeaders);
 
-      return User.fromJson({
-        ...httpResponse.data,
+      final data = httpResponse.data;
+      final user = User.fromJson({
+        ...?data,
         'id': httpResponse.data['uid'],
+        'username': params.username,
+        'password': params.password,
       });
+
+      return user;
     } on AuthFailure catch (_error) {
       logError(_error.message, data: _error.toMap());
       rethrow;
     } catch (_error) {
-      throw AuthFailure(_error.toString().substring(0, 10),
+      final error = _error.toString();
+      throw AuthFailure(
+          _error.toString().substring(0, error.length > 80 ? 80 : null),
           errorCode: DRunErrorCode.unexpected,
           errorComponent: DErrorComponent.SDK,
           stackTrace: StackTrace.current,

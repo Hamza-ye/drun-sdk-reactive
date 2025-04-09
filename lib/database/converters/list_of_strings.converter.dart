@@ -16,6 +16,7 @@ class ListConverter<T> extends TypeConverter<List<T>, String?> {
   @override
   String? toSql(List<T>? forms) {
     if (forms == null) return null;
+    final data = jsonEncode(forms);
     return jsonEncode(forms);
   }
 }
