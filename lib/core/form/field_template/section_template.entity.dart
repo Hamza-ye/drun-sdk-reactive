@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:d_sdk/core/form/field_template/container_template.dart';
 import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
 import 'package:d_sdk/core/utilities/parsing_helpers.dart';
