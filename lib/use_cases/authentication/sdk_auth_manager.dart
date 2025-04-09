@@ -82,6 +82,8 @@ class SdkAuthManager implements AuthManager {
     } on AuthFailure catch (e) {
       logError(e.message, data: e.toMap());
       return Error(e);
+    } catch (e) {
+      return Error(AuthFailure(e.toString(),errorCode: DRunErrorCode.unexpected, cause: e));
     }
   }
 

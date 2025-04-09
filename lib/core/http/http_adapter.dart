@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:d_sdk/core/config/app_environment_instance.dart';
 import 'package:d_sdk/core/exception/exception.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/http/http_response.dart';
@@ -22,8 +23,9 @@ import 'package:injectable/injectable.dart';
 @LazySingleton(as: HttpClient)
 class HttpAdapter extends HttpClient {
   final Dio dioClient;
+  final AppEnvironmentInstance environmentInstance;
 
-  HttpAdapter(this.dioClient);
+  HttpAdapter(this.dioClient, this.environmentInstance);
 
   Future<HttpResponse> request(
       {

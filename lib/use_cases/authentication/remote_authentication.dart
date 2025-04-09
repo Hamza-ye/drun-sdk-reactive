@@ -42,7 +42,7 @@ class RemoteAuthentication implements AuthenticationService {
       logError(_error.message, data: _error.toMap());
       rethrow;
     } catch (_error) {
-      throw AuthFailure(_error.toString().substring(0, 80),
+      throw AuthFailure(_error.toString().substring(0, 10),
           errorCode: DRunErrorCode.unexpected,
           errorComponent: DErrorComponent.SDK,
           stackTrace: StackTrace.current,
