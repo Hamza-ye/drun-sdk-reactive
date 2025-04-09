@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(25)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class OuLevelDatasource extends BaseDataSource<$OuLevelsTable, OuLevel>
     implements MetaDataSource<OuLevel> {
   OuLevelDatasource({required super.apiClient, required DbManager dbManager})

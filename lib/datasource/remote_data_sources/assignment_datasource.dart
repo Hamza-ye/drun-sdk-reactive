@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(110)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class AssignmentDatasource
     extends BaseDataSource<$AssignmentsTable, Assignment>
     implements MetaDataSource<Assignment> {

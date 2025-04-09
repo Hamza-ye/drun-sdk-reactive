@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(60)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
     implements MetaDataSource<DataOption> {
   OptionDatasource({required super.apiClient, required DbManager dbManager})

@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(130)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class RepeatInstanceDatasource
     extends BaseDataSource<$RepeatInstancesTable, RepeatInstance>
     implements MetaDataSource<RepeatInstance> {

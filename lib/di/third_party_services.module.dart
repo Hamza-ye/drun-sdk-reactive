@@ -23,17 +23,16 @@ abstract class ThirdPartyServicesModule {
   @lazySingleton
   Dio dio(AppEnvironmentInstance envInstance) => Dio(
         BaseOptions(
-          baseUrl: envInstance.apiBaseUrl,
-          sendTimeout: Duration(seconds: envInstance.apiRequestSentTimeout),
+          baseUrl: AppEnvironment.apiBaseUrl,
+          sendTimeout: Duration(seconds: AppEnvironment.apiRequestSentTimeout),
         ),
       );
 
   @lazySingleton
-  CacheStorage cachedStorage(AppEnvironmentInstance envInstance) =>
-      envInstance.secureCache
-          ? SharedCacheStorageAdapter(
-              cacheStorage: rSdkLocator<SharedPreferences>())
-          : SecureStorageAdapter(cacheStorage: FlutterSecureStorage());
+  CacheStorage cachedStorage() => AppEnvironment.secureCache
+      ? SharedCacheStorageAdapter(
+          cacheStorage: rSdkLocator<SharedPreferences>())
+      : SecureStorageAdapter(cacheStorage: FlutterSecureStorage());
 
   @preResolve
   Future<SharedPreferences> get prefs => SharedPreferences.getInstance();

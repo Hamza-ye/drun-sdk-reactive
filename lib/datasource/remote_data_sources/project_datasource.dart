@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(10)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class ProjectDatasource extends BaseDataSource<$ProjectsTable, Project>
     implements MetaDataSource<Project> {
   ProjectDatasource({required super.apiClient, required DbManager dbManager})

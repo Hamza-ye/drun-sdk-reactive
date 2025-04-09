@@ -7,7 +7,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(90)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class DataFormTemplateDatasource extends BaseDataSource<
         $DataFormTemplateVersionsTable, DataFormTemplateVersion>
     implements MetaDataSource<DataFormTemplateVersion> {

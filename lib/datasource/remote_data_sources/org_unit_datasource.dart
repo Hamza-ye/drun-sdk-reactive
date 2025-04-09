@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(30)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class OrgUnitDatasource extends BaseDataSource<$OrgUnitsTable, OrgUnit>
     implements MetaDataSource<OrgUnit> {
   OrgUnitDatasource({required super.apiClient, required DbManager dbManager})

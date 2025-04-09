@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(80)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class TeamDatasource extends BaseDataSource<$TeamsTable, Team>
     implements MetaDataSource<Team> {
   TeamDatasource({required super.apiClient, required DbManager dbManager})

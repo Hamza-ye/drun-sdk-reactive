@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(20)
-@LazySingleton(as: AbstractDatasource)
+@LazySingleton(as: AbstractDatasource, scope: 'auth')
 class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
     implements MetaDataSource<Activity> {
   ActivityDatasource({required super.apiClient, required DbManager dbManager})

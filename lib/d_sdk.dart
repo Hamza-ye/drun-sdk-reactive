@@ -14,7 +14,6 @@ import 'package:d_sdk/database/db_manager.dart';
 import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.dart';
 import 'package:d_sdk/di/app_environment.dart';
 import 'package:d_sdk/di/injection.dart';
-import 'package:d_sdk/use_cases/authentication/authentication.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,10 +60,6 @@ class DSdk {
     rSdkLocator.registerSingleton<HttpClient<dynamic>>(
         HttpAdapter(rSdkLocator<Dio>()),
         instanceName: 'HttpAdapter');
-    rSdkLocator.registerSingleton<AuthenticationService>(RemoteAuthentication(
-        httpClient:
-            rSdkLocator<HttpClient<dynamic>>(instanceName: 'HttpAdapter'),
-        authResourceName: '${AppEnvironment.apiPath}/me'));
 
     // RunDatabaseConfig(databaseName: '${username}_$uri')
     // Reinitialize the SDK with the new user database

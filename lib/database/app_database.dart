@@ -1,4 +1,5 @@
 import 'package:d_sdk/core/form/field_template/field_template.dart';
+import 'package:d_sdk/core/platform/platform.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/dao/dao.dart';
 import 'package:d_sdk/database/shared/shared.dart';
@@ -38,11 +39,10 @@ part 'app_database.g.dart';
 ])
 class AppDatabase extends _$AppDatabase {
   // AppDatabase(super.e, {String? databaseName});
-  AppDatabase({required QueryExecutor executor, String? databaseName})
-      : super(
-          executor /*??
+  AppDatabase({QueryExecutor? executor, String? databaseName})
+      : super(executor ?? Platform.createDatabaseConnection(databaseName!)
 
-              /// no encryption, called if QueryExecutor is null
+            /* /// no encryption, called if QueryExecutor is null
               driftDatabase(
                 name: databaseName ?? 'drun-db',
                 native: const DriftNativeOptions(
@@ -61,7 +61,7 @@ class AppDatabase extends _$AppDatabase {
                   },
                 ),
               ),*/
-        );
+            );
 
   @override
   int get schemaVersion => 1;

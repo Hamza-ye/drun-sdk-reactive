@@ -2,16 +2,19 @@ import 'package:d_sdk/core/auth/auth_manager.dart';
 import 'package:d_sdk/core/auth/authenticated_user.dart';
 import 'package:d_sdk/core/auth/authentication_params.dart';
 import 'package:d_sdk/core/auth/authentication_service.dart';
+import 'package:d_sdk/core/cache/cached_user.dart';
 import 'package:d_sdk/core/config/server_config.dart';
 import 'package:d_sdk/core/exception/exception.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/user_session/session_storage_manager.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/db_manager.dart';
+import 'package:d_sdk/di/injection.config.dart';
 import 'package:d_sdk/di/injection.dart';
 import 'package:d_sdk/use_cases/logout_strategies/logout_strategies.dart';
 import 'package:injectable/injectable.dart';
 import 'package:multiple_result/multiple_result.dart';
+import 'package:rxdart/rxdart.dart';
 
 @LazySingleton(as: AuthManager)
 class SdkAuthManager implements AuthManager {
@@ -19,14 +22,14 @@ class SdkAuthManager implements AuthManager {
   final UserSessionRepository _userSessionRepository;
 
   // BehaviorSubject holds the latest user state and replays it to new subscribers.
-  // final BehaviorSubject<User?> _userSubject = BehaviorSubject<User?>();
+  final BehaviorSubject<User?> _userSubject = BehaviorSubject<User?>();
 
   // Expose the stream to subscribers.
-  // Stream<User?> get userStream => _userSubject.stream;
+  Stream<User?> get userStream => _userSubject.stream;
 
   // Access current user directly.
-  // @override
-  // User? get currentUser => _userSubject.value;
+  @override
+  User? get currentUser => _userSubject.value;
 
   SdkAuthManager({
     required UserSessionRepository userSessionRepository,
@@ -55,19 +58,18 @@ class SdkAuthManager implements AuthManager {
 
       final User authUser = authResult;
 
-      // // Initialize user-specific database
-      // await setupSdkLocator(
-      //     username: authUser.username, baseUrl: server.baseUrl);
+      final authState = AuthState(
+          user: authUser, activeServerUrl: server.baseUrl, loggedIn: true);
+      await pushAuthScope(authState);
+      final db = rSdkLocator<DbManager>().getActiveDb();
       //
-      // final db = rSdkLocator<DbManager>().getActiveDb();
-      //
-      // await db.into(db.users).insert(authUser);
+      await db.into(db.users).insert(authUser);
       //
       // // store status as a cached user info
-      // await _sessionStorageManager.storeCurrentUser(
-      //     CachedUser(username: authUser.username, baseUrl: server.baseUrl));
-      //
-      // _userSubject.add(authUser);
+      await _userSessionRepository.storeCurrentUser(
+          CachedUser(username: authUser.username, baseUrl: server.baseUrl));
+
+      _userSubject.add(authUser);
 
       return Success(AuthState(
         user: authUser,
@@ -83,13 +85,20 @@ class SdkAuthManager implements AuthManager {
     }
   }
 
+  Future<void> pushAuthScope(AuthState authenticatedAuthState) async {
+    rSdkLocator.registerSingleton<AuthState>(authenticatedAuthState);
+    // // Initialize user-specific database
+    await initAuthScope(rSdkLocator);
+  }
+
   @override
   Future<void> logout(
       {LogoutStrategy strategy = LogoutStrategy.keepLocalData}) async {
     await _processCachedAuthStatus(strategy: strategy);
-
+    await rSdkLocator.popScopesTill('auth');
+    rSdkLocator.unregister<AuthState>();
     // Emit a null value to indicate no user is logged in.
-    // _userSubject.add(null);
+    _userSubject.add(null);
   }
 
   Future<void> _processCachedAuthStatus(
@@ -146,9 +155,9 @@ class SdkAuthManager implements AuthManager {
     return user;
   }
 
-// @disposeMethod
-// @override
-// void dispose() {
-//   _userSubject.close();
-// }
+  @disposeMethod
+  @override
+  void dispose() {
+    _userSubject.close();
+  }
 }
