@@ -42,9 +42,9 @@ class SdkAuthManager implements AuthManager {
   @override
   Future<bool> isLoggedIn() async {
     final currentCachedUser = await _sessionStorageManager.loadCurrentUser();
-    if (currentUser != null && currentCachedUser == null) {
-      _userSubject.add(null);
-    }
+    // if (currentUser != null && currentCachedUser == null) {
+    //   _userSubject.add(null);
+    // }
     return currentCachedUser != null;
   }
 
