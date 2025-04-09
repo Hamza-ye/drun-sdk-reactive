@@ -92,10 +92,10 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   static const VerificationMeta _authoritiesMeta =
       const VerificationMeta('authorities');
   @override
-  late final GeneratedColumnWithTypeConverter<List<String>, String>
+  late final GeneratedColumnWithTypeConverter<List<dynamic>, String>
       authorities = GeneratedColumn<String>('authorities', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<String>>($UsersTable.$converterauthorities);
+          .withConverter<List<dynamic>>($UsersTable.$converterauthorities);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -224,8 +224,8 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     return $UsersTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<String>, String?> $converterauthorities =
-      const ListConverter<String>();
+  static TypeConverter<List<dynamic>, String?> $converterauthorities =
+      const ListConverter<dynamic>();
 }
 
 class User extends DataClass implements Insertable<User> {
@@ -241,7 +241,7 @@ class User extends DataClass implements Insertable<User> {
   final String langKey;
   final bool activated;
   final String? imageUrl;
-  final List<String> authorities;
+  final List<dynamic> authorities;
   const User(
       {required this.id,
       required this.lastModifiedDate,
@@ -330,7 +330,7 @@ class User extends DataClass implements Insertable<User> {
       langKey: serializer.fromJson<String>(json['langKey']),
       activated: serializer.fromJson<bool>(json['activated']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
-      authorities: serializer.fromJson<List<String>>(json['authorities']),
+      authorities: serializer.fromJson<List<dynamic>>(json['authorities']),
     );
   }
   @override
@@ -349,7 +349,7 @@ class User extends DataClass implements Insertable<User> {
       'langKey': serializer.toJson<String>(langKey),
       'activated': serializer.toJson<bool>(activated),
       'imageUrl': serializer.toJson<String?>(imageUrl),
-      'authorities': serializer.toJson<List<String>>(authorities),
+      'authorities': serializer.toJson<List<dynamic>>(authorities),
     };
   }
 
@@ -366,7 +366,7 @@ class User extends DataClass implements Insertable<User> {
           String? langKey,
           bool? activated,
           Value<String?> imageUrl = const Value.absent(),
-          List<String>? authorities}) =>
+          List<dynamic>? authorities}) =>
       User(
         id: id ?? this.id,
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
@@ -471,7 +471,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<String> langKey;
   final Value<bool> activated;
   final Value<String?> imageUrl;
-  final Value<List<String>> authorities;
+  final Value<List<dynamic>> authorities;
   final Value<int> rowid;
   const UsersCompanion({
     this.id = const Value.absent(),
@@ -554,7 +554,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       Value<String>? langKey,
       Value<bool>? activated,
       Value<String?>? imageUrl,
-      Value<List<String>>? authorities,
+      Value<List<dynamic>>? authorities,
       Value<int>? rowid}) {
     return UsersCompanion(
       id: id ?? this.id,
@@ -10560,7 +10560,7 @@ typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   Value<String> langKey,
   Value<bool> activated,
   Value<String?> imageUrl,
-  Value<List<String>> authorities,
+  Value<List<dynamic>> authorities,
   Value<int> rowid,
 });
 typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
@@ -10576,7 +10576,7 @@ typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<String> langKey,
   Value<bool> activated,
   Value<String?> imageUrl,
-  Value<List<String>> authorities,
+  Value<List<dynamic>> authorities,
   Value<int> rowid,
 });
 
@@ -10625,7 +10625,7 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
   ColumnFilters<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+  ColumnWithTypeConverterFilters<List<dynamic>, List<dynamic>, String>
       get authorities => $composableBuilder(
           column: $table.authorities,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -10726,7 +10726,7 @@ class $$UsersTableAnnotationComposer
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<String>, String> get authorities =>
+  GeneratedColumnWithTypeConverter<List<dynamic>, String> get authorities =>
       $composableBuilder(
           column: $table.authorities, builder: (column) => column);
 }
@@ -10766,7 +10766,7 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<String> langKey = const Value.absent(),
             Value<bool> activated = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
-            Value<List<String>> authorities = const Value.absent(),
+            Value<List<dynamic>> authorities = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               UsersCompanion(
@@ -10798,7 +10798,7 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<String> langKey = const Value.absent(),
             Value<bool> activated = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
-            Value<List<String>> authorities = const Value.absent(),
+            Value<List<dynamic>> authorities = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               UsersCompanion.insert(
