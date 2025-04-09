@@ -3,7 +3,7 @@ description: Datarun Flutter's Reactive SDK
 version: 1.0.1
 homepage:
 publish_to: 'none'
-repository: https://github.com/Hamza-ye/data-run-sdk
+repository: https://github.com/Hamza-ye/drun-sdk-reactive
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -20,9 +20,9 @@ dependencies:
   collection: ^1.18.0
   multiple_result: ^5.1.0
   drift: ^2.23.1
-  drift_flutter: ^0.2.4
-  sqlcipher_flutter_libs: ^0.6.5
-  sqlite3: '>=1.8.0 <3.0.0'
+#  drift_flutter: ^0.2.4
+#  sqlcipher_flutter_libs: ^0.6.5
+#  sqlite3: '>=1.8.0 <3.0.0'
   get_it: ^8.0.3
   injectable: ^2.5.0
   flutter_secure_storage: ^4.2.1
