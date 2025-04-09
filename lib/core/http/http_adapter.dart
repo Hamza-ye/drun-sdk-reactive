@@ -38,7 +38,7 @@ class HttpAdapter extends HttpClient {
     final defaultHeaders = headers?.cast<String, String>() ?? {}
       ..addAll({HttpHeaders.contentTypeHeader: 'application/json'});
 
-    final resourcePath = '/$resourceName';
+    final resourcePath = '${environmentInstance.apiPath}/$resourceName';
     Response response = noResponse(
         url: resourcePath, method: method, data: data, headers: defaultHeaders);
     Future<Response>? futureResponse;

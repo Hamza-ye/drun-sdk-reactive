@@ -85,7 +85,10 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
   gh.lazySingleton<_i505.CacheStorage>(() => thirdPartyServicesModule
       .cachedStorage(gh<_i132.AppEnvironmentInstance>()));
   gh.lazySingleton<_i8.HttpClient<dynamic>>(
-    () => _i69.HttpAdapter(gh<_i361.Dio>()),
+    () => _i69.HttpAdapter(
+      gh<_i361.Dio>(),
+      gh<_i132.AppEnvironmentInstance>(),
+    ),
     instanceName: 'HttpAdapter',
   );
   gh.lazySingleton<_i345.ConnectivityService>(() => _i345.ConnectivityService(
