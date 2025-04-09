@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:d_sdk/core/config/app_environment_instance.dart';
 import 'package:d_sdk/core/exception/exception.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/http/http_response.dart';
@@ -23,9 +22,8 @@ import 'package:injectable/injectable.dart';
 @LazySingleton(as: HttpClient)
 class HttpAdapter extends HttpClient {
   final Dio dioClient;
-  final AppEnvironmentInstance environmentInstance;
 
-  HttpAdapter(this.dioClient, this.environmentInstance);
+  HttpAdapter(this.dioClient);
 
   Future<HttpResponse> request(
       {
@@ -33,12 +31,12 @@ class HttpAdapter extends HttpClient {
       // required String url,
       required String resourceName,
       required String method,
-        Object? data,
+      Object? data,
       Map? headers}) async {
     final defaultHeaders = headers?.cast<String, String>() ?? {}
       ..addAll({HttpHeaders.contentTypeHeader: 'application/json'});
 
-    final resourcePath = '${environmentInstance.apiPath}/$resourceName';
+    final resourcePath = '/$resourceName';
     Response response = noResponse(
         url: resourcePath, method: method, data: data, headers: defaultHeaders);
     Future<Response>? futureResponse;
@@ -83,7 +81,7 @@ class HttpAdapter extends HttpClient {
   Response noResponse(
       {required String url,
       required String method,
-        Object? data,
+      Object? data,
       Map<String, dynamic>? headers}) {
     RequestOptions requestOptions = RequestOptions(
       method: method,

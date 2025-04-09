@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:d_sdk/core/config/app_environment_instance.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary.dart';
 import 'package:d_sdk/database/app_database.dart';
@@ -17,9 +18,14 @@ import 'package:injectable/injectable.dart';
 class DataSubmissionDatasource
     extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
     implements MetaDataSource<DataSubmission> {
+  AppEnvironmentInstance _environmentInstance;
+
   DataSubmissionDatasource(
-      {required super.apiClient, required DbManager dbManager})
-      : super(
+      {required super.apiClient,
+      required DbManager dbManager,
+      required AppEnvironmentInstance environmentInstance})
+      : this._environmentInstance = environmentInstance,
+        super(
             dbManager: dbManager,
             table: dbManager.getActiveDb()!.dataSubmissions);
 
@@ -75,7 +81,8 @@ class DataSubmissionDatasource
     }).toList();
 
     final response = await apiClient.request(
-        resourceName: '${apiResourceName}/bulk',
+        resourceName:
+            '${_environmentInstance.apiPath}/${apiResourceName}/bulk',
         method: 'post',
         data: uploadPayload);
 

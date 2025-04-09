@@ -30,7 +30,8 @@ class RemoteAuthentication implements AuthenticationService {
 
     try {
       final httpResponse = await httpClient.request(
-          resourceName: envInstance.apiUserAuthResource,
+          resourceName:
+              '${envInstance.apiUserAuthResource}/${envInstance.apiPath}',
           method: 'get',
           headers: authHeaders);
 
