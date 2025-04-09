@@ -1,4 +1,5 @@
-import 'package:d_sdk/core/config/app_environment_instance.dart';
+import 'package:d_sdk/core/config/server_config.dart';
+import 'package:d_sdk/database/db_manager.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,16 +10,13 @@ final GetIt rSdkLocator = GetIt.instance;
 @InjectableInit(
     initializerName: r'$initD2RemoteGetIt',
     asExtension: false,
-    ignoreUnregisteredTypes: [
-      AppEnvironmentInstance,
-    ])
+    ignoreUnregisteredTypes: [DbManager])
 Future<GetIt> setupSdkLocator(
-    {required AppEnvironmentInstance envInstance}) async {
-  // sdkLocator.reset();
-  // final databaseProvider = await DatabaseProviderFactory.create(config: config);
-  //
+    {required String username, required String baseUrl}) async {
   rSdkLocator.enableRegisteringMultipleInstancesOfOneType();
 
-  rSdkLocator.registerSingleton<AppEnvironmentInstance>(envInstance);
+  final appDatabase = await DbManager.createDb(
+      username: username, server: ServerConfig(baseUrl));
+  rSdkLocator.registerSingleton<DbManager>(DbManager(appDatabase: appDatabase));
   return $initD2RemoteGetIt(rSdkLocator);
 }

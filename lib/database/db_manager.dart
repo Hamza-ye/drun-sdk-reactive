@@ -1,56 +1,45 @@
-import 'package:d_sdk/core/config/server_config.dart';
+import 'package:d_sdk/core/auth/authenticated_user.dart';
 import 'package:d_sdk/core/platform/platform.dart';
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/di/injection.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
-@lazySingleton
+@LazySingleton(scope: 'auth')
 class DbManager {
-  final Map<String, AppDatabase> _databases = {};
-  AppDatabase? _activeDb;
+  DbManager()
+      : _db = AppDatabase(
+            executor: _createExecutor(rSdkLocator<AuthState>().user!.username,
+                rSdkLocator<AuthState>().activeServerUrl!));
 
-  Future<AppDatabase> switchDatabase({
-    required String username,
-    required ServerConfig server,
-  }) async {
-    final key = _connectionKey(username, server);
+  final AppDatabase _db;
 
-    if (!_databases.containsKey(key)) {
-      final executor = await _createExecutor(username, server);
-      _databases[key] = AppDatabase(executor: executor);
-    }
-
-    _activeDb = _databases[key]!;
-    return _databases[key]!;
-  }
-
-  AppDatabase? getActiveDb() => _activeDb;
+  AppDatabase? getActiveDb() => _db;
 
   Future<void> deleteData() async {
-    await _activeDb?.customStatement('PRAGMA foreign_keys = OFF');
+    await _db.customStatement('PRAGMA foreign_keys = OFF');
     try {
-      _activeDb?.transaction(() async {
-        for (final table
-            in _activeDb?.allTables ?? <TableInfo<Table, Object?>>[]) {
-          await _activeDb?.delete(table).go();
+      _db.transaction(() async {
+        for (final table in _db.allTables) {
+          await _db.delete(table).go();
         }
       });
     } finally {
-      await _activeDb?.customStatement('PRAGMA foreign_keys = OFF');
+      await _db.customStatement('PRAGMA foreign_keys = OFF');
     }
   }
 
-  Future<void> closeDatabase(String username, ServerConfig server) async {
-    final key = _connectionKey(username, server);
-    final db = _databases.remove(key);
-    await db?.close();
+  @disposeMethod
+  Future<void> closeDatabase(String username, String server) async {
+    // final key = _connectionKey(username, server);
+    // final db = _databases.remove(key);
+    await _db.close();
   }
 
-  Future<QueryExecutor> _createExecutor(
-      String username, ServerConfig server) async {
+  static QueryExecutor _createExecutor(String username, String server) {
     return Platform.createDatabaseConnection(_connectionKey(username, server));
   }
 
-  String _connectionKey(String userName, ServerConfig server) =>
-      '${server.baseUrl}_$userName';
+  static String _connectionKey(String userName, String server) =>
+      '${server}_$userName';
 }

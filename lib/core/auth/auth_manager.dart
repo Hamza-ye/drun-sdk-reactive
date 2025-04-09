@@ -7,7 +7,7 @@ import 'package:d_sdk/use_cases/logout_strategies/logout_strategy.dart';
 import 'package:multiple_result/multiple_result.dart';
 
 abstract class AuthManager {
-  User? get currentUser;
+  // User? get currentUser;
 
   Future<bool> isLoggedIn();
 
@@ -18,9 +18,9 @@ abstract class AuthManager {
 
   Future<void> logout({LogoutStrategy strategy});
 
-  Future<void> switchUser(CachedUser user, ServerConfig server);
+  // Future<void> switchUser(CachedUser user, ServerConfig server);
 
   Future<User?> getCurrentUser();
 
-  void dispose();
+  // void dispose();
 }

@@ -5,11 +5,11 @@ import 'package:d_sdk/core/user_session/session_storage_manager.dart';
 import 'package:d_sdk/core/utilities/list_extensions.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: SessionStorageManager)
-class SdkSessionStorageManager implements SessionStorageManager {
+@LazySingleton(as: UserSessionRepository)
+class SdkUserSessionRepository implements UserSessionRepository {
   final CacheStorage _cacheStorage;
 
-  SdkSessionStorageManager({required CacheStorage cacheStorage})
+  SdkUserSessionRepository({required CacheStorage cacheStorage})
       : _cacheStorage = cacheStorage;
 
   @override

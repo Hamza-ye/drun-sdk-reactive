@@ -79,7 +79,7 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
     () => thirdPartyServicesModule.prefs,
     preResolve: true,
   );
-  gh.lazySingleton<_i932.DbManager>(() => _i932.DbManager());
+
   gh.lazySingleton<_i361.Dio>(
       () => thirdPartyServicesModule.dio(gh<_i132.AppEnvironmentInstance>()));
   gh.lazySingleton<_i505.CacheStorage>(() => thirdPartyServicesModule
@@ -97,11 +97,11 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
         httpClient: gh<_i8.HttpClient<dynamic>>(instanceName: 'HttpAdapter'),
         envInstance: gh<_i132.AppEnvironmentInstance>(),
       ));
-  gh.lazySingleton<_i389.SessionStorageManager>(() =>
-      _i287.SdkSessionStorageManager(cacheStorage: gh<_i505.CacheStorage>()));
+  gh.lazySingleton<_i389.UserSessionRepository>(() =>
+      _i287.SdkUserSessionRepository(cacheStorage: gh<_i505.CacheStorage>()));
   gh.lazySingleton<_i253.AuthManager>(
     () => _i751.SdkAuthManager(
-      storageManager: gh<_i389.SessionStorageManager>(),
+      storageManager: gh<_i389.UserSessionRepository>(),
       dbManager: gh<_i932.DbManager>(),
       authenticationService: gh<_i882.AuthenticationService>(),
     ),
