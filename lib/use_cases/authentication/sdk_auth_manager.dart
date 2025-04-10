@@ -86,7 +86,11 @@ class SdkAuthManager implements AuthManager {
   }
 
   Future<void> pushAuthScope(AuthState authenticatedAuthState) async {
-    rSdkLocator.registerSingleton<AuthState>(authenticatedAuthState);
+    if (!rSdkLocator.isRegistered<AuthState>()) {
+      rSdkLocator.registerSingleton<AuthState>(authenticatedAuthState);
+    }
+    final currentScope = rSdkLocator.currentScopeName;
+    if(rSdkLocator.currentScopeName != 'auth')
     // // Initialize user-specific database
     await initAuthScope(rSdkLocator);
   }

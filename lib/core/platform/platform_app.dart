@@ -3,15 +3,21 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 class PlatformInterface {
   static QueryExecutor createDatabaseConnection(String databaseName) {
     return LazyDatabase(() async {
-      final dbFolder = await getApplicationDocumentsDirectory();
+      final currentDir = Directory.current.path;
+      // String customPath = join(currentDir, databaseName + '.db');
+
+      final customDir = Directory(currentDir);
+      if (!await customDir.exists()) {
+        await customDir.create(recursive: true);
+      }
+
+      // final dbFolder = await getApplicationDocumentsDirectory();
       final dbPath = p.join(
-        dbFolder.path,
-        'databases',
+        currentDir,
         '$databaseName.enc.sqlite',
       );
       final file = File(dbPath);

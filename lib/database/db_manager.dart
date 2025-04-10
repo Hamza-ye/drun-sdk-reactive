@@ -36,6 +36,8 @@ class DbManager {
     await _db.close();
   }
 
-  static String _connectionKey(String userName, String server) =>
-      '${server}_$userName';
+  static String _connectionKey(String userName, String server) {
+    final uri = Uri.parse(server).host;
+    return '${uri}_$userName';
+  }
 }
