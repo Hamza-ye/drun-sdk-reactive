@@ -6,11 +6,11 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(140)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class DataValueDatasource extends BaseDataSource<$DataValuesTable, DataValue>
     implements MetaDataSource<DataValue> {
   DataValueDatasource({required super.apiClient, required DbManager dbManager})
-      : super(table: dbManager.getActiveDb()!.dataValues, dbManager: dbManager);
+      : super(table: dbManager.db.dataValues, dbManager: dbManager);
 
   @override
   String get apiResourceName => 'dataValues';

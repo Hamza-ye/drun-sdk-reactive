@@ -23,7 +23,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       : this.apiClient = apiClient,
         this._dbManager = dbManager;
 
-  AppDatabase? get _activeDb => _dbManager.getActiveDb();
+  AppDatabase? get _activeDb => _dbManager.db;
 
   AppDatabase get db {
     throwIf(_activeDb == null, NoActiveDatabaseInstance());

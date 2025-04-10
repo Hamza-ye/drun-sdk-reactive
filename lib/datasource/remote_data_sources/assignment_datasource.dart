@@ -6,13 +6,13 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(110)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class AssignmentDatasource
     extends BaseDataSource<$AssignmentsTable, Assignment>
     implements MetaDataSource<Assignment> {
   AssignmentDatasource({required super.apiClient, required DbManager dbManager})
       : super(
-            dbManager: dbManager, table: dbManager.getActiveDb()!.assignments);
+            dbManager: dbManager, table: dbManager.db.assignments);
 
   @override
   String get apiResourceName => 'assignments';

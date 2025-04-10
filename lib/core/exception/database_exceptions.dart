@@ -18,8 +18,9 @@ class NoActiveDatabaseInstance extends DDatabaseException {
 }
 
 class DDatabaseConnectionException extends DDatabaseException {
-  DDatabaseConnectionException({Exception? cause, StackTrace? stackTrace})
-      : super("Failed to connect to the database.",
+  DDatabaseConnectionException(
+      {String? message, Exception? cause, StackTrace? stackTrace})
+      : super("Failed to connect to the database ${message ?? ''}",
             cause: cause,
             stackTrace: stackTrace,
             errorCode: DRunErrorCode.databaseConnectionFailed);

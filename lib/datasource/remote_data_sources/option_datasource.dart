@@ -6,12 +6,12 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(60)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
     implements MetaDataSource<DataOption> {
   OptionDatasource({required super.apiClient, required DbManager dbManager})
       : super(
-            dbManager: dbManager, table: dbManager.getActiveDb()!.dataOptions);
+            dbManager: dbManager, table: dbManager.db.dataOptions);
 
   @override
   String get apiResourceName => 'options';

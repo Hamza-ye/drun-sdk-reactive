@@ -14,7 +14,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(120)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class DataSubmissionDatasource
     extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
     implements MetaDataSource<DataSubmission> {
@@ -27,7 +27,7 @@ class DataSubmissionDatasource
       : this._environmentInstance = environmentInstance,
         super(
             dbManager: dbManager,
-            table: dbManager.getActiveDb()!.dataSubmissions);
+            table: dbManager.db.dataSubmissions);
 
   @override
   String get apiResourceName => 'dataSubmission';

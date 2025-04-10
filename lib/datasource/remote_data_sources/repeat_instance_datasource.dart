@@ -6,7 +6,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(130)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class RepeatInstanceDatasource
     extends BaseDataSource<$RepeatInstancesTable, RepeatInstance>
     implements MetaDataSource<RepeatInstance> {
@@ -14,7 +14,7 @@ class RepeatInstanceDatasource
       {required super.apiClient, required DbManager dbManager})
       : super(
             dbManager: dbManager,
-            table: dbManager.getActiveDb()!.repeatInstances);
+            table: dbManager.db.repeatInstances);
 
   @override
   String get apiResourceName => 'repeatInstances';

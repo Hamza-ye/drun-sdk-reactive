@@ -8,14 +8,11 @@ class PlatformInterface {
   static QueryExecutor createDatabaseConnection(String databaseName) {
     return LazyDatabase(() async {
       final currentDir = Directory.current.path;
-      // String customPath = join(currentDir, databaseName + '.db');
 
       final customDir = Directory(currentDir);
       if (!await customDir.exists()) {
         await customDir.create(recursive: true);
       }
-
-      // final dbFolder = await getApplicationDocumentsDirectory();
       final dbPath = p.join(
         currentDir,
         '$databaseName.enc.sqlite',
@@ -23,7 +20,6 @@ class PlatformInterface {
       final file = File(dbPath);
       return NativeDatabase(file);
     });
-    // return _openDatabase(databaseName);
   }
 }
 

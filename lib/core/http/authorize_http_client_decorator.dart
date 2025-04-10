@@ -5,6 +5,7 @@ import 'package:d_sdk/core/auth/auth_manager.dart';
 import 'package:d_sdk/core/http/http_adapter.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/http/http_response.dart';
+import 'package:d_sdk/d_sdk.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: HttpClient)
@@ -23,12 +24,12 @@ class AuthorizeHttpClientDecorator extends HttpClient {
     Object? data,
     Map? headers,
   }) async {
-    final loggedInUser = await _sdkAuthManager.getCurrentUser();
+    final loggedInUser = DSdk.currentAuthUser;
 
     final authorizedHeaders = headers ?? {}
       ..addAll({
         HttpHeaders.authorizationHeader:
-            'Basic ${base64Encode(utf8.encode('${loggedInUser?.username}:${loggedInUser?.password}'))}'
+            'Basic ${base64Encode(utf8.encode('${loggedInUser.username}:${loggedInUser.password}'))}'
       });
 
     return decoratee.request(

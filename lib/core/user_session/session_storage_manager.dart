@@ -1,11 +1,12 @@
-import 'package:d_sdk/core/cache/cached_user.dart';
+import 'package:d_sdk/core/auth/user_detail.dart';
+import 'package:d_sdk/core/cache/cached_user_detail.dart';
 
 abstract class UserSessionRepository {
-  Future<CachedUser?> loadCurrentUser();
+  Future<CachedUserDetail?> loadCurrentUser();
 
-  Future<void> storeCurrentUser(CachedUser user);
+  Future<void> storeCurrentUser(UserDetail user);
 
-  Future<List<CachedUser>> getCachedUsers();
+  Future<List<UserDetail>> getCachedUsers();
 
   Future<void> removeCurrentCachedUser();
 }

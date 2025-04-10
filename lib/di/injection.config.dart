@@ -21,6 +21,7 @@ import 'package:d_sdk/core/user_session/sdk_session_storage_manager.dart'
 import 'package:d_sdk/core/user_session/session_storage_manager.dart' as _i389;
 import 'package:d_sdk/database/app_database.dart' as _i648;
 import 'package:d_sdk/database/db_manager.dart' as _i932;
+import 'package:d_sdk/database/db_provider.dart' as _i907;
 import 'package:d_sdk/datasource/abstract_datasource.dart' as _i458;
 import 'package:d_sdk/datasource/remote_data_sources/activity_datasource.dart'
     as _i434;
@@ -55,6 +56,9 @@ import 'package:d_sdk/datasource/remote_data_sources/team_datasource.dart'
 import 'package:d_sdk/datasource/remote_data_sources/user_datasource.dart'
     as _i822;
 import 'package:d_sdk/di/third_party_services.module.dart' as _i276;
+import 'package:d_sdk/use_cases/authentication/auth_scope_initialization.dart'
+    as _i388;
+import 'package:d_sdk/use_cases/authentication/logout_clean_up.dart' as _i1009;
 import 'package:d_sdk/use_cases/authentication/remote_authentication.dart'
     as _i654;
 import 'package:d_sdk/use_cases/authentication/sdk_auth_manager.dart' as _i751;
@@ -91,6 +95,8 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
     () => _i69.HttpAdapter(gh<_i361.Dio>()),
     instanceName: 'HttpAdapter',
   );
+  gh.lazySingleton<_i1009.LogoutCleanUp>(
+      () => _i1009.LogoutCleanUp(gh<_i389.UserSessionRepository>()));
   gh.lazySingleton<_i345.ConnectivityService>(() => _i345.ConnectivityService(
         environmentInstance: gh<_i132.AppEnvironmentInstance>(),
         httpClient: gh<_i8.HttpClient<dynamic>>(instanceName: 'HttpAdapter'),
@@ -100,13 +106,14 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
         httpClient: gh<_i8.HttpClient<dynamic>>(instanceName: 'HttpAdapter'),
         envInstance: gh<_i132.AppEnvironmentInstance>(),
       ));
-  gh.lazySingleton<_i253.AuthManager>(
-    () => _i751.SdkAuthManager(
-      userSessionRepository: gh<_i389.UserSessionRepository>(),
-      authenticationService: gh<_i882.AuthenticationService>(),
-    ),
-    dispose: (i) => i.dispose(),
-  );
+  gh.lazySingleton<_i388.AuthScopeInitializer>(
+      () => _i388.AuthScopeInitializer(gh<_i1009.LogoutCleanUp>()));
+  gh.lazySingleton<_i253.AuthManager>(() => _i751.SdkAuthManager(
+        userSessionRepository: gh<_i389.UserSessionRepository>(),
+        authenticationService: gh<_i882.AuthenticationService>(),
+        scopeInitializer: gh<_i388.AuthScopeInitializer>(),
+        logoutCleanUp: gh<_i1009.LogoutCleanUp>(),
+      ));
   gh.lazySingleton<_i8.HttpClient<dynamic>>(
       () => _i147.AuthorizeHttpClientDecorator(
             gh<_i253.AuthManager>(),
@@ -115,19 +122,21 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
   return getIt;
 }
 
-// initializes the registration of auth-scope dependencies inside of GetIt
-_i174.GetIt initAuthScope(
+// initializes the registration of authenticated-scope dependencies inside of GetIt
+_i174.GetIt initAuthenticatedScope(
   _i174.GetIt getIt, {
   _i174.ScopeDisposeFunc? dispose,
 }) {
   return _i526.GetItHelper(getIt).initScope(
-    'auth',
+    'authenticated',
     dispose: dispose,
     init: (_i526.GetItHelper gh) {
-      gh.lazySingleton<_i932.DbManager>(
-        () => _i932.DbManager(),
+      gh.lazySingleton<_i907.DbProvider>(
+        () => _i907.DbProvider(gh<String>()),
         dispose: (i) => i.closeDatabase(),
       );
+      gh.lazySingleton<_i932.DbManager>(
+          () => _i932.DbManager(gh<_i907.DbProvider>()));
       gh.lazySingleton<_i458.AbstractDatasource<_i648.Project>>(
           () => _i589.ProjectDatasource(
                 apiClient: gh<_i8.HttpClient<dynamic>>(),

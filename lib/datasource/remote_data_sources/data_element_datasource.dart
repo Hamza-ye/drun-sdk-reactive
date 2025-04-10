@@ -6,14 +6,14 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(70)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class DataElementDatasource
     extends BaseDataSource<$DataElementsTable, DataElement>
     implements MetaDataSource<DataElement> {
   DataElementDatasource(
       {required super.apiClient, required DbManager dbManager})
       : super(
-            dbManager: dbManager, table: dbManager.getActiveDb()!.dataElements);
+            dbManager: dbManager, table: dbManager.db.dataElements);
 
   @override
   String get apiResourceName => 'dataElements';

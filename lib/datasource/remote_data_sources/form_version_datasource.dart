@@ -7,14 +7,14 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(100)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class FormVersionDatasource
     extends BaseDataSource<$FormVersionsTable, FormVersion>
     implements MetaDataSource<FormVersion> {
   FormVersionDatasource(
       {required super.apiClient, required DbManager dbManager})
       : super(
-            dbManager: dbManager, table: dbManager.getActiveDb()!.formVersions);
+            dbManager: dbManager, table: dbManager.db.formVersions);
 
   @override
   String get apiResourceName => 'dataForm';

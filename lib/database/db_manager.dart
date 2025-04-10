@@ -1,43 +1,53 @@
-import 'package:d_sdk/core/auth/authenticated_user.dart';
+import 'package:d_sdk/core/auth/user_detail.dart';
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/di/injection.dart';
+import 'package:d_sdk/database/db_provider.dart';
 import 'package:injectable/injectable.dart';
 
-@Order(1)
-@LazySingleton(scope: 'auth')
+@Order(2)
+@LazySingleton(scope: 'authenticated')
 class DbManager {
-  DbManager()
-      : _db = AppDatabase(
-            databaseName: _connectionKey(
-                rSdkLocator<AuthState>().user!.username,
-                rSdkLocator<AuthState>().activeServerUrl!));
+  DbManager(this._dbProvider);
 
-  final AppDatabase _db;
+  final DbProvider _dbProvider;
 
-  AppDatabase getActiveDb() => _db;
+  AppDatabase get db => _dbProvider.database;
+
+  /// called only after authentication success and
+  /// registering the AuthenticatedUser
+  Future<User?> loadAuthUserData(UserDetail userDetail) async {
+    // if (!rSdkLocator.isRegistered<UserDetail>()) {
+    //   throw NoCachedAuthenticatedUser(
+    //       message: 'No registered Authenticated User');
+    // }
+
+    // // get current registered authenticated user
+    // final UserDetail userDetail =
+    //     rSdkLocator<AuthenticatedUser>();
+
+    // get current authenticated user data from database
+    final user = await (db.select(db.users)
+          ..where((t) => t.username.equals(userDetail.username)))
+        .getSingle();
+
+    return user;
+  }
 
   Future<void> deleteData() async {
-    await _db.customStatement('PRAGMA foreign_keys = OFF');
+    await db.customStatement('PRAGMA foreign_keys = OFF');
     try {
-      _db.transaction(() async {
-        for (final table in _db.allTables) {
-          await _db.delete(table).go();
+      db.transaction(() async {
+        for (final table in db.allTables) {
+          await db.delete(table).go();
         }
       });
     } finally {
-      await _db.customStatement('PRAGMA foreign_keys = OFF');
+      await db.customStatement('PRAGMA foreign_keys = OFF');
     }
   }
 
-  @disposeMethod
-  Future<void> closeDatabase() async {
-    // final key = _connectionKey(username, server);
-    // final db = _databases.remove(key);
-    await _db.close();
-  }
-
-  static String _connectionKey(String userName, String server) {
-    final uri = Uri.parse(server).host;
-    return '${uri}_$userName';
-  }
+//
+// static String _connectionKey(String userName, String server) {
+//   final uri = Uri.parse(server).host;
+//   return '${uri}_$userName';
+// }
 }

@@ -6,11 +6,11 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(40)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class UserDatasource extends BaseDataSource<$UsersTable, User>
     implements MetaDataSource<User> {
   UserDatasource({required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.getActiveDb()!.users);
+      : super(dbManager: dbManager, table: dbManager.db.users);
 
   @override
   String get apiResourceName => 'me';

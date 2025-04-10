@@ -7,7 +7,7 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(90)
-@LazySingleton(as: AbstractDatasource, scope: 'auth')
+@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
 class DataFormTemplateDatasource extends BaseDataSource<
         $DataFormTemplateVersionsTable, DataFormTemplateVersion>
     implements MetaDataSource<DataFormTemplateVersion> {
@@ -15,7 +15,7 @@ class DataFormTemplateDatasource extends BaseDataSource<
       {required super.apiClient, required DbManager dbManager})
       : super(
             dbManager: dbManager,
-            table: dbManager.getActiveDb()!.dataFormTemplateVersions);
+            table: dbManager.db.dataFormTemplateVersions);
 
   @override
   String get apiResourceName => 'dataFormTemplates';
