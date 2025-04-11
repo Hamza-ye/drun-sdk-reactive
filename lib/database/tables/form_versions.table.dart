@@ -12,7 +12,7 @@ class FormVersions extends Table with BaseTableMixin, IdentifiableMixin {
 
   /// List of Template objects (as List<Template>), stored as JSON.
   TextColumn get treeFields =>
-      text().map(const TemplateListConverter()).nullable()();
+      text().map(const TemplateListConverter()).clientDefault(() => '[]')();
 
   /// List of FormOption objects, stored as JSON.
   TextColumn get options =>
@@ -24,7 +24,7 @@ class FormVersions extends Table with BaseTableMixin, IdentifiableMixin {
 
   /// Label map is non-null.
   TextColumn get label =>
-      text().map(const MapConverter<String>()).clientDefault(() => '{}')();
+      text().map(const MapConverter<dynamic>()).clientDefault(() => '{}')();
 
   /// Default locale.
   TextColumn get defaultLocal => text()();

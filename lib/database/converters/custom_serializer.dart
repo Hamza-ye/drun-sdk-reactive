@@ -33,6 +33,10 @@ class CustomSerializer extends ValueSerializer {
       return (json as List<dynamic>)
           .map((e) => Template.fromJsonFactory(e as Map<String, dynamic>))
           .toList() as T;
+    } else if (T == List<String>) {
+      return (json as List<dynamic>)
+          .map((e) => e as String)
+          .toList() as T;
     }
 
     return driftRuntimeOptions.defaultSerializer.fromJson<T>(json);

@@ -32,7 +32,7 @@ class Assignments extends Table with BaseTableMixin {
 
   /// forms stored as JSON string representing a List<String>
   TextColumn get forms =>
-      text().map(const ListConverter<String>()).nullable()();
+      text().map(const ListConverter<String>()).clientDefault(() => '[]')();
 
   /// scope stored as text via a converter
   TextColumn get scope =>

@@ -31,6 +31,8 @@ import 'package:d_sdk/datasource/remote_data_sources/data_element_datasource.dar
     as _i827;
 import 'package:d_sdk/datasource/remote_data_sources/data_form_template_version_datasource.dart'
     as _i1014;
+import 'package:d_sdk/datasource/remote_data_sources/data_option_datasource.dart'
+    as _i725;
 import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.dart'
     as _i646;
 import 'package:d_sdk/datasource/remote_data_sources/data_value_datasource.dart'
@@ -39,8 +41,6 @@ import 'package:d_sdk/datasource/remote_data_sources/form_version_datasource.dar
     as _i474;
 import 'package:d_sdk/datasource/remote_data_sources/metadata_submission_datasource.dart'
     as _i1071;
-import 'package:d_sdk/datasource/remote_data_sources/option_datasource.dart'
-    as _i525;
 import 'package:d_sdk/datasource/remote_data_sources/option_set_datasource.dart'
     as _i756;
 import 'package:d_sdk/datasource/remote_data_sources/org_unit_datasource.dart'
@@ -168,7 +168,7 @@ _i174.GetIt initAuthenticatedScope(
                 dbManager: gh<_i932.DbManager>(),
               ));
       gh.lazySingleton<_i458.AbstractDatasource<_i648.DataOption>>(
-          () => _i525.OptionDatasource(
+          () => _i725.OptionDatasource(
                 apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i932.DbManager>(),
               ));

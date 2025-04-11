@@ -7,7 +7,7 @@ class DataValues extends Table with BaseTableMixin {
   TextColumn get templatePath => text()();
 
   /// Reference to the parent RepeatInstance (nullable).
-  TextColumn get parent => text().nullable().references(RepeatInstances, #id)();
+  TextColumn get parent => text().references(RepeatInstances, #id).nullable()();
 
   /// Reference to the root submission – non-null.
   TextColumn get submission => text().references(DataSubmissions, #id)();

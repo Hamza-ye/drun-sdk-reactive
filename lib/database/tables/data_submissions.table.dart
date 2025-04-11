@@ -8,10 +8,8 @@ import 'package:drift/drift.dart';
 class DataSubmissions extends Table with BaseTableMixin {
   BoolColumn get deleted => boolean().clientDefault(() => false)();
 
-  TextColumn get form => text().generatedAs(formVersion.substr(1, 11))();
-
   /// Form template id is stored as text (nullable).
-  // TextColumn get form => text().nullable()();
+  TextColumn get form => text().generatedAs(formVersion.substr(1, 11))();
 
   /// Many-to-one references stored as text.
   TextColumn get formVersion => text().references(FormVersions, #id)();
@@ -20,13 +18,13 @@ class DataSubmissions extends Table with BaseTableMixin {
   IntColumn get version => integer()();
 
   /// Nullable assignment reference.
-  TextColumn get assignment => text().nullable().references(Assignments, #id)();
+  TextColumn get assignment => text().references(Assignments, #id).nullable()();
 
   /// Many-to-one references stored as text.
-  TextColumn get team => text().nullable().references(Teams, #id)();
+  TextColumn get team => text().references(Teams, #id).nullable()();
 
   /// Nullable orgUnit reference.
-  TextColumn get orgUnit => text().nullable().references(OrgUnits, #id)();
+  TextColumn get orgUnit => text().references(OrgUnits, #id).nullable()();
 
   /// Progress Status stored as text via a converter; nullable.
   TextColumn get progressStatus =>
@@ -42,7 +40,7 @@ class DataSubmissions extends Table with BaseTableMixin {
   TextColumn get lastSyncMessage => text().nullable()();
 
   DateTimeColumn get startEntryTime =>
-      dateTime().withDefault(currentDateAndTime)();
+      dateTime().clientDefault(() => DateTime.now().toUtc())();
 
   /// last finalized time
   DateTimeColumn get finishedEntryTime => dateTime().nullable()();
@@ -50,5 +48,6 @@ class DataSubmissions extends Table with BaseTableMixin {
   TextColumn get createdBy => text().nullable()();
 
   /// formData is stored as a JSON string.
-  TextColumn get formData => text().map(const MapConverter()).nullable()();
+  TextColumn get formData =>
+      text().map(const MapConverter()).clientDefault(() => '{}')();
 }

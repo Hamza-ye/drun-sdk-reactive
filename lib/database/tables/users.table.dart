@@ -22,5 +22,5 @@ class Users extends Table with BaseTableMixin {
   TextColumn get imageUrl => text().nullable()();
 
   TextColumn get authorities =>
-      text().map(const ListConverter<dynamic>()).nullable()();
+      text().map(const ListConverter<String>()).clientDefault(() => '[]')();
 }

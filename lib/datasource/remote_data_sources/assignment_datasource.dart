@@ -19,12 +19,18 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
 
   @override
   Assignment fromApiJson(Map<String, dynamic> data,
-          {ValueSerializer? serializer}) =>
-      Assignment.fromJson({
-        ...data,
-        'activity':
-            data['activity']['uid'] ?? data['activity']['id'].toString(),
-        'orgUnit': data['orgUnit']['uid'] ?? data['activity']['id'].toString(),
-        'team': data['team']['uid'] ?? data['activity']['id'].toString()
-      }, serializer: serializer);
+      {ValueSerializer? serializer}) {
+    final activity =
+        data['activity']['uid'] ?? data['activity']['id']?.toString();
+    final orgUnit = data['orgUnit']['uid'] ?? data['orgUnit']['id']?.toString();
+    final team = data['team']['uid'] ?? data['team']['id']?.toString();
+    final parent = data['parent']['uid'] ?? data['parent']['id']?.toString();
+    return Assignment.fromJson({
+      ...data,
+      'activity': activity,
+      'orgUnit': orgUnit,
+      'team': team,
+      'parent': parent
+    }, serializer: serializer);
+  }
 }

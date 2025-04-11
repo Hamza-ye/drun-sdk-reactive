@@ -19,6 +19,10 @@ class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
 
   @override
   DataOption fromApiJson(Map<String, dynamic> data,
-          {ValueSerializer? serializer}) =>
-      DataOption.fromJson(data, serializer: serializer);
+      {ValueSerializer? serializer}) {
+    final optionSet =
+        data['optionSet']['uid'] ?? data['optionSet']['id'].toString();
+    return DataOption.fromJson({...data, 'optionSet': optionSet},
+        serializer: serializer);
+  }
 }

@@ -17,7 +17,7 @@ class DataElements extends Table with BaseTableMixin, IdentifiableMixin {
 
   /// label is stored as JSON in a text column.
   TextColumn get label =>
-      text().map(const MapConverter<String>()).clientDefault(() => '{}')();
+      text().map(const MapConverter<dynamic>()).clientDefault(() => '{}')();
 
   /// scannedCodeProperties is stored as JSON.
   TextColumn get scannedCodeProperties =>

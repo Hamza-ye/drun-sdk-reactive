@@ -37,13 +37,18 @@ class DataSubmissionDatasource
     final String formVersion = data['form'] != null && data['version'] != null
         ? '${data['form']}_${data['version']}'
         : data['formVersion'];
+    final assignment =
+        data['assignment']['uid'] ?? data['assignment']['id'].toString();
+    final orgUnit =
+        data['orgUnit']?['uid'] ?? data['orgUnit']?['id']?.toString();
+    final team = data['team']?['uid'] ?? data['team']?['id']?.toString();
     return DataSubmission.fromJson({
       ...data,
       'status': SubmissionStatus.synced.name,
       'formVersion': formVersion,
-      'assignment':
-          data['assignment']?['uid'] ?? data['assignment']['id'].toString(),
-      'orgUnit': data['orgUnit']['uid'] ?? data['orgUnit']['id'].toString(),
+      'assignment': assignment,
+      'orgUnit': orgUnit,
+      'team': team,
     }, serializer: serializer);
   }
 

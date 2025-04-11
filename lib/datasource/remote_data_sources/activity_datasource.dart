@@ -19,6 +19,10 @@ class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
 
   @override
   Activity fromApiJson(Map<String, dynamic> data,
-          {ValueSerializer? serializer}) =>
-      Activity.fromJson(data, serializer: serializer);
+      {ValueSerializer? serializer}) {
+    final project =
+        data['project']?['uid'] ?? data['project']?['id']?.toString();
+    return Activity.fromJson({...data, 'project': project as String},
+        serializer: serializer);
+  }
 }

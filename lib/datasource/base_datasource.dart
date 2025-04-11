@@ -35,7 +35,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
     if (forceRefresh) {
       await syncWithRemote();
     }
-    // Return local data.
+
     return db.select(table).get();
   }
 

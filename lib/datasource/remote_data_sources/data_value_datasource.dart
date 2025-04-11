@@ -19,6 +19,18 @@ class DataValueDatasource extends BaseDataSource<$DataValuesTable, DataValue>
 
   @override
   DataValue fromApiJson(Map<String, dynamic> data,
-          {ValueSerializer? serializer}) =>
-      DataValue.fromJson(data, serializer: serializer);
+      {ValueSerializer? serializer}) {
+    final parent = data['parent']?['uid'] ?? data['parent']?['id']?.toString();
+    final submission =
+        data['submission']['uid'] ?? data['submission']['id'].toString();
+    final dataElement =
+        data['dataElement']['uid'] ?? data['dataElement']['id']?.toString();
+
+    return DataValue.fromJson({
+      ...data,
+      'parent': parent,
+      'submission': submission,
+      'dataElement': dataElement,
+    }, serializer: serializer);
+  }
 }

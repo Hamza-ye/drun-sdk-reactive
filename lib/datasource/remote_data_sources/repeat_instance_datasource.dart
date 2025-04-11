@@ -21,6 +21,12 @@ class RepeatInstanceDatasource
 
   @override
   RepeatInstance fromApiJson(Map<String, dynamic> data,
-          {ValueSerializer? serializer}) =>
-      RepeatInstance.fromJson(data, serializer: serializer);
+      {ValueSerializer? serializer}) {
+    final submission =
+        data['submission']['uid'] ?? data['submission']['id']?.toString();
+    final parent = data['parent']?['uid'] ?? data['parent']?['id']?.toString();
+    return RepeatInstance.fromJson(
+        {...data, 'submission': submission, 'parent': parent},
+        serializer: serializer);
+  }
 }

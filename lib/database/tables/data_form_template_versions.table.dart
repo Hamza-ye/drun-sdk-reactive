@@ -17,22 +17,22 @@ class DataFormTemplateVersions extends Table
 
   /// List of DOptionSet objects, stored as JSON.
   TextColumn get optionSets =>
-      text().map(const DOptionSetListConverter()).nullable()();
+      text().map(const DOptionSetListConverter()).clientDefault(() => '[]')();
 
   /// Label map is non-null.
   TextColumn get label =>
-      text().map(const MapConverter<String>()).clientDefault(() => '{}')();
+      text().map(const MapConverter<dynamic>()).clientDefault(() => '{}')();
 
   /// Default locale.
   TextColumn get defaultLocal => text()();
 
   /// fieldsConf stored as IList<Template>, as JSON.
   TextColumn get fields =>
-      text().map(const TemplateListConverter()).nullable()();
+      text().map(const TemplateListConverter()).clientDefault(() => '[]')();
 
   /// sections stored as IList<Template>, as JSON.
   TextColumn get sections =>
-      text().map(const TemplateListConverter()).nullable()();
+      text().map(const TemplateListConverter()).clientDefault(() => '[]')();
 
   /// Description is nullable.
   TextColumn get description => text().nullable()();

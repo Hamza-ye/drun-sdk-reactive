@@ -12,13 +12,13 @@ class Teams extends Table with BaseTableMixin, IdentifiableMixin {
   BoolColumn get deleteClientData =>
       boolean().clientDefault(() => false)();
 
-  /// Properties stored as a JSON string.
-  TextColumn get properties =>
-      text().map(const MapConverter<Object?>()).nullable()();
+  // /// Properties stored as a JSON string.
+  // TextColumn get properties =>
+  //     text().map(const MapConverter<Object?>()).nullable()();
 
   /// Form permissions stored as JSON representing a list of TeamFormPermission.
   TextColumn get formPermissions =>
-      text().map(const TeamFormPermissionListConverter()).nullable()();
+      text().map(const TeamFormPermissionListConverter()).clientDefault(() => '[]')();
 
   /// Scope stored as text with a converter.
   TextColumn get scope =>

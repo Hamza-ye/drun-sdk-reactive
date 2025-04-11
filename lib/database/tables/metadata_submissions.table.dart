@@ -21,7 +21,8 @@ class MetadataSubmissions extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get resourceId => text()();
 
   /// formData stored as a JSON string (nullable).
-  TextColumn get formData => text().map(const MapConverter()).nullable()();
+  TextColumn get formData =>
+      text().map(const MapConverter()).clientDefault(() => '{}')();
 
   /// createdBy (nullable text).
   TextColumn get createdBy => text().nullable()();

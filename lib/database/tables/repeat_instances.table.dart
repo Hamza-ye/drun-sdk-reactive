@@ -9,7 +9,7 @@ class RepeatInstances extends Table with BaseTableMixin {
   TextColumn get submission => text().references(DataSubmissions, #id)();
 
   /// reference to nearest parent RepeatInstance (nullable)
-  TextColumn get parent => text().nullable().references(RepeatInstances, #id)();
+  TextColumn get parent => text().references(RepeatInstances, #id).nullable()();
 
   /// Repeat index for order and identity (non-null)
   IntColumn get repeatIndex => integer()();
