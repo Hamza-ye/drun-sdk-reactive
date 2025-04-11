@@ -3,10 +3,12 @@ import 'package:d_sdk/database/db_manager.dart';
 import 'package:d_sdk/datasource/abstract_datasource.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
+import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(10)
-@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
+@LazySingleton(
+    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
 class ProjectDatasource extends BaseDataSource<$ProjectsTable, Project>
     implements MetaDataSource<Project> {
   ProjectDatasource({required super.apiClient, required DbManager dbManager})
@@ -16,5 +18,7 @@ class ProjectDatasource extends BaseDataSource<$ProjectsTable, Project>
   String get apiResourceName => 'projects';
 
   @override
-  Project fromApiJson(Map<String, dynamic> data) => Project.fromJson(data);
+  Project fromApiJson(Map<String, dynamic> data,
+          {ValueSerializer? serializer}) =>
+      Project.fromJson(data, serializer: serializer);
 }

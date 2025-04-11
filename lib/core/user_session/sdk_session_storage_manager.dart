@@ -15,9 +15,8 @@ class SdkUserSessionRepository implements UserSessionRepository {
 
   @override
   Future<CachedUserDetail?> loadCurrentUser() async {
-    final String? currentUserName = await _cacheStorage.fetch(
-      CacheKeys.userKey,
-    );
+    final String? currentUserName =
+        await _cacheStorage.fetch(CacheKeys.userKey);
 
     final String? cachedListString =
         await _cacheStorage.fetch(CacheKeys.cachedUsersKey);
@@ -51,8 +50,8 @@ class SdkUserSessionRepository implements UserSessionRepository {
         await _cacheStorage.fetch(CacheKeys.cachedUsersKey);
     return cachedListString
             ?.let((list) => jsonDecode(cachedListString))
-            ?.map<CachedUserDetail>(CachedUserDetail.fromJson) ??
-        <CachedUserDetail>[];
+            ?.map<UserDetail>(CachedUserDetail.fromJson) ??
+        <UserDetail>[];
   }
 
   Future<void> _updateLoggedInUsersCache(UserDetail user) async {

@@ -3,6 +3,7 @@ import 'package:d_sdk/core/exception/database_exceptions.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/converters/custom_serializer.dart';
 import 'package:d_sdk/database/db_manager.dart';
 import 'package:d_sdk/datasource/abstract_datasource.dart';
 import 'package:drift/drift.dart';
@@ -38,23 +39,6 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
     return db.select(table).get();
   }
 
-  Future<int> insertItem(Insertable<D> entry) {
-    return db.into(table).insert(entry);
-  }
-
-  Future<bool> updateItem(D item) {
-    return db.update(table).replace(item);
-  }
-
-  // Future<D?> getItemById(String id) {
-  //   return (activeDb.select(table)..where((tbl) => tbl.id.equals(id)))
-  //       .getSingleOrNull();
-  // }
-
-  // Future<int> deleteItem(String id) {
-  //   return (activeDb.delete(table)..where((tbl) => tbl.id.equals(id))).go();
-  // }
-
   Future<List<D>> syncWithRemote(
       {SyncConfig? options, ProgressCallback? progressCallback}) async {
     final remoteData = await getOnline();
@@ -84,7 +68,10 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       dataItem['dirty'] = false;
       dataItem['synced'] = true;
 
-      var x = fromApiJson(dataItem);
+      var x = fromApiJson({
+        ...dataItem,
+        'id': dataItem['uid'] ?? dataItem['id'].toString(),
+      }, serializer: CustomSerializer());
 
       return x;
     }).toList();

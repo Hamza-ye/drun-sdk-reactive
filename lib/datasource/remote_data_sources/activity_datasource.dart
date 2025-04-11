@@ -3,10 +3,12 @@ import 'package:d_sdk/database/db_manager.dart';
 import 'package:d_sdk/datasource/abstract_datasource.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
+import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(20)
-@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
+@LazySingleton(
+    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
 class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
     implements MetaDataSource<Activity> {
   ActivityDatasource({required super.apiClient, required DbManager dbManager})
@@ -16,5 +18,7 @@ class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
   String get apiResourceName => 'activities';
 
   @override
-  Activity fromApiJson(Map<String, dynamic> data) => Activity.fromJson(data);
+  Activity fromApiJson(Map<String, dynamic> data,
+          {ValueSerializer? serializer}) =>
+      Activity.fromJson(data, serializer: serializer);
 }

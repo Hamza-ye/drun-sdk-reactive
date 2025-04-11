@@ -14,7 +14,8 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(120)
-@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
+@LazySingleton(
+    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
 class DataSubmissionDatasource
     extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
     implements MetaDataSource<DataSubmission> {
@@ -25,15 +26,14 @@ class DataSubmissionDatasource
       required DbManager dbManager,
       required AppEnvironmentInstance environmentInstance})
       : this._environmentInstance = environmentInstance,
-        super(
-            dbManager: dbManager,
-            table: dbManager.db.dataSubmissions);
+        super(dbManager: dbManager, table: dbManager.db.dataSubmissions);
 
   @override
   String get apiResourceName => 'dataSubmission';
 
   @override
-  DataSubmission fromApiJson(Map<String, dynamic> data) {
+  DataSubmission fromApiJson(Map<String, dynamic> data,
+      {ValueSerializer? serializer}) {
     final String formVersion = data['form'] != null && data['version'] != null
         ? '${data['form']}_${data['version']}'
         : data['formVersion'];
@@ -41,9 +41,10 @@ class DataSubmissionDatasource
       ...data,
       'status': SubmissionStatus.synced.name,
       'formVersion': formVersion,
-      'assignment': data['assignment']?['id'],
-      'orgUnit': data['orgUnit']?['id'],
-    });
+      'assignment':
+          data['assignment']?['uid'] ?? data['assignment']['id'].toString(),
+      'orgUnit': data['orgUnit']['uid'] ?? data['orgUnit']['id'].toString(),
+    }, serializer: serializer);
   }
 
   Future<List<DataSubmission>> upload(List<String> uids) async {
@@ -51,12 +52,6 @@ class DataSubmissionDatasource
         .filter((f) => f.status
             .isIn([SubmissionStatus.finalized, SubmissionStatus.syncFailed]))
         .get();
-
-    // await this
-    //     .where(attribute: 'isFinal', value: true)
-    // // .where(attribute: 'synced', value: false)
-    //     .where(attribute: 'dirty', value: true)
-    //     .get();
 
     List<String> syncableEntityIds = [];
     List<String> syncableTeamIds = [];
@@ -81,8 +76,7 @@ class DataSubmissionDatasource
     }).toList();
 
     final response = await apiClient.request(
-        resourceName:
-            '${_environmentInstance.apiPath}/${apiResourceName}/bulk',
+        resourceName: '${_environmentInstance.apiPath}/${apiResourceName}/bulk',
         method: 'post',
         data: uploadPayload);
 

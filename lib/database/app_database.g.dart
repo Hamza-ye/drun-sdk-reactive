@@ -690,11 +690,13 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $OrgUnitsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $OrgUnitsTable.$convertertranslations);
   static const VerificationMeta _pathMeta = const VerificationMeta('path');
   @override
   late final GeneratedColumn<String> path = GeneratedColumn<String>(
@@ -830,9 +832,9 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $OrgUnitsTable.$convertertranslationsn.fromSql(
+      translations: $OrgUnitsTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       path: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}path']),
       label: $OrgUnitsTable.$converterlabel.fromSql(attachedDatabase.typeMapping
@@ -855,8 +857,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<Map<String, String>, String> $converterlabel =
       const MapConverter<String>();
 }
@@ -870,7 +870,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final String? path;
   final Map<String, String> label;
   final String? parent;
@@ -884,7 +884,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       this.path,
       required this.label,
       this.parent,
@@ -906,9 +906,9 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $OrgUnitsTable.$convertertranslationsn.toSql(translations));
+          $OrgUnitsTable.$convertertranslations.toSql(translations));
     }
     if (!nullToAbsent || path != null) {
       map['path'] = Variable<String>(path);
@@ -942,9 +942,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       path: path == null && nullToAbsent ? const Value.absent() : Value(path),
       label: Value(label),
       parent:
@@ -971,7 +969,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       path: serializer.fromJson<String?>(json['path']),
       label: serializer.fromJson<Map<String, String>>(json['label']),
       parent: serializer.fromJson<String?>(json['parent']),
@@ -990,7 +988,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'path': serializer.toJson<String?>(path),
       'label': serializer.toJson<Map<String, String>>(label),
       'parent': serializer.toJson<String?>(parent),
@@ -1007,7 +1005,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           Value<String?> path = const Value.absent(),
           Map<String, String>? label,
           Value<String?> parent = const Value.absent(),
@@ -1021,8 +1019,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         path: path.present ? path.value : this.path,
         label: label ?? this.label,
         parent: parent.present ? parent.value : this.parent,
@@ -1115,7 +1112,7 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<String?> path;
   final Value<Map<String, String>> label;
   final Value<String?> parent;
@@ -1196,7 +1193,7 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<String?>? path,
       Value<Map<String, String>>? label,
       Value<String?>? parent,
@@ -1245,7 +1242,7 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>(
-          $OrgUnitsTable.$convertertranslationsn.toSql(translations.value));
+          $OrgUnitsTable.$convertertranslations.toSql(translations.value));
     }
     if (path.present) {
       map['path'] = Variable<String>(path.value);
@@ -1339,11 +1336,13 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $OuLevelsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $OuLevelsTable.$convertertranslations);
   static const VerificationMeta _levelMeta = const VerificationMeta('level');
   @override
   late final GeneratedColumn<int> level = GeneratedColumn<int>(
@@ -1442,9 +1441,9 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $OuLevelsTable.$convertertranslationsn.fromSql(
+      translations: $OuLevelsTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       level: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}level'])!,
       offlineLevels: attachedDatabase.typeMapping
@@ -1459,8 +1458,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
 }
 
 class OuLevel extends DataClass implements Insertable<OuLevel> {
@@ -1472,7 +1469,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final int level;
   final int? offlineLevels;
   const OuLevel(
@@ -1482,7 +1479,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       required this.level,
       this.offlineLevels});
   @override
@@ -1500,9 +1497,9 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $OuLevelsTable.$convertertranslationsn.toSql(translations));
+          $OuLevelsTable.$convertertranslations.toSql(translations));
     }
     map['level'] = Variable<int>(level);
     if (!nullToAbsent || offlineLevels != null) {
@@ -1521,9 +1518,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       level: Value(level),
       offlineLevels: offlineLevels == null && nullToAbsent
           ? const Value.absent()
@@ -1542,7 +1537,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       level: serializer.fromJson<int>(json['level']),
       offlineLevels: serializer.fromJson<int?>(json['offlineLevels']),
     );
@@ -1557,7 +1552,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'level': serializer.toJson<int>(level),
       'offlineLevels': serializer.toJson<int?>(offlineLevels),
     };
@@ -1570,7 +1565,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           int? level,
           Value<int?> offlineLevels = const Value.absent()}) =>
       OuLevel(
@@ -1580,8 +1575,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         level: level ?? this.level,
         offlineLevels:
             offlineLevels.present ? offlineLevels.value : this.offlineLevels,
@@ -1649,7 +1643,7 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<int> level;
   final Value<int?> offlineLevels;
   final Value<int> rowid;
@@ -1711,7 +1705,7 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<int>? level,
       Value<int?>? offlineLevels,
       Value<int>? rowid}) {
@@ -1752,7 +1746,7 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>(
-          $OuLevelsTable.$convertertranslationsn.toSql(translations.value));
+          $OuLevelsTable.$convertertranslations.toSql(translations.value));
     }
     if (level.present) {
       map['level'] = Variable<int>(level.value);
@@ -1829,11 +1823,13 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $ProjectsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $ProjectsTable.$convertertranslations);
   static const VerificationMeta _disabledMeta =
       const VerificationMeta('disabled');
   @override
@@ -1923,9 +1919,9 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $ProjectsTable.$convertertranslationsn.fromSql(
+      translations: $ProjectsTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       disabled: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}disabled'])!,
     );
@@ -1938,8 +1934,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
 }
 
 class Project extends DataClass implements Insertable<Project> {
@@ -1951,7 +1945,7 @@ class Project extends DataClass implements Insertable<Project> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final bool disabled;
   const Project(
       {required this.id,
@@ -1960,7 +1954,7 @@ class Project extends DataClass implements Insertable<Project> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       required this.disabled});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1977,9 +1971,9 @@ class Project extends DataClass implements Insertable<Project> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $ProjectsTable.$convertertranslationsn.toSql(translations));
+          $ProjectsTable.$convertertranslations.toSql(translations));
     }
     map['disabled'] = Variable<bool>(disabled);
     return map;
@@ -1995,9 +1989,7 @@ class Project extends DataClass implements Insertable<Project> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       disabled: Value(disabled),
     );
   }
@@ -2013,7 +2005,7 @@ class Project extends DataClass implements Insertable<Project> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       disabled: serializer.fromJson<bool>(json['disabled']),
     );
   }
@@ -2027,7 +2019,7 @@ class Project extends DataClass implements Insertable<Project> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'disabled': serializer.toJson<bool>(disabled),
     };
   }
@@ -2039,7 +2031,7 @@ class Project extends DataClass implements Insertable<Project> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           bool? disabled}) =>
       Project(
         id: id ?? this.id,
@@ -2048,8 +2040,7 @@ class Project extends DataClass implements Insertable<Project> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         disabled: disabled ?? this.disabled,
       );
   Project copyWithCompanion(ProjectsCompanion data) {
@@ -2110,7 +2101,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<bool> disabled;
   final Value<int> rowid;
   const ProjectsCompanion({
@@ -2167,7 +2158,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<bool>? disabled,
       Value<int>? rowid}) {
     return ProjectsCompanion(
@@ -2206,7 +2197,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>(
-          $ProjectsTable.$convertertranslationsn.toSql(translations.value));
+          $ProjectsTable.$convertertranslations.toSql(translations.value));
     }
     if (disabled.present) {
       map['disabled'] = Variable<bool>(disabled.value);
@@ -2280,11 +2271,13 @@ class $ActivitiesTable extends Activities
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $ActivitiesTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $ActivitiesTable.$convertertranslations);
   static const VerificationMeta _projectMeta =
       const VerificationMeta('project');
   @override
@@ -2425,9 +2418,9 @@ class $ActivitiesTable extends Activities
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $ActivitiesTable.$convertertranslationsn.fromSql(
+      translations: $ActivitiesTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       project: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}project'])!,
       disabled: attachedDatabase.typeMapping
@@ -2448,8 +2441,6 @@ class $ActivitiesTable extends Activities
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
 }
 
 class Activity extends DataClass implements Insertable<Activity> {
@@ -2461,7 +2452,7 @@ class Activity extends DataClass implements Insertable<Activity> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final String project;
   final bool disabled;
   final DateTime? startDate;
@@ -2474,7 +2465,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       required this.project,
       required this.disabled,
       this.startDate,
@@ -2495,9 +2486,9 @@ class Activity extends DataClass implements Insertable<Activity> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $ActivitiesTable.$convertertranslationsn.toSql(translations));
+          $ActivitiesTable.$convertertranslations.toSql(translations));
     }
     map['project'] = Variable<String>(project);
     map['disabled'] = Variable<bool>(disabled);
@@ -2523,9 +2514,7 @@ class Activity extends DataClass implements Insertable<Activity> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       project: Value(project),
       disabled: Value(disabled),
       startDate: startDate == null && nullToAbsent
@@ -2551,7 +2540,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       project: serializer.fromJson<String>(json['project']),
       disabled: serializer.fromJson<bool>(json['disabled']),
       startDate: serializer.fromJson<DateTime?>(json['startDate']),
@@ -2569,7 +2558,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'project': serializer.toJson<String>(project),
       'disabled': serializer.toJson<bool>(disabled),
       'startDate': serializer.toJson<DateTime?>(startDate),
@@ -2585,7 +2574,7 @@ class Activity extends DataClass implements Insertable<Activity> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           String? project,
           bool? disabled,
           Value<DateTime?> startDate = const Value.absent(),
@@ -2598,8 +2587,7 @@ class Activity extends DataClass implements Insertable<Activity> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         project: project ?? this.project,
         disabled: disabled ?? this.disabled,
         startDate: startDate.present ? startDate.value : this.startDate,
@@ -2688,7 +2676,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<String> project;
   final Value<bool> disabled;
   final Value<DateTime?> startDate;
@@ -2766,7 +2754,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<String>? project,
       Value<bool>? disabled,
       Value<DateTime?>? startDate,
@@ -2813,7 +2801,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>(
-          $ActivitiesTable.$convertertranslationsn.toSql(translations.value));
+          $ActivitiesTable.$convertertranslations.toSql(translations.value));
     }
     if (project.present) {
       map['project'] = Variable<String>(project.value);
@@ -2902,11 +2890,12 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $TeamsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>($TeamsTable.$convertertranslations);
   static const VerificationMeta _activityMeta =
       const VerificationMeta('activity');
   @override
@@ -3057,9 +3046,9 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $TeamsTable.$convertertranslationsn.fromSql(attachedDatabase
+      translations: $TeamsTable.$convertertranslations.fromSql(attachedDatabase
           .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}translations'])),
+          .read(DriftSqlType.string, data['${effectivePrefix}translations'])!),
       activity: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}activity'])!,
       disabled: attachedDatabase.typeMapping
@@ -3084,8 +3073,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<Map<String, Object?>, String> $converterproperties =
       const MapConverter<Object?>();
   static TypeConverter<Map<String, Object?>?, String?> $converterpropertiesn =
@@ -3107,7 +3094,7 @@ class Team extends DataClass implements Insertable<Team> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final String activity;
 
   /// Boolean columns with defaults.
@@ -3129,7 +3116,7 @@ class Team extends DataClass implements Insertable<Team> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       required this.activity,
       required this.disabled,
       required this.deleteClientData,
@@ -3151,9 +3138,9 @@ class Team extends DataClass implements Insertable<Team> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $TeamsTable.$convertertranslationsn.toSql(translations));
+          $TeamsTable.$convertertranslations.toSql(translations));
     }
     map['activity'] = Variable<String>(activity);
     map['disabled'] = Variable<bool>(disabled);
@@ -3183,9 +3170,7 @@ class Team extends DataClass implements Insertable<Team> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       activity: Value(activity),
       disabled: Value(disabled),
       deleteClientData: Value(deleteClientData),
@@ -3209,7 +3194,7 @@ class Team extends DataClass implements Insertable<Team> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       activity: serializer.fromJson<String>(json['activity']),
       disabled: serializer.fromJson<bool>(json['disabled']),
       deleteClientData: serializer.fromJson<bool>(json['deleteClientData']),
@@ -3231,7 +3216,7 @@ class Team extends DataClass implements Insertable<Team> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'activity': serializer.toJson<String>(activity),
       'disabled': serializer.toJson<bool>(disabled),
       'deleteClientData': serializer.toJson<bool>(deleteClientData),
@@ -3250,7 +3235,7 @@ class Team extends DataClass implements Insertable<Team> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           String? activity,
           bool? disabled,
           bool? deleteClientData,
@@ -3264,8 +3249,7 @@ class Team extends DataClass implements Insertable<Team> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         activity: activity ?? this.activity,
         disabled: disabled ?? this.disabled,
         deleteClientData: deleteClientData ?? this.deleteClientData,
@@ -3363,7 +3347,7 @@ class TeamsCompanion extends UpdateCompanion<Team> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<String> activity;
   final Value<bool> disabled;
   final Value<bool> deleteClientData;
@@ -3445,7 +3429,7 @@ class TeamsCompanion extends UpdateCompanion<Team> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<String>? activity,
       Value<bool>? disabled,
       Value<bool>? deleteClientData,
@@ -3494,7 +3478,7 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>(
-          $TeamsTable.$convertertranslationsn.toSql(translations.value));
+          $TeamsTable.$convertertranslations.toSql(translations.value));
     }
     if (activity.present) {
       map['activity'] = Variable<String>(activity.value);
@@ -4278,11 +4262,13 @@ class $FormVersionsTable extends FormVersions
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $FormVersionsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $FormVersionsTable.$convertertranslations);
   static const VerificationMeta _formMeta = const VerificationMeta('form');
   @override
   late final GeneratedColumn<String> form = GeneratedColumn<String>(
@@ -4484,9 +4470,9 @@ class $FormVersionsTable extends FormVersions
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $FormVersionsTable.$convertertranslationsn.fromSql(
+      translations: $FormVersionsTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       form: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}form'])!,
       version: attachedDatabase.typeMapping
@@ -4526,8 +4512,6 @@ class $FormVersionsTable extends FormVersions
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<List<Template>, String> $convertertreeFields =
       const TemplateListConverter();
   static TypeConverter<List<Template>?, String?> $convertertreeFieldsn =
@@ -4562,7 +4546,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final String form;
 
   /// Version is an integer.
@@ -4601,7 +4585,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       required this.form,
       required this.version,
       this.treeFields,
@@ -4628,9 +4612,9 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $FormVersionsTable.$convertertranslationsn.toSql(translations));
+          $FormVersionsTable.$convertertranslations.toSql(translations));
     }
     map['version'] = Variable<int>(version);
     if (!nullToAbsent || treeFields != null) {
@@ -4679,9 +4663,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       version: Value(version),
       treeFields: treeFields == null && nullToAbsent
           ? const Value.absent()
@@ -4716,7 +4698,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       form: serializer.fromJson<String>(json['form']),
       version: serializer.fromJson<int>(json['version']),
       treeFields: serializer.fromJson<List<Template>?>(json['treeFields']),
@@ -4741,7 +4723,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'form': serializer.toJson<String>(form),
       'version': serializer.toJson<int>(version),
       'treeFields': serializer.toJson<List<Template>?>(treeFields),
@@ -4765,7 +4747,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           String? form,
           int? version,
           Value<List<Template>?> treeFields = const Value.absent(),
@@ -4784,8 +4766,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         form: form ?? this.form,
         version: version ?? this.version,
         treeFields: treeFields.present ? treeFields.value : this.treeFields,
@@ -4874,7 +4855,7 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<int> version;
   final Value<List<Template>?> treeFields;
   final Value<List<FormOption>> options;
@@ -4978,7 +4959,7 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<int>? version,
       Value<List<Template>?>? treeFields,
       Value<List<FormOption>>? options,
@@ -5035,7 +5016,7 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>(
-          $FormVersionsTable.$convertertranslationsn.toSql(translations.value));
+          $FormVersionsTable.$convertertranslations.toSql(translations.value));
     }
     if (version.present) {
       map['version'] = Variable<int>(version.value);
@@ -5153,11 +5134,13 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $MetadataSubmissionsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $MetadataSubmissionsTable.$convertertranslations);
   static const VerificationMeta _resourceTypeMeta =
       const VerificationMeta('resourceType');
   @override
@@ -5334,9 +5317,9 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $MetadataSubmissionsTable.$convertertranslationsn.fromSql(
+      translations: $MetadataSubmissionsTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       resourceType: $MetadataSubmissionsTable.$converterresourceType.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}resource_type'])!),
@@ -5365,8 +5348,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
   static JsonTypeConverter2<MetadataResourceType, String, String>
       $converterresourceType =
       const EnumNameConverter(MetadataResourceType.values);
@@ -5386,7 +5367,7 @@ class MetadataSubmission extends DataClass
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
 
   /// Resource type (non-null), stored as text using a converter.
   final MetadataResourceType resourceType;
@@ -5418,7 +5399,7 @@ class MetadataSubmission extends DataClass
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       required this.resourceType,
       required this.metadataSchema,
       required this.serialNumber,
@@ -5442,10 +5423,9 @@ class MetadataSubmission extends DataClass
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
-      map['translations'] = Variable<String>($MetadataSubmissionsTable
-          .$convertertranslationsn
-          .toSql(translations));
+    {
+      map['translations'] = Variable<String>(
+          $MetadataSubmissionsTable.$convertertranslations.toSql(translations));
     }
     {
       map['resource_type'] = Variable<String>(
@@ -5478,9 +5458,7 @@ class MetadataSubmission extends DataClass
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       resourceType: Value(resourceType),
       metadataSchema: Value(metadataSchema),
       serialNumber: Value(serialNumber),
@@ -5509,7 +5487,7 @@ class MetadataSubmission extends DataClass
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       resourceType: $MetadataSubmissionsTable.$converterresourceType
           .fromJson(serializer.fromJson<String>(json['resourceType'])),
       metadataSchema: serializer.fromJson<String>(json['metadataSchema']),
@@ -5531,7 +5509,7 @@ class MetadataSubmission extends DataClass
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'resourceType': serializer.toJson<String>($MetadataSubmissionsTable
           .$converterresourceType
           .toJson(resourceType)),
@@ -5552,7 +5530,7 @@ class MetadataSubmission extends DataClass
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           MetadataResourceType? resourceType,
           String? metadataSchema,
           int? serialNumber,
@@ -5568,8 +5546,7 @@ class MetadataSubmission extends DataClass
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         resourceType: resourceType ?? this.resourceType,
         metadataSchema: metadataSchema ?? this.metadataSchema,
         serialNumber: serialNumber ?? this.serialNumber,
@@ -5682,7 +5659,7 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<MetadataResourceType> resourceType;
   final Value<String> metadataSchema;
   final Value<int> serialNumber;
@@ -5778,7 +5755,7 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<MetadataResourceType>? resourceType,
       Value<String>? metadataSchema,
       Value<int>? serialNumber,
@@ -5831,7 +5808,7 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>($MetadataSubmissionsTable
-          .$convertertranslationsn
+          .$convertertranslations
           .toSql(translations.value));
     }
     if (resourceType.present) {
@@ -7226,11 +7203,13 @@ class $DataElementsTable extends DataElements
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataElementsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $DataElementsTable.$convertertranslations);
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -7416,9 +7395,9 @@ class $DataElementsTable extends DataElements
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $DataElementsTable.$convertertranslationsn.fromSql(
+      translations: $DataElementsTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
       type: $DataElementsTable.$convertertypen.fromSql(attachedDatabase
@@ -7452,8 +7431,6 @@ class $DataElementsTable extends DataElements
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
   static JsonTypeConverter2<ValueType, String, String> $convertertype =
       const EnumNameConverter(ValueType.values);
   static JsonTypeConverter2<ValueType?, String?, String?> $convertertypen =
@@ -7480,7 +7457,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final String? description;
   final ValueType? type;
 
@@ -7511,7 +7488,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       this.description,
       this.type,
       required this.mandatory,
@@ -7536,9 +7513,9 @@ class DataElement extends DataClass implements Insertable<DataElement> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $DataElementsTable.$convertertranslationsn.toSql(translations));
+          $DataElementsTable.$convertertranslations.toSql(translations));
     }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
@@ -7582,9 +7559,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
@@ -7618,7 +7593,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       description: serializer.fromJson<String?>(json['description']),
       type: $DataElementsTable.$convertertypen
           .fromJson(serializer.fromJson<String?>(json['type'])),
@@ -7645,7 +7620,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'description': serializer.toJson<String?>(description),
       'type': serializer
           .toJson<String?>($DataElementsTable.$convertertypen.toJson(type)),
@@ -7670,7 +7645,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           Value<String?> description = const Value.absent(),
           Value<ValueType?> type = const Value.absent(),
           bool? mandatory,
@@ -7688,8 +7663,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         description: description.present ? description.value : this.description,
         type: type.present ? type.value : this.type,
         mandatory: mandatory ?? this.mandatory,
@@ -7813,7 +7787,7 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<String?> description;
   final Value<ValueType?> type;
   final Value<bool> mandatory;
@@ -7911,7 +7885,7 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<String?>? description,
       Value<ValueType?>? type,
       Value<bool>? mandatory,
@@ -7968,7 +7942,7 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>(
-          $DataElementsTable.$convertertranslationsn.toSql(translations.value));
+          $DataElementsTable.$convertertranslations.toSql(translations.value));
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -8541,11 +8515,13 @@ class $DataOptionSetsTable extends DataOptionSets
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataOptionSetsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $DataOptionSetsTable.$convertertranslations);
   static const VerificationMeta _optionsMeta =
       const VerificationMeta('options');
   @override
@@ -8629,9 +8605,9 @@ class $DataOptionSetsTable extends DataOptionSets
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $DataOptionSetsTable.$convertertranslationsn.fromSql(
+      translations: $DataOptionSetsTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       options: $DataOptionSetsTable.$converteroptionsn.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}options'])),
@@ -8645,8 +8621,6 @@ class $DataOptionSetsTable extends DataOptionSets
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<List<FormOption>, String> $converteroptions =
       const FormOptionListConverter();
   static TypeConverter<List<FormOption>?, String?> $converteroptionsn =
@@ -8662,7 +8636,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final List<FormOption>? options;
   const DataOptionSet(
       {required this.id,
@@ -8671,7 +8645,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       this.options});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -8688,9 +8662,9 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $DataOptionSetsTable.$convertertranslationsn.toSql(translations));
+          $DataOptionSetsTable.$convertertranslations.toSql(translations));
     }
     if (!nullToAbsent || options != null) {
       map['options'] = Variable<String>(
@@ -8709,9 +8683,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       options: options == null && nullToAbsent
           ? const Value.absent()
           : Value(options),
@@ -8729,7 +8701,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       options: serializer.fromJson<List<FormOption>?>(json['options']),
     );
   }
@@ -8743,7 +8715,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'options': serializer.toJson<List<FormOption>?>(options),
     };
   }
@@ -8755,7 +8727,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           Value<List<FormOption>?> options = const Value.absent()}) =>
       DataOptionSet(
         id: id ?? this.id,
@@ -8764,8 +8736,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         options: options.present ? options.value : this.options,
       );
   DataOptionSet copyWithCompanion(DataOptionSetsCompanion data) {
@@ -8826,7 +8797,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<List<FormOption>?> options;
   final Value<int> rowid;
   const DataOptionSetsCompanion({
@@ -8882,7 +8853,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<List<FormOption>?>? options,
       Value<int>? rowid}) {
     return DataOptionSetsCompanion(
@@ -8921,7 +8892,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>($DataOptionSetsTable
-          .$convertertranslationsn
+          .$convertertranslations
           .toSql(translations.value));
     }
     if (options.present) {
@@ -8997,11 +8968,13 @@ class $DataOptionsTable extends DataOptions
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataOptionsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $DataOptionsTable.$convertertranslations);
   static const VerificationMeta _optionSetMeta =
       const VerificationMeta('optionSet');
   @override
@@ -9150,9 +9123,9 @@ class $DataOptionsTable extends DataOptions
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $DataOptionsTable.$convertertranslationsn.fromSql(
+      translations: $DataOptionsTable.$convertertranslations.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       optionSet: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}option_set'])!,
       listName: attachedDatabase.typeMapping
@@ -9177,8 +9150,6 @@ class $DataOptionsTable extends DataOptions
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<Map<String, String>, String> $converterlabel =
       const MapConverter<String>();
   static TypeConverter<Map<String, dynamic>, String> $converterproperties =
@@ -9196,7 +9167,7 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final String optionSet;
   final String listName;
   final int order;
@@ -9210,7 +9181,7 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       required this.optionSet,
       required this.listName,
       required this.order,
@@ -9232,9 +9203,9 @@ class DataOption extends DataClass implements Insertable<DataOption> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>(
-          $DataOptionsTable.$convertertranslationsn.toSql(translations));
+          $DataOptionsTable.$convertertranslations.toSql(translations));
     }
     map['option_set'] = Variable<String>(optionSet);
     map['list_name'] = Variable<String>(listName);
@@ -9263,9 +9234,7 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       optionSet: Value(optionSet),
       listName: Value(listName),
       order: Value(order),
@@ -9290,7 +9259,7 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       optionSet: serializer.fromJson<String>(json['optionSet']),
       listName: serializer.fromJson<String>(json['listName']),
       order: serializer.fromJson<int>(json['order']),
@@ -9310,7 +9279,7 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'optionSet': serializer.toJson<String>(optionSet),
       'listName': serializer.toJson<String>(listName),
       'order': serializer.toJson<int>(order),
@@ -9327,7 +9296,7 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           String? optionSet,
           String? listName,
           int? order,
@@ -9341,8 +9310,7 @@ class DataOption extends DataClass implements Insertable<DataOption> {
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         optionSet: optionSet ?? this.optionSet,
         listName: listName ?? this.listName,
         order: order ?? this.order,
@@ -9440,7 +9408,7 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<String> optionSet;
   final Value<String> listName;
   final Value<int> order;
@@ -9524,7 +9492,7 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<String>? optionSet,
       Value<String>? listName,
       Value<int>? order,
@@ -9573,7 +9541,7 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     }
     if (translations.present) {
       map['translations'] = Variable<String>(
-          $DataOptionsTable.$convertertranslationsn.toSql(translations.value));
+          $DataOptionsTable.$convertertranslations.toSql(translations.value));
     }
     if (optionSet.present) {
       map['option_set'] = Variable<String>(optionSet.value);
@@ -9669,11 +9637,13 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
   static const VerificationMeta _translationsMeta =
       const VerificationMeta('translations');
   @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>?, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<Translation>?>(
-              $DataFormTemplateVersionsTable.$convertertranslationsn);
+  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
+      translations = GeneratedColumn<String>('translations', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
+          .withConverter<List<Translation>>(
+              $DataFormTemplateVersionsTable.$convertertranslations);
   static const VerificationMeta _formMeta = const VerificationMeta('form');
   @override
   late final GeneratedColumn<String> form = GeneratedColumn<String>(
@@ -9866,9 +9836,9 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      translations: $DataFormTemplateVersionsTable.$convertertranslationsn
+      translations: $DataFormTemplateVersionsTable.$convertertranslations
           .fromSql(attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])),
+              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       form: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}form'])!,
       version: attachedDatabase.typeMapping
@@ -9906,8 +9876,6 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<Translation>?, String?> $convertertranslationsn =
-      NullAwareTypeConverter.wrap($convertertranslations);
   static TypeConverter<List<FormOption>, String> $converteroptions =
       const FormOptionListConverter();
   static TypeConverter<List<DOptionSet>, String> $converteroptionSets =
@@ -9939,7 +9907,7 @@ class DataFormTemplateVersion extends DataClass
   final String? code;
 
   /// List of Translations
-  final List<Translation>? translations;
+  final List<Translation> translations;
   final String form;
 
   /// Version is an integer.
@@ -9975,7 +9943,7 @@ class DataFormTemplateVersion extends DataClass
       this.name,
       this.displayName,
       this.code,
-      this.translations,
+      required this.translations,
       required this.form,
       required this.version,
       required this.options,
@@ -10001,9 +9969,9 @@ class DataFormTemplateVersion extends DataClass
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || translations != null) {
+    {
       map['translations'] = Variable<String>($DataFormTemplateVersionsTable
-          .$convertertranslationsn
+          .$convertertranslations
           .toSql(translations));
     }
     map['version'] = Variable<int>(version);
@@ -10050,9 +10018,7 @@ class DataFormTemplateVersion extends DataClass
           ? const Value.absent()
           : Value(displayName),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      translations: translations == null && nullToAbsent
-          ? const Value.absent()
-          : Value(translations),
+      translations: Value(translations),
       version: Value(version),
       options: Value(options),
       optionSets: optionSets == null && nullToAbsent
@@ -10083,7 +10049,7 @@ class DataFormTemplateVersion extends DataClass
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       translations:
-          serializer.fromJson<List<Translation>?>(json['translations']),
+          serializer.fromJson<List<Translation>>(json['translations']),
       form: serializer.fromJson<String>(json['form']),
       version: serializer.fromJson<int>(json['version']),
       options: serializer.fromJson<List<FormOption>>(json['options']),
@@ -10108,7 +10074,7 @@ class DataFormTemplateVersion extends DataClass
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
-      'translations': serializer.toJson<List<Translation>?>(translations),
+      'translations': serializer.toJson<List<Translation>>(translations),
       'form': serializer.toJson<String>(form),
       'version': serializer.toJson<int>(version),
       'options': serializer.toJson<List<FormOption>>(options),
@@ -10131,7 +10097,7 @@ class DataFormTemplateVersion extends DataClass
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<List<Translation>?> translations = const Value.absent(),
+          List<Translation>? translations,
           String? form,
           int? version,
           List<FormOption>? options,
@@ -10149,8 +10115,7 @@ class DataFormTemplateVersion extends DataClass
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
-        translations:
-            translations.present ? translations.value : this.translations,
+        translations: translations ?? this.translations,
         form: form ?? this.form,
         version: version ?? this.version,
         options: options ?? this.options,
@@ -10236,7 +10201,7 @@ class DataFormTemplateVersionsCompanion
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
-  final Value<List<Translation>?> translations;
+  final Value<List<Translation>> translations;
   final Value<int> version;
   final Value<List<FormOption>> options;
   final Value<List<DOptionSet>?> optionSets;
@@ -10335,7 +10300,7 @@ class DataFormTemplateVersionsCompanion
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
-      Value<List<Translation>?>? translations,
+      Value<List<Translation>>? translations,
       Value<int>? version,
       Value<List<FormOption>>? options,
       Value<List<DOptionSet>?>? optionSets,
@@ -10390,7 +10355,7 @@ class DataFormTemplateVersionsCompanion
     }
     if (translations.present) {
       map['translations'] = Variable<String>($DataFormTemplateVersionsTable
-          .$convertertranslationsn
+          .$convertertranslations
           .toSql(translations.value));
     }
     if (version.present) {
@@ -10843,7 +10808,7 @@ typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<String?> path,
   Value<Map<String, String>> label,
   Value<String?> parent,
@@ -10859,7 +10824,7 @@ typedef $$OrgUnitsTableUpdateCompanionBuilder = OrgUnitsCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<String?> path,
   Value<Map<String, String>> label,
   Value<String?> parent,
@@ -10934,7 +10899,7 @@ class $$OrgUnitsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -11081,7 +11046,7 @@ class $$OrgUnitsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -11175,7 +11140,7 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<String?> path = const Value.absent(),
             Value<Map<String, String>> label = const Value.absent(),
             Value<String?> parent = const Value.absent(),
@@ -11207,7 +11172,7 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<String?> path = const Value.absent(),
             Value<Map<String, String>> label = const Value.absent(),
             Value<String?> parent = const Value.absent(),
@@ -11297,7 +11262,7 @@ typedef $$OuLevelsTableCreateCompanionBuilder = OuLevelsCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   required int level,
   Value<int?> offlineLevels,
   Value<int> rowid,
@@ -11309,7 +11274,7 @@ typedef $$OuLevelsTableUpdateCompanionBuilder = OuLevelsCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<int> level,
   Value<int?> offlineLevels,
   Value<int> rowid,
@@ -11343,7 +11308,7 @@ class $$OuLevelsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -11422,7 +11387,7 @@ class $$OuLevelsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -11462,7 +11427,7 @@ class $$OuLevelsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<int> level = const Value.absent(),
             Value<int?> offlineLevels = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -11486,7 +11451,7 @@ class $$OuLevelsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             required int level,
             Value<int?> offlineLevels = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -11529,7 +11494,7 @@ typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   required bool disabled,
   Value<int> rowid,
 });
@@ -11540,7 +11505,7 @@ typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<bool> disabled,
   Value<int> rowid,
 });
@@ -11593,7 +11558,7 @@ class $$ProjectsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -11686,7 +11651,7 @@ class $$ProjectsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -11744,7 +11709,7 @@ class $$ProjectsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<bool> disabled = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -11766,7 +11731,7 @@ class $$ProjectsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             required bool disabled,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -11830,7 +11795,7 @@ typedef $$ActivitiesTableCreateCompanionBuilder = ActivitiesCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   required String project,
   required bool disabled,
   Value<DateTime?> startDate,
@@ -11845,7 +11810,7 @@ typedef $$ActivitiesTableUpdateCompanionBuilder = ActivitiesCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<String> project,
   Value<bool> disabled,
   Value<DateTime?> startDate,
@@ -11928,7 +11893,7 @@ class $$ActivitiesTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -12100,7 +12065,7 @@ class $$ActivitiesTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -12209,7 +12174,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<String> project = const Value.absent(),
             Value<bool> disabled = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
@@ -12239,7 +12204,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             required String project,
             required bool disabled,
             Value<DateTime?> startDate = const Value.absent(),
@@ -12355,7 +12320,7 @@ typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   required String activity,
   Value<bool> disabled,
   Value<bool> deleteClientData,
@@ -12371,7 +12336,7 @@ typedef $$TeamsTableUpdateCompanionBuilder = TeamsCompanion Function({
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<String> activity,
   Value<bool> disabled,
   Value<bool> deleteClientData,
@@ -12456,7 +12421,7 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -12645,7 +12610,7 @@ class $$TeamsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -12759,7 +12724,7 @@ class $$TeamsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<String> activity = const Value.absent(),
             Value<bool> disabled = const Value.absent(),
             Value<bool> deleteClientData = const Value.absent(),
@@ -12792,7 +12757,7 @@ class $$TeamsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             required String activity,
             Value<bool> disabled = const Value.absent(),
             Value<bool> deleteClientData = const Value.absent(),
@@ -13630,7 +13595,7 @@ typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   required int version,
   Value<List<Template>?> treeFields,
   Value<List<FormOption>> options,
@@ -13651,7 +13616,7 @@ typedef $$FormVersionsTableUpdateCompanionBuilder = FormVersionsCompanion
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<int> version,
   Value<List<Template>?> treeFields,
   Value<List<FormOption>> options,
@@ -13715,7 +13680,7 @@ class $$FormVersionsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -13885,7 +13850,7 @@ class $$FormVersionsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -13977,7 +13942,7 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<int> version = const Value.absent(),
             Value<List<Template>?> treeFields = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
@@ -14017,7 +13982,7 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             required int version,
             Value<List<Template>?> treeFields = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
@@ -14104,7 +14069,7 @@ typedef $$MetadataSubmissionsTableCreateCompanionBuilder
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   required MetadataResourceType resourceType,
   required String metadataSchema,
   required int serialNumber,
@@ -14123,7 +14088,7 @@ typedef $$MetadataSubmissionsTableUpdateCompanionBuilder
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<MetadataResourceType> resourceType,
   Value<String> metadataSchema,
   Value<int> serialNumber,
@@ -14163,7 +14128,7 @@ class $$MetadataSubmissionsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -14289,7 +14254,7 @@ class $$MetadataSubmissionsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -14356,7 +14321,7 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<MetadataResourceType> resourceType = const Value.absent(),
             Value<String> metadataSchema = const Value.absent(),
             Value<int> serialNumber = const Value.absent(),
@@ -14392,7 +14357,7 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             required MetadataResourceType resourceType,
             required String metadataSchema,
             required int serialNumber,
@@ -15782,7 +15747,7 @@ typedef $$DataElementsTableCreateCompanionBuilder = DataElementsCompanion
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<String?> description,
   Value<ValueType?> type,
   Value<bool> mandatory,
@@ -15802,7 +15767,7 @@ typedef $$DataElementsTableUpdateCompanionBuilder = DataElementsCompanion
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<String?> description,
   Value<ValueType?> type,
   Value<bool> mandatory,
@@ -15863,7 +15828,7 @@ class $$DataElementsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -16020,7 +15985,7 @@ class $$DataElementsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -16104,7 +16069,7 @@ class $$DataElementsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<ValueType?> type = const Value.absent(),
             Value<bool> mandatory = const Value.absent(),
@@ -16143,7 +16108,7 @@ class $$DataElementsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<ValueType?> type = const Value.absent(),
             Value<bool> mandatory = const Value.absent(),
@@ -16698,7 +16663,7 @@ typedef $$DataOptionSetsTableCreateCompanionBuilder = DataOptionSetsCompanion
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<List<FormOption>?> options,
   Value<int> rowid,
 });
@@ -16710,7 +16675,7 @@ typedef $$DataOptionSetsTableUpdateCompanionBuilder = DataOptionSetsCompanion
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<List<FormOption>?> options,
   Value<int> rowid,
 });
@@ -16764,7 +16729,7 @@ class $$DataOptionSetsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -16859,7 +16824,7 @@ class $$DataOptionSetsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -16918,7 +16883,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<List<FormOption>?> options = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -16940,7 +16905,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<List<FormOption>?> options = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -17007,7 +16972,7 @@ typedef $$DataOptionsTableCreateCompanionBuilder = DataOptionsCompanion
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   required String optionSet,
   required String listName,
   required int order,
@@ -17024,7 +16989,7 @@ typedef $$DataOptionsTableUpdateCompanionBuilder = DataOptionsCompanion
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<String> optionSet,
   Value<String> listName,
   Value<int> order,
@@ -17080,7 +17045,7 @@ class $$DataOptionsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -17224,7 +17189,7 @@ class $$DataOptionsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -17294,7 +17259,7 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<String> optionSet = const Value.absent(),
             Value<String> listName = const Value.absent(),
             Value<int> order = const Value.absent(),
@@ -17326,7 +17291,7 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             required String optionSet,
             required String listName,
             required int order,
@@ -17415,7 +17380,7 @@ typedef $$DataFormTemplateVersionsTableCreateCompanionBuilder
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   required int version,
   Value<List<FormOption>> options,
   Value<List<DOptionSet>?> optionSets,
@@ -17435,7 +17400,7 @@ typedef $$DataFormTemplateVersionsTableUpdateCompanionBuilder
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
-  Value<List<Translation>?> translations,
+  Value<List<Translation>> translations,
   Value<int> version,
   Value<List<FormOption>> options,
   Value<List<DOptionSet>?> optionSets,
@@ -17476,7 +17441,7 @@ class $$DataFormTemplateVersionsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<Translation>?, List<Translation>, String>
+  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -17617,7 +17582,7 @@ class $$DataFormTemplateVersionsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<Translation>?, String>
+  GeneratedColumnWithTypeConverter<List<Translation>, String>
       get translations => $composableBuilder(
           column: $table.translations, builder: (column) => column);
 
@@ -17691,7 +17656,7 @@ class $$DataFormTemplateVersionsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             Value<int> version = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
             Value<List<DOptionSet>?> optionSets = const Value.absent(),
@@ -17729,7 +17694,7 @@ class $$DataFormTemplateVersionsTableTableManager extends RootTableManager<
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<List<Translation>?> translations = const Value.absent(),
+            Value<List<Translation>> translations = const Value.absent(),
             required int version,
             Value<List<FormOption>> options = const Value.absent(),
             Value<List<DOptionSet>?> optionSets = const Value.absent(),

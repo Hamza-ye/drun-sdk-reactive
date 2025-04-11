@@ -9,10 +9,6 @@ abstract class AbstractDatasource<D> {
 
   Future<List<D>> get({bool forceRefresh = false});
 
-  Future<int> insertItem(Insertable<D> entry);
-
-  Future<bool> updateItem(D item);
-
   Future<List<Insertable<D>>> syncWithRemote({SyncConfig? options});
 
   @protected
@@ -20,5 +16,5 @@ abstract class AbstractDatasource<D> {
 
   Future<String> dataRunResourceUrl();
 
-  D fromApiJson(Map<String, dynamic> data);
+  D fromApiJson(Map<String, dynamic> data, {ValueSerializer? serializer});
 }

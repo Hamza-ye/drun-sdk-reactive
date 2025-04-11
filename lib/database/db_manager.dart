@@ -27,7 +27,7 @@ class DbManager {
     // get current authenticated user data from database
     final user = await (db.select(db.users)
           ..where((t) => t.username.equals(userDetail.username)))
-        .getSingle();
+        .getSingleOrNull();
 
     return user;
   }

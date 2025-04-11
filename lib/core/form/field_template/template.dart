@@ -1,3 +1,4 @@
+import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:equatable/equatable.dart';
@@ -53,22 +54,26 @@ abstract class Template with EquatableMixin {
         constraint
       ];
 
-  // Template copyWith({
-  //   String? id,
-  //   String? description,
-  //   String? path,
-  //   int? order,
-  //   String? name,
-  //   String? code,
-  //   bool? mainField,
-  //   Iterable<Rule>? rules,
-  //   Iterable<Template>? fields,
-  //   Iterable<Template>? treeFields,
-  //   ValueType? type,
-  //   IMap<String, dynamic>? label,
-  //   IMap<String, dynamic>? properties,
-  //   bool? readOnly,
-  //   String? constraint,
-  //   IMap<String, String>? constraintMessage,
-  // });
+  static Template fromJsonFactory(Map<String, dynamic> json) {
+    final type = json['type'] as String?;
+    final valueType = ValueType.getValueType(type);
+
+    switch (valueType) {
+      case ValueType.Section:
+      case ValueType.RepeatableSection:
+        return SectionTemplate.fromJson(json);
+      default:
+        return FieldTemplate.fromJson(json);
+    }
+  }
+
+  static Map<String, dynamic> toJsonFactory(Template template) {
+    switch (template.type) {
+      case ValueType.Section:
+      case ValueType.RepeatableSection:
+        return (template as SectionTemplate).toJson();
+      default:
+        return (template as FieldTemplate).toJson();
+    }
+  }
 }

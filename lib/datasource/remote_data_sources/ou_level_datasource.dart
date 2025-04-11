@@ -3,10 +3,12 @@ import 'package:d_sdk/database/db_manager.dart';
 import 'package:d_sdk/datasource/abstract_datasource.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
+import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(25)
-@LazySingleton(as: AbstractDatasource, scope: 'authenticated')
+@LazySingleton(
+    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
 class OuLevelDatasource extends BaseDataSource<$OuLevelsTable, OuLevel>
     implements MetaDataSource<OuLevel> {
   OuLevelDatasource({required super.apiClient, required DbManager dbManager})
@@ -16,5 +18,7 @@ class OuLevelDatasource extends BaseDataSource<$OuLevelsTable, OuLevel>
   String get apiResourceName => 'ouLevels';
 
   @override
-  OuLevel fromApiJson(Map<String, dynamic> data) => OuLevel.fromJson(data);
+  OuLevel fromApiJson(Map<String, dynamic> data,
+          {ValueSerializer? serializer}) =>
+      OuLevel.fromJson(data, serializer: serializer);
 }

@@ -11,6 +11,7 @@ GetIt initAuthScope(
   required String baseUrl,
   ScopeDisposeFunc? dispose,
 }) {
+  getIt.enableRegisteringMultipleInstancesOfOneType();
   return GetItHelper(getIt).initScope(
     'authenticated',
     dispose: dispose,
@@ -21,79 +22,71 @@ GetIt initAuthScope(
       );
 
       gh.lazySingleton<DbManager>(() => DbManager(gh<DbProvider>()));
-      gh.lazySingleton<AbstractDatasource<Project>>(() => ProjectDatasource(
+      gh.lazySingleton<AbstractDatasource>(() => ProjectDatasource(
             apiClient: gh<HttpClient<dynamic>>(),
             dbManager: gh<DbManager>(),
           ));
-      gh.lazySingleton<AbstractDatasource<Activity>>(() => ActivityDatasource(
+      gh.lazySingleton<AbstractDatasource>(() => ActivityDatasource(
             apiClient: gh<HttpClient<dynamic>>(),
             dbManager: gh<DbManager>(),
           ));
-      gh.lazySingleton<AbstractDatasource<OuLevel>>(() => OuLevelDatasource(
+      gh.lazySingleton<AbstractDatasource>(() => OuLevelDatasource(
             apiClient: gh<HttpClient<dynamic>>(),
             dbManager: gh<DbManager>(),
           ));
-      gh.lazySingleton<AbstractDatasource<OrgUnit>>(() => OrgUnitDatasource(
+      gh.lazySingleton<AbstractDatasource>(() => OrgUnitDatasource(
             apiClient: gh<HttpClient<dynamic>>(),
             dbManager: gh<DbManager>(),
           ));
-      gh.lazySingleton<AbstractDatasource<User>>(() => UserDatasource(
+      gh.lazySingleton<AbstractDatasource>(() => UserDatasource(
             apiClient: gh<HttpClient<dynamic>>(),
             dbManager: gh<DbManager>(),
           ));
-      gh.lazySingleton<AbstractDatasource<DataOptionSet>>(
-          () => OptionSetDatasource(
-                apiClient: gh<HttpClient<dynamic>>(),
-                dbManager: gh<DbManager>(),
-              ));
-      gh.lazySingleton<AbstractDatasource<DataOption>>(() => OptionDatasource(
+      gh.lazySingleton<AbstractDatasource>(() => OptionSetDatasource(
             apiClient: gh<HttpClient<dynamic>>(),
             dbManager: gh<DbManager>(),
           ));
-      gh.lazySingleton<AbstractDatasource<DataElement>>(
-          () => DataElementDatasource(
-                apiClient: gh<HttpClient<dynamic>>(),
-                dbManager: gh<DbManager>(),
-              ));
-      gh.lazySingleton<AbstractDatasource<Team>>(() => TeamDatasource(
+      gh.lazySingleton<AbstractDatasource>(() => OptionDatasource(
             apiClient: gh<HttpClient<dynamic>>(),
             dbManager: gh<DbManager>(),
           ));
-      gh.lazySingleton<AbstractDatasource<DataFormTemplateVersion>>(
-          () => DataFormTemplateDatasource(
-                apiClient: gh<HttpClient<dynamic>>(),
-                dbManager: gh<DbManager>(),
-              ));
-      gh.lazySingleton<AbstractDatasource<FormVersion>>(
-          () => FormVersionDatasource(
-                apiClient: gh<HttpClient<dynamic>>(),
-                dbManager: gh<DbManager>(),
-              ));
-      gh.lazySingleton<AbstractDatasource<Assignment>>(
-          () => AssignmentDatasource(
-                apiClient: gh<HttpClient<dynamic>>(),
-                dbManager: gh<DbManager>(),
-              ));
-      gh.lazySingleton<AbstractDatasource<DataSubmission>>(
-          () => DataSubmissionDatasource(
-                apiClient: gh<HttpClient<dynamic>>(),
-                dbManager: gh<DbManager>(),
-                environmentInstance: gh<AppEnvironmentInstance>(),
-              ));
-      gh.lazySingleton<AbstractDatasource<RepeatInstance>>(
-          () => RepeatInstanceDatasource(
-                apiClient: gh<HttpClient<dynamic>>(),
-                dbManager: gh<DbManager>(),
-              ));
-      gh.lazySingleton<AbstractDatasource<DataValue>>(() => DataValueDatasource(
+      gh.lazySingleton<AbstractDatasource>(() => DataElementDatasource(
             apiClient: gh<HttpClient<dynamic>>(),
             dbManager: gh<DbManager>(),
           ));
-      gh.lazySingleton<AbstractDatasource<MetadataSubmission>>(
-          () => MetadataSubmissionDatasource(
-                apiClient: gh<HttpClient<dynamic>>(),
-                dbManager: gh<DbManager>(),
-              ));
+      gh.lazySingleton<AbstractDatasource>(() => TeamDatasource(
+            apiClient: gh<HttpClient<dynamic>>(),
+            dbManager: gh<DbManager>(),
+          ));
+      gh.lazySingleton<AbstractDatasource>(() => DataFormTemplateDatasource(
+            apiClient: gh<HttpClient<dynamic>>(),
+            dbManager: gh<DbManager>(),
+          ));
+      gh.lazySingleton<AbstractDatasource>(() => FormVersionDatasource(
+            apiClient: gh<HttpClient<dynamic>>(),
+            dbManager: gh<DbManager>(),
+          ));
+      gh.lazySingleton<AbstractDatasource>(() => AssignmentDatasource(
+            apiClient: gh<HttpClient<dynamic>>(),
+            dbManager: gh<DbManager>(),
+          ));
+      gh.lazySingleton<AbstractDatasource>(() => DataSubmissionDatasource(
+            apiClient: gh<HttpClient<dynamic>>(),
+            dbManager: gh<DbManager>(),
+            environmentInstance: gh<AppEnvironmentInstance>(),
+          ));
+      gh.lazySingleton<AbstractDatasource>(() => RepeatInstanceDatasource(
+            apiClient: gh<HttpClient<dynamic>>(),
+            dbManager: gh<DbManager>(),
+          ));
+      gh.lazySingleton<AbstractDatasource>(() => DataValueDatasource(
+            apiClient: gh<HttpClient<dynamic>>(),
+            dbManager: gh<DbManager>(),
+          ));
+      gh.lazySingleton<AbstractDatasource>(() => MetadataSubmissionDatasource(
+            apiClient: gh<HttpClient<dynamic>>(),
+            dbManager: gh<DbManager>(),
+          ));
     },
   );
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:d_sdk/database/shared/translations.dart';
 import 'package:drift/drift.dart';
 
-/// Converts a List<DOptionSet> to/from a JSON String.
+/// Converts a List<Translation> to/from a JSON String.
 class TranslationConverter extends TypeConverter<List<Translation>, String> {
   const TranslationConverter();
 

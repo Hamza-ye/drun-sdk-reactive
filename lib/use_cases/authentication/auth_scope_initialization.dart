@@ -24,7 +24,9 @@ class AuthScopeInitializer {
   Future<void> popScope() async {
     await _logoutCleanUp.logoutCleanUp();
     await rSdkLocator.popScopesTill('authenticated');
-    await rSdkLocator.unregister<AuthenticatedUser>();
+    if (rSdkLocator.isRegistered<AuthenticatedUser>()) {
+      await rSdkLocator.unregister<AuthenticatedUser>();
+    }
   }
 
   void registerAuthUser({required AuthenticatedUser authUser}) {
