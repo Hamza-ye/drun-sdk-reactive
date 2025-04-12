@@ -49,7 +49,7 @@ class SdkAuthManager implements AuthManager {
       return Error(e);
     } catch (e) {
       return Error(AuthFailure(e.toString(),
-          errorCode: DRunErrorCode.unexpected, cause: e));
+          errorCode: DRunErrorCode.unexpected, cause: this));
     }
   }
 

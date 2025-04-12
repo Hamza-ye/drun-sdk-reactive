@@ -9,13 +9,15 @@ class FormOptionListConverter extends TypeConverter<List<FormOption>, String> {
   const FormOptionListConverter();
 
   @override
-  List<FormOption> fromSql(String fromDb) {
+  List<FormOption> fromSql(String? fromDb) {
+    if (fromDb == null) return [];
     final List<dynamic> decoded = jsonDecode(fromDb);
     return decoded.map((json) => FormOption.fromJson(json)).toList();
   }
 
   @override
-  String toSql(List<FormOption> value) {
+  String toSql(List<FormOption>? value) {
+    value ??= [];
     final listJson = value.map((option) => option.toJson()).toList();
     return jsonEncode(listJson);
   }

@@ -36,11 +36,17 @@ class RemoteAuthentication implements AuthenticationService {
           headers: authHeaders);
 
       final data = httpResponse.data;
+
+      final authorities = (data['authorities'] as List<dynamic>)
+          .map<String>((e) => e as String)
+          .toList();
+
       final user = User.fromJson({
         ...?data,
         'id': httpResponse.data['uid'],
         'username': params.username,
         'password': params.password,
+        'authorities': authorities,
       });
 
       return user;
@@ -50,11 +56,11 @@ class RemoteAuthentication implements AuthenticationService {
     } catch (_error) {
       final error = _error.toString();
       throw AuthFailure(
-          _error.toString().substring(0, error.length > 80 ? 80 : null),
+          _error.toString().substring(0, error.length > 100 ? 100 : null),
           errorCode: DRunErrorCode.unexpected,
           errorComponent: DErrorComponent.SDK,
           stackTrace: StackTrace.current,
-          cause: _error);
+          cause: this);
     }
   }
 }

@@ -19,6 +19,9 @@ class OrgUnitDatasource extends BaseDataSource<$OrgUnitsTable, OrgUnit>
 
   @override
   OrgUnit fromApiJson(Map<String, dynamic> data,
-          {ValueSerializer? serializer}) =>
-      OrgUnit.fromJson(data, serializer: serializer);
+      {ValueSerializer? serializer}) {
+    final parent = data['parent']?['uid'] ?? data['parent']?['id']?.toString();
+    return OrgUnit.fromJson({...data, 'parent': parent},
+        serializer: serializer);
+  }
 }

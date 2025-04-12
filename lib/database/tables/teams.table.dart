@@ -7,18 +7,14 @@ class Teams extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get activity => text().references(Activities, #id)();
 
   /// Boolean columns with defaults.
-  BoolColumn get disabled => boolean().clientDefault(() => false)();
+  BoolColumn get disabled => boolean().nullable()();
 
-  BoolColumn get deleteClientData =>
-      boolean().clientDefault(() => false)();
-
-  // /// Properties stored as a JSON string.
-  // TextColumn get properties =>
-  //     text().map(const MapConverter<Object?>()).nullable()();
+  BoolColumn get deleteClientData => boolean().nullable()();
 
   /// Form permissions stored as JSON representing a list of TeamFormPermission.
-  TextColumn get formPermissions =>
-      text().map(const TeamFormPermissionListConverter()).clientDefault(() => '[]')();
+  TextColumn get formPermissions => text()
+      .map(const TeamFormPermissionListConverter())
+      .clientDefault(() => '[]')();
 
   /// Scope stored as text with a converter.
   TextColumn get scope =>

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 /// Converter for forms: List<String> <-> JSON String
-class ListConverter<T> extends TypeConverter<List<T>, String?> {
+class ListConverter<T> extends TypeConverter<List<T>, String> {
   const ListConverter();
 
   @override
@@ -14,8 +14,8 @@ class ListConverter<T> extends TypeConverter<List<T>, String?> {
   }
 
   @override
-  String? toSql(List<T>? forms) {
-    if (forms == null) return null;
+  String toSql(List<T>? forms) {
+    forms ??= [];
     return jsonEncode(forms);
   }
 }

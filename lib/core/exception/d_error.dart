@@ -40,4 +40,14 @@ class DError implements DException {
       'shouldShowMessage': this.shouldShowMessage,
     };
   }
+
+  @override
+  String toString() {
+    return (StringBuffer('Error(')
+          ..write('url: $url, ')
+          ..write('errorCode: $errorCode, ')
+          ..write('message: $message ')
+          ..write(')'))
+        .toString();
+  }
 }

@@ -46,21 +46,28 @@ class SdkUserSessionRepository implements UserSessionRepository {
 
   @override
   Future<List<UserDetail>> getCachedUsers() async {
-    final cachedListString =
+    final String? cachedListString =
         await _cacheStorage.fetch(CacheKeys.cachedUsersKey);
-    return cachedListString
-            ?.let((list) => jsonDecode(cachedListString))
-            ?.map<UserDetail>(CachedUserDetail.fromJson) ??
-        <UserDetail>[];
+
+    List<CachedUserDetail> cachedList = [];
+    if (cachedListString != null) {
+      final List<dynamic> decoded = jsonDecode(cachedListString);
+      cachedList.addAll(decoded.map((json) => CachedUserDetail.fromJson(json)));
+    }
+
+    // if ((currentUserName ?? '').isEmpty || cachedList.isEmpty) return null;
+
+    return cachedList;
   }
 
   Future<void> _updateLoggedInUsersCache(UserDetail user) async {
     final List<UserDetail> cachedList = await getCachedUsers();
 
-    final updated =
-        cachedList.where((u) => u.username != user.username).toList()
-          ..add(user)
-          ..map((u) => u.toJson());
+    final updated = cachedList
+        .where((u) => u.username != user.username)
+        .toList()
+      ..add(CachedUserDetail(username: user.username, baseUrl: user.baseUrl))
+      ..map((u) => u.toJson());
 
     await _cacheStorage.save(
       key: CacheKeys.cachedUsersKey,

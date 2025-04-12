@@ -32,6 +32,10 @@ class DbManager {
     return user;
   }
 
+  Future<void> saveAuthUserData(User authUserData) async {
+    await (db.into(db.users).insertOnConflictUpdate(authUserData));
+  }
+
   Future<void> deleteData() async {
     await db.customStatement('PRAGMA foreign_keys = OFF');
     try {

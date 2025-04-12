@@ -18,6 +18,10 @@ class TeamDatasource extends BaseDataSource<$TeamsTable, Team>
   String get apiResourceName => 'teams';
 
   @override
-  Team fromApiJson(Map<String, dynamic> data, {ValueSerializer? serializer}) =>
-      Team.fromJson(data, serializer: serializer);
+  Team fromApiJson(Map<String, dynamic> data, {ValueSerializer? serializer}) {
+    final activity =
+        data['activity']['uid'] ?? data['activity']['id']?.toString();
+    return Team.fromJson({...data, 'activity': activity},
+        serializer: serializer);
+  }
 }

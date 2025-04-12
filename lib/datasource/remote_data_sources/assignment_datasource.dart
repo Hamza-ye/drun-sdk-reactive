@@ -24,7 +24,7 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
         data['activity']['uid'] ?? data['activity']['id']?.toString();
     final orgUnit = data['orgUnit']['uid'] ?? data['orgUnit']['id']?.toString();
     final team = data['team']['uid'] ?? data['team']['id']?.toString();
-    final parent = data['parent']['uid'] ?? data['parent']['id']?.toString();
+    final parent = data['parent']?['uid'] ?? data['parent']?['id']?.toString();
     return Assignment.fromJson({
       ...data,
       'activity': activity,

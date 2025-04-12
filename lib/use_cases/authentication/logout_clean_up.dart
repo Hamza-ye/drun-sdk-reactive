@@ -11,18 +11,18 @@ class LogoutCleanUp {
   Future<void> logoutCleanUp(
       [LogoutStrategy strategy = LogoutStrategy.keepLocalData]) async {
     final cachedUser = await _userSessionRepository.loadCurrentUser();
-    final handler = _getLogoutHandler(strategy);
+    // final handler = _getLogoutHandler(strategy);
     if (cachedUser != null) {
       await _userSessionRepository.removeCurrentCachedUser();
-      await handler.handle(cachedUser.username, cachedUser.baseUrl);
+      // await handler.handle(cachedUser.username, cachedUser.baseUrl);
     }
   }
 
-  LogoutHandler _getLogoutHandler(LogoutStrategy strategy) {
-    return switch (strategy) {
-      LogoutStrategy.deleteLocalData => DeleteLocalDataHandler(),
-      LogoutStrategy.keepLocalData => KeepLocalDataHandler(),
-      LogoutStrategy.archiveAndDelete => BackupDataHandler(),
-    };
-  }
+  // LogoutHandler _getLogoutHandler(LogoutStrategy strategy) {
+  //   return switch (strategy) {
+  //     LogoutStrategy.deleteLocalData => DeleteLocalDataHandler(),
+  //     LogoutStrategy.keepLocalData => KeepLocalDataHandler(),
+  //     LogoutStrategy.archiveAndDelete => BackupDataHandler(),
+  //   };
+  // }
 }

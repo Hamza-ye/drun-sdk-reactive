@@ -9,10 +9,13 @@ class DataSubmissions extends Table with BaseTableMixin {
   BoolColumn get deleted => boolean().clientDefault(() => false)();
 
   /// Form template id is stored as text (nullable).
-  TextColumn get form => text().generatedAs(formVersion.substr(1, 11))();
+  TextColumn get form => text()();
+
+  // TextColumn get form => text().generatedAs(formVersion.substr(1, 11))();
 
   /// Many-to-one references stored as text.
-  TextColumn get formVersion => text().references(FormVersions, #id)();
+  TextColumn get formVersion =>
+      text().references(DataFormTemplateVersions, #id)();
 
   /// Version is non-nullable integer.
   IntColumn get version => integer()();
@@ -31,9 +34,8 @@ class DataSubmissions extends Table with BaseTableMixin {
       text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
 
   // Use a single state field with a converter to/from enum
-  TextColumn get status => text()
-      .map(const EnumNameConverter(SubmissionStatus.values))
-      .clientDefault(() => SubmissionStatus.draft.name)();
+  TextColumn get status =>
+      text().map(const EnumNameConverter(SubmissionStatus.values)).nullable()();
 
   DateTimeColumn get lastSyncDate => dateTime().nullable()();
 

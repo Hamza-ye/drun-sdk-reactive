@@ -12,7 +12,7 @@ class DataOptions extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get filterExpression => text().nullable()();
 
   TextColumn get label =>
-      text().map(const MapConverter<dynamic>()).clientDefault(() => '{}')();
+      text().map(const MapConverter()).clientDefault(() => '{}')();
 
   TextColumn get properties => text().map(const MapConverter<dynamic>()).clientDefault(() => '{}')();
 }

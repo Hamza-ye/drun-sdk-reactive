@@ -5,7 +5,7 @@ import 'package:drift/drift.dart';
 class Activities extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get project => text().references(Projects, #id)();
 
-  BoolColumn get disabled => boolean()();
+  BoolColumn get disabled => boolean().clientDefault(() => false)();
 
   DateTimeColumn get startDate => dateTime().nullable()();
 

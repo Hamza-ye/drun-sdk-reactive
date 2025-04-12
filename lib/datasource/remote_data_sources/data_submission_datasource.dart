@@ -34,9 +34,12 @@ class DataSubmissionDatasource
   @override
   DataSubmission fromApiJson(Map<String, dynamic> data,
       {ValueSerializer? serializer}) {
-    final String formVersion = data['form'] != null && data['version'] != null
-        ? '${data['form']}_${data['version']}'
-        : data['formVersion'];
+    final form = data['form'];
+    final version = data['version'];
+    final fVersion = data['formVersion'];
+    final String formVersion = form != null && version != null
+        ? '${form}_$version'
+        : fVersion;
     final assignment =
         data['assignment']['uid'] ?? data['assignment']['id'].toString();
     final orgUnit =
@@ -46,6 +49,7 @@ class DataSubmissionDatasource
       ...data,
       'status': SubmissionStatus.synced.name,
       'formVersion': formVersion,
+      'form': form,
       'assignment': assignment,
       'orgUnit': orgUnit,
       'team': team,
@@ -98,13 +102,13 @@ class DataSubmissionDatasource
       DataSubmission newEntity = submission;
       if (syncCreated || syncUpdated) {
         newEntity = submission.copyWith(
-            status: SubmissionStatus.synced,
+            status:Value( SubmissionStatus.synced),
             lastSyncMessage: Value(null),
             lastSyncDate: Value(DateTime.now().toUtc()));
         // availableItemCount++;
       } else if (syncFailed) {
         newEntity = submission.copyWith(
-            status: SubmissionStatus.syncFailed,
+            status: Value(SubmissionStatus.syncFailed),
             lastSyncMessage: Value(summary.failed[submission.id]));
 
         // availableItemCount++;

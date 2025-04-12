@@ -22,9 +22,12 @@ class DataFormTemplateDatasource extends BaseDataSource<
 
   @override
   DataFormTemplateVersion fromApiJson(Map<String, dynamic> data,
-          {ValueSerializer? serializer}) =>
-      DataFormTemplateVersion.fromJson({
-        ...data,
-        'id': '${data['uid'] ?? data['id'].toString()}_${data['version']}',
-      }, serializer: serializer);
+      {ValueSerializer? serializer}) {
+    final form = data['uid'] ?? data['id'].toString();
+    return DataFormTemplateVersion.fromJson({
+      ...data,
+      'id': '${form}_${data['version']}',
+      'form': form,
+    }, serializer: serializer);
+  }
 }

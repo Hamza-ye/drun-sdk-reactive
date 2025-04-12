@@ -13,7 +13,7 @@ extension DataSubmissionUploadExt on DataSubmission {
 
       /// Syncable
       "version": this.version,
-      "status": this.status.name,
+      "status": this.status?.name,
       "progressStatus": this.progressStatus?.name,
       "deleted": this.deleted,
       "lastSyncMassage": this.lastSyncMessage,

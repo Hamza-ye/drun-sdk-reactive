@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:d_sdk/core/form/field_template/field_template.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
 import 'package:d_sdk/core/utilities/parsing_helpers.dart';
-import 'package:d_sdk/database/converters/template_list.converter.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
@@ -78,7 +77,7 @@ class SectionTemplate extends ContainerTemplate {
 
     final fields = json['fields'] != null
         ? (parseDynamicJson(json['fields']) as List)
-            .map<Template>((field) => TemplateListConverter.fromJsonFactory({
+            .map<Template>((field) => Template.fromJsonFactory({
                   ...field,
                   "optionMap": json['optionMap'],
                   "parent": valueType.isRepeatSection
@@ -145,10 +144,10 @@ class SectionTemplate extends ContainerTemplate {
       'minRepeats': minRepeats,
       'fieldValueRenderingType': fieldValueRenderingType,
       'fields': jsonEncode(fields.unlockView
-          .map((field) => TemplateListConverter.toJsonFactory(field))
+          .map((field) => Template.toJsonFactory(field))
           .toList()),
       'treeFields': jsonEncode(treeFields.unlockView
-          .map((field) => TemplateListConverter.toJsonFactory(field))
+          .map((field) => Template.toJsonFactory(field))
           .toList()),
       'rules':
           jsonEncode(rules.unlockView.map((rule) => rule.toJson()).toList()),

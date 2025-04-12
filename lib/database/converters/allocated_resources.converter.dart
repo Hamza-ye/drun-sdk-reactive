@@ -14,8 +14,8 @@ class AllocatedResourcesConverter
   }
 
   @override
-  String? toSql(Map<String, Object?>? resources) {
-    if (resources == null) return null;
+  String toSql(Map<String, Object?>? resources) {
+    resources ??= {};
     return jsonEncode(resources);
   }
 }

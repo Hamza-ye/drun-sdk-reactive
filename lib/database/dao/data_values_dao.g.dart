@@ -4,7 +4,8 @@ part of 'data_values_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$DataValuesDaoMixin on DatabaseAccessor<AppDatabase> {
-  $FormVersionsTable get formVersions => attachedDatabase.formVersions;
+  $DataFormTemplateVersionsTable get dataFormTemplateVersions =>
+      attachedDatabase.dataFormTemplateVersions;
   $ProjectsTable get projects => attachedDatabase.projects;
   $ActivitiesTable get activities => attachedDatabase.activities;
   $TeamsTable get teams => attachedDatabase.teams;

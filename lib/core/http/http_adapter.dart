@@ -63,7 +63,7 @@ class HttpAdapter extends HttpClient {
       }
 
       if (futureResponse != null) {
-        response = await futureResponse.timeout(Duration(seconds: 20));
+        response = await futureResponse.timeout(Duration(seconds: 1000));
       }
     } on DioError catch (error) {
       throw HttpFailure.fromDioError(error, stackTrace: StackTrace.current);
