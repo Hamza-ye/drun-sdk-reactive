@@ -15,6 +15,7 @@ import 'package:d_sdk/core/http/http_client.dart' as _i8;
 import 'package:d_sdk/core/network/connectivy_service.dart' as _i345;
 import 'package:d_sdk/core/user_session/session_storage_manager.dart' as _i389;
 import 'package:d_sdk/database/app_database.dart' as _i648;
+import 'package:d_sdk/database/database.dart' as _i210;
 import 'package:d_sdk/database/db_manager.dart' as _i932;
 import 'package:d_sdk/datasource/abstract_datasource.dart' as _i458;
 import 'package:d_sdk/datasource/remote_data_sources/activity_datasource.dart'
@@ -94,7 +95,9 @@ Future<_i174.GetIt> $initD2RemoteGetIt(
   );
   await gh.factoryAsync<_i8.HttpClient<dynamic>>(
     () => _i147.AuthorizeHttpClientDecorator.postInit(
-        gh<_i8.HttpClient<dynamic>>(instanceName: 'httpAdapter')),
+      gh<_i8.HttpClient<dynamic>>(instanceName: 'httpAdapter'),
+      gh<_i210.DbManager>(),
+    ),
     preResolve: true,
   );
   gh.factory<_i458.AbstractDatasource<_i648.Project>>(

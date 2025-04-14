@@ -4,7 +4,7 @@ import 'package:d_sdk/database/app_database.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
-@Order(1)
+// @Order(1)
 @LazySingleton()
 class DbManager {
   DbManager(this._userSessionRepo);

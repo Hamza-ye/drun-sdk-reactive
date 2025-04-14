@@ -24,11 +24,7 @@ final GetIt rSdkLocator = GetIt.instance;
       HttpClient
     ])
 Future<GetIt> setupSdkLocator() async {
-  // if (rSdkLocator.currentScopeName == 'authenticatedUser') {
-  //   await rSdkLocator.popScopesTill('authenticatedUser');
-  // }
   await rSdkLocator.reset();
-  // initAuthenticatedUserScope(rSdkLocator);
   return $initD2RemoteGetIt(rSdkLocator);
 }
 
