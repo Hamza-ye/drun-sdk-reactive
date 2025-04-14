@@ -7,8 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(130)
-@LazySingleton(
-    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
+@Injectable(as: AbstractDatasource<Insertable<dynamic>>)
 class RepeatInstanceDatasource
     extends BaseDataSource<$RepeatInstancesTable, RepeatInstance>
     implements MetaDataSource<RepeatInstance> {

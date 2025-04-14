@@ -89,8 +89,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
       'image_url', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _authoritiesMeta =
-      const VerificationMeta('authorities');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       authorities = GeneratedColumn<String>('authorities', aliasedName, false,
@@ -181,7 +179,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       context.handle(_imageUrlMeta,
           imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
     }
-    context.handle(_authoritiesMeta, const VerificationResult.success());
     return context;
   }
 
@@ -689,8 +686,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -704,7 +699,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
   late final GeneratedColumn<String> path = GeneratedColumn<String>(
       'path', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _labelMeta = const VerificationMeta('label');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       label = GeneratedColumn<String>('label', aliasedName, false,
@@ -720,7 +714,6 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES org_units (id)'));
-  static const VerificationMeta _scopeMeta = const VerificationMeta('scope');
   @override
   late final GeneratedColumnWithTypeConverter<EntityScope?, String> scope =
       GeneratedColumn<String>('scope', aliasedName, true,
@@ -781,17 +774,14 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('path')) {
       context.handle(
           _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
     }
-    context.handle(_labelMeta, const VerificationResult.success());
     if (data.containsKey('parent')) {
       context.handle(_parentMeta,
           parent.isAcceptableOrUnknown(data['parent']!, _parentMeta));
     }
-    context.handle(_scopeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -1258,8 +1248,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -1332,7 +1320,6 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('level')) {
       context.handle(
           _levelMeta, level.isAcceptableOrUnknown(data['level']!, _levelMeta));
@@ -1745,8 +1732,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -1817,7 +1802,6 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('disabled')) {
       context.handle(_disabledMeta,
           disabled.isAcceptableOrUnknown(data['disabled']!, _disabledMeta));
@@ -2191,8 +2175,6 @@ class $ActivitiesTable extends Activities
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -2294,7 +2276,6 @@ class $ActivitiesTable extends Activities
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('project')) {
       context.handle(_projectMeta,
           project.isAcceptableOrUnknown(data['project']!, _projectMeta));
@@ -2808,8 +2789,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -2844,18 +2823,13 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("delete_client_data" IN (0, 1))'));
-  static const VerificationMeta _formPermissionsMeta =
-      const VerificationMeta('formPermissions');
   @override
   late final GeneratedColumnWithTypeConverter<List<TeamFormPermission>, String>
       formPermissions = GeneratedColumn<String>(
-              'form_permissions', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '[]')
+              'form_permissions', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<List<TeamFormPermission>>(
               $TeamsTable.$converterformPermissions);
-  static const VerificationMeta _scopeMeta = const VerificationMeta('scope');
   @override
   late final GeneratedColumnWithTypeConverter<EntityScope?, String> scope =
       GeneratedColumn<String>('scope', aliasedName, true,
@@ -2917,7 +2891,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('activity')) {
       context.handle(_activityMeta,
           activity.isAcceptableOrUnknown(data['activity']!, _activityMeta));
@@ -2934,8 +2907,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
           deleteClientData.isAcceptableOrUnknown(
               data['delete_client_data']!, _deleteClientDataMeta));
     }
-    context.handle(_formPermissionsMeta, const VerificationResult.success());
-    context.handle(_scopeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2967,8 +2938,8 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       deleteClientData: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}delete_client_data']),
       formPermissions: $TeamsTable.$converterformPermissions.fromSql(
-          attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}form_permissions'])!),
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}form_permissions'])),
       scope: $TeamsTable.$converterscopen.fromSql(attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}scope'])),
     );
@@ -3483,15 +3454,12 @@ class $AssignmentsTable extends Assignments
   late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
       'start_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumnWithTypeConverter<AssignmentStatus?, String>
       status = GeneratedColumn<String>('status', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<AssignmentStatus?>(
               $AssignmentsTable.$converterstatusn);
-  static const VerificationMeta _allocatedResourcesMeta =
-      const VerificationMeta('allocatedResources');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, Object?>, String>
       allocatedResources = GeneratedColumn<String>(
@@ -3499,7 +3467,6 @@ class $AssignmentsTable extends Assignments
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<Map<String, Object?>>(
               $AssignmentsTable.$converterallocatedResources);
-  static const VerificationMeta _formsMeta = const VerificationMeta('forms');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String> forms =
       GeneratedColumn<String>('forms', aliasedName, false,
@@ -3507,7 +3474,6 @@ class $AssignmentsTable extends Assignments
               requiredDuringInsert: false,
               clientDefault: () => '[]')
           .withConverter<List<String>>($AssignmentsTable.$converterforms);
-  static const VerificationMeta _scopeMeta = const VerificationMeta('scope');
   @override
   late final GeneratedColumnWithTypeConverter<EntityScope?, String> scope =
       GeneratedColumn<String>('scope', aliasedName, true,
@@ -3586,10 +3552,6 @@ class $AssignmentsTable extends Assignments
       context.handle(_startDateMeta,
           startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta));
     }
-    context.handle(_statusMeta, const VerificationResult.success());
-    context.handle(_allocatedResourcesMeta, const VerificationResult.success());
-    context.handle(_formsMeta, const VerificationResult.success());
-    context.handle(_scopeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -4142,8 +4104,6 @@ class $FormVersionsTable extends FormVersions
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -4166,8 +4126,6 @@ class $FormVersionsTable extends FormVersions
   late final GeneratedColumn<int> version = GeneratedColumn<int>(
       'version', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _treeFieldsMeta =
-      const VerificationMeta('treeFields');
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String>
       treeFields = GeneratedColumn<String>('tree_fields', aliasedName, false,
@@ -4176,8 +4134,6 @@ class $FormVersionsTable extends FormVersions
               clientDefault: () => '[]')
           .withConverter<List<Template>>(
               $FormVersionsTable.$convertertreeFields);
-  static const VerificationMeta _optionsMeta =
-      const VerificationMeta('options');
   @override
   late final GeneratedColumnWithTypeConverter<List<FormOption>, String>
       options = GeneratedColumn<String>('options', aliasedName, false,
@@ -4186,8 +4142,6 @@ class $FormVersionsTable extends FormVersions
               clientDefault: () => '[]')
           .withConverter<List<FormOption>>(
               $FormVersionsTable.$converteroptions);
-  static const VerificationMeta _optionSetsMeta =
-      const VerificationMeta('optionSets');
   @override
   late final GeneratedColumnWithTypeConverter<List<DOptionSet>?, String>
       optionSets = GeneratedColumn<String>('option_sets', aliasedName, false,
@@ -4196,7 +4150,6 @@ class $FormVersionsTable extends FormVersions
               clientDefault: () => '[]')
           .withConverter<List<DOptionSet>?>(
               $FormVersionsTable.$converteroptionSets);
-  static const VerificationMeta _labelMeta = const VerificationMeta('label');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       label = GeneratedColumn<String>('label', aliasedName, false,
@@ -4211,8 +4164,6 @@ class $FormVersionsTable extends FormVersions
   late final GeneratedColumn<String> defaultLocal = GeneratedColumn<String>(
       'default_local', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _fieldsConfMeta =
-      const VerificationMeta('fieldsConf');
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String>
       fieldsConf = GeneratedColumn<String>('fields_conf', aliasedName, false,
@@ -4221,8 +4172,6 @@ class $FormVersionsTable extends FormVersions
               clientDefault: () => '[]')
           .withConverter<List<Template>>(
               $FormVersionsTable.$converterfieldsConf);
-  static const VerificationMeta _sectionsMeta =
-      const VerificationMeta('sections');
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> sections =
       GeneratedColumn<String>('sections', aliasedName, false,
@@ -4236,8 +4185,6 @@ class $FormVersionsTable extends FormVersions
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _validationStrategyMeta =
-      const VerificationMeta('validationStrategy');
   @override
   late final GeneratedColumnWithTypeConverter<ValidationStrategy?, String>
       validationStrategy = GeneratedColumn<String>(
@@ -4307,7 +4254,6 @@ class $FormVersionsTable extends FormVersions
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('form')) {
       context.handle(
           _formMeta, form.isAcceptableOrUnknown(data['form']!, _formMeta));
@@ -4318,25 +4264,18 @@ class $FormVersionsTable extends FormVersions
     } else if (isInserting) {
       context.missing(_versionMeta);
     }
-    context.handle(_treeFieldsMeta, const VerificationResult.success());
-    context.handle(_optionsMeta, const VerificationResult.success());
-    context.handle(_optionSetsMeta, const VerificationResult.success());
-    context.handle(_labelMeta, const VerificationResult.success());
     if (data.containsKey('default_local')) {
       context.handle(
           _defaultLocalMeta,
           defaultLocal.isAcceptableOrUnknown(
               data['default_local']!, _defaultLocalMeta));
     }
-    context.handle(_fieldsConfMeta, const VerificationResult.success());
-    context.handle(_sectionsMeta, const VerificationResult.success());
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
     }
-    context.handle(_validationStrategyMeta, const VerificationResult.success());
     return context;
   }
 
@@ -5017,8 +4956,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -5027,8 +4964,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
               defaultValue: Constant('[]'))
           .withConverter<List<Translation>>(
               $MetadataSubmissionsTable.$convertertranslations);
-  static const VerificationMeta _resourceTypeMeta =
-      const VerificationMeta('resourceType');
   @override
   late final GeneratedColumnWithTypeConverter<MetadataResourceType, String>
       resourceType = GeneratedColumn<String>(
@@ -5060,8 +4995,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
   late final GeneratedColumn<String> resourceId = GeneratedColumn<String>(
       'resource_id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _formDataMeta =
-      const VerificationMeta('formData');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       formData = GeneratedColumn<String>('form_data', aliasedName, false,
@@ -5141,8 +5074,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
-    context.handle(_resourceTypeMeta, const VerificationResult.success());
     if (data.containsKey('metadata_schema')) {
       context.handle(
           _metadataSchemaMeta,
@@ -5173,7 +5104,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
     } else if (isInserting) {
       context.missing(_resourceIdMeta);
     }
-    context.handle(_formDataMeta, const VerificationResult.success());
     if (data.containsKey('created_by')) {
       context.handle(_createdByMeta,
           createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
@@ -5797,8 +5727,6 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -5818,7 +5746,6 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
   late final GeneratedColumn<int> version = GeneratedColumn<int>(
       'version', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _labelMeta = const VerificationMeta('label');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       label = GeneratedColumn<String>('label', aliasedName, false,
@@ -5833,7 +5760,6 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
   late final GeneratedColumn<String> defaultLocal = GeneratedColumn<String>(
       'default_local', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _fieldsMeta = const VerificationMeta('fields');
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> fields =
       GeneratedColumn<String>('fields', aliasedName, false,
@@ -5842,8 +5768,6 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
               defaultValue: Constant('[]'))
           .withConverter<List<Template>>(
               $DataFormTemplateVersionsTable.$converterfields);
-  static const VerificationMeta _sectionsMeta =
-      const VerificationMeta('sections');
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> sections =
       GeneratedColumn<String>('sections', aliasedName, false,
@@ -5858,8 +5782,6 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _validationStrategyMeta =
-      const VerificationMeta('validationStrategy');
   @override
   late final GeneratedColumnWithTypeConverter<ValidationStrategy?, String>
       validationStrategy = GeneratedColumn<String>(
@@ -5927,7 +5849,6 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('form')) {
       context.handle(
           _formMeta, form.isAcceptableOrUnknown(data['form']!, _formMeta));
@@ -5940,22 +5861,18 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
     } else if (isInserting) {
       context.missing(_versionMeta);
     }
-    context.handle(_labelMeta, const VerificationResult.success());
     if (data.containsKey('default_local')) {
       context.handle(
           _defaultLocalMeta,
           defaultLocal.isAcceptableOrUnknown(
               data['default_local']!, _defaultLocalMeta));
     }
-    context.handle(_fieldsMeta, const VerificationResult.success());
-    context.handle(_sectionsMeta, const VerificationResult.success());
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
     }
-    context.handle(_validationStrategyMeta, const VerificationResult.success());
     return context;
   }
 
@@ -6629,8 +6546,6 @@ class $DataSubmissionsTable extends DataSubmissions
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES org_units (id)'));
-  static const VerificationMeta _progressStatusMeta =
-      const VerificationMeta('progressStatus');
   @override
   late final GeneratedColumnWithTypeConverter<AssignmentStatus?, String>
       progressStatus = GeneratedColumn<String>(
@@ -6638,7 +6553,6 @@ class $DataSubmissionsTable extends DataSubmissions
               type: DriftSqlType.string, requiredDuringInsert: false)
           .withConverter<AssignmentStatus?>(
               $DataSubmissionsTable.$converterprogressStatusn);
-  static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumnWithTypeConverter<SubmissionStatus?, String>
       status = GeneratedColumn<String>('status', aliasedName, true,
@@ -6677,8 +6591,6 @@ class $DataSubmissionsTable extends DataSubmissions
   late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
       'created_by', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _formDataMeta =
-      const VerificationMeta('formData');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       formData = GeneratedColumn<String>('form_data', aliasedName, false,
@@ -6773,8 +6685,6 @@ class $DataSubmissionsTable extends DataSubmissions
       context.handle(_orgUnitMeta,
           orgUnit.isAcceptableOrUnknown(data['org_unit']!, _orgUnitMeta));
     }
-    context.handle(_progressStatusMeta, const VerificationResult.success());
-    context.handle(_statusMeta, const VerificationResult.success());
     if (data.containsKey('last_sync_date')) {
       context.handle(
           _lastSyncDateMeta,
@@ -6803,7 +6713,6 @@ class $DataSubmissionsTable extends DataSubmissions
       context.handle(_createdByMeta,
           createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
     }
-    context.handle(_formDataMeta, const VerificationResult.success());
     return context;
   }
 
@@ -7931,8 +7840,6 @@ class $DataElementsTable extends DataElements
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -7947,7 +7854,6 @@ class $DataElementsTable extends DataElements
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumnWithTypeConverter<ValueType, String> type =
       GeneratedColumn<String>('type', aliasedName, false,
@@ -7968,7 +7874,6 @@ class $DataElementsTable extends DataElements
   late final GeneratedColumn<String> defaultValue = GeneratedColumn<String>(
       'default_value', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _labelMeta = const VerificationMeta('label');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       label = GeneratedColumn<String>('label', aliasedName, false,
@@ -7977,8 +7882,6 @@ class $DataElementsTable extends DataElements
               clientDefault: () => '{}')
           .withConverter<Map<String, dynamic>?>(
               $DataElementsTable.$converterlabel);
-  static const VerificationMeta _scannedCodePropertiesMeta =
-      const VerificationMeta('scannedCodeProperties');
   @override
   late final GeneratedColumnWithTypeConverter<ScannedCodeProperties?, String>
       scannedCodeProperties = GeneratedColumn<String>(
@@ -7995,8 +7898,6 @@ class $DataElementsTable extends DataElements
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("gs1_enabled" IN (0, 1))'));
-  static const VerificationMeta _resourceTypeMeta =
-      const VerificationMeta('resourceType');
   @override
   late final GeneratedColumnWithTypeConverter<MetadataResourceType?, String>
       resourceType = GeneratedColumn<String>('resource_type', aliasedName, true,
@@ -8069,14 +7970,12 @@ class $DataElementsTable extends DataElements
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
     }
-    context.handle(_typeMeta, const VerificationResult.success());
     if (data.containsKey('mandatory')) {
       context.handle(_mandatoryMeta,
           mandatory.isAcceptableOrUnknown(data['mandatory']!, _mandatoryMeta));
@@ -8087,16 +7986,12 @@ class $DataElementsTable extends DataElements
           defaultValue.isAcceptableOrUnknown(
               data['default_value']!, _defaultValueMeta));
     }
-    context.handle(_labelMeta, const VerificationResult.success());
-    context.handle(
-        _scannedCodePropertiesMeta, const VerificationResult.success());
     if (data.containsKey('gs1_enabled')) {
       context.handle(
           _gs1EnabledMeta,
           gs1Enabled.isAcceptableOrUnknown(
               data['gs1_enabled']!, _gs1EnabledMeta));
     }
-    context.handle(_resourceTypeMeta, const VerificationResult.success());
     if (data.containsKey('resource_metadata_schema')) {
       context.handle(
           _resourceMetadataSchemaMeta,
@@ -9249,8 +9144,6 @@ class $DataOptionSetsTable extends DataOptionSets
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -9259,8 +9152,6 @@ class $DataOptionSetsTable extends DataOptionSets
               defaultValue: Constant('[]'))
           .withConverter<List<Translation>>(
               $DataOptionSetsTable.$convertertranslations);
-  static const VerificationMeta _optionsMeta =
-      const VerificationMeta('options');
   @override
   late final GeneratedColumnWithTypeConverter<List<FormOption>, String>
       options = GeneratedColumn<String>('options', aliasedName, false,
@@ -9321,8 +9212,6 @@ class $DataOptionSetsTable extends DataOptionSets
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
-    context.handle(_optionsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -9700,8 +9589,6 @@ class $DataOptionsTable extends DataOptions
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _translationsMeta =
-      const VerificationMeta('translations');
   @override
   late final GeneratedColumnWithTypeConverter<List<Translation>, String>
       translations = GeneratedColumn<String>('translations', aliasedName, false,
@@ -9736,7 +9623,6 @@ class $DataOptionsTable extends DataOptions
   late final GeneratedColumn<String> filterExpression = GeneratedColumn<String>(
       'filter_expression', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _labelMeta = const VerificationMeta('label');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       label = GeneratedColumn<String>('label', aliasedName, false,
@@ -9745,8 +9631,6 @@ class $DataOptionsTable extends DataOptions
               clientDefault: () => '{}')
           .withConverter<Map<String, dynamic>?>(
               $DataOptionsTable.$converterlabel);
-  static const VerificationMeta _propertiesMeta =
-      const VerificationMeta('properties');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       properties = GeneratedColumn<String>('properties', aliasedName, false,
@@ -9812,7 +9696,6 @@ class $DataOptionsTable extends DataOptions
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    context.handle(_translationsMeta, const VerificationResult.success());
     if (data.containsKey('option_set')) {
       context.handle(_optionSetMeta,
           optionSet.isAcceptableOrUnknown(data['option_set']!, _optionSetMeta));
@@ -9837,8 +9720,6 @@ class $DataOptionsTable extends DataOptions
           filterExpression.isAcceptableOrUnknown(
               data['filter_expression']!, _filterExpressionMeta));
     }
-    context.handle(_labelMeta, const VerificationResult.success());
-    context.handle(_propertiesMeta, const VerificationResult.success());
     return context;
   }
 
@@ -10739,9 +10620,10 @@ final class $$OrgUnitsTableReferences
       .createAlias($_aliasNameGenerator(db.orgUnits.parent, db.orgUnits.id));
 
   $$OrgUnitsTableProcessedTableManager? get parent {
-    if ($_item.parent == null) return null;
+    final $_column = $_itemColumn<String>('parent');
+    if ($_column == null) return null;
     final manager = $$OrgUnitsTableTableManager($_db, $_db.orgUnits)
-        .filter((f) => f.id($_item.parent!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_parentTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -10756,7 +10638,7 @@ final class $$OrgUnitsTableReferences
 
   $$AssignmentsTableProcessedTableManager get assignmentsRefs {
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
-        .filter((f) => f.orgUnit.id($_item.id));
+        .filter((f) => f.orgUnit.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_assignmentsRefsTable($_db));
     return ProcessedTableManager(
@@ -10772,7 +10654,7 @@ final class $$OrgUnitsTableReferences
   $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
     final manager =
         $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
-            .filter((f) => f.orgUnit.id($_item.id));
+            .filter((f) => f.orgUnit.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache =
         $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
@@ -11177,7 +11059,8 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (assignmentsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<OrgUnit, $OrgUnitsTable,
+                            Assignment>(
                         currentTable: table,
                         referencedTable:
                             $$OrgUnitsTableReferences._assignmentsRefsTable(db),
@@ -11189,7 +11072,8 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.orgUnit == item.id),
                         typedResults: items),
                   if (dataSubmissionsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<OrgUnit, $OrgUnitsTable,
+                            DataSubmission>(
                         currentTable: table,
                         referencedTable: $$OrgUnitsTableReferences
                             ._dataSubmissionsRefsTable(db),
@@ -11487,7 +11371,7 @@ final class $$ProjectsTableReferences
 
   $$ActivitiesTableProcessedTableManager get activitiesRefs {
     final manager = $$ActivitiesTableTableManager($_db, $_db.activities)
-        .filter((f) => f.project.id($_item.id));
+        .filter((f) => f.project.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_activitiesRefsTable($_db));
     return ProcessedTableManager(
@@ -11723,7 +11607,8 @@ class $$ProjectsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (activitiesRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Project, $ProjectsTable,
+                            Activity>(
                         currentTable: table,
                         referencedTable:
                             $$ProjectsTableReferences._activitiesRefsTable(db),
@@ -11792,8 +11677,10 @@ final class $$ActivitiesTableReferences
       .createAlias($_aliasNameGenerator(db.activities.project, db.projects.id));
 
   $$ProjectsTableProcessedTableManager get project {
+    final $_column = $_itemColumn<String>('project')!;
+
     final manager = $$ProjectsTableTableManager($_db, $_db.projects)
-        .filter((f) => f.id($_item.project));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_projectTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -11807,7 +11694,7 @@ final class $$ActivitiesTableReferences
 
   $$TeamsTableProcessedTableManager get teamsRefs {
     final manager = $$TeamsTableTableManager($_db, $_db.teams)
-        .filter((f) => f.activity.id($_item.id));
+        .filter((f) => f.activity.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_teamsRefsTable($_db));
     return ProcessedTableManager(
@@ -11822,7 +11709,7 @@ final class $$ActivitiesTableReferences
 
   $$AssignmentsTableProcessedTableManager get assignmentsRefs {
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
-        .filter((f) => f.activity.id($_item.id));
+        .filter((f) => f.activity.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_assignmentsRefsTable($_db));
     return ProcessedTableManager(
@@ -12235,7 +12122,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (teamsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Activity, $ActivitiesTable, Team>(
                         currentTable: table,
                         referencedTable:
                             $$ActivitiesTableReferences._teamsRefsTable(db),
@@ -12247,7 +12134,8 @@ class $$ActivitiesTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.activity == item.id),
                         typedResults: items),
                   if (assignmentsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Activity, $ActivitiesTable,
+                            Assignment>(
                         currentTable: table,
                         referencedTable: $$ActivitiesTableReferences
                             ._assignmentsRefsTable(db),
@@ -12317,8 +12205,10 @@ final class $$TeamsTableReferences
       .createAlias($_aliasNameGenerator(db.teams.activity, db.activities.id));
 
   $$ActivitiesTableProcessedTableManager get activity {
+    final $_column = $_itemColumn<String>('activity')!;
+
     final manager = $$ActivitiesTableTableManager($_db, $_db.activities)
-        .filter((f) => f.id($_item.activity));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_activityTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -12332,7 +12222,7 @@ final class $$TeamsTableReferences
 
   $$AssignmentsTableProcessedTableManager get assignmentsRefs {
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
-        .filter((f) => f.team.id($_item.id));
+        .filter((f) => f.team.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_assignmentsRefsTable($_db));
     return ProcessedTableManager(
@@ -12348,7 +12238,7 @@ final class $$TeamsTableReferences
   $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
     final manager =
         $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
-            .filter((f) => f.team.id($_item.id));
+            .filter((f) => f.team.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache =
         $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
@@ -12771,7 +12661,7 @@ class $$TeamsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (assignmentsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Team, $TeamsTable, Assignment>(
                         currentTable: table,
                         referencedTable:
                             $$TeamsTableReferences._assignmentsRefsTable(db),
@@ -12783,7 +12673,8 @@ class $$TeamsTableTableManager extends RootTableManager<
                                 referencedItems.where((e) => e.team == item.id),
                         typedResults: items),
                   if (dataSubmissionsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Team, $TeamsTable,
+                            DataSubmission>(
                         currentTable: table,
                         referencedTable: $$TeamsTableReferences
                             ._dataSubmissionsRefsTable(db),
@@ -12858,8 +12749,10 @@ final class $$AssignmentsTableReferences
           $_aliasNameGenerator(db.assignments.activity, db.activities.id));
 
   $$ActivitiesTableProcessedTableManager get activity {
+    final $_column = $_itemColumn<String>('activity')!;
+
     final manager = $$ActivitiesTableTableManager($_db, $_db.activities)
-        .filter((f) => f.id($_item.activity));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_activityTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -12870,8 +12763,10 @@ final class $$AssignmentsTableReferences
       .createAlias($_aliasNameGenerator(db.assignments.team, db.teams.id));
 
   $$TeamsTableProcessedTableManager get team {
+    final $_column = $_itemColumn<String>('team')!;
+
     final manager = $$TeamsTableTableManager($_db, $_db.teams)
-        .filter((f) => f.id($_item.team));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_teamTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -12883,8 +12778,10 @@ final class $$AssignmentsTableReferences
           $_aliasNameGenerator(db.assignments.orgUnit, db.orgUnits.id));
 
   $$OrgUnitsTableProcessedTableManager get orgUnit {
+    final $_column = $_itemColumn<String>('org_unit')!;
+
     final manager = $$OrgUnitsTableTableManager($_db, $_db.orgUnits)
-        .filter((f) => f.id($_item.orgUnit));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_orgUnitTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -12896,9 +12793,10 @@ final class $$AssignmentsTableReferences
           $_aliasNameGenerator(db.assignments.parent, db.assignments.id));
 
   $$AssignmentsTableProcessedTableManager? get parent {
-    if ($_item.parent == null) return null;
+    final $_column = $_itemColumn<String>('parent');
+    if ($_column == null) return null;
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
-        .filter((f) => f.id($_item.parent!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_parentTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -12912,9 +12810,9 @@ final class $$AssignmentsTableReferences
                   db.assignments.id, db.dataSubmissions.assignment));
 
   $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
-    final manager =
-        $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
-            .filter((f) => f.assignment.id($_item.id));
+    final manager = $$DataSubmissionsTableTableManager(
+            $_db, $_db.dataSubmissions)
+        .filter((f) => f.assignment.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache =
         $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
@@ -13498,7 +13396,8 @@ class $$AssignmentsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (dataSubmissionsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Assignment, $AssignmentsTable,
+                            DataSubmission>(
                         currentTable: table,
                         referencedTable: $$AssignmentsTableReferences
                             ._dataSubmissionsRefsTable(db),
@@ -14324,9 +14223,9 @@ final class $$DataFormTemplateVersionsTableReferences extends BaseReferences<
                   db.dataSubmissions.formVersion));
 
   $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
-    final manager =
-        $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
-            .filter((f) => f.formVersion.id($_item.id));
+    final manager = $$DataSubmissionsTableTableManager(
+            $_db, $_db.dataSubmissions)
+        .filter((f) => f.formVersion.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache =
         $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
@@ -14677,7 +14576,8 @@ class $$DataFormTemplateVersionsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (dataSubmissionsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<DataFormTemplateVersion,
+                            $DataFormTemplateVersionsTable, DataSubmission>(
                         currentTable: table,
                         referencedTable:
                             $$DataFormTemplateVersionsTableReferences
@@ -14765,9 +14665,11 @@ final class $$DataSubmissionsTableReferences extends BaseReferences<
           db.dataSubmissions.formVersion, db.dataFormTemplateVersions.id));
 
   $$DataFormTemplateVersionsTableProcessedTableManager get formVersion {
+    final $_column = $_itemColumn<String>('form_version')!;
+
     final manager = $$DataFormTemplateVersionsTableTableManager(
             $_db, $_db.dataFormTemplateVersions)
-        .filter((f) => f.id($_item.formVersion));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_formVersionTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -14779,9 +14681,10 @@ final class $$DataSubmissionsTableReferences extends BaseReferences<
           db.dataSubmissions.assignment, db.assignments.id));
 
   $$AssignmentsTableProcessedTableManager? get assignment {
-    if ($_item.assignment == null) return null;
+    final $_column = $_itemColumn<String>('assignment');
+    if ($_column == null) return null;
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
-        .filter((f) => f.id($_item.assignment!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_assignmentTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -14792,9 +14695,10 @@ final class $$DataSubmissionsTableReferences extends BaseReferences<
       .createAlias($_aliasNameGenerator(db.dataSubmissions.team, db.teams.id));
 
   $$TeamsTableProcessedTableManager? get team {
-    if ($_item.team == null) return null;
+    final $_column = $_itemColumn<String>('team');
+    if ($_column == null) return null;
     final manager = $$TeamsTableTableManager($_db, $_db.teams)
-        .filter((f) => f.id($_item.team!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_teamTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -14806,9 +14710,10 @@ final class $$DataSubmissionsTableReferences extends BaseReferences<
           $_aliasNameGenerator(db.dataSubmissions.orgUnit, db.orgUnits.id));
 
   $$OrgUnitsTableProcessedTableManager? get orgUnit {
-    if ($_item.orgUnit == null) return null;
+    final $_column = $_itemColumn<String>('org_unit');
+    if ($_column == null) return null;
     final manager = $$OrgUnitsTableTableManager($_db, $_db.orgUnits)
-        .filter((f) => f.id($_item.orgUnit!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_orgUnitTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -14822,9 +14727,9 @@ final class $$DataSubmissionsTableReferences extends BaseReferences<
                   db.dataSubmissions.id, db.repeatInstances.submission));
 
   $$RepeatInstancesTableProcessedTableManager get repeatInstancesRefs {
-    final manager =
-        $$RepeatInstancesTableTableManager($_db, $_db.repeatInstances)
-            .filter((f) => f.submission.id($_item.id));
+    final manager = $$RepeatInstancesTableTableManager(
+            $_db, $_db.repeatInstances)
+        .filter((f) => f.submission.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache =
         $_typedResult.readTableOrNull(_repeatInstancesRefsTable($_db));
@@ -14840,7 +14745,7 @@ final class $$DataSubmissionsTableReferences extends BaseReferences<
 
   $$DataValuesTableProcessedTableManager get dataValuesRefs {
     final manager = $$DataValuesTableTableManager($_db, $_db.dataValues)
-        .filter((f) => f.submission.id($_item.id));
+        .filter((f) => f.submission.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_dataValuesRefsTable($_db));
     return ProcessedTableManager(
@@ -15543,7 +15448,8 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (repeatInstancesRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<DataSubmission,
+                            $DataSubmissionsTable, RepeatInstance>(
                         currentTable: table,
                         referencedTable: $$DataSubmissionsTableReferences
                             ._repeatInstancesRefsTable(db),
@@ -15555,7 +15461,8 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
                                 .where((e) => e.submission == item.id),
                         typedResults: items),
                   if (dataValuesRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<DataSubmission,
+                            $DataSubmissionsTable, DataValue>(
                         currentTable: table,
                         referencedTable: $$DataSubmissionsTableReferences
                             ._dataValuesRefsTable(db),
@@ -15624,9 +15531,11 @@ final class $$RepeatInstancesTableReferences extends BaseReferences<
           db.repeatInstances.submission, db.dataSubmissions.id));
 
   $$DataSubmissionsTableProcessedTableManager get submission {
+    final $_column = $_itemColumn<String>('submission')!;
+
     final manager =
         $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
-            .filter((f) => f.id($_item.submission));
+            .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_submissionTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -15638,10 +15547,11 @@ final class $$RepeatInstancesTableReferences extends BaseReferences<
           db.repeatInstances.parent, db.repeatInstances.id));
 
   $$RepeatInstancesTableProcessedTableManager? get parent {
-    if ($_item.parent == null) return null;
+    final $_column = $_itemColumn<String>('parent');
+    if ($_column == null) return null;
     final manager =
         $$RepeatInstancesTableTableManager($_db, $_db.repeatInstances)
-            .filter((f) => f.id($_item.parent!));
+            .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_parentTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -15656,7 +15566,7 @@ final class $$RepeatInstancesTableReferences extends BaseReferences<
 
   $$DataValuesTableProcessedTableManager get dataValuesRefs {
     final manager = $$DataValuesTableTableManager($_db, $_db.dataValues)
-        .filter((f) => f.parent.id($_item.id));
+        .filter((f) => f.parent.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_dataValuesRefsTable($_db));
     return ProcessedTableManager(
@@ -16019,7 +15929,8 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (dataValuesRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<RepeatInstance,
+                            $RepeatInstancesTable, DataValue>(
                         currentTable: table,
                         referencedTable: $$RepeatInstancesTableReferences
                             ._dataValuesRefsTable(db),
@@ -16103,7 +16014,7 @@ final class $$DataElementsTableReferences
 
   $$DataValuesTableProcessedTableManager get dataValuesRefs {
     final manager = $$DataValuesTableTableManager($_db, $_db.dataValues)
-        .filter((f) => f.dataElement.id($_item.id));
+        .filter((f) => f.dataElement.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_dataValuesRefsTable($_db));
     return ProcessedTableManager(
@@ -16465,7 +16376,8 @@ class $$DataElementsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (dataValuesRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<DataElement, $DataElementsTable,
+                            DataValue>(
                         currentTable: table,
                         referencedTable: $$DataElementsTableReferences
                             ._dataValuesRefsTable(db),
@@ -16527,10 +16439,11 @@ final class $$DataValuesTableReferences
           $_aliasNameGenerator(db.dataValues.parent, db.repeatInstances.id));
 
   $$RepeatInstancesTableProcessedTableManager? get parent {
-    if ($_item.parent == null) return null;
+    final $_column = $_itemColumn<String>('parent');
+    if ($_column == null) return null;
     final manager =
         $$RepeatInstancesTableTableManager($_db, $_db.repeatInstances)
-            .filter((f) => f.id($_item.parent!));
+            .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_parentTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -16542,9 +16455,11 @@ final class $$DataValuesTableReferences
           db.dataValues.submission, db.dataSubmissions.id));
 
   $$DataSubmissionsTableProcessedTableManager get submission {
+    final $_column = $_itemColumn<String>('submission')!;
+
     final manager =
         $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
-            .filter((f) => f.id($_item.submission));
+            .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_submissionTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -16556,8 +16471,10 @@ final class $$DataValuesTableReferences
           $_aliasNameGenerator(db.dataValues.dataElement, db.dataElements.id));
 
   $$DataElementsTableProcessedTableManager get dataElement {
+    final $_column = $_itemColumn<String>('data_element')!;
+
     final manager = $$DataElementsTableTableManager($_db, $_db.dataElements)
-        .filter((f) => f.id($_item.dataElement));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_dataElementTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -17004,7 +16921,7 @@ final class $$DataOptionSetsTableReferences
 
   $$DataOptionsTableProcessedTableManager get dataOptionsRefs {
     final manager = $$DataOptionsTableTableManager($_db, $_db.dataOptions)
-        .filter((f) => f.optionSet.id($_item.id));
+        .filter((f) => f.optionSet.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_dataOptionsRefsTable($_db));
     return ProcessedTableManager(
@@ -17245,7 +17162,8 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (dataOptionsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<DataOptionSet,
+                            $DataOptionSetsTable, DataOption>(
                         currentTable: table,
                         referencedTable: $$DataOptionSetsTableReferences
                             ._dataOptionsRefsTable(db),
@@ -17319,8 +17237,10 @@ final class $$DataOptionsTableReferences
           $_aliasNameGenerator(db.dataOptions.optionSet, db.dataOptionSets.id));
 
   $$DataOptionSetsTableProcessedTableManager get optionSet {
+    final $_column = $_itemColumn<String>('option_set')!;
+
     final manager = $$DataOptionSetsTableTableManager($_db, $_db.dataOptionSets)
-        .filter((f) => f.id($_item.optionSet));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_optionSetTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(

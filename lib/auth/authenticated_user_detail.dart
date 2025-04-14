@@ -1,19 +1,7 @@
-import 'package:d_sdk/core/auth/user_detail.dart';
+import 'package:d_sdk/auth/user_detail.dart';
 
-class AuthenticatedUser extends UserDetail {
-  final String id;
-  final String username;
-  final String password;
-  final String mobile;
-  final String firstname;
-  final String lastname;
-  final String langKey;
-  final String? imageUrl;
-  final List<String> authorities;
-  final String baseUrl;
-  final bool activated;
-
-  AuthenticatedUser(
+class AuthUserData extends UserDetail {
+  AuthUserData(
       {required this.id,
       required this.username,
       required this.password,
@@ -26,12 +14,25 @@ class AuthenticatedUser extends UserDetail {
       required this.authorities,
       required this.activated});
 
-  @override
-  bool get authenticated => true;
+  final String id;
+  final String username;
+  final String password;
+  final String mobile;
+  final String firstname;
+  final String lastname;
+  final String langKey;
+  final String? imageUrl;
+  final List<String> authorities;
+  final String baseUrl;
+  final bool activated;
 
-  factory AuthenticatedUser.fromMap(Map<String, dynamic> data) {
+  String get apiHost => Uri.parse(baseUrl).host;
+
+  String get dbFileName => '${apiHost}_${username}';
+
+  factory AuthUserData.fromMap(Map<String, dynamic> data) {
     final List<dynamic> authorities = data['authorities'] ?? [];
-    return AuthenticatedUser(
+    return AuthUserData(
       id: data['uid'] ?? data['id'],
       username: data['login'] ?? data['username'],
       firstname: data['firstname'] ?? '-',
@@ -48,7 +49,8 @@ class AuthenticatedUser extends UserDetail {
 
   @override
   List<Object?> get props =>
-      super.props + [id, password, langKey, imageUrl, activated];
+      super.props +
+      [username, baseUrl, id, password, langKey, imageUrl, activated];
 }
 
 //

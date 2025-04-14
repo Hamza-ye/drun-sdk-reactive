@@ -26,6 +26,15 @@ class DDatabaseConnectionException extends DDatabaseException {
             errorCode: DRunErrorCode.databaseConnectionFailed);
 }
 
+class DatabaseInitException extends DDatabaseException {
+  DatabaseInitException(
+      {String? message, Exception? cause, StackTrace? stackTrace})
+      : super("Failed to init user database ${message ?? ''}",
+      cause: cause,
+      stackTrace: stackTrace,
+      errorCode: DRunErrorCode.databaseConnectionFailed);
+}
+
 class DRecordNotFoundException extends DDatabaseException {
   DRecordNotFoundException(
     String recordId, {

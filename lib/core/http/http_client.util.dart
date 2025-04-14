@@ -2,7 +2,7 @@
 //
 // import 'package:d_sdk/core/config/constants.dart';
 // import 'package:d_sdk/core/http/http-details.util.dart';
-// import 'package:d_sdk/core/exception/api_exceptions.dart';
+// import 'package:d_sdk/core/exception/http_errors.dart';
 // import 'package:d_sdk/database/app_database.dart';
 // import 'package:dio/dio.dart';
 // import 'package:multiple_result/multiple_result.dart';

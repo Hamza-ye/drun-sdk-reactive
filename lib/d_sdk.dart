@@ -1,7 +1,8 @@
 library d_sdk;
 
-import 'package:d_sdk/core/auth/auth_manager.dart';
-import 'package:d_sdk/core/auth/authenticated_user_detail.dart';
+import 'package:d_sdk/auth/auth_manager.dart';
+import 'package:d_sdk/auth/authenticated_user_detail.dart';
+import 'package:d_sdk/auth/authentication_service.dart';
 import 'package:d_sdk/core/cache/cache_storage.dart';
 import 'package:d_sdk/core/network/connectivy_service.dart';
 import 'package:d_sdk/core/user_session/session_storage_manager.dart';
@@ -9,7 +10,7 @@ import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/db_manager.dart';
 import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.dart';
 import 'package:d_sdk/di/injection.dart';
-import 'package:d_sdk/use_cases/authentication/auth_scope_initialization.dart';
+import 'package:d_sdk/use_cases/authentication/authentication.dart';
 
 class DSdk {
   // database
@@ -23,10 +24,13 @@ class DSdk {
   // services
   static AuthManager get authManager => rSdkLocator<AuthManager>();
 
-  static AuthScopeInitializer get authScopeInitializer =>
-      rSdkLocator<AuthScopeInitializer>();
+  static AuthenticationService get authService =>
+      rSdkLocator<AuthenticationService>();
 
-  static AuthenticatedUser get currentAuthUser => rSdkLocator<AuthenticatedUser>();
+  // static AuthScopeInitializer get authScopeInitializer =>
+  //     rSdkLocator<AuthScopeInitializer>();
+
+  static AuthUserData get currentAuthUser => rSdkLocator<AuthUserData>();
 
   static UserSessionRepository get userSessionRepository =>
       rSdkLocator<UserSessionRepository>();

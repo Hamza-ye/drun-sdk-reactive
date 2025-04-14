@@ -14,8 +14,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(120)
-@LazySingleton(
-    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
+@Injectable(as: AbstractDatasource<Insertable<dynamic>>)
 class DataSubmissionDatasource
     extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
     implements MetaDataSource<DataSubmission> {

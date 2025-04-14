@@ -7,8 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(150)
-@LazySingleton(
-    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
+@Injectable(as: AbstractDatasource<Insertable<dynamic>>)
 class MetadataSubmissionDatasource
     extends BaseDataSource<$MetadataSubmissionsTable, MetadataSubmission>
     implements MetaDataSource<MetadataSubmission> {

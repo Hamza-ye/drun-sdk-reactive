@@ -1,3 +1,4 @@
 //GENERATED BARREL FILE 
-export 'remote_authentication.dart'; 
-export '../../core/auth/authentication_service.dart';
+export 'auth_scope_initialization.dart';
+export 'logout_clean_up.dart';
+

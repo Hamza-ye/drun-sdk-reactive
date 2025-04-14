@@ -1,8 +1,7 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:injectable/injectable.dart';
 
-@Order(1)
-@LazySingleton(scope: 'authenticated')
+// @LazySingleton()
 class DbProvider {
   AppDatabase? _database;
 

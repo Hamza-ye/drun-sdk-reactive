@@ -7,8 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(90)
-@LazySingleton(
-    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
+@Injectable(as: AbstractDatasource<Insertable<dynamic>>)
 class DataFormTemplateDatasource extends BaseDataSource<
         $DataFormTemplateVersionsTable, DataFormTemplateVersion>
     implements MetaDataSource<DataFormTemplateVersion> {

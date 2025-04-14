@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:d_sdk/core/config/app_environment_instance.dart';
-import 'package:d_sdk/core/http/http_adapter.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:injectable/injectable.dart';
@@ -11,7 +10,7 @@ import 'package:injectable/injectable.dart';
 class ConnectivityService {
   ConnectivityService(
       {required this.environmentInstance,
-      @Named.from(HttpAdapter) required this.httpClient});
+      @Named('httpAdapter') required this.httpClient});
 
   final AppEnvironmentInstance environmentInstance;
   final HttpClient<dynamic> httpClient;

@@ -1,35 +1,47 @@
-import 'package:d_sdk/core/auth/user_detail.dart';
+import 'package:d_sdk/core/exception/exception.dart';
+import 'package:d_sdk/core/user_session/session_storage_manager.dart';
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/db_provider.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
-@Order(2)
-@LazySingleton(scope: 'authenticated')
+@Order(1)
+@LazySingleton()
 class DbManager {
-  DbManager(this._dbProvider);
+  DbManager(this._userSessionRepo);
 
-  final DbProvider _dbProvider;
+  late final AppDatabase _database;
+  late final String _databaseName;
 
-  AppDatabase get db => _dbProvider.database;
+  UserSessionRepository _userSessionRepo;
+
+  AppDatabase get db => _database;
+
+  @postConstruct
+  DbManager init() {
+    final currentDatabaseName = _userSessionRepo.getCurrentDbName();
+    throwIf(currentDatabaseName == null,
+        DatabaseInitException(message: 'database field name not found'));
+    _databaseName = currentDatabaseName!;
+    _database = AppDatabase(databaseName: _databaseName);
+    return this;
+  }
+
+  /// Returns a stream of AuthUserData from the local database.
+  Stream<User?> watchAuthUserData(String userId) {
+    return (db.select(db.users)..where((t) => t.id.equals(userId)))
+        .watchSingleOrNull();
+  }
 
   /// called only after authentication success and
   /// registering the AuthenticatedUser
-  Future<User?> loadAuthUserData(UserDetail userDetail) async {
-    // if (!rSdkLocator.isRegistered<UserDetail>()) {
-    //   throw NoCachedAuthenticatedUser(
-    //       message: 'No registered Authenticated User');
-    // }
-
-    // // get current registered authenticated user
-    // final UserDetail userDetail =
-    //     rSdkLocator<AuthenticatedUser>();
-
-    // get current authenticated user data from database
+  Future<User> loadAuthUserData() async {
+    final username = _databaseName.split('_')[1];
     final user = await (db.select(db.users)
-          ..where((t) => t.username.equals(userDetail.username)))
+          ..where((t) => t.username.equals(username)))
         .getSingleOrNull();
-
-    return user;
+    throwIf(user == null,
+        DatabaseInitException(message: 'Database auth user not found in db'));
+    return user!;
   }
 
   Future<void> saveAuthUserData(User authUserData) async {
@@ -49,6 +61,10 @@ class DbManager {
     }
   }
 
+  @disposeMethod
+  Future<void> closeDatabase() async {
+    await _database.close();
+  }
 //
 // static String _connectionKey(String userName, String server) {
 //   final uri = Uri.parse(server).host;

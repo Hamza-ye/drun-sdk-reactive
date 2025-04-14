@@ -7,8 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(25)
-@LazySingleton(
-    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
+@Injectable(as: AbstractDatasource<Insertable<dynamic>>)
 class OuLevelDatasource extends BaseDataSource<$OuLevelsTable, OuLevel>
     implements MetaDataSource<OuLevel> {
   OuLevelDatasource({required super.apiClient, required DbManager dbManager})

@@ -1,21 +1,24 @@
 import 'package:equatable/equatable.dart';
 
 abstract class UserDetail with EquatableMixin {
-  String get username;
+  String? get id => null;
 
-  String get baseUrl;
+  String? get username => null;
 
-  bool get authenticated;
+  String? get baseUrl => null;
 
-  String get apiHost => Uri.parse(baseUrl).host;
+  String? get apiHost => null;
+
+  String? get dbFileName => null;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
+      'id': id,
       'username': username,
       'baseUrl': baseUrl,
     };
   }
 
   @override
-  List<Object?> get props => [username, baseUrl];
+  List<Object?> get props => [id, username, baseUrl];
 }

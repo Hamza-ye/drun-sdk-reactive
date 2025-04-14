@@ -1,35 +1,36 @@
-import 'package:d_sdk/core/auth/user_detail.dart';
+import 'package:d_sdk/auth/user_detail.dart';
 
-class CachedUserDetail extends UserDetail {
+class AuthUserCachedData extends UserDetail {
+  AuthUserCachedData(
+      {required this.id,
+        required this.username,
+        required this.baseUrl});
+
+  final String id;
   final String username;
   final String baseUrl;
 
-  bool get authenticated => false;
+  String get apiHost => Uri.parse(baseUrl).host;
 
-  CachedUserDetail({required this.username, required this.baseUrl});
+  String get dbFileName => '${apiHost}_${username}';
 
-  factory CachedUserDetail.fromJson(Map<String, dynamic> json) {
-    return CachedUserDetail(
+  factory AuthUserCachedData.fromJson(Map<String, dynamic> json) {
+    return AuthUserCachedData(
+      id: json['id']!,
       username: json['username'],
       baseUrl: json['baseUrl'],
     );
   }
 
-  CachedUserDetail copyWith({
+  AuthUserCachedData copyWith({
+    String? id,
     String? username,
     String? baseUrl,
-  }) =>
-      CachedUserDetail(
-        username: username ?? this.username,
-        baseUrl: baseUrl ?? this.baseUrl,
-      );
-
-  @override
-  String toString() {
-    return (StringBuffer('User(')
-          ..write('username: $username, ')
-          ..write('baseUrl: $baseUrl, ')
-          ..write(')'))
-        .toString();
+  }) {
+    return AuthUserCachedData(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      baseUrl: baseUrl ?? this.baseUrl,
+    );
   }
 }

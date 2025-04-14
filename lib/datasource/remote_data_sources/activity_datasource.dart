@@ -7,8 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(20)
-@LazySingleton(
-    as: AbstractDatasource<Insertable<dynamic>>, scope: 'authenticated')
+@Injectable(as: AbstractDatasource<Insertable<dynamic>>)
 class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
     implements MetaDataSource<Activity> {
   ActivityDatasource({required super.apiClient, required DbManager dbManager})

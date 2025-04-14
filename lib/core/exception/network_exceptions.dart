@@ -3,12 +3,14 @@ import 'package:d_sdk/core/exception/exception.dart';
 class NetworkException extends DError {
   NetworkException(
     String message, {
+    DErrorComponent? errorComponent = DErrorComponent.Server,
     super.url,
     super.cause,
     required super.errorCode,
     super.httpErrorCode,
     super.stackTrace,
-  }) : super(message: message, errorComponent: DErrorComponent.SDK);
+    super.shouldShowMessage = true,
+  }) : super(message: message, errorComponent: errorComponent);
 }
 
 class InternalServerError extends NetworkException {
