@@ -37,12 +37,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  static const VerificationMeta _passwordMeta =
-      const VerificationMeta('password');
-  @override
-  late final GeneratedColumn<String> password = GeneratedColumn<String>(
-      'password', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _firstNameMeta =
       const VerificationMeta('firstName');
   @override
@@ -102,7 +96,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
         lastModifiedDate,
         createdDate,
         username,
-        password,
         firstName,
         lastname,
         mobile,
@@ -144,12 +137,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
           username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
     } else if (isInserting) {
       context.missing(_usernameMeta);
-    }
-    if (data.containsKey('password')) {
-      context.handle(_passwordMeta,
-          password.isAcceptableOrUnknown(data['password']!, _passwordMeta));
-    } else if (isInserting) {
-      context.missing(_passwordMeta);
     }
     if (data.containsKey('first_name')) {
       context.handle(_firstNameMeta,
@@ -196,8 +183,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       username: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
-      password: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}password'])!,
       firstName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}first_name']),
       lastname: attachedDatabase.typeMapping
@@ -232,7 +217,6 @@ class User extends DataClass implements Insertable<User> {
   final DateTime lastModifiedDate;
   final DateTime createdDate;
   final String username;
-  final String password;
   final String? firstName;
   final String? lastname;
   final String? mobile;
@@ -246,7 +230,6 @@ class User extends DataClass implements Insertable<User> {
       required this.lastModifiedDate,
       required this.createdDate,
       required this.username,
-      required this.password,
       this.firstName,
       this.lastname,
       this.mobile,
@@ -262,7 +245,6 @@ class User extends DataClass implements Insertable<User> {
     map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     map['username'] = Variable<String>(username);
-    map['password'] = Variable<String>(password);
     if (!nullToAbsent || firstName != null) {
       map['first_name'] = Variable<String>(firstName);
     }
@@ -293,7 +275,6 @@ class User extends DataClass implements Insertable<User> {
       lastModifiedDate: Value(lastModifiedDate),
       createdDate: Value(createdDate),
       username: Value(username),
-      password: Value(password),
       firstName: firstName == null && nullToAbsent
           ? const Value.absent()
           : Value(firstName),
@@ -321,7 +302,6 @@ class User extends DataClass implements Insertable<User> {
       lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       username: serializer.fromJson<String>(json['username']),
-      password: serializer.fromJson<String>(json['password']),
       firstName: serializer.fromJson<String?>(json['firstName']),
       lastname: serializer.fromJson<String?>(json['lastname']),
       mobile: serializer.fromJson<String?>(json['mobile']),
@@ -340,7 +320,6 @@ class User extends DataClass implements Insertable<User> {
       'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'username': serializer.toJson<String>(username),
-      'password': serializer.toJson<String>(password),
       'firstName': serializer.toJson<String?>(firstName),
       'lastname': serializer.toJson<String?>(lastname),
       'mobile': serializer.toJson<String?>(mobile),
@@ -357,7 +336,6 @@ class User extends DataClass implements Insertable<User> {
           DateTime? lastModifiedDate,
           DateTime? createdDate,
           String? username,
-          String? password,
           Value<String?> firstName = const Value.absent(),
           Value<String?> lastname = const Value.absent(),
           Value<String?> mobile = const Value.absent(),
@@ -371,7 +349,6 @@ class User extends DataClass implements Insertable<User> {
         lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
         createdDate: createdDate ?? this.createdDate,
         username: username ?? this.username,
-        password: password ?? this.password,
         firstName: firstName.present ? firstName.value : this.firstName,
         lastname: lastname.present ? lastname.value : this.lastname,
         mobile: mobile.present ? mobile.value : this.mobile,
@@ -390,7 +367,6 @@ class User extends DataClass implements Insertable<User> {
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
       username: data.username.present ? data.username.value : this.username,
-      password: data.password.present ? data.password.value : this.password,
       firstName: data.firstName.present ? data.firstName.value : this.firstName,
       lastname: data.lastname.present ? data.lastname.value : this.lastname,
       mobile: data.mobile.present ? data.mobile.value : this.mobile,
@@ -410,7 +386,6 @@ class User extends DataClass implements Insertable<User> {
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('username: $username, ')
-          ..write('password: $password, ')
           ..write('firstName: $firstName, ')
           ..write('lastname: $lastname, ')
           ..write('mobile: $mobile, ')
@@ -429,7 +404,6 @@ class User extends DataClass implements Insertable<User> {
       lastModifiedDate,
       createdDate,
       username,
-      password,
       firstName,
       lastname,
       mobile,
@@ -446,7 +420,6 @@ class User extends DataClass implements Insertable<User> {
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.username == this.username &&
-          other.password == this.password &&
           other.firstName == this.firstName &&
           other.lastname == this.lastname &&
           other.mobile == this.mobile &&
@@ -462,7 +435,6 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<DateTime> lastModifiedDate;
   final Value<DateTime> createdDate;
   final Value<String> username;
-  final Value<String> password;
   final Value<String?> firstName;
   final Value<String?> lastname;
   final Value<String?> mobile;
@@ -477,7 +449,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.username = const Value.absent(),
-    this.password = const Value.absent(),
     this.firstName = const Value.absent(),
     this.lastname = const Value.absent(),
     this.mobile = const Value.absent(),
@@ -493,7 +464,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     required String username,
-    required String password,
     this.firstName = const Value.absent(),
     this.lastname = const Value.absent(),
     this.mobile = const Value.absent(),
@@ -504,14 +474,12 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.authorities = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        username = Value(username),
-        password = Value(password);
+        username = Value(username);
   static Insertable<User> custom({
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? username,
-    Expression<String>? password,
     Expression<String>? firstName,
     Expression<String>? lastname,
     Expression<String>? mobile,
@@ -527,7 +495,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (username != null) 'username': username,
-      if (password != null) 'password': password,
       if (firstName != null) 'first_name': firstName,
       if (lastname != null) 'lastname': lastname,
       if (mobile != null) 'mobile': mobile,
@@ -545,7 +512,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       Value<DateTime>? lastModifiedDate,
       Value<DateTime>? createdDate,
       Value<String>? username,
-      Value<String>? password,
       Value<String?>? firstName,
       Value<String?>? lastname,
       Value<String?>? mobile,
@@ -560,7 +526,6 @@ class UsersCompanion extends UpdateCompanion<User> {
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       username: username ?? this.username,
-      password: password ?? this.password,
       firstName: firstName ?? this.firstName,
       lastname: lastname ?? this.lastname,
       mobile: mobile ?? this.mobile,
@@ -587,9 +552,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     }
     if (username.present) {
       map['username'] = Variable<String>(username.value);
-    }
-    if (password.present) {
-      map['password'] = Variable<String>(password.value);
     }
     if (firstName.present) {
       map['first_name'] = Variable<String>(firstName.value);
@@ -629,7 +591,6 @@ class UsersCompanion extends UpdateCompanion<User> {
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('username: $username, ')
-          ..write('password: $password, ')
           ..write('firstName: $firstName, ')
           ..write('lastname: $lastname, ')
           ..write('mobile: $mobile, ')
@@ -10260,6 +10221,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       DataOptionSetsDao(this as AppDatabase);
   late final OrgUnitsDao orgUnitsDao = OrgUnitsDao(this as AppDatabase);
   late final UsersDao usersDao = UsersDao(this as AppDatabase);
+  late final DataFormTemplateVersionsDao dataFormTemplateVersionsDao =
+      DataFormTemplateVersionsDao(this as AppDatabase);
+  late final DataElementsDao dataElementsDao =
+      DataElementsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10299,7 +10264,6 @@ typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   required String username,
-  required String password,
   Value<String?> firstName,
   Value<String?> lastname,
   Value<String?> mobile,
@@ -10315,7 +10279,6 @@ typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<DateTime> lastModifiedDate,
   Value<DateTime> createdDate,
   Value<String> username,
-  Value<String> password,
   Value<String?> firstName,
   Value<String?> lastname,
   Value<String?> mobile,
@@ -10347,9 +10310,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
 
   ColumnFilters<String> get username => $composableBuilder(
       column: $table.username, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get password => $composableBuilder(
-      column: $table.password, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get firstName => $composableBuilder(
       column: $table.firstName, builder: (column) => ColumnFilters(column));
@@ -10400,9 +10360,6 @@ class $$UsersTableOrderingComposer
   ColumnOrderings<String> get username => $composableBuilder(
       column: $table.username, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get password => $composableBuilder(
-      column: $table.password, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get firstName => $composableBuilder(
       column: $table.firstName, builder: (column) => ColumnOrderings(column));
 
@@ -10448,9 +10405,6 @@ class $$UsersTableAnnotationComposer
 
   GeneratedColumn<String> get username =>
       $composableBuilder(column: $table.username, builder: (column) => column);
-
-  GeneratedColumn<String> get password =>
-      $composableBuilder(column: $table.password, builder: (column) => column);
 
   GeneratedColumn<String> get firstName =>
       $composableBuilder(column: $table.firstName, builder: (column) => column);
@@ -10505,7 +10459,6 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<String> username = const Value.absent(),
-            Value<String> password = const Value.absent(),
             Value<String?> firstName = const Value.absent(),
             Value<String?> lastname = const Value.absent(),
             Value<String?> mobile = const Value.absent(),
@@ -10521,7 +10474,6 @@ class $$UsersTableTableManager extends RootTableManager<
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             username: username,
-            password: password,
             firstName: firstName,
             lastname: lastname,
             mobile: mobile,
@@ -10537,7 +10489,6 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<DateTime> lastModifiedDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             required String username,
-            required String password,
             Value<String?> firstName = const Value.absent(),
             Value<String?> lastname = const Value.absent(),
             Value<String?> mobile = const Value.absent(),
@@ -10553,7 +10504,6 @@ class $$UsersTableTableManager extends RootTableManager<
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             username: username,
-            password: password,
             firstName: firstName,
             lastname: lastname,
             mobile: mobile,

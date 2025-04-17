@@ -9,9 +9,8 @@
 //
 // @lazySingleton
 // class AuthScopeInitializer {
-//   final LogoutCleanUp _logoutCleanUp;
 //
-//   AuthScopeInitializer(this._logoutCleanUp);
+//   AuthScopeInitializer();
 //
 //   /// [OnInvalidDatabase] for logging out, navigating ...etc on the app layer
 //   void initScope(UserDetail userDetail) {

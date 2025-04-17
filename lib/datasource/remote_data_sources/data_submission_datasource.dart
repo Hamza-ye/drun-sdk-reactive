@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:d_sdk/core/config/app_environment_instance.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary.dart';
-import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/db_manager.dart';
+import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/datasource/abstract_datasource.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
@@ -21,7 +20,7 @@ class DataSubmissionDatasource
   AppEnvironmentInstance _environmentInstance;
 
   DataSubmissionDatasource(
-      {required super.apiClient,
+      {required super.dioClient,
       required DbManager dbManager,
       required AppEnvironmentInstance environmentInstance})
       : this._environmentInstance = environmentInstance,
@@ -36,9 +35,8 @@ class DataSubmissionDatasource
     final form = data['form'];
     final version = data['version'];
     final fVersion = data['formVersion'];
-    final String formVersion = form != null && version != null
-        ? '${form}_$version'
-        : fVersion;
+    final String formVersion =
+        form != null && version != null ? '${form}_$version' : fVersion;
     final assignment =
         data['assignment']['uid'] ?? data['assignment']['id'].toString();
     final orgUnit =
@@ -83,16 +81,14 @@ class DataSubmissionDatasource
       return submission.toUpload();
     }).toList();
 
-    final response = await apiClient.request(
-        resourceName: '${_environmentInstance.apiPath}/${apiResourceName}/bulk',
-        method: 'post',
-        data: uploadPayload);
+    final resourcePath =
+        '/${_environmentInstance.apiPath}/${apiResourceName}/bulk';
+    final response = await dioClient.post(resourcePath, data: uploadPayload);
 
     SyncSummary summary = SyncSummary.fromJson(response.data);
     logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});
 
     final List<DataSubmission> queue = [];
-    // num availableItemCount = 0;
 
     for (var submission in submissions) {
       final syncFailed = summary.failed.containsKey(submission.id);
@@ -101,7 +97,7 @@ class DataSubmissionDatasource
       DataSubmission newEntity = submission;
       if (syncCreated || syncUpdated) {
         newEntity = submission.copyWith(
-            status:Value( SubmissionStatus.synced),
+            status: Value(SubmissionStatus.synced),
             lastSyncMessage: Value(null),
             lastSyncDate: Value(DateTime.now().toUtc()));
         // availableItemCount++;

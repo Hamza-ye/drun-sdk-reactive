@@ -1,18 +1,16 @@
-import 'package:d_sdk/auth/authenticated_user_detail.dart';
-import 'package:d_sdk/auth/user_detail.dart';
+import 'package:d_sdk/user_session/session_context.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class AuthState with EquatableMixin {
-  UserDetail? get user => null;
-
   const factory AuthState.unauthenticated() = AuthUnAuthenticatedState;
 
   const factory AuthState.authLoading() = AuthLoadingState;
 
-  const factory AuthState.authenticated(AuthUserData user) =
+  const factory AuthState.authenticated(SessionContext session) =
       AuthAuthenticatedState;
 
-  const factory AuthState.authErrorState(String errorMessage) = AuthErrorState;
+  const factory AuthState.authErrorState(
+      {Object? error, required String errorMessage}) = AuthErrorState;
 
   const AuthState._();
 
@@ -29,18 +27,19 @@ class AuthLoadingState extends AuthState {
 }
 
 class AuthAuthenticatedState extends AuthState {
-  final AuthUserData user;
+  final SessionContext session;
 
-  const AuthAuthenticatedState(this.user) : super._();
+  const AuthAuthenticatedState(this.session) : super._();
 
-  @override
-  List<Object> get props => [user];
+@override
+List<Object> get props => [session];
 }
 
 class AuthErrorState extends AuthState {
+  final Object? error;
   final String errorMessage;
 
-  const AuthErrorState(this.errorMessage) : super._();
+  const AuthErrorState({this.error, required this.errorMessage}) : super._();
 
   @override
   List<Object> get props => [errorMessage];

@@ -5,7 +5,7 @@ import 'package:drift/drift.dart';
 class Users extends Table with BaseTableMixin {
   TextColumn get username => text().unique()();
 
-  TextColumn get password => text()();
+  // TextColumn get password => text()();
 
   TextColumn get firstName => text().nullable()();
 

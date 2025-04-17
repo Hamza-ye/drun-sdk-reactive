@@ -1,4 +1,3 @@
-import 'package:d_sdk/core/user_session/session_storage_manager.dart';
 import 'package:d_sdk/use_cases/logout_strategies/logout_strategies.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,9 +7,7 @@ abstract class LogoutHandler {
 
   @factoryMethod
   static Future<LogoutHandler> getLogoutHandler(
-      {@factoryParam LogoutStrategy? strategy,
-      required UserSessionRepository userSessionRepository}) async {
-    await userSessionRepository.logoutCurrentAuthCachedUser();
+      {@factoryParam LogoutStrategy? strategy}) async {
     return switch (strategy) {
       LogoutStrategy.deleteLocalData => DeleteLocalDataHandler(),
       LogoutStrategy.archiveAndDelete => BackupDataHandler(),

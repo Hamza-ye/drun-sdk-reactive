@@ -1,11 +1,14 @@
 import 'package:d_sdk/api/data-run-url-generator.util.dart';
 import 'package:d_sdk/core/exception/database_exceptions.dart';
-import 'package:d_sdk/core/http/http_client.dart';
+import 'package:d_sdk/core/exception/http_errors.dart';
+import 'package:d_sdk/core/exception/session_expired_exception.dart'
+    show SessionExpiredException;
 import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
-import 'package:d_sdk/database/db_manager.dart';
+import 'package:d_sdk/database/dbManager.dart';
 import 'package:d_sdk/datasource/abstract_datasource.dart';
+import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 
@@ -13,15 +16,16 @@ typedef ProgressCallback = void Function(double progress);
 
 abstract class BaseDataSource<T extends TableInfo<T, D>,
     D extends Insertable<D>> extends AbstractDatasource<D> {
-  final HttpClient apiClient;
+  // final HttpClient apiClient;
+  final Dio dioClient;
   final DbManager _dbManager;
   TableInfo<T, D> table;
 
   BaseDataSource(
-      {required HttpClient apiClient,
+      {required Dio dioClient,
       required DbManager dbManager,
       required this.table})
-      : this.apiClient = apiClient,
+      : this.dioClient = dioClient,
         this._dbManager = dbManager;
 
   AppDatabase? get _activeDb => _dbManager.db;
@@ -57,24 +61,29 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
   @override
   Future<List<D>> getOnline() async {
     final dataRunResourceUrl = await this.dataRunResourceUrl();
-    final response = await apiClient.request(
-        resourceName: dataRunResourceUrl, method: 'get');
+    final resourcePath = '/$dataRunResourceUrl';
 
-    List data = response.data != null
-        ? response.data[this.apiResourceName]?.toList() ?? []
-        : [];
+    try {
+      final response = await dioClient.get(resourcePath);
 
-    return data.map((dataItem) {
-      dataItem['dirty'] = false;
-      dataItem['synced'] = true;
+      List data = response.data != null
+          ? response.data[this.apiResourceName]?.toList() ?? []
+          : [];
 
-      var x = fromApiJson({
-        ...dataItem,
-        'id': dataItem['uid'] ?? dataItem['id'].toString(),
-      }, serializer: CustomSerializer());
+      return data.map((dataItem) {
+        dataItem['dirty'] = false;
+        dataItem['synced'] = true;
 
-      return x;
-    }).toList();
+        var x = fromApiJson({
+          ...dataItem,
+          'id': dataItem['uid'] ?? dataItem['id'].toString(),
+        }, serializer: CustomSerializer());
+
+        return x;
+      }).toList();
+    } on RevokeTokenException {
+      throw SessionExpiredException();
+    }
   }
 
   Future<String> dataRunResourceUrl() {

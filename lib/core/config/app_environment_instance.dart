@@ -7,13 +7,11 @@ class AppEnvironmentInstance {
     String? apiUserAuthResource,
     String? defaultLocale,
     int? apiRequestSentTimeout,
-    bool? secureCache,
     bool? secureDatabase,
   })  : this.apiRequestSentTimeout = apiRequestSentTimeout ?? 20,
         this.defaultLocale = defaultLocale ?? 'ar',
         this.apiUserAuthResource = apiUserAuthResource ?? 'me',
-        this.secureCache = secureCache ?? false,
-        this.secureDatabase = secureCache ?? false;
+        this.secureDatabase = secureDatabase ?? false;
 
   final String apiBaseUrl;
   final String apiPath;
@@ -21,7 +19,6 @@ class AppEnvironmentInstance {
   final String envLabel;
   final String defaultLocale;
   final int apiRequestSentTimeout;
-  final bool secureCache;
   final bool secureDatabase;
   final String? encryptionKey;
 

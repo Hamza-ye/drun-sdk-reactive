@@ -7,10 +7,10 @@ abstract class AuthManager {
 
   AuthState get currentState;
 
-  bool isAuthenticated();
+  Future<bool> isAuthenticated();
   // bool isAuthenticated();
 
-  Future<void> authenticate(
+  Future<void> login(
       {required String username,
       required String password,
       required ServerConfig server});

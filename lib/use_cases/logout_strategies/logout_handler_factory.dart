@@ -1,4 +1,3 @@
-import 'package:d_sdk/core/user_session/session_storage_manager.dart';
 import 'package:d_sdk/use_cases/logout_strategies/logout_strategies.dart';
 import 'package:injectable/injectable.dart';
 
@@ -6,11 +5,8 @@ import 'package:injectable/injectable.dart';
 class LogoutHandlerFactory {
   LogoutHandlerFactory({
     @factoryParam LogoutStrategy? strategy,
-    required UserSessionRepository userSessionRepository,
-  })  : _userSessionRepository = userSessionRepository,
-        _strategy = strategy;
+  }) : _strategy = strategy;
 
-  final UserSessionRepository _userSessionRepository;
   final LogoutStrategy? _strategy;
 
   static LogoutHandler _getLogoutHandler(LogoutStrategy? strategy) {
@@ -22,7 +18,7 @@ class LogoutHandlerFactory {
   }
 
   Future<void> handle() async {
-    await _userSessionRepository.logoutCurrentAuthCachedUser();
+    // await _userSessionRepository.deactivateSession();
     return _getLogoutHandler(_strategy).handle();
   }
 }

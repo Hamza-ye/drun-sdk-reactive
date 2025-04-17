@@ -36,6 +36,8 @@ part 'app_database.g.dart';
   DataOptionSetsDao,
   OrgUnitsDao,
   UsersDao,
+  DataFormTemplateVersionsDao,
+  DataElementsDao
 ])
 class AppDatabase extends _$AppDatabase {
   // AppDatabase(super.e, {String? databaseName});
