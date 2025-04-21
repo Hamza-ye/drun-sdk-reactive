@@ -1,21 +1,18 @@
-import 'package:d_sdk/auth/auth_state.dart';
-import 'package:d_sdk/core/config/server_config.dart';
 import 'package:d_sdk/use_cases/logout_strategies/logout_strategy.dart';
 
 abstract class AuthManager {
-  Stream<AuthState> get authStateStream;
+  // Stream<AuthState> get authStateStream;
 
-  AuthState get currentState;
+  // AuthState get currentState;
 
   Future<bool> isAuthenticated();
   // bool isAuthenticated();
 
-  Future<void> login(
+  Future<bool> login(
       {required String username,
-      required String password,
-      required ServerConfig server});
+      required String password});
 
-  Future<void> logout({LogoutStrategy strategy});
+  Future<bool> logout({LogoutStrategy strategy});
 
-  Future<void> dispose();
+  // Future<void> dispose();
 }

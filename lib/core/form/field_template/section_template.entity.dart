@@ -143,20 +143,18 @@ class SectionTemplate extends ContainerTemplate {
       'maxRepeats': maxRepeats,
       'minRepeats': minRepeats,
       'fieldValueRenderingType': fieldValueRenderingType,
-      'fields': jsonEncode(fields.unlockView
+      'fields': fields.unlockView
           .map((field) => Template.toJsonFactory(field))
-          .toList()),
-      'treeFields': jsonEncode(treeFields.unlockView
+          .toList(),
+      'treeFields': treeFields.unlockView
           .map((field) => Template.toJsonFactory(field))
-          .toList()),
+          .toList(),
       'rules':
-          jsonEncode(rules.unlockView.map((rule) => rule.toJson()).toList()),
-      'label': jsonEncode(label.unlockView),
-      'properties': jsonEncode(properties?.unlockView),
+      rules.unlockView.map((rule) => rule.toJson()).toList(),
+      'label': label.unlockView,
+      'properties': properties?.unlockView,
       'constraint': constraint,
-      'constraintMessage': constraintMessage != null
-          ? jsonEncode(constraintMessage!.unlockView)
-          : null,
+      'constraintMessage': constraintMessage!.unlockView,
       'parent': parent,
     };
   }

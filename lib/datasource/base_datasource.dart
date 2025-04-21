@@ -1,4 +1,3 @@
-import 'package:d_sdk/api/data-run-url-generator.util.dart';
 import 'package:d_sdk/core/exception/database_exceptions.dart';
 import 'package:d_sdk/core/exception/http_errors.dart';
 import 'package:d_sdk/core/exception/session_expired_exception.dart'
@@ -18,12 +17,14 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
     D extends Insertable<D>> extends AbstractDatasource<D> {
   // final HttpClient apiClient;
   final Dio dioClient;
+  final String apiPath;
   final DbManager _dbManager;
   TableInfo<T, D> table;
 
   BaseDataSource(
       {required Dio dioClient,
       required DbManager dbManager,
+      required this.apiPath,
       required this.table})
       : this.dioClient = dioClient,
         this._dbManager = dbManager;
@@ -60,33 +61,66 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
 
   @override
   Future<List<D>> getOnline() async {
-    final dataRunResourceUrl = await this.dataRunResourceUrl();
-    final resourcePath = '/$dataRunResourceUrl';
-
     try {
-      final response = await dioClient.get(resourcePath);
+      final response = await dioClient.get(this.resourceUrl(),
+          options: Options(
+            receiveTimeout: Duration(seconds: 70),
+            sendTimeout: Duration(seconds: 40),
+          ));
 
-      List data = response.data != null
-          ? response.data[this.apiResourceName]?.toList() ?? []
-          : [];
+      final raw = response.data;
 
-      return data.map((dataItem) {
-        dataItem['dirty'] = false;
-        dataItem['synced'] = true;
+      /// expecting paged list ({ apiResourceName: [...] }),
+      List dataItems = raw?[apiResourceName]?.toList() ?? [];
 
-        var x = fromApiJson({
-          ...dataItem,
-          'id': dataItem['uid'] ?? dataItem['id'].toString(),
+      return dataItems.map((item) {
+        item['dirty'] = false;
+        item['synced'] = true;
+
+        return fromApiJson({
+          ...item,
+          'id': item['uid']!,
         }, serializer: CustomSerializer());
-
-        return x;
       }).toList();
     } on RevokeTokenException {
       throw SessionExpiredException();
     }
   }
 
-  Future<String> dataRunResourceUrl() {
-    return Future.value(DataRunUrlGenerator.generate(apiResourceName));
+  //
+  // @override
+  // Future<List<D>> getOnline() async {
+  //   final dataRunResourceUrl = await this.dataRunResourceUrl();
+  //   final resourcePath = '/$dataRunResourceUrl';
+  //
+  //   try {
+  //     final response = await dioClient.get(resourcePath,
+  //         options: Options(
+  //           receiveTimeout: Duration(seconds: 30),
+  //           sendTimeout: Duration(seconds: 30),
+  //         ));
+  //
+  //     List data = response.data != null
+  //         ? response.data[this.apiResourceName]?.toList() ?? []
+  //         : [];
+  //
+  //     return data.map((dataItem) {
+  //       dataItem['dirty'] = false;
+  //       dataItem['synced'] = true;
+  //
+  //       var x = fromApiJson({
+  //         ...dataItem,
+  //         'id': dataItem['uid'] ?? dataItem['id'].toString(),
+  //       }, serializer: CustomSerializer());
+  //
+  //       return x;
+  //     }).toList();
+  //   } on RevokeTokenException {
+  //     throw SessionExpiredException();
+  //   }
+  // }
+
+  String resourceUrl() {
+    return '/${apiPath}/$apiResourceName?paged=false';
   }
 }

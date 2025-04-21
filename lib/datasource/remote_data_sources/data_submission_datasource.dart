@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:d_sdk/core/config/app_environment_instance.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary.dart';
 import 'package:d_sdk/database/database.dart';
@@ -9,22 +8,20 @@ import 'package:d_sdk/datasource/abstract_datasource.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:d_sdk/use_cases/upload_submissions/data_submission.extension.dart';
+import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(120)
-@Injectable(as: AbstractDatasource<Insertable<dynamic>>)
+@Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class DataSubmissionDatasource
     extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
     implements MetaDataSource<DataSubmission> {
-  AppEnvironmentInstance _environmentInstance;
-
   DataSubmissionDatasource(
       {required super.dioClient,
       required DbManager dbManager,
-      required AppEnvironmentInstance environmentInstance})
-      : this._environmentInstance = environmentInstance,
-        super(dbManager: dbManager, table: dbManager.db.dataSubmissions);
+      @Named('apiPath') required super.apiPath})
+      : super(dbManager: dbManager, table: dbManager.db.dataSubmissions);
 
   @override
   String get apiResourceName => 'dataSubmission';
@@ -81,8 +78,7 @@ class DataSubmissionDatasource
       return submission.toUpload();
     }).toList();
 
-    final resourcePath =
-        '/${_environmentInstance.apiPath}/${apiResourceName}/bulk';
+    final resourcePath = '/${apiPath}/$apiResourceName/bulk';
     final response = await dioClient.post(resourcePath, data: uploadPayload);
 
     SyncSummary summary = SyncSummary.fromJson(response.data);

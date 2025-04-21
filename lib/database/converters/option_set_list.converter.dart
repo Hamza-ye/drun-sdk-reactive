@@ -4,7 +4,7 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:drift/drift.dart';
 
 /// Converts a List<DOptionSet> to/from a JSON String.
-class DOptionSetListConverter extends TypeConverter<List<DOptionSet>?, String> {
+class DOptionSetListConverter extends TypeConverter<List<DOptionSet>, String> {
   const DOptionSetListConverter();
 
   @override

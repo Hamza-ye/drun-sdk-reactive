@@ -12,30 +12,30 @@ class FormVersions extends Table with BaseTableMixin, IdentifiableMixin {
 
   /// List of Template objects (as List<Template>), stored as JSON.
   TextColumn get treeFields =>
-      text().map(const TemplateListConverter()).clientDefault(() => '[]')();
+      text().map(const TemplateListConverter()).withDefault(Constant('[]'))();
 
   /// List of FormOption objects, stored as JSON.
   TextColumn get options =>
-      text().map(const FormOptionListConverter()).clientDefault(() => '[]')();
+      text().map(const FormOptionListConverter()).withDefault(Constant('[]'))();
 
   /// List of DOptionSet objects, stored as JSON.
   TextColumn get optionSets =>
-      text().map(const DOptionSetListConverter()).clientDefault(() => '[]')();
+      text().map(const DOptionSetListConverter()).withDefault(Constant('[]'))();
 
   /// Label map is non-null.
   TextColumn get label =>
-      text().map(const MapConverter()).clientDefault(() => '{}')();
+      text().map(const MapConverter()).withDefault(Constant('[]'))();
 
   /// Default locale.
   TextColumn get defaultLocal => text().nullable()();
 
   /// fieldsConf stored as IList<Template>, as JSON.
   TextColumn get fieldsConf =>
-      text().map(const TemplateListConverter()).clientDefault(() => '[]')();
+      text().map(const TemplateListConverter()).withDefault(Constant('[]'))();
 
   /// sections stored as IList<Template>, as JSON.
   TextColumn get sections =>
-      text().map(const TemplateListConverter()).clientDefault(() => '[]')();
+      text().map(const TemplateListConverter()).withDefault(Constant('[]'))();
 
   /// Description is nullable.
   TextColumn get description => text().nullable()();

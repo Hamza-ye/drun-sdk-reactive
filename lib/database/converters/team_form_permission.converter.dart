@@ -6,17 +6,14 @@ import 'package:drift/drift.dart';
 /// Converter for List<TeamFormPermission> <-> JSON String.
 /// Assumes that TeamFormPermission has fromJson and toJson.
 class TeamFormPermissionListConverter
-    extends TypeConverter<List<TeamFormPermission>, String?> {
+    extends TypeConverter<List<TeamFormPermission>, String> {
   const TeamFormPermissionListConverter();
 
   @override
   List<TeamFormPermission> fromSql(String? fromDb) {
     if (fromDb == null) return [];
     final List<dynamic> decoded = jsonDecode(fromDb);
-    return decoded
-        .map(
-            (item) => TeamFormPermission.fromJson(item as Map<String, dynamic>))
-        .toList();
+    return decoded.map((json) => TeamFormPermission.fromJson(json)).toList();
   }
 
   @override

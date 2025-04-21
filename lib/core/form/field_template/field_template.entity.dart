@@ -232,8 +232,7 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
       'path': path,
       'name': name,
       'description': description,
-      'options': jsonEncode(
-          options.unlockView.map((option) => option.toJson()).toList()),
+      'options': options.unlockView.map((option) => option.toJson()).toList(),
       'mandatory': mandatory,
       'readOnly': readOnly,
       'mainField': mainField,
@@ -244,22 +243,14 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
       'calculation': calculation,
       'defaultValue': defaultValue,
       'resourceMetadataSchema': resourceMetadataSchema,
-      // 'fieldValueRenderingType': fieldValueRenderingType,
-      // 'fields':
-      //     jsonEncode(fields.unlockView.map((field) => field.toJson()).toList()),
-      'rules':
-          jsonEncode(rules.unlockView.map((rule) => rule.toJson()).toList()),
-      'label': jsonEncode(label.unlockView),
+      'rules': rules.unlockView.map((rule) => rule.toJson()).toList(),
+      'label': label.unlockView,
       'constraint': constraint,
-      'constraintMessage': constraintMessage != null
-          ? jsonEncode(constraintMessage!.unlockView)
-          : null,
-      'properties': jsonEncode(properties?.unlockView),
+      'constraintMessage': constraintMessage!.unlockView,
+      'properties': properties?.unlockView,
       'parent': parent,
-      'appearance': jsonEncode(appearance.unlockView),
-      'scannedCodeProperties': scannedCodeProperties?.toJson() != null
-          ? jsonEncode(scannedCodeProperties!.toJson())
-          : null,
+      'appearance': appearance.unlockView,
+      'scannedCodeProperties': scannedCodeProperties?.toJson(),
     };
   }
 

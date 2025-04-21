@@ -6,8 +6,8 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 extension FormTraverseExtension on FormVersion {
   IMap<String, Template> get formFlatFields {
-    final de = fieldsConf ?? <Template>[];
-    final sec = sections ?? <Template>[];
+    final de = fieldsConf ?? [];
+    final sec = sections ?? [];
     final List<Template> allFields = sec..addAll(de);
     final flattenFieldsMap =
         allFields.asMap().map((k, v) => MapEntry(v.path!, v));

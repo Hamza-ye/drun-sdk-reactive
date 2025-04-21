@@ -5,22 +5,24 @@ typedef TokenPair = ({String accessToken, String refreshToken});
 
 /// Model for the Session Context as a Core App Entity that
 /// encapsulates everything about the current user environment
+
 class SessionContext with EquatableMixin {
+  static const String activeSessionScope = 'sessionContext';
+
   SessionContext({
     required this.username,
     required this.baseUrl,
-    this.accessToken,
-    this.refreshToken,
+    required this.accessToken,
+    required this.refreshToken,
     this.loginTime,
-    this.hasUnsyncedData = false,
+
   });
 
   final String username;
   final String baseUrl;
-  final String? accessToken;
-  final String? refreshToken;
+  final String accessToken;
+  final String refreshToken;
   final DateTime? loginTime;
-  final bool hasUnsyncedData;
 
   String get key => '${username}_${sanitizeBaseUrl(baseUrl)}';
 
@@ -33,7 +35,6 @@ class SessionContext with EquatableMixin {
       'accessToken': this.accessToken,
       'refreshToken': this.refreshToken,
       'loginTime': this.loginTime?.toIso8601String(),
-      'hasUnsyncedData': this.hasUnsyncedData,
     };
   }
 
@@ -41,10 +42,9 @@ class SessionContext with EquatableMixin {
     return SessionContext(
       username: map['username'],
       baseUrl: map['baseUrl'],
-      accessToken: map['accessToken'],
-      refreshToken: map['refreshToken'],
+      accessToken: map['accessToken'] ?? '',
+      refreshToken: map['refreshToken'] ?? '',
       loginTime: DateTime.tryParse(map['loginTime']),
-      hasUnsyncedData: map['hasUnsyncedData'],
     );
   }
 
@@ -54,7 +54,6 @@ class SessionContext with EquatableMixin {
     String? accessToken,
     String? refreshToken,
     DateTime? loginTime,
-    bool? hasUnsyncedData,
   }) {
     return SessionContext(
       username: username ?? this.username,
@@ -62,7 +61,6 @@ class SessionContext with EquatableMixin {
       accessToken: accessToken ?? this.accessToken,
       refreshToken: refreshToken ?? this.refreshToken,
       loginTime: loginTime ?? this.loginTime,
-      hasUnsyncedData: hasUnsyncedData ?? this.hasUnsyncedData,
     );
   }
 
@@ -73,6 +71,5 @@ class SessionContext with EquatableMixin {
         accessToken,
         refreshToken,
         loginTime,
-        hasUnsyncedData
       ];
 }

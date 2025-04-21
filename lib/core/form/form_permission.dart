@@ -56,8 +56,6 @@ enum FormPermission {
         return canDelete();
       case DELETE_SUBMISSIONS_CONDITION:
         return canDelete();
-      default:
-        return false;
     }
   }
 

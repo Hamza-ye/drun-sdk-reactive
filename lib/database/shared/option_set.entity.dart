@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:d_sdk/core/utilities/parsing_helpers.dart';
 import 'package:d_sdk/database/shared/shared.dart';
@@ -26,7 +25,7 @@ class DOptionSet {
 
   Map<String, dynamic> toJson() {
     return {
-      'options': jsonEncode(options.map((option) => option.toJson()).toList()),
+      'options': options.map((option) => option.toJson()).toList(),
       'listName': listName
     };
   }

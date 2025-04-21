@@ -3,9 +3,10 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 extension SessionContextExtension on SessionContext {
   TokenPair? getTokenPair() {
-    if (accessToken != null && refreshToken != null) {
-      return (accessToken: accessToken!, refreshToken: refreshToken!);
+    if (accessToken.isNotEmpty && refreshToken.isNotEmpty) {
+      return (accessToken: accessToken, refreshToken: refreshToken);
     }
+
     return null;
   }
 

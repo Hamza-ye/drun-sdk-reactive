@@ -1,16 +1,21 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/user_session/session_context.dart';
+import 'package:injectable/injectable.dart';
 
-// @Order(1)
-// @Singleton()
+@Singleton(scope: SessionContext.activeSessionScope)
 class DbManager {
-  DbManager({required AppDatabase database, required this.context})
-      : _database = database;
+  DbManager({required this.context})
+      : db = AppDatabase(databaseName: context.dbName);
 
-  final AppDatabase _database;
+  final AppDatabase db;
   final SessionContext context;
 
-  AppDatabase get db => _database;
+  // Future<DbManager>
+  // =>
+  //     IMap.fromIterable(
+  //         await appLocator.getAllAsync<AbstractDatasource<dynamic>>(),
+  //         keyMapper: (dataSource) => dataSource.apiResourceName,
+  //         valueMapper: (dataSource) => dataSource);
 
   /// Returns a stream of AuthUserData from the local database.
   Stream<User?> watchAuthUserData(String userId) {
@@ -43,8 +48,8 @@ class DbManager {
     }
   }
 
-  // @disposeMethod
+  @disposeMethod
   Future<void> closeDatabase() async {
-    await _database.close();
+    await db.close();
   }
 }

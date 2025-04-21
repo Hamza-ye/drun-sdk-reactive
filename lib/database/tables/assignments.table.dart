@@ -14,7 +14,9 @@ class Assignments extends Table with BaseTableMixin {
   TextColumn get orgUnit => text().references(OrgUnits, #id)();
 
   /// Parent reference (stored as a text foreign key, if applicable)
-  TextColumn get parent => text().nullable().references(Assignments, #id)();
+  TextColumn get parent => text().references(Assignments, #id).nullable()();
+
+  IntColumn get level => integer().withDefault(Constant(1))();
 
   /// Start day as integer, nullable
   IntColumn get startDay => integer().nullable()();
@@ -27,12 +29,13 @@ class Assignments extends Table with BaseTableMixin {
       text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
 
   /// allocatedResources stored as JSON string
-  TextColumn get allocatedResources =>
-      text().map(const AllocatedResourcesConverter()).nullable()();
+  TextColumn get allocatedResources => text()
+      .map(const AllocatedResourcesConverter())
+      .withDefault(Constant('{}'))();
 
   /// forms stored as JSON string representing a List<String>
   TextColumn get forms =>
-      text().map(const ListConverter<String>()).clientDefault(() => '[]')();
+      text().map(const ListConverter<String>()).withDefault(Constant('[]'))();
 
   /// scope stored as text via a converter
   TextColumn get scope =>

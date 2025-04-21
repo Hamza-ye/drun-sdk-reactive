@@ -12,8 +12,9 @@ class Teams extends Table with BaseTableMixin, IdentifiableMixin {
   BoolColumn get deleteClientData => boolean().nullable()();
 
   /// Form permissions stored as JSON representing a list of TeamFormPermission.
-  TextColumn get formPermissions =>
-      text().map(const TeamFormPermissionListConverter()).nullable()();
+  TextColumn get formPermissions => text()
+      .map(const TeamFormPermissionListConverter())
+      .withDefault(Constant('[]'))();
 
   // .clientDefault(() => '[]')();
 

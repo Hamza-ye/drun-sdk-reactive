@@ -2787,8 +2787,10 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
   @override
   late final GeneratedColumnWithTypeConverter<List<TeamFormPermission>, String>
       formPermissions = GeneratedColumn<String>(
-              'form_permissions', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
+              'form_permissions', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('[]'))
           .withConverter<List<TeamFormPermission>>(
               $TeamsTable.$converterformPermissions);
   @override
@@ -2899,8 +2901,8 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       deleteClientData: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}delete_client_data']),
       formPermissions: $TeamsTable.$converterformPermissions.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}form_permissions'])),
+          attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}form_permissions'])!),
       scope: $TeamsTable.$converterscopen.fromSql(attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}scope'])),
     );
@@ -2913,7 +2915,7 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
 
   static TypeConverter<List<Translation>, String> $convertertranslations =
       const TranslationConverter();
-  static TypeConverter<List<TeamFormPermission>, String?>
+  static TypeConverter<List<TeamFormPermission>, String>
       $converterformPermissions = const TeamFormPermissionListConverter();
   static JsonTypeConverter2<EntityScope, String, String> $converterscope =
       const EnumNameConverter(EntityScope.values);
@@ -3403,6 +3405,13 @@ class $AssignmentsTable extends Assignments
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES assignments (id)'));
+  static const VerificationMeta _levelMeta = const VerificationMeta('level');
+  @override
+  late final GeneratedColumn<int> level = GeneratedColumn<int>(
+      'level', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: Constant(1));
   static const VerificationMeta _startDayMeta =
       const VerificationMeta('startDay');
   @override
@@ -3422,18 +3431,20 @@ class $AssignmentsTable extends Assignments
           .withConverter<AssignmentStatus?>(
               $AssignmentsTable.$converterstatusn);
   @override
-  late final GeneratedColumnWithTypeConverter<Map<String, Object?>, String>
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       allocatedResources = GeneratedColumn<String>(
-              'allocated_resources', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<Map<String, Object?>>(
+              'allocated_resources', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant('{}'))
+          .withConverter<Map<String, dynamic>?>(
               $AssignmentsTable.$converterallocatedResources);
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String> forms =
       GeneratedColumn<String>('forms', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              clientDefault: () => '[]')
+              defaultValue: Constant('[]'))
           .withConverter<List<String>>($AssignmentsTable.$converterforms);
   @override
   late final GeneratedColumnWithTypeConverter<EntityScope?, String> scope =
@@ -3449,6 +3460,7 @@ class $AssignmentsTable extends Assignments
         team,
         orgUnit,
         parent,
+        level,
         startDay,
         startDate,
         status,
@@ -3505,6 +3517,10 @@ class $AssignmentsTable extends Assignments
       context.handle(_parentMeta,
           parent.isAcceptableOrUnknown(data['parent']!, _parentMeta));
     }
+    if (data.containsKey('level')) {
+      context.handle(
+          _levelMeta, level.isAcceptableOrUnknown(data['level']!, _levelMeta));
+    }
     if (data.containsKey('start_day')) {
       context.handle(_startDayMeta,
           startDay.isAcceptableOrUnknown(data['start_day']!, _startDayMeta));
@@ -3536,6 +3552,8 @@ class $AssignmentsTable extends Assignments
           .read(DriftSqlType.string, data['${effectivePrefix}org_unit'])!,
       parent: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}parent']),
+      level: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}level'])!,
       startDay: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}start_day']),
       startDate: attachedDatabase.typeMapping
@@ -3545,7 +3563,7 @@ class $AssignmentsTable extends Assignments
           .read(DriftSqlType.string, data['${effectivePrefix}status'])),
       allocatedResources: $AssignmentsTable.$converterallocatedResources
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}allocated_resources'])),
+              data['${effectivePrefix}allocated_resources'])!),
       forms: $AssignmentsTable.$converterforms.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}forms'])!),
@@ -3564,7 +3582,7 @@ class $AssignmentsTable extends Assignments
       const EnumNameConverter(AssignmentStatus.values);
   static JsonTypeConverter2<AssignmentStatus?, String?, String?>
       $converterstatusn = JsonTypeConverter2.asNullable($converterstatus);
-  static TypeConverter<Map<String, Object?>, String?>
+  static TypeConverter<Map<String, dynamic>?, String>
       $converterallocatedResources = const AllocatedResourcesConverter();
   static TypeConverter<List<String>, String> $converterforms =
       const ListConverter<String>();
@@ -3584,6 +3602,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
 
   /// Parent reference (stored as a text foreign key, if applicable)
   final String? parent;
+  final int level;
 
   /// Start day as integer, nullable
   final int? startDay;
@@ -3595,7 +3614,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   final AssignmentStatus? status;
 
   /// allocatedResources stored as JSON string
-  final Map<String, Object?> allocatedResources;
+  final Map<String, dynamic>? allocatedResources;
 
   /// forms stored as JSON string representing a List<String>
   final List<String> forms;
@@ -3610,10 +3629,11 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       required this.team,
       required this.orgUnit,
       this.parent,
+      required this.level,
       this.startDay,
       this.startDate,
       this.status,
-      required this.allocatedResources,
+      this.allocatedResources,
       required this.forms,
       this.scope});
   @override
@@ -3628,6 +3648,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     if (!nullToAbsent || parent != null) {
       map['parent'] = Variable<String>(parent);
     }
+    map['level'] = Variable<int>(level);
     if (!nullToAbsent || startDay != null) {
       map['start_day'] = Variable<int>(startDay);
     }
@@ -3638,7 +3659,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       map['status'] =
           Variable<String>($AssignmentsTable.$converterstatusn.toSql(status));
     }
-    {
+    if (!nullToAbsent || allocatedResources != null) {
       map['allocated_resources'] = Variable<String>($AssignmentsTable
           .$converterallocatedResources
           .toSql(allocatedResources));
@@ -3664,6 +3685,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       orgUnit: Value(orgUnit),
       parent:
           parent == null && nullToAbsent ? const Value.absent() : Value(parent),
+      level: Value(level),
       startDay: startDay == null && nullToAbsent
           ? const Value.absent()
           : Value(startDay),
@@ -3672,7 +3694,9 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           : Value(startDate),
       status:
           status == null && nullToAbsent ? const Value.absent() : Value(status),
-      allocatedResources: Value(allocatedResources),
+      allocatedResources: allocatedResources == null && nullToAbsent
+          ? const Value.absent()
+          : Value(allocatedResources),
       forms: Value(forms),
       scope:
           scope == null && nullToAbsent ? const Value.absent() : Value(scope),
@@ -3690,12 +3714,13 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       team: serializer.fromJson<String>(json['team']),
       orgUnit: serializer.fromJson<String>(json['orgUnit']),
       parent: serializer.fromJson<String?>(json['parent']),
+      level: serializer.fromJson<int>(json['level']),
       startDay: serializer.fromJson<int?>(json['startDay']),
       startDate: serializer.fromJson<DateTime?>(json['startDate']),
       status: $AssignmentsTable.$converterstatusn
           .fromJson(serializer.fromJson<String?>(json['status'])),
-      allocatedResources:
-          serializer.fromJson<Map<String, Object?>>(json['allocatedResources']),
+      allocatedResources: serializer
+          .fromJson<Map<String, dynamic>?>(json['allocatedResources']),
       forms: serializer.fromJson<List<String>>(json['forms']),
       scope: $AssignmentsTable.$converterscopen
           .fromJson(serializer.fromJson<String?>(json['scope'])),
@@ -3712,12 +3737,13 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       'team': serializer.toJson<String>(team),
       'orgUnit': serializer.toJson<String>(orgUnit),
       'parent': serializer.toJson<String?>(parent),
+      'level': serializer.toJson<int>(level),
       'startDay': serializer.toJson<int?>(startDay),
       'startDate': serializer.toJson<DateTime?>(startDate),
       'status': serializer
           .toJson<String?>($AssignmentsTable.$converterstatusn.toJson(status)),
       'allocatedResources':
-          serializer.toJson<Map<String, Object?>>(allocatedResources),
+          serializer.toJson<Map<String, dynamic>?>(allocatedResources),
       'forms': serializer.toJson<List<String>>(forms),
       'scope': serializer
           .toJson<String?>($AssignmentsTable.$converterscopen.toJson(scope)),
@@ -3732,10 +3758,12 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           String? team,
           String? orgUnit,
           Value<String?> parent = const Value.absent(),
+          int? level,
           Value<int?> startDay = const Value.absent(),
           Value<DateTime?> startDate = const Value.absent(),
           Value<AssignmentStatus?> status = const Value.absent(),
-          Map<String, Object?>? allocatedResources,
+          Value<Map<String, dynamic>?> allocatedResources =
+              const Value.absent(),
           List<String>? forms,
           Value<EntityScope?> scope = const Value.absent()}) =>
       Assignment(
@@ -3746,10 +3774,13 @@ class Assignment extends DataClass implements Insertable<Assignment> {
         team: team ?? this.team,
         orgUnit: orgUnit ?? this.orgUnit,
         parent: parent.present ? parent.value : this.parent,
+        level: level ?? this.level,
         startDay: startDay.present ? startDay.value : this.startDay,
         startDate: startDate.present ? startDate.value : this.startDate,
         status: status.present ? status.value : this.status,
-        allocatedResources: allocatedResources ?? this.allocatedResources,
+        allocatedResources: allocatedResources.present
+            ? allocatedResources.value
+            : this.allocatedResources,
         forms: forms ?? this.forms,
         scope: scope.present ? scope.value : this.scope,
       );
@@ -3765,6 +3796,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       team: data.team.present ? data.team.value : this.team,
       orgUnit: data.orgUnit.present ? data.orgUnit.value : this.orgUnit,
       parent: data.parent.present ? data.parent.value : this.parent,
+      level: data.level.present ? data.level.value : this.level,
       startDay: data.startDay.present ? data.startDay.value : this.startDay,
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
       status: data.status.present ? data.status.value : this.status,
@@ -3786,6 +3818,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
           ..write('parent: $parent, ')
+          ..write('level: $level, ')
           ..write('startDay: $startDay, ')
           ..write('startDate: $startDate, ')
           ..write('status: $status, ')
@@ -3805,6 +3838,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       team,
       orgUnit,
       parent,
+      level,
       startDay,
       startDate,
       status,
@@ -3822,6 +3856,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           other.team == this.team &&
           other.orgUnit == this.orgUnit &&
           other.parent == this.parent &&
+          other.level == this.level &&
           other.startDay == this.startDay &&
           other.startDate == this.startDate &&
           other.status == this.status &&
@@ -3838,10 +3873,11 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<String> team;
   final Value<String> orgUnit;
   final Value<String?> parent;
+  final Value<int> level;
   final Value<int?> startDay;
   final Value<DateTime?> startDate;
   final Value<AssignmentStatus?> status;
-  final Value<Map<String, Object?>> allocatedResources;
+  final Value<Map<String, dynamic>?> allocatedResources;
   final Value<List<String>> forms;
   final Value<EntityScope?> scope;
   final Value<int> rowid;
@@ -3853,6 +3889,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     this.team = const Value.absent(),
     this.orgUnit = const Value.absent(),
     this.parent = const Value.absent(),
+    this.level = const Value.absent(),
     this.startDay = const Value.absent(),
     this.startDate = const Value.absent(),
     this.status = const Value.absent(),
@@ -3869,6 +3906,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     required String team,
     required String orgUnit,
     this.parent = const Value.absent(),
+    this.level = const Value.absent(),
     this.startDay = const Value.absent(),
     this.startDate = const Value.absent(),
     this.status = const Value.absent(),
@@ -3888,6 +3926,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     Expression<String>? team,
     Expression<String>? orgUnit,
     Expression<String>? parent,
+    Expression<int>? level,
     Expression<int>? startDay,
     Expression<DateTime>? startDate,
     Expression<String>? status,
@@ -3904,6 +3943,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       if (team != null) 'team': team,
       if (orgUnit != null) 'org_unit': orgUnit,
       if (parent != null) 'parent': parent,
+      if (level != null) 'level': level,
       if (startDay != null) 'start_day': startDay,
       if (startDate != null) 'start_date': startDate,
       if (status != null) 'status': status,
@@ -3922,10 +3962,11 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       Value<String>? team,
       Value<String>? orgUnit,
       Value<String?>? parent,
+      Value<int>? level,
       Value<int?>? startDay,
       Value<DateTime?>? startDate,
       Value<AssignmentStatus?>? status,
-      Value<Map<String, Object?>>? allocatedResources,
+      Value<Map<String, dynamic>?>? allocatedResources,
       Value<List<String>>? forms,
       Value<EntityScope?>? scope,
       Value<int>? rowid}) {
@@ -3937,6 +3978,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       team: team ?? this.team,
       orgUnit: orgUnit ?? this.orgUnit,
       parent: parent ?? this.parent,
+      level: level ?? this.level,
       startDay: startDay ?? this.startDay,
       startDate: startDate ?? this.startDate,
       status: status ?? this.status,
@@ -3970,6 +4012,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     }
     if (parent.present) {
       map['parent'] = Variable<String>(parent.value);
+    }
+    if (level.present) {
+      map['level'] = Variable<int>(level.value);
     }
     if (startDay.present) {
       map['start_day'] = Variable<int>(startDay.value);
@@ -4010,6 +4055,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
           ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
           ..write('parent: $parent, ')
+          ..write('level: $level, ')
           ..write('startDay: $startDay, ')
           ..write('startDate: $startDate, ')
           ..write('status: $status, ')
@@ -4092,7 +4138,7 @@ class $FormVersionsTable extends FormVersions
       treeFields = GeneratedColumn<String>('tree_fields', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              clientDefault: () => '[]')
+              defaultValue: Constant('[]'))
           .withConverter<List<Template>>(
               $FormVersionsTable.$convertertreeFields);
   @override
@@ -4100,23 +4146,23 @@ class $FormVersionsTable extends FormVersions
       options = GeneratedColumn<String>('options', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              clientDefault: () => '[]')
+              defaultValue: Constant('[]'))
           .withConverter<List<FormOption>>(
               $FormVersionsTable.$converteroptions);
   @override
-  late final GeneratedColumnWithTypeConverter<List<DOptionSet>?, String>
+  late final GeneratedColumnWithTypeConverter<List<DOptionSet>, String>
       optionSets = GeneratedColumn<String>('option_sets', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              clientDefault: () => '[]')
-          .withConverter<List<DOptionSet>?>(
+              defaultValue: Constant('[]'))
+          .withConverter<List<DOptionSet>>(
               $FormVersionsTable.$converteroptionSets);
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       label = GeneratedColumn<String>('label', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              clientDefault: () => '{}')
+              defaultValue: Constant('[]'))
           .withConverter<Map<String, dynamic>?>(
               $FormVersionsTable.$converterlabel);
   static const VerificationMeta _defaultLocalMeta =
@@ -4130,7 +4176,7 @@ class $FormVersionsTable extends FormVersions
       fieldsConf = GeneratedColumn<String>('fields_conf', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              clientDefault: () => '[]')
+              defaultValue: Constant('[]'))
           .withConverter<List<Template>>(
               $FormVersionsTable.$converterfieldsConf);
   @override
@@ -4138,7 +4184,7 @@ class $FormVersionsTable extends FormVersions
       GeneratedColumn<String>('sections', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              clientDefault: () => '[]')
+              defaultValue: Constant('[]'))
           .withConverter<List<Template>>($FormVersionsTable.$convertersections);
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
@@ -4304,7 +4350,7 @@ class $FormVersionsTable extends FormVersions
       const TemplateListConverter();
   static TypeConverter<List<FormOption>, String> $converteroptions =
       const FormOptionListConverter();
-  static TypeConverter<List<DOptionSet>?, String> $converteroptionSets =
+  static TypeConverter<List<DOptionSet>, String> $converteroptionSets =
       const DOptionSetListConverter();
   static TypeConverter<Map<String, dynamic>?, String> $converterlabel =
       const MapConverter();
@@ -4342,7 +4388,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   final List<FormOption> options;
 
   /// List of DOptionSet objects, stored as JSON.
-  final List<DOptionSet>? optionSets;
+  final List<DOptionSet> optionSets;
 
   /// Label map is non-null.
   final Map<String, dynamic>? label;
@@ -4373,7 +4419,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       required this.version,
       required this.treeFields,
       required this.options,
-      this.optionSets,
+      required this.optionSets,
       this.label,
       this.defaultLocal,
       required this.fieldsConf,
@@ -4408,7 +4454,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       map['options'] =
           Variable<String>($FormVersionsTable.$converteroptions.toSql(options));
     }
-    if (!nullToAbsent || optionSets != null) {
+    {
       map['option_sets'] = Variable<String>(
           $FormVersionsTable.$converteroptionSets.toSql(optionSets));
     }
@@ -4452,9 +4498,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       version: Value(version),
       treeFields: Value(treeFields),
       options: Value(options),
-      optionSets: optionSets == null && nullToAbsent
-          ? const Value.absent()
-          : Value(optionSets),
+      optionSets: Value(optionSets),
       label:
           label == null && nullToAbsent ? const Value.absent() : Value(label),
       defaultLocal: defaultLocal == null && nullToAbsent
@@ -4487,7 +4531,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       version: serializer.fromJson<int>(json['version']),
       treeFields: serializer.fromJson<List<Template>>(json['treeFields']),
       options: serializer.fromJson<List<FormOption>>(json['options']),
-      optionSets: serializer.fromJson<List<DOptionSet>?>(json['optionSets']),
+      optionSets: serializer.fromJson<List<DOptionSet>>(json['optionSets']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
       defaultLocal: serializer.fromJson<String?>(json['defaultLocal']),
       fieldsConf: serializer.fromJson<List<Template>>(json['fieldsConf']),
@@ -4512,7 +4556,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
       'version': serializer.toJson<int>(version),
       'treeFields': serializer.toJson<List<Template>>(treeFields),
       'options': serializer.toJson<List<FormOption>>(options),
-      'optionSets': serializer.toJson<List<DOptionSet>?>(optionSets),
+      'optionSets': serializer.toJson<List<DOptionSet>>(optionSets),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
       'defaultLocal': serializer.toJson<String?>(defaultLocal),
       'fieldsConf': serializer.toJson<List<Template>>(fieldsConf),
@@ -4536,7 +4580,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
           int? version,
           List<Template>? treeFields,
           List<FormOption>? options,
-          Value<List<DOptionSet>?> optionSets = const Value.absent(),
+          List<DOptionSet>? optionSets,
           Value<Map<String, dynamic>?> label = const Value.absent(),
           Value<String?> defaultLocal = const Value.absent(),
           List<Template>? fieldsConf,
@@ -4556,7 +4600,7 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
         version: version ?? this.version,
         treeFields: treeFields ?? this.treeFields,
         options: options ?? this.options,
-        optionSets: optionSets.present ? optionSets.value : this.optionSets,
+        optionSets: optionSets ?? this.optionSets,
         label: label.present ? label.value : this.label,
         defaultLocal:
             defaultLocal.present ? defaultLocal.value : this.defaultLocal,
@@ -4647,7 +4691,7 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   final Value<int> version;
   final Value<List<Template>> treeFields;
   final Value<List<FormOption>> options;
-  final Value<List<DOptionSet>?> optionSets;
+  final Value<List<DOptionSet>> optionSets;
   final Value<Map<String, dynamic>?> label;
   final Value<String?> defaultLocal;
   final Value<List<Template>> fieldsConf;
@@ -4749,7 +4793,7 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
       Value<int>? version,
       Value<List<Template>>? treeFields,
       Value<List<FormOption>>? options,
-      Value<List<DOptionSet>?>? optionSets,
+      Value<List<DOptionSet>>? optionSets,
       Value<Map<String, dynamic>?>? label,
       Value<String?>? defaultLocal,
       Value<List<Template>>? fieldsConf,
@@ -12664,10 +12708,11 @@ typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
   required String team,
   required String orgUnit,
   Value<String?> parent,
+  Value<int> level,
   Value<int?> startDay,
   Value<DateTime?> startDate,
   Value<AssignmentStatus?> status,
-  Value<Map<String, Object?>> allocatedResources,
+  Value<Map<String, dynamic>?> allocatedResources,
   Value<List<String>> forms,
   Value<EntityScope?> scope,
   Value<int> rowid,
@@ -12681,10 +12726,11 @@ typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
   Value<String> team,
   Value<String> orgUnit,
   Value<String?> parent,
+  Value<int> level,
   Value<int?> startDay,
   Value<DateTime?> startDate,
   Value<AssignmentStatus?> status,
-  Value<Map<String, Object?>> allocatedResources,
+  Value<Map<String, dynamic>?> allocatedResources,
   Value<List<String>> forms,
   Value<EntityScope?> scope,
   Value<int> rowid,
@@ -12790,6 +12836,9 @@ class $$AssignmentsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<int> get level => $composableBuilder(
+      column: $table.level, builder: (column) => ColumnFilters(column));
+
   ColumnFilters<int> get startDay => $composableBuilder(
       column: $table.startDay, builder: (column) => ColumnFilters(column));
 
@@ -12801,7 +12850,7 @@ class $$AssignmentsTableFilterComposer
           column: $table.status,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnWithTypeConverterFilters<Map<String, Object?>, Map<String, Object>,
+  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
           String>
       get allocatedResources => $composableBuilder(
           column: $table.allocatedResources,
@@ -12938,6 +12987,9 @@ class $$AssignmentsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get level => $composableBuilder(
+      column: $table.level, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<int> get startDay => $composableBuilder(
       column: $table.startDay, builder: (column) => ColumnOrderings(column));
 
@@ -13056,6 +13108,9 @@ class $$AssignmentsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
+  GeneratedColumn<int> get level =>
+      $composableBuilder(column: $table.level, builder: (column) => column);
+
   GeneratedColumn<int> get startDay =>
       $composableBuilder(column: $table.startDay, builder: (column) => column);
 
@@ -13065,7 +13120,7 @@ class $$AssignmentsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<AssignmentStatus?, String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<Map<String, Object?>, String>
+  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
       get allocatedResources => $composableBuilder(
           column: $table.allocatedResources, builder: (column) => column);
 
@@ -13212,10 +13267,11 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             Value<String> team = const Value.absent(),
             Value<String> orgUnit = const Value.absent(),
             Value<String?> parent = const Value.absent(),
+            Value<int> level = const Value.absent(),
             Value<int?> startDay = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
             Value<AssignmentStatus?> status = const Value.absent(),
-            Value<Map<String, Object?>> allocatedResources =
+            Value<Map<String, dynamic>?> allocatedResources =
                 const Value.absent(),
             Value<List<String>> forms = const Value.absent(),
             Value<EntityScope?> scope = const Value.absent(),
@@ -13229,6 +13285,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             team: team,
             orgUnit: orgUnit,
             parent: parent,
+            level: level,
             startDay: startDay,
             startDate: startDate,
             status: status,
@@ -13245,10 +13302,11 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             required String team,
             required String orgUnit,
             Value<String?> parent = const Value.absent(),
+            Value<int> level = const Value.absent(),
             Value<int?> startDay = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
             Value<AssignmentStatus?> status = const Value.absent(),
-            Value<Map<String, Object?>> allocatedResources =
+            Value<Map<String, dynamic>?> allocatedResources =
                 const Value.absent(),
             Value<List<String>> forms = const Value.absent(),
             Value<EntityScope?> scope = const Value.absent(),
@@ -13262,6 +13320,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             team: team,
             orgUnit: orgUnit,
             parent: parent,
+            level: level,
             startDay: startDay,
             startDate: startDate,
             status: status,
@@ -13394,7 +13453,7 @@ typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
   required int version,
   Value<List<Template>> treeFields,
   Value<List<FormOption>> options,
-  Value<List<DOptionSet>?> optionSets,
+  Value<List<DOptionSet>> optionSets,
   Value<Map<String, dynamic>?> label,
   Value<String?> defaultLocal,
   Value<List<Template>> fieldsConf,
@@ -13415,7 +13474,7 @@ typedef $$FormVersionsTableUpdateCompanionBuilder = FormVersionsCompanion
   Value<int> version,
   Value<List<Template>> treeFields,
   Value<List<FormOption>> options,
-  Value<List<DOptionSet>?> optionSets,
+  Value<List<DOptionSet>> optionSets,
   Value<Map<String, dynamic>?> label,
   Value<String?> defaultLocal,
   Value<List<Template>> fieldsConf,
@@ -13474,7 +13533,7 @@ class $$FormVersionsTableFilterComposer
           column: $table.options,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnWithTypeConverterFilters<List<DOptionSet>?, List<DOptionSet>, String>
+  ColumnWithTypeConverterFilters<List<DOptionSet>, List<DOptionSet>, String>
       get optionSets => $composableBuilder(
           column: $table.optionSets,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -13620,7 +13679,7 @@ class $$FormVersionsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<List<FormOption>, String> get options =>
       $composableBuilder(column: $table.options, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<DOptionSet>?, String> get optionSets =>
+  GeneratedColumnWithTypeConverter<List<DOptionSet>, String> get optionSets =>
       $composableBuilder(
           column: $table.optionSets, builder: (column) => column);
 
@@ -13681,7 +13740,7 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             Value<int> version = const Value.absent(),
             Value<List<Template>> treeFields = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
-            Value<List<DOptionSet>?> optionSets = const Value.absent(),
+            Value<List<DOptionSet>> optionSets = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
             Value<String?> defaultLocal = const Value.absent(),
             Value<List<Template>> fieldsConf = const Value.absent(),
@@ -13722,7 +13781,7 @@ class $$FormVersionsTableTableManager extends RootTableManager<
             required int version,
             Value<List<Template>> treeFields = const Value.absent(),
             Value<List<FormOption>> options = const Value.absent(),
-            Value<List<DOptionSet>?> optionSets = const Value.absent(),
+            Value<List<DOptionSet>> optionSets = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
             Value<String?> defaultLocal = const Value.absent(),
             Value<List<Template>> fieldsConf = const Value.absent(),
