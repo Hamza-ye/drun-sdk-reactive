@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:d_sdk/core/form/element_template/get_item_local_string.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
@@ -11,6 +12,8 @@ class FormOption with EquatableMixin {
   final int order;
   final String? filterExpression;
   final IMap<String, dynamic>? properties;
+
+  String get displayName => getItemLocalString(label, defaultString: name);
 
   FormOption({
     required this.code,

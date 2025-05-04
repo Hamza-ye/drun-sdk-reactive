@@ -2,20 +2,18 @@ import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:drift/drift.dart';
-import 'package:injectable/injectable.dart';
 
-// @Order(140)
+// @Order(DSOrder.dataValue)
 // @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class DataValueDatasource extends BaseDataSource<$DataValuesTable, DataValue>
     implements MetaDataSource<DataValue> {
   DataValueDatasource(
       {required super.dioClient,
-      required DbManager dbManager,
-      @Named('apiPath') required super.apiPath})
+      required DbManager dbManager})
       : super(table: dbManager.db.dataValues, dbManager: dbManager);
 
   @override
-  String get apiResourceName => 'dataValues';
+  String get resourceName => 'dataValues';
 
   @override
   DataValue fromApiJson(Map<String, dynamic> data,

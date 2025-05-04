@@ -10,7 +10,7 @@ class ListConverter<T> extends TypeConverter<List<T>, String> {
   List<T> fromSql(String? fromDb) {
     if (fromDb == null) return [];
     final List<dynamic> decoded = jsonDecode(fromDb);
-    return decoded.cast<T>();
+    return List<T>.from(decoded);
   }
 
   @override

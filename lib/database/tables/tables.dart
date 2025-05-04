@@ -10,11 +10,13 @@ export 'data_submissions.table.dart';
 export 'data_values.table.dart';
 export 'form_versions.table.dart';
 export 'identifiable.entity.mixin.dart';
+export 'managed_teams.table.dart';
 export 'metadata_submissions.table.dart';
 export 'org_units.table.dart';
 export 'ou_levels.table.dart';
 export 'projects.table.dart';
 export 'repeat_instances.table.dart';
 export 'teams.table.dart';
+export 'user_form_accesses.dart';
 export 'users.table.dart';
 

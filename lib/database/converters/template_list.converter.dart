@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
-import '../../core/form/field_template/field_template.dart';
+import '../../core/form/element_template/element_template.dart';
 
 /// Converts a List<Template> tree to/from a JSON String.
 class TemplateListConverter extends TypeConverter<List<Template>, String> {

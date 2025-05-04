@@ -1,33 +1,25 @@
 import 'dart:convert';
 
 import 'package:d_sdk/core/form/attribute_type.dart';
-import 'package:d_sdk/core/form/field_template/field_template.dart';
+import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
-import 'package:d_sdk/core/form/template_path_walking_service.dart';
+import 'package:d_sdk/core/form/value_type_rendering_type.dart';
 import 'package:d_sdk/core/utilities/parsing_helpers.dart';
-import 'package:d_sdk/database/shared/allowed_action.dart';
-import 'package:d_sdk/database/shared/form_option.dart';
-import 'package:d_sdk/database/shared/metadata_resource_type.dart';
-import 'package:d_sdk/database/shared/scanned_code_properties.dart';
-import 'package:d_sdk/database/shared/value_type.dart';
+import 'package:d_sdk/database/shared/shared.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-mixin ElementAttributesMixin {
-  ValueType? get type;
-
-  bool get mandatory;
-}
-
-class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
-  final String? id;
+class FieldTemplate extends Template {
+  final String id;
   final String? description;
   final String? path;
+  final String? parent;
 
   final String? code;
   final String? name;
   final int order;
 
-  final ValueType? type;
+  final ValueType type;
+
   final String? listName;
   final String? optionSet;
   final bool mandatory;
@@ -35,9 +27,7 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
   final bool mainField;
   final String? choiceFilter;
   final dynamic defaultValue;
-  final String? parent;
 
-  // final IList<FieldTemplate> fields;
   final IMap<String, dynamic> label;
 
   final IMap<String, dynamic>? properties;
@@ -60,45 +50,44 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
   final IList<String> displayAttributes;
   final IList<AllowedAction> allowedActions;
 
+  @override
+  bool get repeatable => false;
+
+  final ValueTypeRenderingType valueTypeRendering;
+
   FieldTemplate({
-    this.id,
+    required this.id,
     this.code,
     this.description,
     this.path,
+    this.parent,
     this.mandatory = false,
     this.mainField = false,
     this.readOnly = false,
     this.order = 0,
     this.listName,
     this.optionSet,
-    this.type,
     this.name,
-    // this.fieldValueRenderingType,
+    required this.type,
+    this.valueTypeRendering = ValueTypeRenderingType.DEFAULT,
     this.resourceType,
     this.resourceMetadataSchema,
     this.choiceFilter,
     this.calculation,
     this.defaultValue,
-    this.parent,
     this.attributeType,
     this.gs1Enabled = false,
-    // this.itemTitle,
     Iterable<Rule>? rules,
     Iterable<FormOption>? options,
     Iterable<String>? appearance,
     Iterable<String>? displayAttributes,
     Iterable<AllowedAction>? allowedActions,
-    // Iterable<FieldTemplate>? fields,
-    // List<FieldTemplate> fields = const [],
-    // List<FormOption> options = const [],
     this.label = const IMap.empty(),
     this.properties,
     this.scannedCodeProperties,
     this.constraint,
     this.constraintMessage,
-  })  : /*this.fields =
-            IList.orNull(fields) ?? const IList<FieldTemplate>.empty(),*/
-        this.options = IList.orNull(options) ?? const IList<FormOption>.empty(),
+  })  : this.options = IList.orNull(options) ?? const IList<FormOption>.empty(),
         this.rules = IList.orNull(rules) ?? const IList<Rule>.empty(),
         this.appearance =
             IList.orNull(appearance) ?? const IList<String>.empty(),
@@ -123,6 +112,8 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
     final valueType = ValueType.getValueType(json['type']);
+    final valueTypeRendering =
+        ValueTypeRenderingType.valueOf(json['valueTypeRendering']);
 
     final resourceType = json['resourceType'] != null
         ? MetadataResourceType.getType(json['resourceType'])
@@ -180,6 +171,10 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
             : json['displayAttributes'].cast<String>()
         : null;
 
+    if (valueType == null) {
+      throw ArgumentError('Invalid value type: $valueType');
+    }
+
     return FieldTemplate(
       type: valueType,
       attributeType: AttributeType.getAttributeType(json['attributeType']),
@@ -198,18 +193,15 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
       gs1Enabled: json['gs1Enabled'] ?? false,
       listName: json['listName'],
       optionSet: json['optionSet'],
-      // fields: fields,
-      // itemTitle: json['itemTitle'],
       choiceFilter: json['choiceFilter'],
       calculation: json['calculation'],
       rules: rules,
       label: label.lock,
       properties: properties.lock,
-      parent: json['section'],
-      // parentPath: json['parentPath'],
+      parent: json['parent'],
       resourceType: resourceType,
       resourceMetadataSchema: json['resourceMetadataSchema'],
-      // fieldValueRenderingType: json['fieldValueRenderingType'],
+      valueTypeRendering: valueTypeRendering,
       defaultValue: json['defaultValue'] != null
           ? json['defaultValue'] is String
               ? json['defaultValue']
@@ -226,7 +218,7 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
     return {
       'id': id,
       'code': code,
-      'type': type?.name,
+      'type': type.name,
       'resourceType': resourceType?.name,
       'order': order,
       'path': path,
@@ -238,10 +230,10 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
       'mainField': mainField,
       'listName': listName,
       'optionSet': optionSet,
-      // 'itemTitle': itemTitle,
       'choiceFilter': choiceFilter,
       'calculation': calculation,
       'defaultValue': defaultValue,
+      'valueTypeRendering': valueTypeRendering.name,
       'resourceMetadataSchema': resourceMetadataSchema,
       'rules': rules.unlockView.map((rule) => rule.toJson()).toList(),
       'label': label.unlockView,
@@ -254,73 +246,7 @@ class FieldTemplate extends Template with TreeElement, ElementAttributesMixin {
     };
   }
 
-  FieldTemplate copyWith({
-    String? id,
-    String? description,
-    String? path,
-    int? order,
-    String? name,
-    String? code,
-    bool? mainField,
-    Iterable<Rule>? rules,
-    Iterable<Template>? fields,
-    Iterable<Template>? treeFields,
-    ValueType? type,
-    IMap<String, dynamic>? label,
-    IMap<String, dynamic>? properties,
-    bool? readOnly,
-    String? constraint,
-    IMap<String, String>? constraintMessage,
-    String? listName,
-    String? optionSet,
-    bool? mandatory,
-    String? choiceFilter,
-    dynamic defaultValue,
-    String? parent,
-    Iterable<FormOption>? options,
-    String? calculation,
-    AttributeType? attributeType,
-    ScannedCodeProperties? scannedCodeProperties,
-    Iterable<String>? appearance,
-    bool? gs1Enabled,
-    MetadataResourceType? resourceType,
-    String? resourceMetadataSchema,
-    Iterable<String>? displayAttributes,
-    Iterable<AllowedAction>? allowedActions,
-  }) {
-    return FieldTemplate(
-      id: id ?? this.id,
-      description: description ?? this.description,
-      path: path ?? this.path,
-      code: code ?? this.code,
-      name: name ?? this.name,
-      order: order ?? this.order,
-      type: type ?? this.type,
-      listName: listName ?? this.listName,
-      optionSet: optionSet ?? this.optionSet,
-      mandatory: mandatory ?? this.mandatory,
-      readOnly: readOnly ?? this.readOnly,
-      mainField: mainField ?? this.mainField,
-      choiceFilter: choiceFilter ?? this.choiceFilter,
-      defaultValue: defaultValue ?? this.defaultValue,
-      parent: parent ?? this.parent,
-      label: label ?? this.label,
-      properties: properties ?? this.properties,
-      rules: rules ?? this.rules,
-      options: options ?? this.options,
-      constraint: constraint ?? this.constraint,
-      constraintMessage: constraintMessage ?? this.constraintMessage,
-      calculation: calculation ?? this.calculation,
-      attributeType: attributeType ?? this.attributeType,
-      scannedCodeProperties:
-          scannedCodeProperties ?? this.scannedCodeProperties,
-      appearance: appearance ?? this.appearance,
-      gs1Enabled: gs1Enabled ?? this.gs1Enabled,
-      resourceType: resourceType ?? this.resourceType,
-      resourceMetadataSchema:
-          resourceMetadataSchema ?? this.resourceMetadataSchema,
-      displayAttributes: displayAttributes ?? this.displayAttributes,
-      allowedActions: allowedActions ?? this.allowedActions,
-    );
-  }
+  @override
+  String get displayName =>
+      getItemLocalString(label.unlockView, defaultString: name);
 }

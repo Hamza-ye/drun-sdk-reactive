@@ -2,7 +2,9 @@ import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
-
+@TableIndex.sql('''
+  CREATE INDEX data_element_name_idx ON data_elements (name);
+''')
 class DataElements extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get description => text().nullable()();
 
@@ -14,10 +16,6 @@ class DataElements extends Table with BaseTableMixin, IdentifiableMixin {
 
   /// defaultValue stored as text (adjust converter if needed).
   TextColumn get defaultValue => text().nullable()();
-
-  /// label is stored as JSON in a text column.
-  TextColumn get label =>
-      text().map(const MapConverter()).clientDefault(() => '{}')();
 
   /// scannedCodeProperties is stored as JSON.
   TextColumn get scannedCodeProperties =>

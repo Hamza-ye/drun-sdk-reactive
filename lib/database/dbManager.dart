@@ -10,13 +10,6 @@ class DbManager {
   final AppDatabase db;
   final SessionContext context;
 
-  // Future<DbManager>
-  // =>
-  //     IMap.fromIterable(
-  //         await appLocator.getAllAsync<AbstractDatasource<dynamic>>(),
-  //         keyMapper: (dataSource) => dataSource.apiResourceName,
-  //         valueMapper: (dataSource) => dataSource);
-
   /// Returns a stream of AuthUserData from the local database.
   Stream<User?> watchAuthUserData(String userId) {
     return (db.select(db.users)..where((t) => t.id.equals(userId)))

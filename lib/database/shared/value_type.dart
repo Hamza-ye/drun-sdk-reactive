@@ -40,8 +40,7 @@ enum ValueType {
   YesNo(TextValidator()),
   GeoJson(TextValidator()),
   Calculated(TextValidator()),
-  ScannedCode(TextValidator()),
-  Unknown(TextValidator());
+  ScannedCode(TextValidator());
 
   const ValueType(this._validator);
 
@@ -111,11 +110,11 @@ enum ValueType {
 
   bool get isInteger => INTEGER_TYPES.contains(this);
 
-  bool get isSectionType => SECTION_TYPES.contains(this);
+  // bool get isSectionType => SECTION_TYPES.contains(this);
 
-  bool get isSection => this == ValueType.Section;
+  // bool get isSection => this == ValueType.Section;
 
-  bool get isRepeatSection => this == ValueType.RepeatableSection;
+  // bool get isRepeatSection => this == ValueType.RepeatableSection;
 
   bool get selectTypes => WITH_OPTIONS_TYPES.contains(this);
 
@@ -139,7 +138,7 @@ enum ValueType {
 
   bool get isCoordinate => this == Coordinate;
 
-  static ValueType getValueType(String? valueType) {
+  static ValueType? getValueType(String? valueType) {
     switch (valueType?.toLowerCase()) {
       case 'section':
         return ValueType.Section;
@@ -218,7 +217,7 @@ enum ValueType {
       case 'calculated':
         return ValueType.Calculated;
       default:
-        return ValueType.Unknown;
+        return null;
       // throw ArgumentError('Invalid value type: $valueType'); Attribute
     }
   }

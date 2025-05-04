@@ -4,36 +4,33 @@ import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
-import 'package:d_sdk/datasource/abstract_datasource.dart';
-import 'package:d_sdk/datasource/base_datasource.dart';
-import 'package:d_sdk/datasource/metadata_datasource.dart';
+import 'package:d_sdk/datasource/datasource.dart';
 import 'package:d_sdk/use_cases/upload_submissions/data_submission.extension.dart';
 import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
-@Order(120)
+@Order(DSOrder.dataSubmission)
 @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class DataSubmissionDatasource
     extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
     implements MetaDataSource<DataSubmission> {
   DataSubmissionDatasource(
       {required super.dioClient,
-      required DbManager dbManager,
-      @Named('apiPath') required super.apiPath})
+      required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.dataSubmissions);
 
   @override
-  String get apiResourceName => 'dataSubmission';
+  String get resourceName => 'dataSubmission';
 
   @override
   DataSubmission fromApiJson(Map<String, dynamic> data,
       {ValueSerializer? serializer}) {
     final form = data['form'];
     final version = data['version'];
-    final fVersion = data['formVersion'];
-    final String formVersion =
-        form != null && version != null ? '${form}_$version' : fVersion;
+    final String formId = form != null && version != null
+        ? '${form}_$version'
+        : data['formVersion'];
     final assignment =
         data['assignment']['uid'] ?? data['assignment']['id'].toString();
     final orgUnit =
@@ -42,8 +39,8 @@ class DataSubmissionDatasource
     return DataSubmission.fromJson({
       ...data,
       'status': SubmissionStatus.synced.name,
-      'formVersion': formVersion,
-      'form': form,
+      'progressStatus': data['status'],
+      'form': formId,
       'assignment': assignment,
       'orgUnit': orgUnit,
       'team': team,
@@ -78,7 +75,7 @@ class DataSubmissionDatasource
       return submission.toUpload();
     }).toList();
 
-    final resourcePath = '/${apiPath}/$apiResourceName/bulk';
+    final resourcePath = '/${apiVersionPath}/$resourceName/bulk';
     final response = await dioClient.post(resourcePath, data: uploadPayload);
 
     SyncSummary summary = SyncSummary.fromJson(response.data);
@@ -93,13 +90,13 @@ class DataSubmissionDatasource
       DataSubmission newEntity = submission;
       if (syncCreated || syncUpdated) {
         newEntity = submission.copyWith(
-            status: Value(SubmissionStatus.synced),
+            status: SubmissionStatus.synced,
             lastSyncMessage: Value(null),
             lastSyncDate: Value(DateTime.now().toUtc()));
         // availableItemCount++;
       } else if (syncFailed) {
         newEntity = submission.copyWith(
-            status: Value(SubmissionStatus.syncFailed),
+            status: SubmissionStatus.syncFailed,
             lastSyncMessage: Value(summary.failed[submission.id]));
 
         // availableItemCount++;

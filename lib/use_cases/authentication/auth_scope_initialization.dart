@@ -2,7 +2,7 @@
 //
 // import 'package:d_sdk/auth/authenticated_user_detail.dart';
 // import 'package:d_sdk/auth/user_detail.dart';
-// import 'package:d_sdk/di/init_authenticated_scope.dart';
+// import 'package:d_sdk/di/init_active_session_scope.dart';
 // import 'package:d_sdk/di/injection.dart';
 // import 'package:d_sdk/use_cases/authentication/logout_clean_up.dart';
 // import 'package:injectable/injectable.dart';

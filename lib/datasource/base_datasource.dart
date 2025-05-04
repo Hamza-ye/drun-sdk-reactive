@@ -15,16 +15,13 @@ typedef ProgressCallback = void Function(double progress);
 
 abstract class BaseDataSource<T extends TableInfo<T, D>,
     D extends Insertable<D>> extends AbstractDatasource<D> {
-  // final HttpClient apiClient;
   final Dio dioClient;
-  final String apiPath;
   final DbManager _dbManager;
   TableInfo<T, D> table;
 
   BaseDataSource(
       {required Dio dioClient,
       required DbManager dbManager,
-      required this.apiPath,
       required this.table})
       : this.dioClient = dioClient,
         this._dbManager = dbManager;
@@ -34,14 +31,6 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
   AppDatabase get db {
     throwIf(_activeDb == null, NoActiveDatabaseInstance());
     return _activeDb!;
-  }
-
-  Future<List<D>> get({bool forceRefresh = false}) async {
-    if (forceRefresh) {
-      await syncWithRemote();
-    }
-
-    return db.select(table).get();
   }
 
   Future<List<D>> syncWithRemote(
@@ -62,7 +51,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
   @override
   Future<List<D>> getOnline() async {
     try {
-      final response = await dioClient.get(this.resourceUrl(),
+      final response = await dioClient.get(resourceFullPath,
           options: Options(
             receiveTimeout: Duration(seconds: 70),
             sendTimeout: Duration(seconds: 40),
@@ -71,7 +60,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       final raw = response.data;
 
       /// expecting paged list ({ apiResourceName: [...] }),
-      List dataItems = raw?[apiResourceName]?.toList() ?? [];
+      List dataItems = raw?[resourceName]?.toList() ?? [];
 
       return dataItems.map((item) {
         item['dirty'] = false;
@@ -80,47 +69,11 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
         return fromApiJson({
           ...item,
           'id': item['uid']!,
+          'translations': (item['translations'] as List?) ?? [],
         }, serializer: CustomSerializer());
       }).toList();
     } on RevokeTokenException {
       throw SessionExpiredException();
     }
-  }
-
-  //
-  // @override
-  // Future<List<D>> getOnline() async {
-  //   final dataRunResourceUrl = await this.dataRunResourceUrl();
-  //   final resourcePath = '/$dataRunResourceUrl';
-  //
-  //   try {
-  //     final response = await dioClient.get(resourcePath,
-  //         options: Options(
-  //           receiveTimeout: Duration(seconds: 30),
-  //           sendTimeout: Duration(seconds: 30),
-  //         ));
-  //
-  //     List data = response.data != null
-  //         ? response.data[this.apiResourceName]?.toList() ?? []
-  //         : [];
-  //
-  //     return data.map((dataItem) {
-  //       dataItem['dirty'] = false;
-  //       dataItem['synced'] = true;
-  //
-  //       var x = fromApiJson({
-  //         ...dataItem,
-  //         'id': dataItem['uid'] ?? dataItem['id'].toString(),
-  //       }, serializer: CustomSerializer());
-  //
-  //       return x;
-  //     }).toList();
-  //   } on RevokeTokenException {
-  //     throw SessionExpiredException();
-  //   }
-  // }
-
-  String resourceUrl() {
-    return '/${apiPath}/$apiResourceName?paged=false';
   }
 }

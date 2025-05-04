@@ -1,4 +1,4 @@
-// import 'package:d_sdk/modules/datarun/form/shared/field_template/field_template.entity.dart';
+// import 'package:d_sdk/modules/datarun/form/shared/element_template/element_template.entity.dart';
 //
 // extension TemplateRuleDependencies on FieldTemplate {
 //   List<String> get dependencies {

@@ -4,11 +4,11 @@ import 'package:drift/drift.dart';
 
 /// Converter for allocatedResources: Map<String, Object?> <-> JSON String
 class AllocatedResourcesConverter
-    extends TypeConverter<Map<String, dynamic>?, String> {
+    extends TypeConverter<Map<String, dynamic>, String> {
   const AllocatedResourcesConverter();
 
   @override
-  Map<String, dynamic>? fromSql(String? fromDb) {
+  Map<String, dynamic> fromSql(String? fromDb) {
     if (fromDb == null) return {};
     return Map<String, dynamic>.from(jsonDecode(fromDb));
   }

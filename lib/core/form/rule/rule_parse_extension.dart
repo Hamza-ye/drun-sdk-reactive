@@ -1,8 +1,5 @@
-
-import 'package:d_sdk/core/form/form_traverse_extension.dart';
+import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:d_sdk/core/form/rule/action.dart';
-
-import '../field_template/field_template.dart';
 
 extension FieldTemplateDependencies on Template {
   List<String> get dependencies {
@@ -38,7 +35,7 @@ extension FieldTemplateDependencies on Template {
     List<String> dependencyList = [];
     final fieldPattern = RegExp(r'#\{(.*?)\}');
 
-    if (isSelectType) {
+    if (type?.isSelectType == true) {
       if ((this as FieldTemplate).choiceFilter != null &&
           (this as FieldTemplate).choiceFilter!.isNotEmpty) {
         final filterDependencies = fieldPattern
@@ -58,7 +55,7 @@ extension FieldTemplateDependencies on Template {
     List<String> dependencyList = [];
     final fieldPattern = RegExp(r'#\{(.*?)\}');
 
-    if (isCalculate) {
+    if (type?.isCalculate == true) {
       if ((this as FieldTemplate).calculation != null &&
           (this as FieldTemplate).calculation!.isNotEmpty) {
         final calculationDependencies = fieldPattern
@@ -82,7 +79,7 @@ extension FieldTemplateDependencies on Template {
   }
 
   String? get evalChoiceFilterExpression {
-    if (this.isSelectType) {
+    if (this.type?.isSelectType == true) {
       return (this as FieldTemplate)
           .choiceFilter
           ?.replaceAll("#{", "")

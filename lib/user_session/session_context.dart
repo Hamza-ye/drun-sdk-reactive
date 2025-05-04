@@ -7,7 +7,7 @@ typedef TokenPair = ({String accessToken, String refreshToken});
 /// encapsulates everything about the current user environment
 
 class SessionContext with EquatableMixin {
-  static const String activeSessionScope = 'sessionContext';
+  static const String activeSessionScope = 'activeSessionContext';
 
   SessionContext({
     required this.username,
@@ -15,7 +15,6 @@ class SessionContext with EquatableMixin {
     required this.accessToken,
     required this.refreshToken,
     this.loginTime,
-
   });
 
   final String username;
@@ -65,11 +64,6 @@ class SessionContext with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [
-        username,
-        baseUrl,
-        accessToken,
-        refreshToken,
-        loginTime,
-      ];
+  List<Object?> get props =>
+      [username, baseUrl, accessToken, refreshToken, loginTime];
 }

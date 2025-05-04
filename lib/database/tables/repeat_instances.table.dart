@@ -1,7 +1,7 @@
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'repeat_template_path', columns: {#templatePath})
+@TableIndex(name: 'repeat_template_path_idx', columns: {#templatePath})
 class RepeatInstances extends Table with BaseTableMixin {
   /// Path of the Repeat in the FormTemplate (non-null)
   TextColumn get templatePath => text()();

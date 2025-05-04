@@ -1,10 +1,9 @@
 library d_sdk;
 
-import 'package:d_sdk/auth/auth_manager.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.dart';
 import 'package:d_sdk/di/injection.dart';
-import 'package:d_sdk/user_session/session_storage_manager.dart';
+import 'package:d_sdk/user_session/session_repository.dart';
 
 import 'database/dao/dao.dart';
 
@@ -12,8 +11,6 @@ class DSdk {
   // unauthenticated scope
   static SessionRepository get userSessionRepository =>
       rSdkLocator<SessionRepository>();
-
-  static AuthManager get authManager => rSdkLocator<AuthManager>();
 
   // authenticated scope dependencies
   static DbManager get dbManager => rSdkLocator<DbManager>();

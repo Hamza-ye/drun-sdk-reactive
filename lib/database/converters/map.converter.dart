@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 /// Converter for Map<String, Object?> (properties) <-> JSON String.
-class MapConverter<T> extends TypeConverter<Map<String, T>?, String> {
+class MapConverter<T> extends TypeConverter<Map<String, T>, String> {
   const MapConverter();
 
   @override

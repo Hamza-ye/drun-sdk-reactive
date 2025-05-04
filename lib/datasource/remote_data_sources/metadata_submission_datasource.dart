@@ -1,24 +1,21 @@
 import 'package:d_sdk/database/database.dart';
-import 'package:d_sdk/datasource/abstract_datasource.dart';
-import 'package:d_sdk/datasource/base_datasource.dart';
-import 'package:d_sdk/datasource/metadata_datasource.dart';
+import 'package:d_sdk/datasource/datasource.dart';
 import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
-@Order(150)
+@Order(DSOrder.metadataSubmission)
 @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class MetadataSubmissionDatasource
     extends BaseDataSource<$MetadataSubmissionsTable, MetadataSubmission>
     implements MetaDataSource<MetadataSubmission> {
   MetadataSubmissionDatasource(
       {required super.dioClient,
-      required DbManager dbManager,
-      @Named('apiPath') required super.apiPath})
+      required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.metadataSubmissions);
 
   @override
-  String get apiResourceName => 'metadataSubmissions';
+  String get resourceName => 'metadataSubmissions';
 
   @override
   MetadataSubmission fromApiJson(Map<String, dynamic> data,

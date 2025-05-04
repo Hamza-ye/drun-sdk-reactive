@@ -6,6 +6,7 @@ part of 'assignments_dao.dart';
 mixin _$AssignmentsDaoMixin on DatabaseAccessor<AppDatabase> {
   $ProjectsTable get projects => attachedDatabase.projects;
   $ActivitiesTable get activities => attachedDatabase.activities;
+  $UsersTable get users => attachedDatabase.users;
   $TeamsTable get teams => attachedDatabase.teams;
   $OrgUnitsTable get orgUnits => attachedDatabase.orgUnits;
   $AssignmentsTable get assignments => attachedDatabase.assignments;

@@ -1,4 +1,5 @@
-import 'package:d_sdk/core/form/field_template/template.dart';
+import 'package:d_sdk/core/form/element_template/element_template.dart';
+import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:drift/drift.dart';
 
@@ -29,9 +30,10 @@ class CustomSerializer extends ValueSerializer {
       return (json as List<dynamic>?)
           ?.map((e) => Template.fromJsonFactory(e))
           .toList() as T;
-    } else if (T == List<String>) {
-      return (json as List<dynamic>?)?.map<String>((e) => e as String).toList()
-          as T;
+    } else if (T == List<User>) {
+      return (json as List<dynamic>?)
+          ?.map((e) => User.fromJson(e, serializer: CustomSerializer()))
+          .toList() as T;
     }
 
     return driftRuntimeOptions.defaultSerializer.fromJson<T>(json);
@@ -59,6 +61,8 @@ class CustomSerializer extends ValueSerializer {
     } else if (value is List<String>) {
       return value.map((e) => e).toList();
     } else if (value is List<FormOption>) {
+      return value.map((e) => e.toJson()).toList();
+    } else if (value is List<User>) {
       return value.map((e) => e.toJson()).toList();
     }
     // Handle other types

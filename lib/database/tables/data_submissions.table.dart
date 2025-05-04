@@ -3,28 +3,29 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'submission_status', columns: {#status})
-@TableIndex(name: 'submission_deleted', columns: {#deleted})
+@TableIndex(name: 'submission_status_idx', columns: {#status})
+@TableIndex(name: 'submission_progressStatus_idx', columns: {#progressStatus})
+@TableIndex(name: 'submission_deleted_idx', columns: {#deleted})
 class DataSubmissions extends Table with BaseTableMixin {
-  BoolColumn get deleted => boolean().clientDefault(() => false)();
+  BoolColumn get deleted => boolean().withDefault(Constant(false))();
 
-  /// Form template id is stored as text (nullable).
-  TextColumn get form => text()();
-
-  // TextColumn get form => text().generatedAs(formVersion.substr(1, 11))();
+  // /// Form template id is stored as text (nullable).
+  // TextColumn get form => text()();
+  //
+  // TextColumn get formTemplate => text().generatedAs(form.substr(1, 11))();
 
   /// Many-to-one references stored as text.
-  TextColumn get formVersion =>
-      text().references(DataFormTemplateVersions, #id)();
+  @ReferenceName("formSubmissions")
+  TextColumn get form => text().references(DataFormTemplateVersions, #id)();
 
-  /// Version is non-nullable integer.
-  IntColumn get version => integer()();
+  // /// Version is non-nullable integer.
+  // IntColumn get version => integer()();
 
   /// Nullable assignment reference.
-  TextColumn get assignment => text().references(Assignments, #id).nullable()();
+  TextColumn get assignment => text().references(Assignments, #id)();
 
   /// Many-to-one references stored as text.
-  TextColumn get team => text().references(Teams, #id).nullable()();
+  TextColumn get team => text().references(Teams, #id)();
 
   /// Nullable orgUnit reference.
   TextColumn get orgUnit => text().references(OrgUnits, #id).nullable()();
@@ -35,7 +36,7 @@ class DataSubmissions extends Table with BaseTableMixin {
 
   // Use a single state field with a converter to/from enum
   TextColumn get status =>
-      text().map(const EnumNameConverter(SubmissionStatus.values)).nullable()();
+      text().map(const EnumNameConverter(SubmissionStatus.values))();
 
   DateTimeColumn get lastSyncDate => dateTime().nullable()();
 
@@ -51,5 +52,5 @@ class DataSubmissions extends Table with BaseTableMixin {
 
   /// formData is stored as a JSON string.
   TextColumn get formData =>
-      text().map(const MapConverter()).clientDefault(() => '{}')();
+      text().map(const NullAwareMapConverter()).nullable()();
 }

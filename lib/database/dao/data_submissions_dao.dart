@@ -49,17 +49,17 @@ class DataSubmissionsDao extends DatabaseAccessor<AppDatabase>
       StatusAggregationLevel.form => dataSubmissions.form.equals(id),
     };
 
-    final status = dataSubmissions.progressStatus;
+    final status = dataSubmissions.status;
     final count = dataSubmissions.id.count();
 
     final query = selectOnly(dataSubmissions)
       ..where(byLevel)
       ..addColumns([status, count])
-      ..groupBy([dataSubmissions.progressStatus]);
+      ..groupBy([dataSubmissions.status]);
 
     return query
         .map((row) {
-          final status = row.read(dataSubmissions.progressStatus)!;
+          final status = row.read(dataSubmissions.status)!;
           return MapEntry(SubmissionStatus.getValue(status), row.read(count)!);
         })
         .watch()
