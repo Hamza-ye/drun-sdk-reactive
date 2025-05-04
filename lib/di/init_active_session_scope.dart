@@ -40,7 +40,7 @@ import 'package:injectable/injectable.dart' as _i526;
 
 // AbAstractDatasource<[^>]+>
 /// initializes the registration of activeSessionContext-scope dependencies inside of GetIt
-Future<_i174.GetIt> initActiveSessionContextScope(
+Future<_i174.GetIt> initActiveSessionScope(
   _i174.GetIt getIt, {
   _i174.ScopeDisposeFunc? dispose,
 }) async {
