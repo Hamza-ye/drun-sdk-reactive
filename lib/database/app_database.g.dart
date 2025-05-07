@@ -17,7 +17,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -25,7 +25,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -63,7 +63,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       const VerificationMeta('langKey');
   @override
   late final GeneratedColumn<String> langKey = GeneratedColumn<String>(
-      'lang_key', aliasedName, false,
+      'lang_key', aliasedName, true,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       clientDefault: () => 'ar');
@@ -256,9 +256,9 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       username: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       firstName: attachedDatabase.typeMapping
@@ -270,7 +270,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       email: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}email']),
       langKey: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}lang_key'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}lang_key']),
       activated: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}activated'])!,
       imageUrl: attachedDatabase.typeMapping
@@ -323,14 +323,14 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 
 class User extends DataClass implements Insertable<User> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String username;
   final String? firstName;
   final String? lastName;
   final String? mobile;
   final String? email;
-  final String langKey;
+  final String? langKey;
   final bool activated;
   final String? imageUrl;
   final List<String> authorities;
@@ -344,14 +344,14 @@ class User extends DataClass implements Insertable<User> {
   final List<String> userFormsUIDs;
   const User(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       required this.username,
       this.firstName,
       this.lastName,
       this.mobile,
       this.email,
-      required this.langKey,
+      this.langKey,
       required this.activated,
       this.imageUrl,
       required this.authorities,
@@ -367,8 +367,12 @@ class User extends DataClass implements Insertable<User> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     map['username'] = Variable<String>(username);
     if (!nullToAbsent || firstName != null) {
       map['first_name'] = Variable<String>(firstName);
@@ -382,7 +386,9 @@ class User extends DataClass implements Insertable<User> {
     if (!nullToAbsent || email != null) {
       map['email'] = Variable<String>(email);
     }
-    map['lang_key'] = Variable<String>(langKey);
+    if (!nullToAbsent || langKey != null) {
+      map['lang_key'] = Variable<String>(langKey);
+    }
     map['activated'] = Variable<bool>(activated);
     if (!nullToAbsent || imageUrl != null) {
       map['image_url'] = Variable<String>(imageUrl);
@@ -426,8 +432,12 @@ class User extends DataClass implements Insertable<User> {
   UsersCompanion toCompanion(bool nullToAbsent) {
     return UsersCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       username: Value(username),
       firstName: firstName == null && nullToAbsent
           ? const Value.absent()
@@ -439,7 +449,9 @@ class User extends DataClass implements Insertable<User> {
           mobile == null && nullToAbsent ? const Value.absent() : Value(mobile),
       email:
           email == null && nullToAbsent ? const Value.absent() : Value(email),
-      langKey: Value(langKey),
+      langKey: langKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(langKey),
       activated: Value(activated),
       imageUrl: imageUrl == null && nullToAbsent
           ? const Value.absent()
@@ -467,14 +479,15 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return User(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       username: serializer.fromJson<String>(json['username']),
       firstName: serializer.fromJson<String?>(json['firstName']),
       lastName: serializer.fromJson<String?>(json['lastName']),
       mobile: serializer.fromJson<String?>(json['mobile']),
       email: serializer.fromJson<String?>(json['email']),
-      langKey: serializer.fromJson<String>(json['langKey']),
+      langKey: serializer.fromJson<String?>(json['langKey']),
       activated: serializer.fromJson<bool>(json['activated']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
       authorities: serializer.fromJson<List<String>>(json['authorities']),
@@ -494,14 +507,14 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'username': serializer.toJson<String>(username),
       'firstName': serializer.toJson<String?>(firstName),
       'lastName': serializer.toJson<String?>(lastName),
       'mobile': serializer.toJson<String?>(mobile),
       'email': serializer.toJson<String?>(email),
-      'langKey': serializer.toJson<String>(langKey),
+      'langKey': serializer.toJson<String?>(langKey),
       'activated': serializer.toJson<bool>(activated),
       'imageUrl': serializer.toJson<String?>(imageUrl),
       'authorities': serializer.toJson<List<String>>(authorities),
@@ -518,14 +531,14 @@ class User extends DataClass implements Insertable<User> {
 
   User copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           String? username,
           Value<String?> firstName = const Value.absent(),
           Value<String?> lastName = const Value.absent(),
           Value<String?> mobile = const Value.absent(),
           Value<String?> email = const Value.absent(),
-          String? langKey,
+          Value<String?> langKey = const Value.absent(),
           bool? activated,
           Value<String?> imageUrl = const Value.absent(),
           List<String>? authorities,
@@ -539,14 +552,16 @@ class User extends DataClass implements Insertable<User> {
           List<String>? userFormsUIDs}) =>
       User(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         username: username ?? this.username,
         firstName: firstName.present ? firstName.value : this.firstName,
         lastName: lastName.present ? lastName.value : this.lastName,
         mobile: mobile.present ? mobile.value : this.mobile,
         email: email.present ? email.value : this.email,
-        langKey: langKey ?? this.langKey,
+        langKey: langKey.present ? langKey.value : this.langKey,
         activated: activated ?? this.activated,
         imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
         authorities: authorities ?? this.authorities,
@@ -686,14 +701,14 @@ class User extends DataClass implements Insertable<User> {
 
 class UsersCompanion extends UpdateCompanion<User> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String> username;
   final Value<String?> firstName;
   final Value<String?> lastName;
   final Value<String?> mobile;
   final Value<String?> email;
-  final Value<String> langKey;
+  final Value<String?> langKey;
   final Value<bool> activated;
   final Value<String?> imageUrl;
   final Value<List<String>> authorities;
@@ -809,14 +824,14 @@ class UsersCompanion extends UpdateCompanion<User> {
 
   UsersCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String>? username,
       Value<String?>? firstName,
       Value<String?>? lastName,
       Value<String?>? mobile,
       Value<String?>? email,
-      Value<String>? langKey,
+      Value<String?>? langKey,
       Value<bool>? activated,
       Value<String?>? imageUrl,
       Value<List<String>>? authorities,
@@ -972,7 +987,7 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -980,7 +995,7 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -1116,9 +1131,9 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -1152,8 +1167,8 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
 
 class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -1166,8 +1181,8 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   final String? parent;
   const OrgUnit(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -1180,8 +1195,12 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -1210,8 +1229,12 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   OrgUnitsCompanion toCompanion(bool nullToAbsent) {
     return OrgUnitsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -1232,8 +1255,9 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return OrgUnit(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -1250,8 +1274,8 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -1265,8 +1289,8 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
 
   OrgUnit copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -1277,8 +1301,10 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           Value<String?> parent = const Value.absent()}) =>
       OrgUnit(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -1350,8 +1376,8 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
 
 class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -1423,8 +1449,8 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
 
   OrgUnitsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -1528,7 +1554,7 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -1536,7 +1562,7 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -1660,9 +1686,9 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -1694,8 +1720,8 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
 
 class OuLevel extends DataClass implements Insertable<OuLevel> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -1707,8 +1733,8 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   final int? offlineLevels;
   const OuLevel(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -1720,8 +1746,12 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -1749,8 +1779,12 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   OuLevelsCompanion toCompanion(bool nullToAbsent) {
     return OuLevelsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -1771,8 +1805,9 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return OuLevel(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -1788,8 +1823,8 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -1802,8 +1837,8 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
 
   OuLevel copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -1813,8 +1848,10 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           Value<int?> offlineLevels = const Value.absent()}) =>
       OuLevel(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -1885,8 +1922,8 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
 
 class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -1952,8 +1989,8 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
 
   OuLevelsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -2051,7 +2088,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -2059,7 +2096,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -2173,9 +2210,9 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -2205,8 +2242,8 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
 
 class Project extends DataClass implements Insertable<Project> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -2217,8 +2254,8 @@ class Project extends DataClass implements Insertable<Project> {
   final bool disabled;
   const Project(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -2229,8 +2266,12 @@ class Project extends DataClass implements Insertable<Project> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -2255,8 +2296,12 @@ class Project extends DataClass implements Insertable<Project> {
   ProjectsCompanion toCompanion(bool nullToAbsent) {
     return ProjectsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -2274,8 +2319,9 @@ class Project extends DataClass implements Insertable<Project> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Project(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -2290,8 +2336,8 @@ class Project extends DataClass implements Insertable<Project> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -2303,8 +2349,8 @@ class Project extends DataClass implements Insertable<Project> {
 
   Project copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -2313,8 +2359,10 @@ class Project extends DataClass implements Insertable<Project> {
           bool? disabled}) =>
       Project(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -2378,8 +2426,8 @@ class Project extends DataClass implements Insertable<Project> {
 
 class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -2439,8 +2487,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
 
   ProjectsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -2533,7 +2581,7 @@ class $ActivitiesTable extends Activities
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -2541,7 +2589,7 @@ class $ActivitiesTable extends Activities
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -2707,9 +2755,9 @@ class $ActivitiesTable extends Activities
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -2748,8 +2796,8 @@ class $ActivitiesTable extends Activities
 
 class Activity extends DataClass implements Insertable<Activity> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -2764,8 +2812,8 @@ class Activity extends DataClass implements Insertable<Activity> {
   final String? description;
   const Activity(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -2780,8 +2828,12 @@ class Activity extends DataClass implements Insertable<Activity> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -2816,8 +2868,12 @@ class Activity extends DataClass implements Insertable<Activity> {
   ActivitiesCompanion toCompanion(bool nullToAbsent) {
     return ActivitiesCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -2845,8 +2901,9 @@ class Activity extends DataClass implements Insertable<Activity> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Activity(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -2865,8 +2922,8 @@ class Activity extends DataClass implements Insertable<Activity> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -2882,8 +2939,8 @@ class Activity extends DataClass implements Insertable<Activity> {
 
   Activity copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -2896,8 +2953,10 @@ class Activity extends DataClass implements Insertable<Activity> {
           Value<String?> description = const Value.absent()}) =>
       Activity(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -2990,8 +3049,8 @@ class Activity extends DataClass implements Insertable<Activity> {
 
 class ActivitiesCompanion extends UpdateCompanion<Activity> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -3072,8 +3131,8 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
 
   ActivitiesCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -3189,7 +3248,7 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -3197,7 +3256,7 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -3294,9 +3353,9 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
       disabled: attachedDatabase.typeMapping
@@ -3316,8 +3375,8 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
 
 class Team extends DataClass implements Insertable<Team> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? code;
 
   /// Boolean columns with defaults.
@@ -3326,8 +3385,8 @@ class Team extends DataClass implements Insertable<Team> {
   final String user;
   const Team(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.code,
       this.disabled,
       required this.activity,
@@ -3336,8 +3395,12 @@ class Team extends DataClass implements Insertable<Team> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
@@ -3352,8 +3415,12 @@ class Team extends DataClass implements Insertable<Team> {
   TeamsCompanion toCompanion(bool nullToAbsent) {
     return TeamsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
       disabled: disabled == null && nullToAbsent
           ? const Value.absent()
@@ -3368,8 +3435,9 @@ class Team extends DataClass implements Insertable<Team> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Team(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       code: serializer.fromJson<String?>(json['code']),
       disabled: serializer.fromJson<bool?>(json['disabled']),
       activity: serializer.fromJson<String>(json['activity']),
@@ -3381,8 +3449,8 @@ class Team extends DataClass implements Insertable<Team> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'code': serializer.toJson<String?>(code),
       'disabled': serializer.toJson<bool?>(disabled),
       'activity': serializer.toJson<String>(activity),
@@ -3392,16 +3460,18 @@ class Team extends DataClass implements Insertable<Team> {
 
   Team copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<bool?> disabled = const Value.absent(),
           String? activity,
           String? user}) =>
       Team(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         code: code.present ? code.value : this.code,
         disabled: disabled.present ? disabled.value : this.disabled,
         activity: activity ?? this.activity,
@@ -3454,8 +3524,8 @@ class Team extends DataClass implements Insertable<Team> {
 
 class TeamsCompanion extends UpdateCompanion<Team> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> code;
   final Value<bool?> disabled;
   final Value<String> activity;
@@ -3507,8 +3577,8 @@ class TeamsCompanion extends UpdateCompanion<Team> {
 
   TeamsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? code,
       Value<bool?>? disabled,
       Value<String>? activity,
@@ -3587,7 +3657,7 @@ class $ManagedTeamsTable extends ManagedTeams
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -3595,7 +3665,7 @@ class $ManagedTeamsTable extends ManagedTeams
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -3707,9 +3777,9 @@ class $ManagedTeamsTable extends ManagedTeams
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
       disabled: attachedDatabase.typeMapping
@@ -3735,8 +3805,8 @@ class $ManagedTeamsTable extends ManagedTeams
 
 class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? code;
 
   /// Boolean columns with defaults.
@@ -3748,8 +3818,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
   final List<dynamic> teamUsers;
   const ManagedTeam(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.code,
       this.disabled,
       required this.activity,
@@ -3759,8 +3829,12 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
@@ -3779,8 +3853,12 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
   ManagedTeamsCompanion toCompanion(bool nullToAbsent) {
     return ManagedTeamsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
       disabled: disabled == null && nullToAbsent
           ? const Value.absent()
@@ -3796,8 +3874,9 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ManagedTeam(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       code: serializer.fromJson<String?>(json['code']),
       disabled: serializer.fromJson<bool?>(json['disabled']),
       activity: serializer.fromJson<String>(json['activity']),
@@ -3810,8 +3889,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'code': serializer.toJson<String?>(code),
       'disabled': serializer.toJson<bool?>(disabled),
       'activity': serializer.toJson<String>(activity),
@@ -3822,8 +3901,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
 
   ManagedTeam copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<bool?> disabled = const Value.absent(),
           String? activity,
@@ -3831,8 +3910,10 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
           List<dynamic>? teamUsers}) =>
       ManagedTeam(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         code: code.present ? code.value : this.code,
         disabled: disabled.present ? disabled.value : this.disabled,
         activity: activity ?? this.activity,
@@ -3889,8 +3970,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
 
 class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> code;
   final Value<bool?> disabled;
   final Value<String> activity;
@@ -3947,8 +4028,8 @@ class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
 
   ManagedTeamsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? code,
       Value<bool?>? disabled,
       Value<String>? activity,
@@ -4034,7 +4115,7 @@ class $AssignmentsTable extends Assignments
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -4042,7 +4123,7 @@ class $AssignmentsTable extends Assignments
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -4076,26 +4157,26 @@ class $AssignmentsTable extends Assignments
       const VerificationMeta('activityName');
   @override
   late final GeneratedColumn<String> activityName = GeneratedColumn<String>(
-      'activity_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'activity_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _orgUnitCodeMeta =
       const VerificationMeta('orgUnitCode');
   @override
   late final GeneratedColumn<String> orgUnitCode = GeneratedColumn<String>(
-      'org_unit_code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'org_unit_code', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _orgUnitNameMeta =
       const VerificationMeta('orgUnitName');
   @override
   late final GeneratedColumn<String> orgUnitName = GeneratedColumn<String>(
-      'org_unit_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'org_unit_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _teamCodeMeta =
       const VerificationMeta('teamCode');
   @override
   late final GeneratedColumn<String> teamCode = GeneratedColumn<String>(
-      'team_code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'team_code', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _parentMeta = const VerificationMeta('parent');
   @override
   late final GeneratedColumn<String> parent = GeneratedColumn<String>(
@@ -4218,22 +4299,30 @@ class $AssignmentsTable extends Assignments
           _activityNameMeta,
           activityName.isAcceptableOrUnknown(
               data['activity_name']!, _activityNameMeta));
+    } else if (isInserting) {
+      context.missing(_activityNameMeta);
     }
     if (data.containsKey('org_unit_code')) {
       context.handle(
           _orgUnitCodeMeta,
           orgUnitCode.isAcceptableOrUnknown(
               data['org_unit_code']!, _orgUnitCodeMeta));
+    } else if (isInserting) {
+      context.missing(_orgUnitCodeMeta);
     }
     if (data.containsKey('org_unit_name')) {
       context.handle(
           _orgUnitNameMeta,
           orgUnitName.isAcceptableOrUnknown(
               data['org_unit_name']!, _orgUnitNameMeta));
+    } else if (isInserting) {
+      context.missing(_orgUnitNameMeta);
     }
     if (data.containsKey('team_code')) {
       context.handle(_teamCodeMeta,
           teamCode.isAcceptableOrUnknown(data['team_code']!, _teamCodeMeta));
+    } else if (isInserting) {
+      context.missing(_teamCodeMeta);
     }
     if (data.containsKey('parent')) {
       context.handle(_parentMeta,
@@ -4263,9 +4352,9 @@ class $AssignmentsTable extends Assignments
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       activity: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}activity'])!,
       team: attachedDatabase.typeMapping
@@ -4273,13 +4362,13 @@ class $AssignmentsTable extends Assignments
       orgUnit: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}org_unit'])!,
       activityName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}activity_name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}activity_name'])!,
       orgUnitCode: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}org_unit_code']),
+          .read(DriftSqlType.string, data['${effectivePrefix}org_unit_code'])!,
       orgUnitName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}org_unit_name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}org_unit_name'])!,
       teamCode: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}team_code']),
+          .read(DriftSqlType.string, data['${effectivePrefix}team_code'])!,
       parent: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}parent']),
       level: attachedDatabase.typeMapping
@@ -4324,15 +4413,15 @@ class $AssignmentsTable extends Assignments
 
 class Assignment extends DataClass implements Insertable<Assignment> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String activity;
   final String team;
   final String orgUnit;
-  final String? activityName;
-  final String? orgUnitCode;
-  final String? orgUnitName;
-  final String? teamCode;
+  final String activityName;
+  final String orgUnitCode;
+  final String orgUnitName;
+  final String teamCode;
 
   /// Parent reference (stored as a text foreign key, if applicable)
   final String? parent;
@@ -4357,15 +4446,15 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   final EntityScope scope;
   const Assignment(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       required this.activity,
       required this.team,
       required this.orgUnit,
-      this.activityName,
-      this.orgUnitCode,
-      this.orgUnitName,
-      this.teamCode,
+      required this.activityName,
+      required this.orgUnitCode,
+      required this.orgUnitName,
+      required this.teamCode,
       this.parent,
       this.level,
       this.startDay,
@@ -4378,23 +4467,19 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     map['activity'] = Variable<String>(activity);
     map['team'] = Variable<String>(team);
     map['org_unit'] = Variable<String>(orgUnit);
-    if (!nullToAbsent || activityName != null) {
-      map['activity_name'] = Variable<String>(activityName);
-    }
-    if (!nullToAbsent || orgUnitCode != null) {
-      map['org_unit_code'] = Variable<String>(orgUnitCode);
-    }
-    if (!nullToAbsent || orgUnitName != null) {
-      map['org_unit_name'] = Variable<String>(orgUnitName);
-    }
-    if (!nullToAbsent || teamCode != null) {
-      map['team_code'] = Variable<String>(teamCode);
-    }
+    map['activity_name'] = Variable<String>(activityName);
+    map['org_unit_code'] = Variable<String>(orgUnitCode);
+    map['org_unit_name'] = Variable<String>(orgUnitName);
+    map['team_code'] = Variable<String>(teamCode);
     if (!nullToAbsent || parent != null) {
       map['parent'] = Variable<String>(parent);
     }
@@ -4430,23 +4515,19 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   AssignmentsCompanion toCompanion(bool nullToAbsent) {
     return AssignmentsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       activity: Value(activity),
       team: Value(team),
       orgUnit: Value(orgUnit),
-      activityName: activityName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(activityName),
-      orgUnitCode: orgUnitCode == null && nullToAbsent
-          ? const Value.absent()
-          : Value(orgUnitCode),
-      orgUnitName: orgUnitName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(orgUnitName),
-      teamCode: teamCode == null && nullToAbsent
-          ? const Value.absent()
-          : Value(teamCode),
+      activityName: Value(activityName),
+      orgUnitCode: Value(orgUnitCode),
+      orgUnitName: Value(orgUnitName),
+      teamCode: Value(teamCode),
       parent:
           parent == null && nullToAbsent ? const Value.absent() : Value(parent),
       level:
@@ -4474,15 +4555,16 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Assignment(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       activity: serializer.fromJson<String>(json['activity']),
       team: serializer.fromJson<String>(json['team']),
       orgUnit: serializer.fromJson<String>(json['orgUnit']),
-      activityName: serializer.fromJson<String?>(json['activityName']),
-      orgUnitCode: serializer.fromJson<String?>(json['orgUnitCode']),
-      orgUnitName: serializer.fromJson<String?>(json['orgUnitName']),
-      teamCode: serializer.fromJson<String?>(json['teamCode']),
+      activityName: serializer.fromJson<String>(json['activityName']),
+      orgUnitCode: serializer.fromJson<String>(json['orgUnitCode']),
+      orgUnitName: serializer.fromJson<String>(json['orgUnitName']),
+      teamCode: serializer.fromJson<String>(json['teamCode']),
       parent: serializer.fromJson<String?>(json['parent']),
       level: serializer.fromJson<int?>(json['level']),
       startDay: serializer.fromJson<int?>(json['startDay']),
@@ -4501,15 +4583,15 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'activity': serializer.toJson<String>(activity),
       'team': serializer.toJson<String>(team),
       'orgUnit': serializer.toJson<String>(orgUnit),
-      'activityName': serializer.toJson<String?>(activityName),
-      'orgUnitCode': serializer.toJson<String?>(orgUnitCode),
-      'orgUnitName': serializer.toJson<String?>(orgUnitName),
-      'teamCode': serializer.toJson<String?>(teamCode),
+      'activityName': serializer.toJson<String>(activityName),
+      'orgUnitCode': serializer.toJson<String>(orgUnitCode),
+      'orgUnitName': serializer.toJson<String>(orgUnitName),
+      'teamCode': serializer.toJson<String>(teamCode),
       'parent': serializer.toJson<String?>(parent),
       'level': serializer.toJson<int?>(level),
       'startDay': serializer.toJson<int?>(startDay),
@@ -4526,15 +4608,15 @@ class Assignment extends DataClass implements Insertable<Assignment> {
 
   Assignment copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           String? activity,
           String? team,
           String? orgUnit,
-          Value<String?> activityName = const Value.absent(),
-          Value<String?> orgUnitCode = const Value.absent(),
-          Value<String?> orgUnitName = const Value.absent(),
-          Value<String?> teamCode = const Value.absent(),
+          String? activityName,
+          String? orgUnitCode,
+          String? orgUnitName,
+          String? teamCode,
           Value<String?> parent = const Value.absent(),
           Value<int?> level = const Value.absent(),
           Value<int?> startDay = const Value.absent(),
@@ -4546,16 +4628,17 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           EntityScope? scope}) =>
       Assignment(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         activity: activity ?? this.activity,
         team: team ?? this.team,
         orgUnit: orgUnit ?? this.orgUnit,
-        activityName:
-            activityName.present ? activityName.value : this.activityName,
-        orgUnitCode: orgUnitCode.present ? orgUnitCode.value : this.orgUnitCode,
-        orgUnitName: orgUnitName.present ? orgUnitName.value : this.orgUnitName,
-        teamCode: teamCode.present ? teamCode.value : this.teamCode,
+        activityName: activityName ?? this.activityName,
+        orgUnitCode: orgUnitCode ?? this.orgUnitCode,
+        orgUnitName: orgUnitName ?? this.orgUnitName,
+        teamCode: teamCode ?? this.teamCode,
         parent: parent.present ? parent.value : this.parent,
         level: level.present ? level.value : this.level,
         startDay: startDay.present ? startDay.value : this.startDay,
@@ -4673,15 +4756,15 @@ class Assignment extends DataClass implements Insertable<Assignment> {
 
 class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String> activity;
   final Value<String> team;
   final Value<String> orgUnit;
-  final Value<String?> activityName;
-  final Value<String?> orgUnitCode;
-  final Value<String?> orgUnitName;
-  final Value<String?> teamCode;
+  final Value<String> activityName;
+  final Value<String> orgUnitCode;
+  final Value<String> orgUnitName;
+  final Value<String> teamCode;
   final Value<String?> parent;
   final Value<int?> level;
   final Value<int?> startDay;
@@ -4719,10 +4802,10 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     required String activity,
     required String team,
     required String orgUnit,
-    this.activityName = const Value.absent(),
-    this.orgUnitCode = const Value.absent(),
-    this.orgUnitName = const Value.absent(),
-    this.teamCode = const Value.absent(),
+    required String activityName,
+    required String orgUnitCode,
+    required String orgUnitName,
+    required String teamCode,
     this.parent = const Value.absent(),
     this.level = const Value.absent(),
     this.startDay = const Value.absent(),
@@ -4736,6 +4819,10 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
         activity = Value(activity),
         team = Value(team),
         orgUnit = Value(orgUnit),
+        activityName = Value(activityName),
+        orgUnitCode = Value(orgUnitCode),
+        orgUnitName = Value(orgUnitName),
+        teamCode = Value(teamCode),
         scope = Value(scope);
   static Insertable<Assignment> custom({
     Expression<String>? id,
@@ -4783,15 +4870,15 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
 
   AssignmentsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String>? activity,
       Value<String>? team,
       Value<String>? orgUnit,
-      Value<String?>? activityName,
-      Value<String?>? orgUnitCode,
-      Value<String?>? orgUnitName,
-      Value<String?>? teamCode,
+      Value<String>? activityName,
+      Value<String>? orgUnitCode,
+      Value<String>? orgUnitName,
+      Value<String>? teamCode,
       Value<String?>? parent,
       Value<int?>? level,
       Value<int?>? startDay,
@@ -4935,7 +5022,7 @@ class $FormVersionsTable extends FormVersions
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -4943,7 +5030,7 @@ class $FormVersionsTable extends FormVersions
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -5147,9 +5234,9 @@ class $FormVersionsTable extends FormVersions
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -5220,8 +5307,8 @@ class $FormVersionsTable extends FormVersions
 
 class FormVersion extends DataClass implements Insertable<FormVersion> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -5259,8 +5346,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   final ValidationStrategy? validationStrategy;
   const FormVersion(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -5280,8 +5367,12 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -5337,8 +5428,12 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
   FormVersionsCompanion toCompanion(bool nullToAbsent) {
     return FormVersionsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -5370,8 +5465,9 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return FormVersion(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -5396,8 +5492,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -5420,8 +5516,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
 
   FormVersion copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -5440,8 +5536,10 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
               const Value.absent()}) =>
       FormVersion(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -5532,8 +5630,8 @@ class FormVersion extends DataClass implements Insertable<FormVersion> {
 
 class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -5634,8 +5732,8 @@ class FormVersionsCompanion extends UpdateCompanion<FormVersion> {
 
   FormVersionsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -5783,7 +5881,7 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -5791,7 +5889,7 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -5988,9 +6086,9 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -6043,8 +6141,8 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
 class MetadataSubmission extends DataClass
     implements Insertable<MetadataSubmission> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -6078,8 +6176,8 @@ class MetadataSubmission extends DataClass
   final String? lastModifiedBy;
   const MetadataSubmission(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -6097,8 +6195,12 @@ class MetadataSubmission extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -6140,8 +6242,12 @@ class MetadataSubmission extends DataClass
   MetadataSubmissionsCompanion toCompanion(bool nullToAbsent) {
     return MetadataSubmissionsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -6172,8 +6278,9 @@ class MetadataSubmission extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MetadataSubmission(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -6196,8 +6303,8 @@ class MetadataSubmission extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -6218,8 +6325,8 @@ class MetadataSubmission extends DataClass
 
   MetadataSubmission copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -6235,8 +6342,10 @@ class MetadataSubmission extends DataClass
           Value<String?> lastModifiedBy = const Value.absent()}) =>
       MetadataSubmission(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -6353,8 +6462,8 @@ class MetadataSubmission extends DataClass
 
 class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -6454,8 +6563,8 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
 
   MetadataSubmissionsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -6594,7 +6703,7 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -6602,7 +6711,7 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -6653,17 +6762,13 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> fields =
       GeneratedColumn<String>('fields', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '[]')
+              type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<List<Template>>(
               $DataFormTemplateVersionsTable.$converterfields);
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> sections =
       GeneratedColumn<String>('sections', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '[]')
+              type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<List<Template>>(
               $DataFormTemplateVersionsTable.$convertersections);
   static const VerificationMeta _descriptionMeta =
@@ -6769,9 +6874,9 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -6827,8 +6932,8 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
 class DataFormTemplateVersion extends DataClass
     implements Insertable<DataFormTemplateVersion> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -6856,8 +6961,8 @@ class DataFormTemplateVersion extends DataClass
   final ValidationStrategy? validationStrategy;
   const DataFormTemplateVersion(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -6873,8 +6978,12 @@ class DataFormTemplateVersion extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -6919,8 +7028,12 @@ class DataFormTemplateVersion extends DataClass
   DataFormTemplateVersionsCompanion toCompanion(bool nullToAbsent) {
     return DataFormTemplateVersionsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -6949,8 +7062,9 @@ class DataFormTemplateVersion extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataFormTemplateVersion(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -6972,8 +7086,8 @@ class DataFormTemplateVersion extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -6992,8 +7106,8 @@ class DataFormTemplateVersion extends DataClass
 
   DataFormTemplateVersion copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -7008,8 +7122,10 @@ class DataFormTemplateVersion extends DataClass
               const Value.absent()}) =>
       DataFormTemplateVersion(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -7116,8 +7232,8 @@ class DataFormTemplateVersion extends DataClass
 class DataFormTemplateVersionsCompanion
     extends UpdateCompanion<DataFormTemplateVersion> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -7158,13 +7274,15 @@ class DataFormTemplateVersionsCompanion
     this.translations = const Value.absent(),
     required int version,
     this.defaultLocal = const Value.absent(),
-    this.fields = const Value.absent(),
-    this.sections = const Value.absent(),
+    required List<Template> fields,
+    required List<Template> sections,
     this.description = const Value.absent(),
     this.validationStrategy = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        version = Value(version);
+        version = Value(version),
+        fields = Value(fields),
+        sections = Value(sections);
   static Insertable<DataFormTemplateVersion> custom({
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
@@ -7203,8 +7321,8 @@ class DataFormTemplateVersionsCompanion
 
   DataFormTemplateVersionsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -7333,7 +7451,7 @@ class $DataSubmissionsTable extends DataSubmissions
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -7341,7 +7459,7 @@ class $DataSubmissionsTable extends DataSubmissions
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -7554,9 +7672,9 @@ class $DataSubmissionsTable extends DataSubmissions
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       deleted: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}deleted'])!,
       form: attachedDatabase.typeMapping
@@ -7608,8 +7726,8 @@ class $DataSubmissionsTable extends DataSubmissions
 
 class DataSubmission extends DataClass implements Insertable<DataSubmission> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final bool deleted;
 
   /// Many-to-one references stored as text.
@@ -7639,8 +7757,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
   final Map<String, dynamic>? formData;
   const DataSubmission(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       required this.deleted,
       required this.form,
       required this.assignment,
@@ -7658,8 +7776,12 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     map['deleted'] = Variable<bool>(deleted);
     map['form'] = Variable<String>(form);
     map['assignment'] = Variable<String>(assignment);
@@ -7699,8 +7821,12 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
   DataSubmissionsCompanion toCompanion(bool nullToAbsent) {
     return DataSubmissionsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       deleted: Value(deleted),
       form: Value(form),
       assignment: Value(assignment),
@@ -7736,8 +7862,9 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataSubmission(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       deleted: serializer.fromJson<bool>(json['deleted']),
       form: serializer.fromJson<String>(json['form']),
       assignment: serializer.fromJson<String>(json['assignment']),
@@ -7761,8 +7888,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'deleted': serializer.toJson<bool>(deleted),
       'form': serializer.toJson<String>(form),
       'assignment': serializer.toJson<String>(assignment),
@@ -7784,8 +7911,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
 
   DataSubmission copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           bool? deleted,
           String? form,
           String? assignment,
@@ -7801,8 +7928,10 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           Value<Map<String, dynamic>?> formData = const Value.absent()}) =>
       DataSubmission(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         deleted: deleted ?? this.deleted,
         form: form ?? this.form,
         assignment: assignment ?? this.assignment,
@@ -7923,8 +8052,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
 
 class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<bool> deleted;
   final Value<String> form;
   final Value<String> assignment;
@@ -8023,8 +8152,8 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
 
   DataSubmissionsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<bool>? deleted,
       Value<String>? form,
       Value<String>? assignment,
@@ -8161,7 +8290,7 @@ class $RepeatInstancesTable extends RepeatInstances
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -8169,7 +8298,7 @@ class $RepeatInstancesTable extends RepeatInstances
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -8279,9 +8408,9 @@ class $RepeatInstancesTable extends RepeatInstances
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       templatePath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}template_path'])!,
       submission: attachedDatabase.typeMapping
@@ -8301,8 +8430,8 @@ class $RepeatInstancesTable extends RepeatInstances
 
 class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
 
   /// Path of the Repeat in the FormTemplate (non-null)
   final String templatePath;
@@ -8315,8 +8444,8 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   final int repeatIndex;
   const RepeatInstance(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       required this.templatePath,
       required this.submission,
       this.parent,
@@ -8325,8 +8454,12 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     map['template_path'] = Variable<String>(templatePath);
     map['submission'] = Variable<String>(submission);
     if (!nullToAbsent || parent != null) {
@@ -8339,8 +8472,12 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
   RepeatInstancesCompanion toCompanion(bool nullToAbsent) {
     return RepeatInstancesCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       templatePath: Value(templatePath),
       submission: Value(submission),
       parent:
@@ -8354,8 +8491,9 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RepeatInstance(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       templatePath: serializer.fromJson<String>(json['templatePath']),
       submission: serializer.fromJson<String>(json['submission']),
       parent: serializer.fromJson<String?>(json['parent']),
@@ -8367,8 +8505,8 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'templatePath': serializer.toJson<String>(templatePath),
       'submission': serializer.toJson<String>(submission),
       'parent': serializer.toJson<String?>(parent),
@@ -8378,16 +8516,18 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
 
   RepeatInstance copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           String? templatePath,
           String? submission,
           Value<String?> parent = const Value.absent(),
           int? repeatIndex}) =>
       RepeatInstance(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         templatePath: templatePath ?? this.templatePath,
         submission: submission ?? this.submission,
         parent: parent.present ? parent.value : this.parent,
@@ -8444,8 +8584,8 @@ class RepeatInstance extends DataClass implements Insertable<RepeatInstance> {
 
 class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String> templatePath;
   final Value<String> submission;
   final Value<String?> parent;
@@ -8498,8 +8638,8 @@ class RepeatInstancesCompanion extends UpdateCompanion<RepeatInstance> {
 
   RepeatInstancesCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String>? templatePath,
       Value<String>? submission,
       Value<String?>? parent,
@@ -8578,7 +8718,7 @@ class $DataElementsTable extends DataElements
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -8586,7 +8726,7 @@ class $DataElementsTable extends DataElements
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -8776,9 +8916,9 @@ class $DataElementsTable extends DataElements
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -8838,8 +8978,8 @@ class $DataElementsTable extends DataElements
 
 class DataElement extends DataClass implements Insertable<DataElement> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -8869,8 +9009,8 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   final String? resourceMetadataSchema;
   const DataElement(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -8888,8 +9028,12 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -8942,8 +9086,12 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   DataElementsCompanion toCompanion(bool nullToAbsent) {
     return DataElementsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -8982,8 +9130,9 @@ class DataElement extends DataClass implements Insertable<DataElement> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataElement(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -9010,8 +9159,8 @@ class DataElement extends DataClass implements Insertable<DataElement> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -9035,8 +9184,8 @@ class DataElement extends DataClass implements Insertable<DataElement> {
 
   DataElement copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -9053,8 +9202,10 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           Value<String?> resourceMetadataSchema = const Value.absent()}) =>
       DataElement(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -9177,8 +9328,8 @@ class DataElement extends DataClass implements Insertable<DataElement> {
 
 class DataElementsCompanion extends UpdateCompanion<DataElement> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -9276,8 +9427,8 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
 
   DataElementsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -9419,7 +9570,7 @@ class $DataValuesTable extends DataValues
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -9427,7 +9578,7 @@ class $DataValuesTable extends DataValues
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -9550,9 +9701,9 @@ class $DataValuesTable extends DataValues
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       templatePath: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}template_path'])!,
       parent: attachedDatabase.typeMapping
@@ -9574,8 +9725,8 @@ class $DataValuesTable extends DataValues
 
 class DataValue extends DataClass implements Insertable<DataValue> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
 
   /// Path of the Repeat in the FormTemplate – non-null.
   final String templatePath;
@@ -9593,8 +9744,8 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   final String? value;
   const DataValue(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       required this.templatePath,
       this.parent,
       required this.submission,
@@ -9604,8 +9755,12 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     map['template_path'] = Variable<String>(templatePath);
     if (!nullToAbsent || parent != null) {
       map['parent'] = Variable<String>(parent);
@@ -9621,8 +9776,12 @@ class DataValue extends DataClass implements Insertable<DataValue> {
   DataValuesCompanion toCompanion(bool nullToAbsent) {
     return DataValuesCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       templatePath: Value(templatePath),
       parent:
           parent == null && nullToAbsent ? const Value.absent() : Value(parent),
@@ -9638,8 +9797,9 @@ class DataValue extends DataClass implements Insertable<DataValue> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataValue(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       templatePath: serializer.fromJson<String>(json['templatePath']),
       parent: serializer.fromJson<String?>(json['parent']),
       submission: serializer.fromJson<String>(json['submission']),
@@ -9652,8 +9812,8 @@ class DataValue extends DataClass implements Insertable<DataValue> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'templatePath': serializer.toJson<String>(templatePath),
       'parent': serializer.toJson<String?>(parent),
       'submission': serializer.toJson<String>(submission),
@@ -9664,8 +9824,8 @@ class DataValue extends DataClass implements Insertable<DataValue> {
 
   DataValue copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           String? templatePath,
           Value<String?> parent = const Value.absent(),
           String? submission,
@@ -9673,8 +9833,10 @@ class DataValue extends DataClass implements Insertable<DataValue> {
           Value<String?> value = const Value.absent()}) =>
       DataValue(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         templatePath: templatePath ?? this.templatePath,
         parent: parent.present ? parent.value : this.parent,
         submission: submission ?? this.submission,
@@ -9735,8 +9897,8 @@ class DataValue extends DataClass implements Insertable<DataValue> {
 
 class DataValuesCompanion extends UpdateCompanion<DataValue> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String> templatePath;
   final Value<String?> parent;
   final Value<String> submission;
@@ -9794,8 +9956,8 @@ class DataValuesCompanion extends UpdateCompanion<DataValue> {
 
   DataValuesCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String>? templatePath,
       Value<String?>? parent,
       Value<String>? submission,
@@ -9880,7 +10042,7 @@ class $DataOptionSetsTable extends DataOptionSets
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -9888,7 +10050,7 @@ class $DataOptionSetsTable extends DataOptionSets
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -9997,9 +10159,9 @@ class $DataOptionSetsTable extends DataOptionSets
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -10033,8 +10195,8 @@ class $DataOptionSetsTable extends DataOptionSets
 
 class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -10045,8 +10207,8 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   final List<FormOption> options;
   const DataOptionSet(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -10057,8 +10219,12 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -10086,8 +10252,12 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   DataOptionSetsCompanion toCompanion(bool nullToAbsent) {
     return DataOptionSetsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -10105,8 +10275,9 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataOptionSet(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -10121,8 +10292,8 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -10134,8 +10305,8 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
 
   DataOptionSet copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -10144,8 +10315,10 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           List<FormOption>? options}) =>
       DataOptionSet(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -10209,8 +10382,8 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
 
 class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -10270,8 +10443,8 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
 
   DataOptionSetsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -10366,7 +10539,7 @@ class $DataOptionsTable extends DataOptions
       const VerificationMeta('lastModifiedDate');
   @override
   late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, false,
+      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
           defaultValue: Constant(DateTime.now().toUtc()));
@@ -10374,7 +10547,7 @@ class $DataOptionsTable extends DataOptions
       const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, false,
+      'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now().toUtc()));
@@ -10502,9 +10675,9 @@ class $DataOptionsTable extends DataOptions
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date'])!,
+          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       displayName: attachedDatabase.typeMapping
@@ -10537,8 +10710,8 @@ class $DataOptionsTable extends DataOptions
 
 class DataOption extends DataClass implements Insertable<DataOption> {
   final String id;
-  final DateTime lastModifiedDate;
-  final DateTime createdDate;
+  final DateTime? lastModifiedDate;
+  final DateTime? createdDate;
   final String? name;
   final String? displayName;
   final String? code;
@@ -10550,8 +10723,8 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   final int order;
   const DataOption(
       {required this.id,
-      required this.lastModifiedDate,
-      required this.createdDate,
+      this.lastModifiedDate,
+      this.createdDate,
       this.name,
       this.displayName,
       this.code,
@@ -10563,8 +10736,12 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || lastModifiedDate != null) {
+      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<DateTime>(createdDate);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -10590,8 +10767,12 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   DataOptionsCompanion toCompanion(bool nullToAbsent) {
     return DataOptionsCompanion(
       id: Value(id),
-      lastModifiedDate: Value(lastModifiedDate),
-      createdDate: Value(createdDate),
+      lastModifiedDate: lastModifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedDate),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
@@ -10610,8 +10791,9 @@ class DataOption extends DataClass implements Insertable<DataOption> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DataOption(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate: serializer.fromJson<DateTime>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      lastModifiedDate:
+          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
+      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       name: serializer.fromJson<String?>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
@@ -10627,8 +10809,8 @@ class DataOption extends DataClass implements Insertable<DataOption> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
+      'createdDate': serializer.toJson<DateTime?>(createdDate),
       'name': serializer.toJson<String?>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
@@ -10641,8 +10823,8 @@ class DataOption extends DataClass implements Insertable<DataOption> {
 
   DataOption copyWith(
           {String? id,
-          DateTime? lastModifiedDate,
-          DateTime? createdDate,
+          Value<DateTime?> lastModifiedDate = const Value.absent(),
+          Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
@@ -10652,8 +10834,10 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           int? order}) =>
       DataOption(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-        createdDate: createdDate ?? this.createdDate,
+        lastModifiedDate: lastModifiedDate.present
+            ? lastModifiedDate.value
+            : this.lastModifiedDate,
+        createdDate: createdDate.present ? createdDate.value : this.createdDate,
         name: name.present ? name.value : this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
@@ -10721,8 +10905,8 @@ class DataOption extends DataClass implements Insertable<DataOption> {
 
 class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   final Value<String> id;
-  final Value<DateTime> lastModifiedDate;
-  final Value<DateTime> createdDate;
+  final Value<DateTime?> lastModifiedDate;
+  final Value<DateTime?> createdDate;
   final Value<String?> name;
   final Value<String?> displayName;
   final Value<String?> code;
@@ -10788,8 +10972,8 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
 
   DataOptionsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? lastModifiedDate,
-      Value<DateTime>? createdDate,
+      Value<DateTime?>? lastModifiedDate,
+      Value<DateTime?>? createdDate,
       Value<String?>? name,
       Value<String?>? displayName,
       Value<String?>? code,
@@ -11325,14 +11509,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 
 typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   required String username,
   Value<String?> firstName,
   Value<String?> lastName,
   Value<String?> mobile,
   Value<String?> email,
-  Value<String> langKey,
+  Value<String?> langKey,
   Value<bool> activated,
   Value<String?> imageUrl,
   required List<String> authorities,
@@ -11348,14 +11532,14 @@ typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
 });
 typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String> username,
   Value<String?> firstName,
   Value<String?> lastName,
   Value<String?> mobile,
   Value<String?> email,
-  Value<String> langKey,
+  Value<String?> langKey,
   Value<bool> activated,
   Value<String?> imageUrl,
   Value<List<String>> authorities,
@@ -11750,14 +11934,14 @@ class $$UsersTableTableManager extends RootTableManager<
               $$UsersTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String> username = const Value.absent(),
             Value<String?> firstName = const Value.absent(),
             Value<String?> lastName = const Value.absent(),
             Value<String?> mobile = const Value.absent(),
             Value<String?> email = const Value.absent(),
-            Value<String> langKey = const Value.absent(),
+            Value<String?> langKey = const Value.absent(),
             Value<bool> activated = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
             Value<List<String>> authorities = const Value.absent(),
@@ -11796,14 +11980,14 @@ class $$UsersTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             required String username,
             Value<String?> firstName = const Value.absent(),
             Value<String?> lastName = const Value.absent(),
             Value<String?> mobile = const Value.absent(),
             Value<String?> email = const Value.absent(),
-            Value<String> langKey = const Value.absent(),
+            Value<String?> langKey = const Value.absent(),
             Value<bool> activated = const Value.absent(),
             Value<String?> imageUrl = const Value.absent(),
             required List<String> authorities,
@@ -11897,8 +12081,8 @@ typedef $$UsersTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function({bool userTeams, bool managedTeams})>;
 typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -11911,8 +12095,8 @@ typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
 });
 typedef $$OrgUnitsTableUpdateCompanionBuilder = OrgUnitsCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -12273,8 +12457,8 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
               $$OrgUnitsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -12301,8 +12485,8 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -12416,8 +12600,8 @@ typedef $$OrgUnitsTableProcessedTableManager = ProcessedTableManager<
         {bool parent, bool assignmentsRefs, bool dataSubmissionsRefs})>;
 typedef $$OuLevelsTableCreateCompanionBuilder = OuLevelsCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -12429,8 +12613,8 @@ typedef $$OuLevelsTableCreateCompanionBuilder = OuLevelsCompanion Function({
 });
 typedef $$OuLevelsTableUpdateCompanionBuilder = OuLevelsCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -12595,8 +12779,8 @@ class $$OuLevelsTableTableManager extends RootTableManager<
               $$OuLevelsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -12621,8 +12805,8 @@ class $$OuLevelsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -12666,8 +12850,8 @@ typedef $$OuLevelsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function()>;
 typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -12678,8 +12862,8 @@ typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
 });
 typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -12895,8 +13079,8 @@ class $$ProjectsTableTableManager extends RootTableManager<
               $$ProjectsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -12919,8 +13103,8 @@ class $$ProjectsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -12986,8 +13170,8 @@ typedef $$ProjectsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function({bool activitiesRefs})>;
 typedef $$ActivitiesTableCreateCompanionBuilder = ActivitiesCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -13002,8 +13186,8 @@ typedef $$ActivitiesTableCreateCompanionBuilder = ActivitiesCompanion Function({
 });
 typedef $$ActivitiesTableUpdateCompanionBuilder = ActivitiesCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -13442,8 +13626,8 @@ class $$ActivitiesTableTableManager extends RootTableManager<
               $$ActivitiesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -13474,8 +13658,8 @@ class $$ActivitiesTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -13613,8 +13797,8 @@ typedef $$ActivitiesTableProcessedTableManager = ProcessedTableManager<
         bool assignmentsRefs})>;
 typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> code,
   Value<bool?> disabled,
   required String activity,
@@ -13623,8 +13807,8 @@ typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
 });
 typedef $$TeamsTableUpdateCompanionBuilder = TeamsCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> code,
   Value<bool?> disabled,
   Value<String> activity,
@@ -14066,8 +14250,8 @@ class $$TeamsTableTableManager extends RootTableManager<
               $$TeamsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<bool?> disabled = const Value.absent(),
             Value<String> activity = const Value.absent(),
@@ -14086,8 +14270,8 @@ class $$TeamsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<bool?> disabled = const Value.absent(),
             required String activity,
@@ -14221,8 +14405,8 @@ typedef $$TeamsTableProcessedTableManager = ProcessedTableManager<
 typedef $$ManagedTeamsTableCreateCompanionBuilder = ManagedTeamsCompanion
     Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> code,
   Value<bool?> disabled,
   required String activity,
@@ -14233,8 +14417,8 @@ typedef $$ManagedTeamsTableCreateCompanionBuilder = ManagedTeamsCompanion
 typedef $$ManagedTeamsTableUpdateCompanionBuilder = ManagedTeamsCompanion
     Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> code,
   Value<bool?> disabled,
   Value<String> activity,
@@ -14509,8 +14693,8 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
               $$ManagedTeamsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<bool?> disabled = const Value.absent(),
             Value<String> activity = const Value.absent(),
@@ -14531,8 +14715,8 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<bool?> disabled = const Value.absent(),
             required String activity,
@@ -14620,15 +14804,15 @@ typedef $$ManagedTeamsTableProcessedTableManager = ProcessedTableManager<
 typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
     Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   required String activity,
   required String team,
   required String orgUnit,
-  Value<String?> activityName,
-  Value<String?> orgUnitCode,
-  Value<String?> orgUnitName,
-  Value<String?> teamCode,
+  required String activityName,
+  required String orgUnitCode,
+  required String orgUnitName,
+  required String teamCode,
   Value<String?> parent,
   Value<int?> level,
   Value<int?> startDay,
@@ -14642,15 +14826,15 @@ typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
 typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
     Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String> activity,
   Value<String> team,
   Value<String> orgUnit,
-  Value<String?> activityName,
-  Value<String?> orgUnitCode,
-  Value<String?> orgUnitName,
-  Value<String?> teamCode,
+  Value<String> activityName,
+  Value<String> orgUnitCode,
+  Value<String> orgUnitName,
+  Value<String> teamCode,
   Value<String?> parent,
   Value<int?> level,
   Value<int?> startDay,
@@ -15226,15 +15410,15 @@ class $$AssignmentsTableTableManager extends RootTableManager<
               $$AssignmentsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String> activity = const Value.absent(),
             Value<String> team = const Value.absent(),
             Value<String> orgUnit = const Value.absent(),
-            Value<String?> activityName = const Value.absent(),
-            Value<String?> orgUnitCode = const Value.absent(),
-            Value<String?> orgUnitName = const Value.absent(),
-            Value<String?> teamCode = const Value.absent(),
+            Value<String> activityName = const Value.absent(),
+            Value<String> orgUnitCode = const Value.absent(),
+            Value<String> orgUnitName = const Value.absent(),
+            Value<String> teamCode = const Value.absent(),
             Value<String?> parent = const Value.absent(),
             Value<int?> level = const Value.absent(),
             Value<int?> startDay = const Value.absent(),
@@ -15269,15 +15453,15 @@ class $$AssignmentsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             required String activity,
             required String team,
             required String orgUnit,
-            Value<String?> activityName = const Value.absent(),
-            Value<String?> orgUnitCode = const Value.absent(),
-            Value<String?> orgUnitName = const Value.absent(),
-            Value<String?> teamCode = const Value.absent(),
+            required String activityName,
+            required String orgUnitCode,
+            required String orgUnitName,
+            required String teamCode,
             Value<String?> parent = const Value.absent(),
             Value<int?> level = const Value.absent(),
             Value<int?> startDay = const Value.absent(),
@@ -15425,8 +15609,8 @@ typedef $$AssignmentsTableProcessedTableManager = ProcessedTableManager<
 typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
     Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -15446,8 +15630,8 @@ typedef $$FormVersionsTableCreateCompanionBuilder = FormVersionsCompanion
 typedef $$FormVersionsTableUpdateCompanionBuilder = FormVersionsCompanion
     Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -15712,8 +15896,8 @@ class $$FormVersionsTableTableManager extends RootTableManager<
               $$FormVersionsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -15753,8 +15937,8 @@ class $$FormVersionsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -15817,8 +16001,8 @@ typedef $$FormVersionsTableProcessedTableManager = ProcessedTableManager<
 typedef $$MetadataSubmissionsTableCreateCompanionBuilder
     = MetadataSubmissionsCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -15837,8 +16021,8 @@ typedef $$MetadataSubmissionsTableCreateCompanionBuilder
 typedef $$MetadataSubmissionsTableUpdateCompanionBuilder
     = MetadataSubmissionsCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -16083,8 +16267,8 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
                   $db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -16121,8 +16305,8 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -16183,8 +16367,8 @@ typedef $$MetadataSubmissionsTableProcessedTableManager = ProcessedTableManager<
 typedef $$DataFormTemplateVersionsTableCreateCompanionBuilder
     = DataFormTemplateVersionsCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -16192,8 +16376,8 @@ typedef $$DataFormTemplateVersionsTableCreateCompanionBuilder
   Value<List<Translation>> translations,
   required int version,
   Value<String?> defaultLocal,
-  Value<List<Template>> fields,
-  Value<List<Template>> sections,
+  required List<Template> fields,
+  required List<Template> sections,
   Value<String?> description,
   Value<ValidationStrategy?> validationStrategy,
   Value<int> rowid,
@@ -16201,8 +16385,8 @@ typedef $$DataFormTemplateVersionsTableCreateCompanionBuilder
 typedef $$DataFormTemplateVersionsTableUpdateCompanionBuilder
     = DataFormTemplateVersionsCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -16484,8 +16668,8 @@ class $$DataFormTemplateVersionsTableTableManager extends RootTableManager<
                   $db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -16519,8 +16703,8 @@ class $$DataFormTemplateVersionsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -16528,8 +16712,8 @@ class $$DataFormTemplateVersionsTableTableManager extends RootTableManager<
             Value<List<Translation>> translations = const Value.absent(),
             required int version,
             Value<String?> defaultLocal = const Value.absent(),
-            Value<List<Template>> fields = const Value.absent(),
-            Value<List<Template>> sections = const Value.absent(),
+            required List<Template> fields,
+            required List<Template> sections,
             Value<String?> description = const Value.absent(),
             Value<ValidationStrategy?> validationStrategy =
                 const Value.absent(),
@@ -16605,8 +16789,8 @@ typedef $$DataFormTemplateVersionsTableProcessedTableManager
 typedef $$DataSubmissionsTableCreateCompanionBuilder = DataSubmissionsCompanion
     Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<bool> deleted,
   required String form,
   required String assignment,
@@ -16625,8 +16809,8 @@ typedef $$DataSubmissionsTableCreateCompanionBuilder = DataSubmissionsCompanion
 typedef $$DataSubmissionsTableUpdateCompanionBuilder = DataSubmissionsCompanion
     Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<bool> deleted,
   Value<String> form,
   Value<String> assignment,
@@ -17256,8 +17440,8 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
               $$DataSubmissionsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
             Value<String> form = const Value.absent(),
             Value<String> assignment = const Value.absent(),
@@ -17294,8 +17478,8 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
             required String form,
             required String assignment,
@@ -17462,8 +17646,8 @@ typedef $$DataSubmissionsTableProcessedTableManager = ProcessedTableManager<
 typedef $$RepeatInstancesTableCreateCompanionBuilder = RepeatInstancesCompanion
     Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   required String templatePath,
   required String submission,
   Value<String?> parent,
@@ -17473,8 +17657,8 @@ typedef $$RepeatInstancesTableCreateCompanionBuilder = RepeatInstancesCompanion
 typedef $$RepeatInstancesTableUpdateCompanionBuilder = RepeatInstancesCompanion
     Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String> templatePath,
   Value<String> submission,
   Value<String?> parent,
@@ -17801,8 +17985,8 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
               $$RepeatInstancesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String> templatePath = const Value.absent(),
             Value<String> submission = const Value.absent(),
             Value<String?> parent = const Value.absent(),
@@ -17821,8 +18005,8 @@ class $$RepeatInstancesTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             required String templatePath,
             required String submission,
             Value<String?> parent = const Value.absent(),
@@ -17925,8 +18109,8 @@ typedef $$RepeatInstancesTableProcessedTableManager = ProcessedTableManager<
 typedef $$DataElementsTableCreateCompanionBuilder = DataElementsCompanion
     Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -17945,8 +18129,8 @@ typedef $$DataElementsTableCreateCompanionBuilder = DataElementsCompanion
 typedef $$DataElementsTableUpdateCompanionBuilder = DataElementsCompanion
     Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -18247,8 +18431,8 @@ class $$DataElementsTableTableManager extends RootTableManager<
               $$DataElementsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -18286,8 +18470,8 @@ class $$DataElementsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -18370,8 +18554,8 @@ typedef $$DataElementsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function({bool dataValuesRefs})>;
 typedef $$DataValuesTableCreateCompanionBuilder = DataValuesCompanion Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   required String templatePath,
   Value<String?> parent,
   required String submission,
@@ -18381,8 +18565,8 @@ typedef $$DataValuesTableCreateCompanionBuilder = DataValuesCompanion Function({
 });
 typedef $$DataValuesTableUpdateCompanionBuilder = DataValuesCompanion Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String> templatePath,
   Value<String?> parent,
   Value<String> submission,
@@ -18725,8 +18909,8 @@ class $$DataValuesTableTableManager extends RootTableManager<
               $$DataValuesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String> templatePath = const Value.absent(),
             Value<String?> parent = const Value.absent(),
             Value<String> submission = const Value.absent(),
@@ -18747,8 +18931,8 @@ class $$DataValuesTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             required String templatePath,
             Value<String?> parent = const Value.absent(),
             required String submission,
@@ -18847,8 +19031,8 @@ typedef $$DataValuesTableProcessedTableManager = ProcessedTableManager<
 typedef $$DataOptionSetsTableCreateCompanionBuilder = DataOptionSetsCompanion
     Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -18860,8 +19044,8 @@ typedef $$DataOptionSetsTableCreateCompanionBuilder = DataOptionSetsCompanion
 typedef $$DataOptionSetsTableUpdateCompanionBuilder = DataOptionSetsCompanion
     Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -19081,8 +19265,8 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
               $$DataOptionSetsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -19105,8 +19289,8 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -19175,8 +19359,8 @@ typedef $$DataOptionSetsTableProcessedTableManager = ProcessedTableManager<
 typedef $$DataOptionsTableCreateCompanionBuilder = DataOptionsCompanion
     Function({
   required String id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -19189,8 +19373,8 @@ typedef $$DataOptionsTableCreateCompanionBuilder = DataOptionsCompanion
 typedef $$DataOptionsTableUpdateCompanionBuilder = DataOptionsCompanion
     Function({
   Value<String> id,
-  Value<DateTime> lastModifiedDate,
-  Value<DateTime> createdDate,
+  Value<DateTime?> lastModifiedDate,
+  Value<DateTime?> createdDate,
   Value<String?> name,
   Value<String?> displayName,
   Value<String?> code,
@@ -19425,8 +19609,8 @@ class $$DataOptionsTableTableManager extends RootTableManager<
               $$DataOptionsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
@@ -19451,8 +19635,8 @@ class $$DataOptionsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime> lastModifiedDate = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> lastModifiedDate = const Value.absent(),
+            Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),

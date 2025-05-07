@@ -16,5 +16,5 @@ export 'project_datasource.dart';
 export 'repeat_instance_datasource.dart';
 export 'team_datasource.dart';
 export 'user_datasource.dart';
-export 'user_form_accesses_datasource.dart';
+export 'user_form_permission_datasource.dart';
 

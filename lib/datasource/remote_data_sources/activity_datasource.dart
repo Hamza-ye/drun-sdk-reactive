@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
     implements MetaDataSource<Activity> {
   ActivityDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.activities);
 

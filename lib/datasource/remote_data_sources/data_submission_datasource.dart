@@ -16,9 +16,10 @@ class DataSubmissionDatasource
     extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
     implements MetaDataSource<DataSubmission> {
   DataSubmissionDatasource(
-      {required super.dioClient,
-      required DbManager dbManager})
+      {required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.dataSubmissions);
+
+  String get pathPostfix => '/objects${super.pathPostfix}';
 
   @override
   String get resourceName => 'dataSubmission';
@@ -31,11 +32,9 @@ class DataSubmissionDatasource
     final String formId = form != null && version != null
         ? '${form}_$version'
         : data['formVersion'];
-    final assignment =
-        data['assignment']['uid'] ?? data['assignment']['id'].toString();
-    final orgUnit =
-        data['orgUnit']?['uid'] ?? data['orgUnit']?['id']?.toString();
-    final team = data['team']?['uid'] ?? data['team']?['id']?.toString();
+    final assignment = data['assignment'];
+    final orgUnit = data['orgUnit'];
+    final team = data['team'];
     return DataSubmission.fromJson({
       ...data,
       'status': SubmissionStatus.synced.name,
@@ -75,8 +74,11 @@ class DataSubmissionDatasource
       return submission.toUpload();
     }).toList();
 
-    final resourcePath = '/${apiVersionPath}/$resourceName/bulk';
-    final response = await dioClient.post(resourcePath, data: uploadPayload);
+    // final resourcePath = '/${apiVersionPath}/$resourceName/bulk';
+    final resource = '$resourceName/bulk';
+
+    final response = await apiClient.request(
+        resourceName: resource, data: uploadPayload, method: 'post');
 
     SyncSummary summary = SyncSummary.fromJson(response.data);
     logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});

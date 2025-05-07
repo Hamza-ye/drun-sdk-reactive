@@ -13,14 +13,13 @@ class Users extends Table with BaseTableMixin {
 
   TextColumn get email => text().nullable()();
 
-  TextColumn get langKey => text().clientDefault(() => 'ar')();
+  TextColumn get langKey => text().nullable().clientDefault(() => 'ar')();
 
   BoolColumn get activated => boolean().withDefault(Constant(false))();
 
   TextColumn get imageUrl => text().nullable()();
 
-  TextColumn get authorities =>
-      text().map(const ListConverter<String>())();
+  TextColumn get authorities => text().map(const ListConverter<String>())();
 
   // metadata
   IntColumn get submissionCount =>

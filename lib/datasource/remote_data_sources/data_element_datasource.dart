@@ -10,7 +10,7 @@ class DataElementDatasource
     extends BaseDataSource<$DataElementsTable, DataElement>
     implements MetaDataSource<DataElement> {
   DataElementDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.dataElements);
 

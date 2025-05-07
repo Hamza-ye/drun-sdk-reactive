@@ -1,10 +1,9 @@
-import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:d_sdk/core/platform/platform.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/dao/dao.dart';
 import 'package:d_sdk/database/shared/shared.dart';
-import 'package:d_sdk/database/tables/managed_teams.table.dart';
 import 'package:d_sdk/database/tables/tables.dart';
+import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:drift/drift.dart';
 
 part 'app_database.g.dart';
@@ -27,7 +26,7 @@ part 'app_database.g.dart';
   DataOptions,
   DataSubmissions,
   DataFormTemplateVersions,
-  UserFormPermissions
+  UserFormPermissions,
 ], daos: [
   ActivitiesDao,
   AssignmentsDao,

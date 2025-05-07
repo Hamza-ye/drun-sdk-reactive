@@ -10,7 +10,7 @@ class FormVersionDatasource
     extends BaseDataSource<$FormVersionsTable, FormVersion>
     implements MetaDataSource<FormVersion> {
   FormVersionDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.formVersions);
 

@@ -10,7 +10,7 @@ class DataFormTemplateDatasource extends BaseDataSource<
         $DataFormTemplateVersionsTable, DataFormTemplateVersion>
     implements MetaDataSource<DataFormTemplateVersion> {
   DataFormTemplateDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(
             dbManager: dbManager, table: dbManager.db.dataFormTemplateVersions);

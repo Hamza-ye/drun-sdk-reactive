@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class ProjectDatasource extends BaseDataSource<$ProjectsTable, Project>
     implements MetaDataSource<Project> {
   ProjectDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.projects);
 

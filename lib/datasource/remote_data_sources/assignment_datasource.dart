@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
     implements MetaDataSource<Assignment> {
   AssignmentDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.assignments);
 

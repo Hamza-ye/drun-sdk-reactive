@@ -1,5 +1,4 @@
 import 'package:d_sdk/database/converters/converters.dart';
-import 'package:d_sdk/database/converters/null_aware_list.converter.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
@@ -14,13 +13,13 @@ class Assignments extends Table with BaseTableMixin {
 
   TextColumn get orgUnit => text().references(OrgUnits, #id)();
 
-  TextColumn get activityName => text().nullable()();
+  TextColumn get activityName => text()();
 
-  TextColumn get orgUnitCode => text().nullable()();
+  TextColumn get orgUnitCode => text()();
 
-  TextColumn get orgUnitName => text().nullable()();
+  TextColumn get orgUnitName => text()();
 
-  TextColumn get teamCode => text().nullable()();
+  TextColumn get teamCode => text()();
 
   /// Parent reference (stored as a text foreign key, if applicable)
   TextColumn get parent => text().references(Assignments, #id).nullable()();

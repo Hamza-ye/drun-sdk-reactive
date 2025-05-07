@@ -16,11 +16,11 @@ class DataFormTemplateVersions extends Table
 
   /// fieldsConf stored as IList<Template>, as JSON.
   TextColumn get fields =>
-      text().map(const TemplateListConverter()).clientDefault(() => '[]')();
+      text().map(const TemplateListConverter())();
 
   /// sections stored as IList<Template>, as JSON.
   TextColumn get sections =>
-      text().map(const TemplateListConverter()).clientDefault(() => '[]')();
+      text().map(const TemplateListConverter())();
 
   /// Description is nullable.
   TextColumn get description => text().nullable()();

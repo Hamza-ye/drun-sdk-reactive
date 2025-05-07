@@ -13,12 +13,12 @@ abstract class AbstractDatasource<D> {
 
   String get resourceName;
 
-  String get pathPostfix => 'paged=false';
+  String get pathPostfix => '?paged=false';
 
-  String get apiVersionPath => '/${AppEnvironment.apiV1Path}';
+  // String get apiVersionPath => '/${AppEnvironment.apiV1Path}';
 
-  String get resourceFullPath =>
-      '${this.apiVersionPath}/$resourceName${pathPostfix.isNotEmpty ? '?$pathPostfix' : ''}';
+  // String get resourceFullPath =>
+  //     '${this.apiVersionPath}/$resourceName${pathPostfix.isNotEmpty ? '?$pathPostfix' : ''}';
 
   @protected
   Future<List<D>> getOnline();

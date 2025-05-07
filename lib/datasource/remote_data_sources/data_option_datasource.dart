@@ -8,7 +8,7 @@ import 'package:drift/drift.dart';
 class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
     implements MetaDataSource<DataOption> {
   OptionDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.dataOptions);
 

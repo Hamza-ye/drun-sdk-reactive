@@ -1,5 +1,6 @@
 import 'package:d_sdk/core/exception/session_init_exception.dart';
-import 'package:d_sdk/user_session/user_session.dart';
+import 'package:d_sdk/user_session/session_context.dart';
+import 'package:d_sdk/user_session/session_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
