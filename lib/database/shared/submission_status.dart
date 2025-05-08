@@ -10,6 +10,9 @@ enum SubmissionStatus {
   static List<SubmissionStatus> get toSyncStatuses =>
       [SubmissionStatus.finalized, SubmissionStatus.syncFailed];
 
+  static List<String> get toNames => values.map((v) => v.name)
+      .toList();
+
   static SubmissionStatus getValue(String? status) {
     return switch (status?.toLowerCase()) {
       == 'draft' => SubmissionStatus.draft,

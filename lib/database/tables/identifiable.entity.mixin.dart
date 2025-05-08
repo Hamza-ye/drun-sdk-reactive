@@ -15,5 +15,5 @@ mixin IdentifiableMixin on BaseTableMixin {
 
   /// List of Translations
   TextColumn get translations =>
-      text().map(const TranslationConverter()).withDefault(Constant('[]'))();
+      text().map(const TranslationConverter()).clientDefault(() => '[]')();
 }

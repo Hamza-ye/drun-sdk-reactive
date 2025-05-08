@@ -5,5 +5,5 @@ import 'package:drift/drift.dart';
 class DataOptions extends Table with BaseTableMixin, IdentifiableMixin {
   TextColumn get optionSet => text().references(DataOptionSets, #id)();
 
-  IntColumn get order => integer().withDefault(Constant(0))();
+  IntColumn get order => integer().clientDefault(() => 0)();
 }

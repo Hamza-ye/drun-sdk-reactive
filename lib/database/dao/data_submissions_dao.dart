@@ -1,5 +1,6 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
+import 'package:d_sdk/database/shared/submission_sync_status_model.dart';
 import 'package:d_sdk/database/tables/data_submissions.table.dart';
 import 'package:drift/drift.dart';
 
@@ -41,7 +42,7 @@ class DataSubmissionsDao extends DatabaseAccessor<AppDatabase>
   /// watch the status of submission belonging to an
   /// item (i.e, the aggregation level) (e.g. Assignment, Form,..)
   /// by passing the item id and the item level
-  Stream<Map<SubmissionStatus, int>> watchStatusByLevel(
+  Selectable<SubmissionSyncStatusModel> watchStatusByLevel(
       String id, StatusAggregationLevel aggregationLevel) {
     late final Expression<bool> byLevel = switch (aggregationLevel) {
       StatusAggregationLevel.assignment =>
@@ -53,16 +54,14 @@ class DataSubmissionsDao extends DatabaseAccessor<AppDatabase>
     final count = dataSubmissions.id.count();
 
     final query = selectOnly(dataSubmissions)
-      ..where(byLevel)
       ..addColumns([status, count])
+      ..where(byLevel)
       ..groupBy([dataSubmissions.status]);
 
-    return query
-        .map((row) {
-          final status = row.read(dataSubmissions.status)!;
-          return MapEntry(SubmissionStatus.getValue(status), row.read(count)!);
-        })
-        .watch()
-        .map((entries) => Map.fromEntries(entries));
+    return query.map((row) {
+      final status = row.read(dataSubmissions.status)!;
+      return SubmissionSyncStatusModel(
+          status: SubmissionStatus.getValue(status), count: row.read(count)!);
+    });
   }
 }

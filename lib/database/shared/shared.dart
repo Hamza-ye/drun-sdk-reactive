@@ -1,6 +1,8 @@
 //GENERATED BARREL FILE 
-export 'allowed_action.dart';
+export 'assignment_model.dart';
 export 'assignment_status.dart';
+export 'd_identifiable_model.dart';
+export 'd_run_base.model.dart';
 export 'entity_scope.dart';
 export 'form_option.dart';
 export 'form_permission.dart';

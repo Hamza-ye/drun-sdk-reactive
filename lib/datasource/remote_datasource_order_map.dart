@@ -32,7 +32,7 @@ class DSOrder {
     // option: OptionDatasource,
     dataElement: DataElementDatasource,
     dataFormTemplate: DataFormTemplateDatasource,
-    formVersion: FormVersionDatasource,
+    // formVersion: FormVersionDatasource,
     team: TeamDatasource,
     managedTeam: ManagedTeamDatasource,
     userFormAccess: UserFormAccessesDatasource,

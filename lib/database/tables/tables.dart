@@ -8,7 +8,6 @@ export 'data_option_sets.table.dart';
 export 'data_options.table.dart';
 export 'data_submissions.table.dart';
 export 'data_values.table.dart';
-export 'form_versions.table.dart';
 export 'identifiable.entity.mixin.dart';
 export 'managed_teams.table.dart';
 export 'metadata_submissions.table.dart';

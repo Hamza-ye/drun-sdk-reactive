@@ -15,7 +15,7 @@ class Users extends Table with BaseTableMixin {
 
   TextColumn get langKey => text().nullable().clientDefault(() => 'ar')();
 
-  BoolColumn get activated => boolean().withDefault(Constant(false))();
+  BoolColumn get activated => boolean().clientDefault(() => false)();
 
   TextColumn get imageUrl => text().nullable()();
 

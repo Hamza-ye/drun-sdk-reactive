@@ -1,7 +1,6 @@
 import 'package:d_sdk/database/converters/custom_serializer.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/di/app_environment.dart';
 import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';

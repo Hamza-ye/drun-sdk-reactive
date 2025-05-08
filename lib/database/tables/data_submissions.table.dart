@@ -7,7 +7,7 @@ import 'package:drift/drift.dart';
 @TableIndex(name: 'submission_progressStatus_idx', columns: {#progressStatus})
 @TableIndex(name: 'submission_deleted_idx', columns: {#deleted})
 class DataSubmissions extends Table with BaseTableMixin {
-  BoolColumn get deleted => boolean().withDefault(Constant(false))();
+  BoolColumn get deleted => boolean().clientDefault(() => false)();
 
   // /// Form template id is stored as text (nullable).
   // TextColumn get form => text()();

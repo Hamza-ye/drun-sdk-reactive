@@ -28,10 +28,6 @@ class CustomSerializer extends ValueSerializer {
       return (json as List<dynamic>?)
           ?.map<DOptionSet>((e) => DOptionSet.fromJson(e))
           .toList() as T;
-    // } else if (typeList is List<List<AllowedAction>?>) {
-    //   return (json as List<dynamic>?)
-    //       ?.map<AllowedAction>((e) => AllowedAction.getValueType(e as String?))
-    //       .toList() as T;
     } else if (typeList is List<List<FormPermission>?>) {
       return (json as List<dynamic>?)
           ?.map<FormPermission>((e) => FormPermission.getType(e)!)
@@ -66,8 +62,6 @@ class CustomSerializer extends ValueSerializer {
       return value.map((e) => e.toJson()).toList();
     } else if (value is List<DOptionSet>) {
       return value.map((e) => e.toJson()).toList();
-    } else if (value is List<AllowedAction>) {
-      return value.map((e) => e.name).toList();
     } else if (value is List<TeamFormPermission>) {
       return value.map((e) => e.toJson()).toList();
     } else if (value is List<Template>) {

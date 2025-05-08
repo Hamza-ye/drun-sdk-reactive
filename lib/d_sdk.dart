@@ -31,9 +31,6 @@ class DSdk {
 
   static UsersDao get user => db.usersDao;
 
-  @Deprecated("use DataFormTemplateVersionsDao")
-  static FormVersionsDao get formVersion => db.formVersionsDao;
-
   static DataFormTemplateVersionsDao get formTemplate =>
       db.dataFormTemplateVersionsDao;
 
