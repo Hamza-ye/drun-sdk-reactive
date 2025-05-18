@@ -8,10 +8,10 @@ import 'package:d_sdk/datasource/remote_data_sources/assignment_datasource.dart'
     as _i90;
 import 'package:d_sdk/datasource/remote_data_sources/data_element_datasource.dart'
     as _i827;
-import 'package:d_sdk/datasource/remote_data_sources/data_form_template_version_datasource.dart'
-    as _i1014;
 import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.dart'
     as _i646;
+import 'package:d_sdk/datasource/remote_data_sources/form_template_datasource.dart'
+    as _i569;
 import 'package:d_sdk/datasource/remote_data_sources/managed_team_datasource.dart'
     as _i718;
 import 'package:d_sdk/datasource/remote_data_sources/metadata_submission_datasource.dart'
@@ -37,7 +37,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 // AbAstractDatasource<[^>]+>
-/// initializes the registration of activeSessionContext-scope dependencies inside of GetIt
+// initializes the registration of activeSessionContext-scope dependencies inside of GetIt
 Future<_i174.GetIt> initActiveSessionScope(
   _i174.GetIt getIt, {
   _i174.ScopeDisposeFunc? dispose,
@@ -85,7 +85,7 @@ Future<_i174.GetIt> initActiveSessionScope(
             dbManager: gh<_i210.DbManager>(),
           ));
       gh.factory<_i277.AbstractDatasource>(
-          () => _i1014.DataFormTemplateDatasource(
+          () => _i569.DataFormTemplateDatasource(
                 apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));

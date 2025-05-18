@@ -31,8 +31,8 @@ class DSdk {
 
   static UsersDao get user => db.usersDao;
 
-  static DataFormTemplateVersionsDao get formTemplate =>
-      db.dataFormTemplateVersionsDao;
+  static FormTemplateVersionsDao get formTemplate =>
+      db.formTemplateVersionsDao;
 
   static DataSubmissionsDao get dataSubmission => db.dataSubmissionsDao;
 

@@ -20,7 +20,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -28,7 +28,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _usernameMeta =
       const VerificationMeta('username');
   @override
@@ -76,7 +76,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("activated" IN (0, 1))'),
-      defaultValue: Constant(false));
+      clientDefault: () => false);
   static const VerificationMeta _imageUrlMeta =
       const VerificationMeta('imageUrl');
   @override
@@ -990,7 +990,7 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -998,12 +998,12 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _displayNameMeta =
       const VerificationMeta('displayName');
   @override
@@ -1027,7 +1027,7 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       translations = GeneratedColumn<String>('translations', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
+              clientDefault: () => '[]')
           .withConverter<List<Translation>>(
               $OrgUnitsTable.$convertertranslations);
   static const VerificationMeta _pathMeta = const VerificationMeta('path');
@@ -1092,6 +1092,8 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('display_name')) {
       context.handle(
@@ -1135,7 +1137,7 @@ class $OrgUnitsTable extends OrgUnits with TableInfo<$OrgUnitsTable, OrgUnit> {
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
@@ -1169,7 +1171,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   final String id;
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
-  final String? name;
+  final String name;
   final String? displayName;
   final String? code;
   final Map<String, dynamic>? label;
@@ -1183,7 +1185,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
-      this.name,
+      required this.name,
       this.displayName,
       this.code,
       this.label,
@@ -1201,9 +1203,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
     if (!nullToAbsent || createdDate != null) {
       map['created_date'] = Variable<DateTime>(createdDate);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     if (!nullToAbsent || displayName != null) {
       map['display_name'] = Variable<String>(displayName);
     }
@@ -1235,7 +1235,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       createdDate: createdDate == null && nullToAbsent
           ? const Value.absent()
           : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
@@ -1258,7 +1258,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       lastModifiedDate:
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
@@ -1276,7 +1276,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
       'id': serializer.toJson<String>(id),
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
@@ -1291,7 +1291,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
           {String? id,
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
+          String? name,
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -1305,7 +1305,7 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
             ? lastModifiedDate.value
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
+        name: name ?? this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
         label: label.present ? label.value : this.label,
@@ -1378,7 +1378,7 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
   final Value<String> id;
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String?> displayName;
   final Value<String?> code;
   final Value<Map<String, dynamic>?> label;
@@ -1405,7 +1405,7 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     required String id,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.label = const Value.absent(),
@@ -1415,6 +1415,7 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
     this.parent = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
+        name = Value(name),
         path = Value(path),
         level = Value(level);
   static Insertable<OrgUnit> custom({
@@ -1451,7 +1452,7 @@ class OrgUnitsCompanion extends UpdateCompanion<OrgUnit> {
       {Value<String>? id,
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
-      Value<String?>? name,
+      Value<String>? name,
       Value<String?>? displayName,
       Value<String?>? code,
       Value<Map<String, dynamic>?>? label,
@@ -1557,7 +1558,7 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -1565,12 +1566,12 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _displayNameMeta =
       const VerificationMeta('displayName');
   @override
@@ -1594,7 +1595,7 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       translations = GeneratedColumn<String>('translations', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
+              clientDefault: () => '[]')
           .withConverter<List<Translation>>(
               $OuLevelsTable.$convertertranslations);
   static const VerificationMeta _levelMeta = const VerificationMeta('level');
@@ -1651,6 +1652,8 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('display_name')) {
       context.handle(
@@ -1690,7 +1693,7 @@ class $OuLevelsTable extends OuLevels with TableInfo<$OuLevelsTable, OuLevel> {
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
@@ -1722,7 +1725,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
   final String id;
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
-  final String? name;
+  final String name;
   final String? displayName;
   final String? code;
   final Map<String, dynamic>? label;
@@ -1735,7 +1738,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
-      this.name,
+      required this.name,
       this.displayName,
       this.code,
       this.label,
@@ -1752,9 +1755,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
     if (!nullToAbsent || createdDate != null) {
       map['created_date'] = Variable<DateTime>(createdDate);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     if (!nullToAbsent || displayName != null) {
       map['display_name'] = Variable<String>(displayName);
     }
@@ -1785,7 +1786,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       createdDate: createdDate == null && nullToAbsent
           ? const Value.absent()
           : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
@@ -1808,7 +1809,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       lastModifiedDate:
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
@@ -1825,7 +1826,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
       'id': serializer.toJson<String>(id),
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
@@ -1839,7 +1840,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
           {String? id,
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
+          String? name,
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -1852,7 +1853,7 @@ class OuLevel extends DataClass implements Insertable<OuLevel> {
             ? lastModifiedDate.value
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
+        name: name ?? this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
         label: label.present ? label.value : this.label,
@@ -1924,7 +1925,7 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
   final Value<String> id;
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String?> displayName;
   final Value<String?> code;
   final Value<Map<String, dynamic>?> label;
@@ -1949,7 +1950,7 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     required String id,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.label = const Value.absent(),
@@ -1958,6 +1959,7 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
     this.offlineLevels = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
+        name = Value(name),
         level = Value(level);
   static Insertable<OuLevel> custom({
     Expression<String>? id,
@@ -1991,7 +1993,7 @@ class OuLevelsCompanion extends UpdateCompanion<OuLevel> {
       {Value<String>? id,
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
-      Value<String?>? name,
+      Value<String>? name,
       Value<String?>? displayName,
       Value<String?>? code,
       Value<Map<String, dynamic>?>? label,
@@ -2091,7 +2093,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -2099,12 +2101,12 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _displayNameMeta =
       const VerificationMeta('displayName');
   @override
@@ -2128,7 +2130,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       translations = GeneratedColumn<String>('translations', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
+              clientDefault: () => '[]')
           .withConverter<List<Translation>>(
               $ProjectsTable.$convertertranslations);
   static const VerificationMeta _disabledMeta =
@@ -2183,6 +2185,8 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('display_name')) {
       context.handle(
@@ -2214,7 +2218,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
@@ -2244,7 +2248,7 @@ class Project extends DataClass implements Insertable<Project> {
   final String id;
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
-  final String? name;
+  final String name;
   final String? displayName;
   final String? code;
   final Map<String, dynamic>? label;
@@ -2256,7 +2260,7 @@ class Project extends DataClass implements Insertable<Project> {
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
-      this.name,
+      required this.name,
       this.displayName,
       this.code,
       this.label,
@@ -2272,9 +2276,7 @@ class Project extends DataClass implements Insertable<Project> {
     if (!nullToAbsent || createdDate != null) {
       map['created_date'] = Variable<DateTime>(createdDate);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     if (!nullToAbsent || displayName != null) {
       map['display_name'] = Variable<String>(displayName);
     }
@@ -2302,7 +2304,7 @@ class Project extends DataClass implements Insertable<Project> {
       createdDate: createdDate == null && nullToAbsent
           ? const Value.absent()
           : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
@@ -2322,7 +2324,7 @@ class Project extends DataClass implements Insertable<Project> {
       lastModifiedDate:
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
@@ -2338,7 +2340,7 @@ class Project extends DataClass implements Insertable<Project> {
       'id': serializer.toJson<String>(id),
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
@@ -2351,7 +2353,7 @@ class Project extends DataClass implements Insertable<Project> {
           {String? id,
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
+          String? name,
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -2363,7 +2365,7 @@ class Project extends DataClass implements Insertable<Project> {
             ? lastModifiedDate.value
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
+        name: name ?? this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
         label: label.present ? label.value : this.label,
@@ -2428,7 +2430,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<String> id;
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String?> displayName;
   final Value<String?> code;
   final Value<Map<String, dynamic>?> label;
@@ -2451,14 +2453,15 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     required String id,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.label = const Value.absent(),
     this.translations = const Value.absent(),
     this.disabled = const Value.absent(),
     this.rowid = const Value.absent(),
-  }) : id = Value(id);
+  })  : id = Value(id),
+        name = Value(name);
   static Insertable<Project> custom({
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
@@ -2489,7 +2492,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       {Value<String>? id,
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
-      Value<String?>? name,
+      Value<String>? name,
       Value<String?>? displayName,
       Value<String?>? code,
       Value<Map<String, dynamic>?>? label,
@@ -2584,7 +2587,7 @@ class $ActivitiesTable extends Activities
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -2592,12 +2595,12 @@ class $ActivitiesTable extends Activities
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _displayNameMeta =
       const VerificationMeta('displayName');
   @override
@@ -2622,7 +2625,7 @@ class $ActivitiesTable extends Activities
       translations = GeneratedColumn<String>('translations', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
+              clientDefault: () => '[]')
           .withConverter<List<Translation>>(
               $ActivitiesTable.$convertertranslations);
   static const VerificationMeta _projectMeta =
@@ -2708,6 +2711,8 @@ class $ActivitiesTable extends Activities
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('display_name')) {
       context.handle(
@@ -2759,7 +2764,7 @@ class $ActivitiesTable extends Activities
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
@@ -2798,7 +2803,7 @@ class Activity extends DataClass implements Insertable<Activity> {
   final String id;
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
-  final String? name;
+  final String name;
   final String? displayName;
   final String? code;
   final Map<String, dynamic>? label;
@@ -2814,7 +2819,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
-      this.name,
+      required this.name,
       this.displayName,
       this.code,
       this.label,
@@ -2834,9 +2839,7 @@ class Activity extends DataClass implements Insertable<Activity> {
     if (!nullToAbsent || createdDate != null) {
       map['created_date'] = Variable<DateTime>(createdDate);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     if (!nullToAbsent || displayName != null) {
       map['display_name'] = Variable<String>(displayName);
     }
@@ -2874,7 +2877,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       createdDate: createdDate == null && nullToAbsent
           ? const Value.absent()
           : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
@@ -2904,7 +2907,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       lastModifiedDate:
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
@@ -2924,7 +2927,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       'id': serializer.toJson<String>(id),
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
@@ -2941,7 +2944,7 @@ class Activity extends DataClass implements Insertable<Activity> {
           {String? id,
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
+          String? name,
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -2957,7 +2960,7 @@ class Activity extends DataClass implements Insertable<Activity> {
             ? lastModifiedDate.value
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
+        name: name ?? this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
         label: label.present ? label.value : this.label,
@@ -3051,7 +3054,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
   final Value<String> id;
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String?> displayName;
   final Value<String?> code;
   final Value<Map<String, dynamic>?> label;
@@ -3082,7 +3085,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     required String id,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.label = const Value.absent(),
@@ -3094,6 +3097,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
     this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
+        name = Value(name),
         project = Value(project);
   static Insertable<Activity> custom({
     Expression<String>? id,
@@ -3133,7 +3137,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       {Value<String>? id,
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
-      Value<String?>? name,
+      Value<String>? name,
       Value<String?>? displayName,
       Value<String?>? code,
       Value<Map<String, dynamic>?>? label,
@@ -3251,7 +3255,7 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -3259,7 +3263,7 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _codeMeta = const VerificationMeta('code');
   @override
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
@@ -3660,7 +3664,7 @@ class $ManagedTeamsTable extends ManagedTeams
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -3668,7 +3672,7 @@ class $ManagedTeamsTable extends ManagedTeams
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _codeMeta = const VerificationMeta('code');
   @override
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
@@ -4118,7 +4122,7 @@ class $AssignmentsTable extends Assignments
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -4126,7 +4130,7 @@ class $AssignmentsTable extends Assignments
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _activityMeta =
       const VerificationMeta('activity');
   @override
@@ -4153,45 +4157,6 @@ class $AssignmentsTable extends Assignments
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES org_units (id)'));
-  static const VerificationMeta _activityNameMeta =
-      const VerificationMeta('activityName');
-  @override
-  late final GeneratedColumn<String> activityName = GeneratedColumn<String>(
-      'activity_name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _orgUnitCodeMeta =
-      const VerificationMeta('orgUnitCode');
-  @override
-  late final GeneratedColumn<String> orgUnitCode = GeneratedColumn<String>(
-      'org_unit_code', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _orgUnitNameMeta =
-      const VerificationMeta('orgUnitName');
-  @override
-  late final GeneratedColumn<String> orgUnitName = GeneratedColumn<String>(
-      'org_unit_name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _teamCodeMeta =
-      const VerificationMeta('teamCode');
-  @override
-  late final GeneratedColumn<String> teamCode = GeneratedColumn<String>(
-      'team_code', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _parentMeta = const VerificationMeta('parent');
-  @override
-  late final GeneratedColumn<String> parent = GeneratedColumn<String>(
-      'parent', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES assignments (id)'));
-  static const VerificationMeta _levelMeta = const VerificationMeta('level');
-  @override
-  late final GeneratedColumn<int> level = GeneratedColumn<int>(
-      'level', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      clientDefault: () => 1);
   static const VerificationMeta _startDayMeta =
       const VerificationMeta('startDay');
   @override
@@ -4212,23 +4177,6 @@ class $AssignmentsTable extends Assignments
           .withConverter<AssignmentStatus?>(
               $AssignmentsTable.$converterprogressStatusn);
   @override
-  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      allocatedResources = GeneratedColumn<String>(
-              'allocated_resources', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<Map<String, dynamic>?>(
-              $AssignmentsTable.$converterallocatedResources);
-  @override
-  late final GeneratedColumnWithTypeConverter<List<String>?, String> forms =
-      GeneratedColumn<String>('forms', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<List<String>?>($AssignmentsTable.$converterforms);
-  @override
-  late final GeneratedColumnWithTypeConverter<EntityScope, String> scope =
-      GeneratedColumn<String>('scope', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<EntityScope>($AssignmentsTable.$converterscope);
-  @override
   List<GeneratedColumn> get $columns => [
         id,
         lastModifiedDate,
@@ -4236,18 +4184,9 @@ class $AssignmentsTable extends Assignments
         activity,
         team,
         orgUnit,
-        activityName,
-        orgUnitCode,
-        orgUnitName,
-        teamCode,
-        parent,
-        level,
         startDay,
         startDate,
-        progressStatus,
-        allocatedResources,
-        forms,
-        scope
+        progressStatus
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4294,44 +4233,6 @@ class $AssignmentsTable extends Assignments
     } else if (isInserting) {
       context.missing(_orgUnitMeta);
     }
-    if (data.containsKey('activity_name')) {
-      context.handle(
-          _activityNameMeta,
-          activityName.isAcceptableOrUnknown(
-              data['activity_name']!, _activityNameMeta));
-    } else if (isInserting) {
-      context.missing(_activityNameMeta);
-    }
-    if (data.containsKey('org_unit_code')) {
-      context.handle(
-          _orgUnitCodeMeta,
-          orgUnitCode.isAcceptableOrUnknown(
-              data['org_unit_code']!, _orgUnitCodeMeta));
-    } else if (isInserting) {
-      context.missing(_orgUnitCodeMeta);
-    }
-    if (data.containsKey('org_unit_name')) {
-      context.handle(
-          _orgUnitNameMeta,
-          orgUnitName.isAcceptableOrUnknown(
-              data['org_unit_name']!, _orgUnitNameMeta));
-    } else if (isInserting) {
-      context.missing(_orgUnitNameMeta);
-    }
-    if (data.containsKey('team_code')) {
-      context.handle(_teamCodeMeta,
-          teamCode.isAcceptableOrUnknown(data['team_code']!, _teamCodeMeta));
-    } else if (isInserting) {
-      context.missing(_teamCodeMeta);
-    }
-    if (data.containsKey('parent')) {
-      context.handle(_parentMeta,
-          parent.isAcceptableOrUnknown(data['parent']!, _parentMeta));
-    }
-    if (data.containsKey('level')) {
-      context.handle(
-          _levelMeta, level.isAcceptableOrUnknown(data['level']!, _levelMeta));
-    }
     if (data.containsKey('start_day')) {
       context.handle(_startDayMeta,
           startDay.isAcceptableOrUnknown(data['start_day']!, _startDayMeta));
@@ -4361,18 +4262,6 @@ class $AssignmentsTable extends Assignments
           .read(DriftSqlType.string, data['${effectivePrefix}team'])!,
       orgUnit: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}org_unit'])!,
-      activityName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}activity_name'])!,
-      orgUnitCode: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}org_unit_code'])!,
-      orgUnitName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}org_unit_name'])!,
-      teamCode: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}team_code'])!,
-      parent: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}parent']),
-      level: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}level']),
       startDay: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}start_day']),
       startDate: attachedDatabase.typeMapping
@@ -4380,15 +4269,6 @@ class $AssignmentsTable extends Assignments
       progressStatus: $AssignmentsTable.$converterprogressStatusn.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}progress_status'])),
-      allocatedResources: $AssignmentsTable.$converterallocatedResources
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}allocated_resources'])),
-      forms: $AssignmentsTable.$converterforms.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}forms'])),
-      scope: $AssignmentsTable.$converterscope.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}scope'])!),
     );
   }
 
@@ -4403,12 +4283,6 @@ class $AssignmentsTable extends Assignments
   static JsonTypeConverter2<AssignmentStatus?, String?, String?>
       $converterprogressStatusn =
       JsonTypeConverter2.asNullable($converterprogressStatus);
-  static TypeConverter<Map<String, dynamic>?, String?>
-      $converterallocatedResources = const NullAwareMapConverter();
-  static TypeConverter<List<String>?, String?> $converterforms =
-      const NullAwareListConverter<String>();
-  static JsonTypeConverter2<EntityScope, String, String> $converterscope =
-      const EnumNameConverter(EntityScope.values);
 }
 
 class Assignment extends DataClass implements Insertable<Assignment> {
@@ -4418,14 +4292,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   final String activity;
   final String team;
   final String orgUnit;
-  final String activityName;
-  final String orgUnitCode;
-  final String orgUnitName;
-  final String teamCode;
-
-  /// Parent reference (stored as a text foreign key, if applicable)
-  final String? parent;
-  final int? level;
 
   /// Start day as integer, nullable
   final int? startDay;
@@ -4435,15 +4301,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
 
   /// Assignment status stored as text via a converter
   final AssignmentStatus? progressStatus;
-
-  /// allocatedResources stored as JSON string
-  final Map<String, dynamic>? allocatedResources;
-
-  /// forms stored as JSON string representing a List<String>
-  final List<String>? forms;
-
-  /// scope stored as text via a converter
-  final EntityScope scope;
   const Assignment(
       {required this.id,
       this.lastModifiedDate,
@@ -4451,18 +4308,9 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       required this.activity,
       required this.team,
       required this.orgUnit,
-      required this.activityName,
-      required this.orgUnitCode,
-      required this.orgUnitName,
-      required this.teamCode,
-      this.parent,
-      this.level,
       this.startDay,
       this.startDate,
-      this.progressStatus,
-      this.allocatedResources,
-      this.forms,
-      required this.scope});
+      this.progressStatus});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4476,16 +4324,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     map['activity'] = Variable<String>(activity);
     map['team'] = Variable<String>(team);
     map['org_unit'] = Variable<String>(orgUnit);
-    map['activity_name'] = Variable<String>(activityName);
-    map['org_unit_code'] = Variable<String>(orgUnitCode);
-    map['org_unit_name'] = Variable<String>(orgUnitName);
-    map['team_code'] = Variable<String>(teamCode);
-    if (!nullToAbsent || parent != null) {
-      map['parent'] = Variable<String>(parent);
-    }
-    if (!nullToAbsent || level != null) {
-      map['level'] = Variable<int>(level);
-    }
     if (!nullToAbsent || startDay != null) {
       map['start_day'] = Variable<int>(startDay);
     }
@@ -4495,19 +4333,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     if (!nullToAbsent || progressStatus != null) {
       map['progress_status'] = Variable<String>(
           $AssignmentsTable.$converterprogressStatusn.toSql(progressStatus));
-    }
-    if (!nullToAbsent || allocatedResources != null) {
-      map['allocated_resources'] = Variable<String>($AssignmentsTable
-          .$converterallocatedResources
-          .toSql(allocatedResources));
-    }
-    if (!nullToAbsent || forms != null) {
-      map['forms'] =
-          Variable<String>($AssignmentsTable.$converterforms.toSql(forms));
-    }
-    {
-      map['scope'] =
-          Variable<String>($AssignmentsTable.$converterscope.toSql(scope));
     }
     return map;
   }
@@ -4524,14 +4349,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       activity: Value(activity),
       team: Value(team),
       orgUnit: Value(orgUnit),
-      activityName: Value(activityName),
-      orgUnitCode: Value(orgUnitCode),
-      orgUnitName: Value(orgUnitName),
-      teamCode: Value(teamCode),
-      parent:
-          parent == null && nullToAbsent ? const Value.absent() : Value(parent),
-      level:
-          level == null && nullToAbsent ? const Value.absent() : Value(level),
       startDay: startDay == null && nullToAbsent
           ? const Value.absent()
           : Value(startDay),
@@ -4541,12 +4358,6 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       progressStatus: progressStatus == null && nullToAbsent
           ? const Value.absent()
           : Value(progressStatus),
-      allocatedResources: allocatedResources == null && nullToAbsent
-          ? const Value.absent()
-          : Value(allocatedResources),
-      forms:
-          forms == null && nullToAbsent ? const Value.absent() : Value(forms),
-      scope: Value(scope),
     );
   }
 
@@ -4561,21 +4372,10 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       activity: serializer.fromJson<String>(json['activity']),
       team: serializer.fromJson<String>(json['team']),
       orgUnit: serializer.fromJson<String>(json['orgUnit']),
-      activityName: serializer.fromJson<String>(json['activityName']),
-      orgUnitCode: serializer.fromJson<String>(json['orgUnitCode']),
-      orgUnitName: serializer.fromJson<String>(json['orgUnitName']),
-      teamCode: serializer.fromJson<String>(json['teamCode']),
-      parent: serializer.fromJson<String?>(json['parent']),
-      level: serializer.fromJson<int?>(json['level']),
       startDay: serializer.fromJson<int?>(json['startDay']),
       startDate: serializer.fromJson<DateTime?>(json['startDate']),
       progressStatus: $AssignmentsTable.$converterprogressStatusn
           .fromJson(serializer.fromJson<String?>(json['progressStatus'])),
-      allocatedResources: serializer
-          .fromJson<Map<String, dynamic>?>(json['allocatedResources']),
-      forms: serializer.fromJson<List<String>?>(json['forms']),
-      scope: $AssignmentsTable.$converterscope
-          .fromJson(serializer.fromJson<String>(json['scope'])),
     );
   }
   @override
@@ -4588,21 +4388,10 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       'activity': serializer.toJson<String>(activity),
       'team': serializer.toJson<String>(team),
       'orgUnit': serializer.toJson<String>(orgUnit),
-      'activityName': serializer.toJson<String>(activityName),
-      'orgUnitCode': serializer.toJson<String>(orgUnitCode),
-      'orgUnitName': serializer.toJson<String>(orgUnitName),
-      'teamCode': serializer.toJson<String>(teamCode),
-      'parent': serializer.toJson<String?>(parent),
-      'level': serializer.toJson<int?>(level),
       'startDay': serializer.toJson<int?>(startDay),
       'startDate': serializer.toJson<DateTime?>(startDate),
       'progressStatus': serializer.toJson<String?>(
           $AssignmentsTable.$converterprogressStatusn.toJson(progressStatus)),
-      'allocatedResources':
-          serializer.toJson<Map<String, dynamic>?>(allocatedResources),
-      'forms': serializer.toJson<List<String>?>(forms),
-      'scope': serializer
-          .toJson<String>($AssignmentsTable.$converterscope.toJson(scope)),
     };
   }
 
@@ -4613,19 +4402,9 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           String? activity,
           String? team,
           String? orgUnit,
-          String? activityName,
-          String? orgUnitCode,
-          String? orgUnitName,
-          String? teamCode,
-          Value<String?> parent = const Value.absent(),
-          Value<int?> level = const Value.absent(),
           Value<int?> startDay = const Value.absent(),
           Value<DateTime?> startDate = const Value.absent(),
-          Value<AssignmentStatus?> progressStatus = const Value.absent(),
-          Value<Map<String, dynamic>?> allocatedResources =
-              const Value.absent(),
-          Value<List<String>?> forms = const Value.absent(),
-          EntityScope? scope}) =>
+          Value<AssignmentStatus?> progressStatus = const Value.absent()}) =>
       Assignment(
         id: id ?? this.id,
         lastModifiedDate: lastModifiedDate.present
@@ -4635,21 +4414,10 @@ class Assignment extends DataClass implements Insertable<Assignment> {
         activity: activity ?? this.activity,
         team: team ?? this.team,
         orgUnit: orgUnit ?? this.orgUnit,
-        activityName: activityName ?? this.activityName,
-        orgUnitCode: orgUnitCode ?? this.orgUnitCode,
-        orgUnitName: orgUnitName ?? this.orgUnitName,
-        teamCode: teamCode ?? this.teamCode,
-        parent: parent.present ? parent.value : this.parent,
-        level: level.present ? level.value : this.level,
         startDay: startDay.present ? startDay.value : this.startDay,
         startDate: startDate.present ? startDate.value : this.startDate,
         progressStatus:
             progressStatus.present ? progressStatus.value : this.progressStatus,
-        allocatedResources: allocatedResources.present
-            ? allocatedResources.value
-            : this.allocatedResources,
-        forms: forms.present ? forms.value : this.forms,
-        scope: scope ?? this.scope,
       );
   Assignment copyWithCompanion(AssignmentsCompanion data) {
     return Assignment(
@@ -4662,26 +4430,11 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       activity: data.activity.present ? data.activity.value : this.activity,
       team: data.team.present ? data.team.value : this.team,
       orgUnit: data.orgUnit.present ? data.orgUnit.value : this.orgUnit,
-      activityName: data.activityName.present
-          ? data.activityName.value
-          : this.activityName,
-      orgUnitCode:
-          data.orgUnitCode.present ? data.orgUnitCode.value : this.orgUnitCode,
-      orgUnitName:
-          data.orgUnitName.present ? data.orgUnitName.value : this.orgUnitName,
-      teamCode: data.teamCode.present ? data.teamCode.value : this.teamCode,
-      parent: data.parent.present ? data.parent.value : this.parent,
-      level: data.level.present ? data.level.value : this.level,
       startDay: data.startDay.present ? data.startDay.value : this.startDay,
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
       progressStatus: data.progressStatus.present
           ? data.progressStatus.value
           : this.progressStatus,
-      allocatedResources: data.allocatedResources.present
-          ? data.allocatedResources.value
-          : this.allocatedResources,
-      forms: data.forms.present ? data.forms.value : this.forms,
-      scope: data.scope.present ? data.scope.value : this.scope,
     );
   }
 
@@ -4694,42 +4447,16 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           ..write('activity: $activity, ')
           ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
-          ..write('activityName: $activityName, ')
-          ..write('orgUnitCode: $orgUnitCode, ')
-          ..write('orgUnitName: $orgUnitName, ')
-          ..write('teamCode: $teamCode, ')
-          ..write('parent: $parent, ')
-          ..write('level: $level, ')
           ..write('startDay: $startDay, ')
           ..write('startDate: $startDate, ')
-          ..write('progressStatus: $progressStatus, ')
-          ..write('allocatedResources: $allocatedResources, ')
-          ..write('forms: $forms, ')
-          ..write('scope: $scope')
+          ..write('progressStatus: $progressStatus')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      lastModifiedDate,
-      createdDate,
-      activity,
-      team,
-      orgUnit,
-      activityName,
-      orgUnitCode,
-      orgUnitName,
-      teamCode,
-      parent,
-      level,
-      startDay,
-      startDate,
-      progressStatus,
-      allocatedResources,
-      forms,
-      scope);
+  int get hashCode => Object.hash(id, lastModifiedDate, createdDate, activity,
+      team, orgUnit, startDay, startDate, progressStatus);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4740,18 +4467,9 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           other.activity == this.activity &&
           other.team == this.team &&
           other.orgUnit == this.orgUnit &&
-          other.activityName == this.activityName &&
-          other.orgUnitCode == this.orgUnitCode &&
-          other.orgUnitName == this.orgUnitName &&
-          other.teamCode == this.teamCode &&
-          other.parent == this.parent &&
-          other.level == this.level &&
           other.startDay == this.startDay &&
           other.startDate == this.startDate &&
-          other.progressStatus == this.progressStatus &&
-          other.allocatedResources == this.allocatedResources &&
-          other.forms == this.forms &&
-          other.scope == this.scope);
+          other.progressStatus == this.progressStatus);
 }
 
 class AssignmentsCompanion extends UpdateCompanion<Assignment> {
@@ -4761,18 +4479,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<String> activity;
   final Value<String> team;
   final Value<String> orgUnit;
-  final Value<String> activityName;
-  final Value<String> orgUnitCode;
-  final Value<String> orgUnitName;
-  final Value<String> teamCode;
-  final Value<String?> parent;
-  final Value<int?> level;
   final Value<int?> startDay;
   final Value<DateTime?> startDate;
   final Value<AssignmentStatus?> progressStatus;
-  final Value<Map<String, dynamic>?> allocatedResources;
-  final Value<List<String>?> forms;
-  final Value<EntityScope> scope;
   final Value<int> rowid;
   const AssignmentsCompanion({
     this.id = const Value.absent(),
@@ -4781,18 +4490,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     this.activity = const Value.absent(),
     this.team = const Value.absent(),
     this.orgUnit = const Value.absent(),
-    this.activityName = const Value.absent(),
-    this.orgUnitCode = const Value.absent(),
-    this.orgUnitName = const Value.absent(),
-    this.teamCode = const Value.absent(),
-    this.parent = const Value.absent(),
-    this.level = const Value.absent(),
     this.startDay = const Value.absent(),
     this.startDate = const Value.absent(),
     this.progressStatus = const Value.absent(),
-    this.allocatedResources = const Value.absent(),
-    this.forms = const Value.absent(),
-    this.scope = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AssignmentsCompanion.insert({
@@ -4802,28 +4502,14 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     required String activity,
     required String team,
     required String orgUnit,
-    required String activityName,
-    required String orgUnitCode,
-    required String orgUnitName,
-    required String teamCode,
-    this.parent = const Value.absent(),
-    this.level = const Value.absent(),
     this.startDay = const Value.absent(),
     this.startDate = const Value.absent(),
     this.progressStatus = const Value.absent(),
-    this.allocatedResources = const Value.absent(),
-    this.forms = const Value.absent(),
-    required EntityScope scope,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         activity = Value(activity),
         team = Value(team),
-        orgUnit = Value(orgUnit),
-        activityName = Value(activityName),
-        orgUnitCode = Value(orgUnitCode),
-        orgUnitName = Value(orgUnitName),
-        teamCode = Value(teamCode),
-        scope = Value(scope);
+        orgUnit = Value(orgUnit);
   static Insertable<Assignment> custom({
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
@@ -4831,18 +4517,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     Expression<String>? activity,
     Expression<String>? team,
     Expression<String>? orgUnit,
-    Expression<String>? activityName,
-    Expression<String>? orgUnitCode,
-    Expression<String>? orgUnitName,
-    Expression<String>? teamCode,
-    Expression<String>? parent,
-    Expression<int>? level,
     Expression<int>? startDay,
     Expression<DateTime>? startDate,
     Expression<String>? progressStatus,
-    Expression<String>? allocatedResources,
-    Expression<String>? forms,
-    Expression<String>? scope,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4852,18 +4529,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       if (activity != null) 'activity': activity,
       if (team != null) 'team': team,
       if (orgUnit != null) 'org_unit': orgUnit,
-      if (activityName != null) 'activity_name': activityName,
-      if (orgUnitCode != null) 'org_unit_code': orgUnitCode,
-      if (orgUnitName != null) 'org_unit_name': orgUnitName,
-      if (teamCode != null) 'team_code': teamCode,
-      if (parent != null) 'parent': parent,
-      if (level != null) 'level': level,
       if (startDay != null) 'start_day': startDay,
       if (startDate != null) 'start_date': startDate,
       if (progressStatus != null) 'progress_status': progressStatus,
-      if (allocatedResources != null) 'allocated_resources': allocatedResources,
-      if (forms != null) 'forms': forms,
-      if (scope != null) 'scope': scope,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4875,18 +4543,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       Value<String>? activity,
       Value<String>? team,
       Value<String>? orgUnit,
-      Value<String>? activityName,
-      Value<String>? orgUnitCode,
-      Value<String>? orgUnitName,
-      Value<String>? teamCode,
-      Value<String?>? parent,
-      Value<int?>? level,
       Value<int?>? startDay,
       Value<DateTime?>? startDate,
       Value<AssignmentStatus?>? progressStatus,
-      Value<Map<String, dynamic>?>? allocatedResources,
-      Value<List<String>?>? forms,
-      Value<EntityScope>? scope,
       Value<int>? rowid}) {
     return AssignmentsCompanion(
       id: id ?? this.id,
@@ -4895,18 +4554,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       activity: activity ?? this.activity,
       team: team ?? this.team,
       orgUnit: orgUnit ?? this.orgUnit,
-      activityName: activityName ?? this.activityName,
-      orgUnitCode: orgUnitCode ?? this.orgUnitCode,
-      orgUnitName: orgUnitName ?? this.orgUnitName,
-      teamCode: teamCode ?? this.teamCode,
-      parent: parent ?? this.parent,
-      level: level ?? this.level,
       startDay: startDay ?? this.startDay,
       startDate: startDate ?? this.startDate,
       progressStatus: progressStatus ?? this.progressStatus,
-      allocatedResources: allocatedResources ?? this.allocatedResources,
-      forms: forms ?? this.forms,
-      scope: scope ?? this.scope,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4932,24 +4582,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     if (orgUnit.present) {
       map['org_unit'] = Variable<String>(orgUnit.value);
     }
-    if (activityName.present) {
-      map['activity_name'] = Variable<String>(activityName.value);
-    }
-    if (orgUnitCode.present) {
-      map['org_unit_code'] = Variable<String>(orgUnitCode.value);
-    }
-    if (orgUnitName.present) {
-      map['org_unit_name'] = Variable<String>(orgUnitName.value);
-    }
-    if (teamCode.present) {
-      map['team_code'] = Variable<String>(teamCode.value);
-    }
-    if (parent.present) {
-      map['parent'] = Variable<String>(parent.value);
-    }
-    if (level.present) {
-      map['level'] = Variable<int>(level.value);
-    }
     if (startDay.present) {
       map['start_day'] = Variable<int>(startDay.value);
     }
@@ -4960,19 +4592,6 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       map['progress_status'] = Variable<String>($AssignmentsTable
           .$converterprogressStatusn
           .toSql(progressStatus.value));
-    }
-    if (allocatedResources.present) {
-      map['allocated_resources'] = Variable<String>($AssignmentsTable
-          .$converterallocatedResources
-          .toSql(allocatedResources.value));
-    }
-    if (forms.present) {
-      map['forms'] = Variable<String>(
-          $AssignmentsTable.$converterforms.toSql(forms.value));
-    }
-    if (scope.present) {
-      map['scope'] = Variable<String>(
-          $AssignmentsTable.$converterscope.toSql(scope.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -4989,18 +4608,737 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
           ..write('activity: $activity, ')
           ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
-          ..write('activityName: $activityName, ')
-          ..write('orgUnitCode: $orgUnitCode, ')
-          ..write('orgUnitName: $orgUnitName, ')
-          ..write('teamCode: $teamCode, ')
-          ..write('parent: $parent, ')
-          ..write('level: $level, ')
           ..write('startDay: $startDay, ')
           ..write('startDate: $startDate, ')
           ..write('progressStatus: $progressStatus, ')
-          ..write('allocatedResources: $allocatedResources, ')
-          ..write('forms: $forms, ')
-          ..write('scope: $scope, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FormTemplatesTable extends FormTemplates
+    with TableInfo<$FormTemplatesTable, FormTemplate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FormTemplatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _formVersionMeta =
+      const VerificationMeta('formVersion');
+  @override
+  late final GeneratedColumn<String> formVersion = GeneratedColumn<String>(
+      'form_version', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionNumberMeta =
+      const VerificationMeta('versionNumber');
+  @override
+  late final GeneratedColumn<int> versionNumber = GeneratedColumn<int>(
+      'version_number', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+      label = GeneratedColumn<String>('label', aliasedName, true,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              clientDefault: () => '{}')
+          .withConverter<Map<String, dynamic>?>(
+              $FormTemplatesTable.$converterlabel);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, formVersion, versionNumber, name, label, description];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'form_templates';
+  @override
+  VerificationContext validateIntegrity(Insertable<FormTemplate> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('form_version')) {
+      context.handle(
+          _formVersionMeta,
+          formVersion.isAcceptableOrUnknown(
+              data['form_version']!, _formVersionMeta));
+    } else if (isInserting) {
+      context.missing(_formVersionMeta);
+    }
+    if (data.containsKey('version_number')) {
+      context.handle(
+          _versionNumberMeta,
+          versionNumber.isAcceptableOrUnknown(
+              data['version_number']!, _versionNumberMeta));
+    } else if (isInserting) {
+      context.missing(_versionNumberMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FormTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FormTemplate(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      formVersion: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}form_version'])!,
+      versionNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version_number'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      label: $FormTemplatesTable.$converterlabel.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}label'])),
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+    );
+  }
+
+  @override
+  $FormTemplatesTable createAlias(String alias) {
+    return $FormTemplatesTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<Map<String, dynamic>?, String?> $converterlabel =
+      const NullAwareMapConverter();
+}
+
+class FormTemplate extends DataClass implements Insertable<FormTemplate> {
+  final String id;
+
+  /// current form version uid
+  final String formVersion;
+
+  /// current form version number
+  final int versionNumber;
+  final String name;
+  final Map<String, dynamic>? label;
+  final String? description;
+  const FormTemplate(
+      {required this.id,
+      required this.formVersion,
+      required this.versionNumber,
+      required this.name,
+      this.label,
+      this.description});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['form_version'] = Variable<String>(formVersion);
+    map['version_number'] = Variable<int>(versionNumber);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || label != null) {
+      map['label'] =
+          Variable<String>($FormTemplatesTable.$converterlabel.toSql(label));
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    return map;
+  }
+
+  FormTemplatesCompanion toCompanion(bool nullToAbsent) {
+    return FormTemplatesCompanion(
+      id: Value(id),
+      formVersion: Value(formVersion),
+      versionNumber: Value(versionNumber),
+      name: Value(name),
+      label:
+          label == null && nullToAbsent ? const Value.absent() : Value(label),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+    );
+  }
+
+  factory FormTemplate.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FormTemplate(
+      id: serializer.fromJson<String>(json['id']),
+      formVersion: serializer.fromJson<String>(json['formVersion']),
+      versionNumber: serializer.fromJson<int>(json['versionNumber']),
+      name: serializer.fromJson<String>(json['name']),
+      label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
+      description: serializer.fromJson<String?>(json['description']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'formVersion': serializer.toJson<String>(formVersion),
+      'versionNumber': serializer.toJson<int>(versionNumber),
+      'name': serializer.toJson<String>(name),
+      'label': serializer.toJson<Map<String, dynamic>?>(label),
+      'description': serializer.toJson<String?>(description),
+    };
+  }
+
+  FormTemplate copyWith(
+          {String? id,
+          String? formVersion,
+          int? versionNumber,
+          String? name,
+          Value<Map<String, dynamic>?> label = const Value.absent(),
+          Value<String?> description = const Value.absent()}) =>
+      FormTemplate(
+        id: id ?? this.id,
+        formVersion: formVersion ?? this.formVersion,
+        versionNumber: versionNumber ?? this.versionNumber,
+        name: name ?? this.name,
+        label: label.present ? label.value : this.label,
+        description: description.present ? description.value : this.description,
+      );
+  FormTemplate copyWithCompanion(FormTemplatesCompanion data) {
+    return FormTemplate(
+      id: data.id.present ? data.id.value : this.id,
+      formVersion:
+          data.formVersion.present ? data.formVersion.value : this.formVersion,
+      versionNumber: data.versionNumber.present
+          ? data.versionNumber.value
+          : this.versionNumber,
+      name: data.name.present ? data.name.value : this.name,
+      label: data.label.present ? data.label.value : this.label,
+      description:
+          data.description.present ? data.description.value : this.description,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FormTemplate(')
+          ..write('id: $id, ')
+          ..write('formVersion: $formVersion, ')
+          ..write('versionNumber: $versionNumber, ')
+          ..write('name: $name, ')
+          ..write('label: $label, ')
+          ..write('description: $description')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, formVersion, versionNumber, name, label, description);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FormTemplate &&
+          other.id == this.id &&
+          other.formVersion == this.formVersion &&
+          other.versionNumber == this.versionNumber &&
+          other.name == this.name &&
+          other.label == this.label &&
+          other.description == this.description);
+}
+
+class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
+  final Value<String> id;
+  final Value<String> formVersion;
+  final Value<int> versionNumber;
+  final Value<String> name;
+  final Value<Map<String, dynamic>?> label;
+  final Value<String?> description;
+  final Value<int> rowid;
+  const FormTemplatesCompanion({
+    this.id = const Value.absent(),
+    this.formVersion = const Value.absent(),
+    this.versionNumber = const Value.absent(),
+    this.name = const Value.absent(),
+    this.label = const Value.absent(),
+    this.description = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FormTemplatesCompanion.insert({
+    required String id,
+    required String formVersion,
+    required int versionNumber,
+    required String name,
+    this.label = const Value.absent(),
+    this.description = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        formVersion = Value(formVersion),
+        versionNumber = Value(versionNumber),
+        name = Value(name);
+  static Insertable<FormTemplate> custom({
+    Expression<String>? id,
+    Expression<String>? formVersion,
+    Expression<int>? versionNumber,
+    Expression<String>? name,
+    Expression<String>? label,
+    Expression<String>? description,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (formVersion != null) 'form_version': formVersion,
+      if (versionNumber != null) 'version_number': versionNumber,
+      if (name != null) 'name': name,
+      if (label != null) 'label': label,
+      if (description != null) 'description': description,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FormTemplatesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? formVersion,
+      Value<int>? versionNumber,
+      Value<String>? name,
+      Value<Map<String, dynamic>?>? label,
+      Value<String?>? description,
+      Value<int>? rowid}) {
+    return FormTemplatesCompanion(
+      id: id ?? this.id,
+      formVersion: formVersion ?? this.formVersion,
+      versionNumber: versionNumber ?? this.versionNumber,
+      name: name ?? this.name,
+      label: label ?? this.label,
+      description: description ?? this.description,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (formVersion.present) {
+      map['form_version'] = Variable<String>(formVersion.value);
+    }
+    if (versionNumber.present) {
+      map['version_number'] = Variable<int>(versionNumber.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(
+          $FormTemplatesTable.$converterlabel.toSql(label.value));
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FormTemplatesCompanion(')
+          ..write('id: $id, ')
+          ..write('formVersion: $formVersion, ')
+          ..write('versionNumber: $versionNumber, ')
+          ..write('name: $name, ')
+          ..write('label: $label, ')
+          ..write('description: $description, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AssignmentFormsTable extends AssignmentForms
+    with TableInfo<$AssignmentFormsTable, AssignmentForm> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AssignmentFormsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assignmentMeta =
+      const VerificationMeta('assignment');
+  @override
+  late final GeneratedColumn<String> assignment = GeneratedColumn<String>(
+      'assignment', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES assignments (id) ON UPDATE CASCADE'));
+  static const VerificationMeta _formMeta = const VerificationMeta('form');
+  @override
+  late final GeneratedColumn<String> form = GeneratedColumn<String>(
+      'form', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES form_templates (id)'));
+  static const VerificationMeta _canAddSubmissionsMeta =
+      const VerificationMeta('canAddSubmissions');
+  @override
+  late final GeneratedColumn<bool> canAddSubmissions = GeneratedColumn<bool>(
+      'can_add_submissions', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("can_add_submissions" IN (0, 1))'),
+      clientDefault: () => false);
+  static const VerificationMeta _canEditSubmissionsMeta =
+      const VerificationMeta('canEditSubmissions');
+  @override
+  late final GeneratedColumn<bool> canEditSubmissions = GeneratedColumn<bool>(
+      'can_edit_submissions', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("can_edit_submissions" IN (0, 1))'),
+      clientDefault: () => false);
+  static const VerificationMeta _canDeleteSubmissionsMeta =
+      const VerificationMeta('canDeleteSubmissions');
+  @override
+  late final GeneratedColumn<bool> canDeleteSubmissions = GeneratedColumn<bool>(
+      'can_delete_submissions', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("can_delete_submissions" IN (0, 1))'),
+      clientDefault: () => false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        assignment,
+        form,
+        canAddSubmissions,
+        canEditSubmissions,
+        canDeleteSubmissions
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'assignment_forms';
+  @override
+  VerificationContext validateIntegrity(Insertable<AssignmentForm> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('assignment')) {
+      context.handle(
+          _assignmentMeta,
+          assignment.isAcceptableOrUnknown(
+              data['assignment']!, _assignmentMeta));
+    } else if (isInserting) {
+      context.missing(_assignmentMeta);
+    }
+    if (data.containsKey('form')) {
+      context.handle(
+          _formMeta, form.isAcceptableOrUnknown(data['form']!, _formMeta));
+    } else if (isInserting) {
+      context.missing(_formMeta);
+    }
+    if (data.containsKey('can_add_submissions')) {
+      context.handle(
+          _canAddSubmissionsMeta,
+          canAddSubmissions.isAcceptableOrUnknown(
+              data['can_add_submissions']!, _canAddSubmissionsMeta));
+    }
+    if (data.containsKey('can_edit_submissions')) {
+      context.handle(
+          _canEditSubmissionsMeta,
+          canEditSubmissions.isAcceptableOrUnknown(
+              data['can_edit_submissions']!, _canEditSubmissionsMeta));
+    }
+    if (data.containsKey('can_delete_submissions')) {
+      context.handle(
+          _canDeleteSubmissionsMeta,
+          canDeleteSubmissions.isAcceptableOrUnknown(
+              data['can_delete_submissions']!, _canDeleteSubmissionsMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assignment, form};
+  @override
+  AssignmentForm map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AssignmentForm(
+      assignment: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}assignment'])!,
+      form: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}form'])!,
+      canAddSubmissions: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}can_add_submissions']),
+      canEditSubmissions: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}can_edit_submissions']),
+      canDeleteSubmissions: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}can_delete_submissions']),
+    );
+  }
+
+  @override
+  $AssignmentFormsTable createAlias(String alias) {
+    return $AssignmentFormsTable(attachedDatabase, alias);
+  }
+}
+
+class AssignmentForm extends DataClass implements Insertable<AssignmentForm> {
+  final String assignment;
+  final String form;
+  final bool? canAddSubmissions;
+  final bool? canEditSubmissions;
+  final bool? canDeleteSubmissions;
+  const AssignmentForm(
+      {required this.assignment,
+      required this.form,
+      this.canAddSubmissions,
+      this.canEditSubmissions,
+      this.canDeleteSubmissions});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['assignment'] = Variable<String>(assignment);
+    map['form'] = Variable<String>(form);
+    if (!nullToAbsent || canAddSubmissions != null) {
+      map['can_add_submissions'] = Variable<bool>(canAddSubmissions);
+    }
+    if (!nullToAbsent || canEditSubmissions != null) {
+      map['can_edit_submissions'] = Variable<bool>(canEditSubmissions);
+    }
+    if (!nullToAbsent || canDeleteSubmissions != null) {
+      map['can_delete_submissions'] = Variable<bool>(canDeleteSubmissions);
+    }
+    return map;
+  }
+
+  AssignmentFormsCompanion toCompanion(bool nullToAbsent) {
+    return AssignmentFormsCompanion(
+      assignment: Value(assignment),
+      form: Value(form),
+      canAddSubmissions: canAddSubmissions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(canAddSubmissions),
+      canEditSubmissions: canEditSubmissions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(canEditSubmissions),
+      canDeleteSubmissions: canDeleteSubmissions == null && nullToAbsent
+          ? const Value.absent()
+          : Value(canDeleteSubmissions),
+    );
+  }
+
+  factory AssignmentForm.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AssignmentForm(
+      assignment: serializer.fromJson<String>(json['assignment']),
+      form: serializer.fromJson<String>(json['form']),
+      canAddSubmissions: serializer.fromJson<bool?>(json['canAddSubmissions']),
+      canEditSubmissions:
+          serializer.fromJson<bool?>(json['canEditSubmissions']),
+      canDeleteSubmissions:
+          serializer.fromJson<bool?>(json['canDeleteSubmissions']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assignment': serializer.toJson<String>(assignment),
+      'form': serializer.toJson<String>(form),
+      'canAddSubmissions': serializer.toJson<bool?>(canAddSubmissions),
+      'canEditSubmissions': serializer.toJson<bool?>(canEditSubmissions),
+      'canDeleteSubmissions': serializer.toJson<bool?>(canDeleteSubmissions),
+    };
+  }
+
+  AssignmentForm copyWith(
+          {String? assignment,
+          String? form,
+          Value<bool?> canAddSubmissions = const Value.absent(),
+          Value<bool?> canEditSubmissions = const Value.absent(),
+          Value<bool?> canDeleteSubmissions = const Value.absent()}) =>
+      AssignmentForm(
+        assignment: assignment ?? this.assignment,
+        form: form ?? this.form,
+        canAddSubmissions: canAddSubmissions.present
+            ? canAddSubmissions.value
+            : this.canAddSubmissions,
+        canEditSubmissions: canEditSubmissions.present
+            ? canEditSubmissions.value
+            : this.canEditSubmissions,
+        canDeleteSubmissions: canDeleteSubmissions.present
+            ? canDeleteSubmissions.value
+            : this.canDeleteSubmissions,
+      );
+  AssignmentForm copyWithCompanion(AssignmentFormsCompanion data) {
+    return AssignmentForm(
+      assignment:
+          data.assignment.present ? data.assignment.value : this.assignment,
+      form: data.form.present ? data.form.value : this.form,
+      canAddSubmissions: data.canAddSubmissions.present
+          ? data.canAddSubmissions.value
+          : this.canAddSubmissions,
+      canEditSubmissions: data.canEditSubmissions.present
+          ? data.canEditSubmissions.value
+          : this.canEditSubmissions,
+      canDeleteSubmissions: data.canDeleteSubmissions.present
+          ? data.canDeleteSubmissions.value
+          : this.canDeleteSubmissions,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssignmentForm(')
+          ..write('assignment: $assignment, ')
+          ..write('form: $form, ')
+          ..write('canAddSubmissions: $canAddSubmissions, ')
+          ..write('canEditSubmissions: $canEditSubmissions, ')
+          ..write('canDeleteSubmissions: $canDeleteSubmissions')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(assignment, form, canAddSubmissions,
+      canEditSubmissions, canDeleteSubmissions);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AssignmentForm &&
+          other.assignment == this.assignment &&
+          other.form == this.form &&
+          other.canAddSubmissions == this.canAddSubmissions &&
+          other.canEditSubmissions == this.canEditSubmissions &&
+          other.canDeleteSubmissions == this.canDeleteSubmissions);
+}
+
+class AssignmentFormsCompanion extends UpdateCompanion<AssignmentForm> {
+  final Value<String> assignment;
+  final Value<String> form;
+  final Value<bool?> canAddSubmissions;
+  final Value<bool?> canEditSubmissions;
+  final Value<bool?> canDeleteSubmissions;
+  final Value<int> rowid;
+  const AssignmentFormsCompanion({
+    this.assignment = const Value.absent(),
+    this.form = const Value.absent(),
+    this.canAddSubmissions = const Value.absent(),
+    this.canEditSubmissions = const Value.absent(),
+    this.canDeleteSubmissions = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AssignmentFormsCompanion.insert({
+    required String assignment,
+    required String form,
+    this.canAddSubmissions = const Value.absent(),
+    this.canEditSubmissions = const Value.absent(),
+    this.canDeleteSubmissions = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : assignment = Value(assignment),
+        form = Value(form);
+  static Insertable<AssignmentForm> custom({
+    Expression<String>? assignment,
+    Expression<String>? form,
+    Expression<bool>? canAddSubmissions,
+    Expression<bool>? canEditSubmissions,
+    Expression<bool>? canDeleteSubmissions,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assignment != null) 'assignment': assignment,
+      if (form != null) 'form': form,
+      if (canAddSubmissions != null) 'can_add_submissions': canAddSubmissions,
+      if (canEditSubmissions != null)
+        'can_edit_submissions': canEditSubmissions,
+      if (canDeleteSubmissions != null)
+        'can_delete_submissions': canDeleteSubmissions,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AssignmentFormsCompanion copyWith(
+      {Value<String>? assignment,
+      Value<String>? form,
+      Value<bool?>? canAddSubmissions,
+      Value<bool?>? canEditSubmissions,
+      Value<bool?>? canDeleteSubmissions,
+      Value<int>? rowid}) {
+    return AssignmentFormsCompanion(
+      assignment: assignment ?? this.assignment,
+      form: form ?? this.form,
+      canAddSubmissions: canAddSubmissions ?? this.canAddSubmissions,
+      canEditSubmissions: canEditSubmissions ?? this.canEditSubmissions,
+      canDeleteSubmissions: canDeleteSubmissions ?? this.canDeleteSubmissions,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assignment.present) {
+      map['assignment'] = Variable<String>(assignment.value);
+    }
+    if (form.present) {
+      map['form'] = Variable<String>(form.value);
+    }
+    if (canAddSubmissions.present) {
+      map['can_add_submissions'] = Variable<bool>(canAddSubmissions.value);
+    }
+    if (canEditSubmissions.present) {
+      map['can_edit_submissions'] = Variable<bool>(canEditSubmissions.value);
+    }
+    if (canDeleteSubmissions.present) {
+      map['can_delete_submissions'] =
+          Variable<bool>(canDeleteSubmissions.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssignmentFormsCompanion(')
+          ..write('assignment: $assignment, ')
+          ..write('form: $form, ')
+          ..write('canAddSubmissions: $canAddSubmissions, ')
+          ..write('canEditSubmissions: $canEditSubmissions, ')
+          ..write('canDeleteSubmissions: $canDeleteSubmissions, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5025,7 +5363,7 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -5033,39 +5371,7 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _displayNameMeta =
-      const VerificationMeta('displayName');
-  @override
-  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
-      'display_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      label = GeneratedColumn<String>('label', aliasedName, true,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '{}')
-          .withConverter<Map<String, dynamic>?>(
-              $MetadataSubmissionsTable.$converterlabel);
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
-          .withConverter<List<Translation>>(
-              $MetadataSubmissionsTable.$convertertranslations);
+      clientDefault: () => DateTime.now().toUtc());
   @override
   late final GeneratedColumnWithTypeConverter<MetadataResourceType, String>
       resourceType = GeneratedColumn<String>(
@@ -5120,11 +5426,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
         id,
         lastModifiedDate,
         createdDate,
-        name,
-        displayName,
-        code,
-        label,
-        translations,
         resourceType,
         metadataSchema,
         serialNumber,
@@ -5160,20 +5461,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
           _createdDateMeta,
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    }
-    if (data.containsKey('display_name')) {
-      context.handle(
-          _displayNameMeta,
-          displayName.isAcceptableOrUnknown(
-              data['display_name']!, _displayNameMeta));
-    }
-    if (data.containsKey('code')) {
-      context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
     if (data.containsKey('metadata_schema')) {
       context.handle(
@@ -5230,18 +5517,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
-      displayName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      label: $MetadataSubmissionsTable.$converterlabel.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}label'])),
-      translations: $MetadataSubmissionsTable.$convertertranslations.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       resourceType: $MetadataSubmissionsTable.$converterresourceType.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}resource_type'])!),
@@ -5268,10 +5543,6 @@ class $MetadataSubmissionsTable extends MetadataSubmissions
     return $MetadataSubmissionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Map<String, dynamic>?, String?> $converterlabel =
-      const NullAwareMapConverter();
-  static TypeConverter<List<Translation>, String> $convertertranslations =
-      const TranslationConverter();
   static JsonTypeConverter2<MetadataResourceType, String, String>
       $converterresourceType =
       const EnumNameConverter(MetadataResourceType.values);
@@ -5284,13 +5555,6 @@ class MetadataSubmission extends DataClass
   final String id;
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
-  final String? name;
-  final String? displayName;
-  final String? code;
-  final Map<String, dynamic>? label;
-
-  /// List of Translations
-  final List<Translation> translations;
 
   /// Resource type (non-null), stored as text using a converter.
   final MetadataResourceType resourceType;
@@ -5319,11 +5583,6 @@ class MetadataSubmission extends DataClass
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
-      this.name,
-      this.displayName,
-      this.code,
-      this.label,
-      required this.translations,
       required this.resourceType,
       required this.metadataSchema,
       required this.serialNumber,
@@ -5341,23 +5600,6 @@ class MetadataSubmission extends DataClass
     }
     if (!nullToAbsent || createdDate != null) {
       map['created_date'] = Variable<DateTime>(createdDate);
-    }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || displayName != null) {
-      map['display_name'] = Variable<String>(displayName);
-    }
-    if (!nullToAbsent || code != null) {
-      map['code'] = Variable<String>(code);
-    }
-    if (!nullToAbsent || label != null) {
-      map['label'] = Variable<String>(
-          $MetadataSubmissionsTable.$converterlabel.toSql(label));
-    }
-    {
-      map['translations'] = Variable<String>(
-          $MetadataSubmissionsTable.$convertertranslations.toSql(translations));
     }
     {
       map['resource_type'] = Variable<String>(
@@ -5389,14 +5631,6 @@ class MetadataSubmission extends DataClass
       createdDate: createdDate == null && nullToAbsent
           ? const Value.absent()
           : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      displayName: displayName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(displayName),
-      code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      label:
-          label == null && nullToAbsent ? const Value.absent() : Value(label),
-      translations: Value(translations),
       resourceType: Value(resourceType),
       metadataSchema: Value(metadataSchema),
       serialNumber: Value(serialNumber),
@@ -5422,12 +5656,6 @@ class MetadataSubmission extends DataClass
       lastModifiedDate:
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
-      displayName: serializer.fromJson<String?>(json['displayName']),
-      code: serializer.fromJson<String?>(json['code']),
-      label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
-      translations:
-          serializer.fromJson<List<Translation>>(json['translations']),
       resourceType: $MetadataSubmissionsTable.$converterresourceType
           .fromJson(serializer.fromJson<String>(json['resourceType'])),
       metadataSchema: serializer.fromJson<String>(json['metadataSchema']),
@@ -5446,11 +5674,6 @@ class MetadataSubmission extends DataClass
       'id': serializer.toJson<String>(id),
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
-      'displayName': serializer.toJson<String?>(displayName),
-      'code': serializer.toJson<String?>(code),
-      'label': serializer.toJson<Map<String, dynamic>?>(label),
-      'translations': serializer.toJson<List<Translation>>(translations),
       'resourceType': serializer.toJson<String>($MetadataSubmissionsTable
           .$converterresourceType
           .toJson(resourceType)),
@@ -5468,11 +5691,6 @@ class MetadataSubmission extends DataClass
           {String? id,
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
-          Value<String?> displayName = const Value.absent(),
-          Value<String?> code = const Value.absent(),
-          Value<Map<String, dynamic>?> label = const Value.absent(),
-          List<Translation>? translations,
           MetadataResourceType? resourceType,
           String? metadataSchema,
           int? serialNumber,
@@ -5487,11 +5705,6 @@ class MetadataSubmission extends DataClass
             ? lastModifiedDate.value
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
-        displayName: displayName.present ? displayName.value : this.displayName,
-        code: code.present ? code.value : this.code,
-        label: label.present ? label.value : this.label,
-        translations: translations ?? this.translations,
         resourceType: resourceType ?? this.resourceType,
         metadataSchema: metadataSchema ?? this.metadataSchema,
         serialNumber: serialNumber ?? this.serialNumber,
@@ -5510,14 +5723,6 @@ class MetadataSubmission extends DataClass
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      name: data.name.present ? data.name.value : this.name,
-      displayName:
-          data.displayName.present ? data.displayName.value : this.displayName,
-      code: data.code.present ? data.code.value : this.code,
-      label: data.label.present ? data.label.value : this.label,
-      translations: data.translations.present
-          ? data.translations.value
-          : this.translations,
       resourceType: data.resourceType.present
           ? data.resourceType.value
           : this.resourceType,
@@ -5544,11 +5749,6 @@ class MetadataSubmission extends DataClass
           ..write('id: $id, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
-          ..write('label: $label, ')
-          ..write('translations: $translations, ')
           ..write('resourceType: $resourceType, ')
           ..write('metadataSchema: $metadataSchema, ')
           ..write('serialNumber: $serialNumber, ')
@@ -5566,11 +5766,6 @@ class MetadataSubmission extends DataClass
       id,
       lastModifiedDate,
       createdDate,
-      name,
-      displayName,
-      code,
-      label,
-      translations,
       resourceType,
       metadataSchema,
       serialNumber,
@@ -5586,11 +5781,6 @@ class MetadataSubmission extends DataClass
           other.id == this.id &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.name == this.name &&
-          other.displayName == this.displayName &&
-          other.code == this.code &&
-          other.label == this.label &&
-          other.translations == this.translations &&
           other.resourceType == this.resourceType &&
           other.metadataSchema == this.metadataSchema &&
           other.serialNumber == this.serialNumber &&
@@ -5605,11 +5795,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   final Value<String> id;
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
-  final Value<String?> name;
-  final Value<String?> displayName;
-  final Value<String?> code;
-  final Value<Map<String, dynamic>?> label;
-  final Value<List<Translation>> translations;
   final Value<MetadataResourceType> resourceType;
   final Value<String> metadataSchema;
   final Value<int> serialNumber;
@@ -5623,11 +5808,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     this.id = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    this.label = const Value.absent(),
-    this.translations = const Value.absent(),
     this.resourceType = const Value.absent(),
     this.metadataSchema = const Value.absent(),
     this.serialNumber = const Value.absent(),
@@ -5642,11 +5822,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     required String id,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    this.label = const Value.absent(),
-    this.translations = const Value.absent(),
     required MetadataResourceType resourceType,
     required String metadataSchema,
     required int serialNumber,
@@ -5666,11 +5841,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? name,
-    Expression<String>? displayName,
-    Expression<String>? code,
-    Expression<String>? label,
-    Expression<String>? translations,
     Expression<String>? resourceType,
     Expression<String>? metadataSchema,
     Expression<int>? serialNumber,
@@ -5685,11 +5855,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
       if (id != null) 'id': id,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (name != null) 'name': name,
-      if (displayName != null) 'display_name': displayName,
-      if (code != null) 'code': code,
-      if (label != null) 'label': label,
-      if (translations != null) 'translations': translations,
       if (resourceType != null) 'resource_type': resourceType,
       if (metadataSchema != null) 'metadata_schema': metadataSchema,
       if (serialNumber != null) 'serial_number': serialNumber,
@@ -5706,11 +5871,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
       {Value<String>? id,
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
-      Value<String?>? name,
-      Value<String?>? displayName,
-      Value<String?>? code,
-      Value<Map<String, dynamic>?>? label,
-      Value<List<Translation>>? translations,
       Value<MetadataResourceType>? resourceType,
       Value<String>? metadataSchema,
       Value<int>? serialNumber,
@@ -5724,11 +5884,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
       id: id ?? this.id,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      name: name ?? this.name,
-      displayName: displayName ?? this.displayName,
-      code: code ?? this.code,
-      label: label ?? this.label,
-      translations: translations ?? this.translations,
       resourceType: resourceType ?? this.resourceType,
       metadataSchema: metadataSchema ?? this.metadataSchema,
       serialNumber: serialNumber ?? this.serialNumber,
@@ -5752,24 +5907,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (displayName.present) {
-      map['display_name'] = Variable<String>(displayName.value);
-    }
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(
-          $MetadataSubmissionsTable.$converterlabel.toSql(label.value));
-    }
-    if (translations.present) {
-      map['translations'] = Variable<String>($MetadataSubmissionsTable
-          .$convertertranslations
-          .toSql(translations.value));
     }
     if (resourceType.present) {
       map['resource_type'] = Variable<String>($MetadataSubmissionsTable
@@ -5810,11 +5947,6 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
           ..write('id: $id, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
-          ..write('label: $label, ')
-          ..write('translations: $translations, ')
           ..write('resourceType: $resourceType, ')
           ..write('metadataSchema: $metadataSchema, ')
           ..write('serialNumber: $serialNumber, ')
@@ -5829,127 +5961,55 @@ class MetadataSubmissionsCompanion extends UpdateCompanion<MetadataSubmission> {
   }
 }
 
-class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
-    with TableInfo<$DataFormTemplateVersionsTable, DataFormTemplateVersion> {
+class $FormTemplateVersionsTable extends FormTemplateVersions
+    with TableInfo<$FormTemplateVersionsTable, FormTemplateVersion> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DataFormTemplateVersionsTable(this.attachedDatabase, [this._alias]);
+  $FormTemplateVersionsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _lastModifiedDateMeta =
-      const VerificationMeta('lastModifiedDate');
+  static const VerificationMeta _templateMeta =
+      const VerificationMeta('template');
   @override
-  late final GeneratedColumn<DateTime> lastModifiedDate =
-      GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
-          type: DriftSqlType.dateTime,
-          requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
-  static const VerificationMeta _createdDateMeta =
-      const VerificationMeta('createdDate');
+  late final GeneratedColumn<String> template = GeneratedColumn<String>(
+      'template', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES form_templates (id)'));
+  static const VerificationMeta _versionNumberMeta =
+      const VerificationMeta('versionNumber');
   @override
-  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>(
-      'created_date', aliasedName, true,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _displayNameMeta =
-      const VerificationMeta('displayName');
-  @override
-  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
-      'display_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      label = GeneratedColumn<String>('label', aliasedName, true,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '{}')
-          .withConverter<Map<String, dynamic>?>(
-              $DataFormTemplateVersionsTable.$converterlabel);
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
-          .withConverter<List<Translation>>(
-              $DataFormTemplateVersionsTable.$convertertranslations);
-  static const VerificationMeta _versionMeta =
-      const VerificationMeta('version');
-  @override
-  late final GeneratedColumn<int> version = GeneratedColumn<int>(
-      'version', aliasedName, false,
+  late final GeneratedColumn<int> versionNumber = GeneratedColumn<int>(
+      'version_number', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _defaultLocalMeta =
-      const VerificationMeta('defaultLocal');
-  @override
-  late final GeneratedColumn<String> defaultLocal = GeneratedColumn<String>(
-      'default_local', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> fields =
       GeneratedColumn<String>('fields', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<List<Template>>(
-              $DataFormTemplateVersionsTable.$converterfields);
+              $FormTemplateVersionsTable.$converterfields);
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> sections =
       GeneratedColumn<String>('sections', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<List<Template>>(
-              $DataFormTemplateVersionsTable.$convertersections);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
+              $FormTemplateVersionsTable.$convertersections);
   @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumnWithTypeConverter<ValidationStrategy?, String>
-      validationStrategy = GeneratedColumn<String>(
-              'validation_strategy', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<ValidationStrategy?>(
-              $DataFormTemplateVersionsTable.$convertervalidationStrategyn);
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        lastModifiedDate,
-        createdDate,
-        name,
-        displayName,
-        code,
-        label,
-        translations,
-        version,
-        defaultLocal,
-        fields,
-        sections,
-        description,
-        validationStrategy
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, template, versionNumber, fields, sections];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'data_form_template_versions';
+  static const String $name = 'form_template_versions';
   @override
   VerificationContext validateIntegrity(
-      Insertable<DataFormTemplateVersion> instance,
+      Insertable<FormTemplateVersion> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -5958,49 +6018,19 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('last_modified_date')) {
-      context.handle(
-          _lastModifiedDateMeta,
-          lastModifiedDate.isAcceptableOrUnknown(
-              data['last_modified_date']!, _lastModifiedDateMeta));
-    }
-    if (data.containsKey('created_date')) {
-      context.handle(
-          _createdDateMeta,
-          createdDate.isAcceptableOrUnknown(
-              data['created_date']!, _createdDateMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    }
-    if (data.containsKey('display_name')) {
-      context.handle(
-          _displayNameMeta,
-          displayName.isAcceptableOrUnknown(
-              data['display_name']!, _displayNameMeta));
-    }
-    if (data.containsKey('code')) {
-      context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
-    }
-    if (data.containsKey('version')) {
-      context.handle(_versionMeta,
-          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    if (data.containsKey('template')) {
+      context.handle(_templateMeta,
+          template.isAcceptableOrUnknown(data['template']!, _templateMeta));
     } else if (isInserting) {
-      context.missing(_versionMeta);
+      context.missing(_templateMeta);
     }
-    if (data.containsKey('default_local')) {
+    if (data.containsKey('version_number')) {
       context.handle(
-          _defaultLocalMeta,
-          defaultLocal.isAcceptableOrUnknown(
-              data['default_local']!, _defaultLocalMeta));
-    }
-    if (data.containsKey('description')) {
-      context.handle(
-          _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
+          _versionNumberMeta,
+          versionNumber.isAcceptableOrUnknown(
+              data['version_number']!, _versionNumberMeta));
+    } else if (isInserting) {
+      context.missing(_versionNumberMeta);
     }
     return context;
   }
@@ -6008,218 +6038,84 @@ class $DataFormTemplateVersionsTable extends DataFormTemplateVersions
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  DataFormTemplateVersion map(Map<String, dynamic> data,
-      {String? tablePrefix}) {
+  FormTemplateVersion map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DataFormTemplateVersion(
+    return FormTemplateVersion(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      lastModifiedDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
-      createdDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
-      displayName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      label: $DataFormTemplateVersionsTable.$converterlabel.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}label'])),
-      translations: $DataFormTemplateVersionsTable.$convertertranslations
-          .fromSql(attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])!),
-      version: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
-      defaultLocal: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}default_local']),
-      fields: $DataFormTemplateVersionsTable.$converterfields.fromSql(
+      template: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}template'])!,
+      versionNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version_number'])!,
+      fields: $FormTemplateVersionsTable.$converterfields.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.string, data['${effectivePrefix}fields'])!),
-      sections: $DataFormTemplateVersionsTable.$convertersections.fromSql(
+      sections: $FormTemplateVersionsTable.$convertersections.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.string, data['${effectivePrefix}sections'])!),
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description']),
-      validationStrategy: $DataFormTemplateVersionsTable
-          .$convertervalidationStrategyn
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}validation_strategy'])),
     );
   }
 
   @override
-  $DataFormTemplateVersionsTable createAlias(String alias) {
-    return $DataFormTemplateVersionsTable(attachedDatabase, alias);
+  $FormTemplateVersionsTable createAlias(String alias) {
+    return $FormTemplateVersionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Map<String, dynamic>?, String?> $converterlabel =
-      const NullAwareMapConverter();
-  static TypeConverter<List<Translation>, String> $convertertranslations =
-      const TranslationConverter();
   static TypeConverter<List<Template>, String> $converterfields =
       const TemplateListConverter();
   static TypeConverter<List<Template>, String> $convertersections =
       const TemplateListConverter();
-  static JsonTypeConverter2<ValidationStrategy, String, String>
-      $convertervalidationStrategy =
-      const EnumNameConverter(ValidationStrategy.values);
-  static JsonTypeConverter2<ValidationStrategy?, String?, String?>
-      $convertervalidationStrategyn =
-      JsonTypeConverter2.asNullable($convertervalidationStrategy);
 }
 
-class DataFormTemplateVersion extends DataClass
-    implements Insertable<DataFormTemplateVersion> {
+class FormTemplateVersion extends DataClass
+    implements Insertable<FormTemplateVersion> {
   final String id;
-  final DateTime? lastModifiedDate;
-  final DateTime? createdDate;
-  final String? name;
-  final String? displayName;
-  final String? code;
-  final Map<String, dynamic>? label;
-
-  /// List of Translations
-  final List<Translation> translations;
-
-  /// Version is an integer.
-  final int version;
-
-  /// Default locale.
-  final String? defaultLocal;
-
-  /// fieldsConf stored as IList<Template>, as JSON.
+  final String template;
+  final int versionNumber;
   final List<Template> fields;
-
-  /// sections stored as IList<Template>, as JSON.
   final List<Template> sections;
-
-  /// Description is nullable.
-  final String? description;
-
-  /// Validation strategy stored as text via a converter.
-  final ValidationStrategy? validationStrategy;
-  const DataFormTemplateVersion(
+  const FormTemplateVersion(
       {required this.id,
-      this.lastModifiedDate,
-      this.createdDate,
-      this.name,
-      this.displayName,
-      this.code,
-      this.label,
-      required this.translations,
-      required this.version,
-      this.defaultLocal,
+      required this.template,
+      required this.versionNumber,
       required this.fields,
-      required this.sections,
-      this.description,
-      this.validationStrategy});
+      required this.sections});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    if (!nullToAbsent || lastModifiedDate != null) {
-      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate);
-    }
-    if (!nullToAbsent || createdDate != null) {
-      map['created_date'] = Variable<DateTime>(createdDate);
-    }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || displayName != null) {
-      map['display_name'] = Variable<String>(displayName);
-    }
-    if (!nullToAbsent || code != null) {
-      map['code'] = Variable<String>(code);
-    }
-    if (!nullToAbsent || label != null) {
-      map['label'] = Variable<String>(
-          $DataFormTemplateVersionsTable.$converterlabel.toSql(label));
-    }
-    {
-      map['translations'] = Variable<String>($DataFormTemplateVersionsTable
-          .$convertertranslations
-          .toSql(translations));
-    }
-    map['version'] = Variable<int>(version);
-    if (!nullToAbsent || defaultLocal != null) {
-      map['default_local'] = Variable<String>(defaultLocal);
-    }
+    map['template'] = Variable<String>(template);
+    map['version_number'] = Variable<int>(versionNumber);
     {
       map['fields'] = Variable<String>(
-          $DataFormTemplateVersionsTable.$converterfields.toSql(fields));
+          $FormTemplateVersionsTable.$converterfields.toSql(fields));
     }
     {
       map['sections'] = Variable<String>(
-          $DataFormTemplateVersionsTable.$convertersections.toSql(sections));
-    }
-    if (!nullToAbsent || description != null) {
-      map['description'] = Variable<String>(description);
-    }
-    if (!nullToAbsent || validationStrategy != null) {
-      map['validation_strategy'] = Variable<String>(
-          $DataFormTemplateVersionsTable.$convertervalidationStrategyn
-              .toSql(validationStrategy));
+          $FormTemplateVersionsTable.$convertersections.toSql(sections));
     }
     return map;
   }
 
-  DataFormTemplateVersionsCompanion toCompanion(bool nullToAbsent) {
-    return DataFormTemplateVersionsCompanion(
+  FormTemplateVersionsCompanion toCompanion(bool nullToAbsent) {
+    return FormTemplateVersionsCompanion(
       id: Value(id),
-      lastModifiedDate: lastModifiedDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastModifiedDate),
-      createdDate: createdDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      displayName: displayName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(displayName),
-      code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      label:
-          label == null && nullToAbsent ? const Value.absent() : Value(label),
-      translations: Value(translations),
-      version: Value(version),
-      defaultLocal: defaultLocal == null && nullToAbsent
-          ? const Value.absent()
-          : Value(defaultLocal),
+      template: Value(template),
+      versionNumber: Value(versionNumber),
       fields: Value(fields),
       sections: Value(sections),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
-      validationStrategy: validationStrategy == null && nullToAbsent
-          ? const Value.absent()
-          : Value(validationStrategy),
     );
   }
 
-  factory DataFormTemplateVersion.fromJson(Map<String, dynamic> json,
+  factory FormTemplateVersion.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DataFormTemplateVersion(
+    return FormTemplateVersion(
       id: serializer.fromJson<String>(json['id']),
-      lastModifiedDate:
-          serializer.fromJson<DateTime?>(json['lastModifiedDate']),
-      createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
-      displayName: serializer.fromJson<String?>(json['displayName']),
-      code: serializer.fromJson<String?>(json['code']),
-      label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
-      translations:
-          serializer.fromJson<List<Translation>>(json['translations']),
-      version: serializer.fromJson<int>(json['version']),
-      defaultLocal: serializer.fromJson<String?>(json['defaultLocal']),
+      template: serializer.fromJson<String>(json['template']),
+      versionNumber: serializer.fromJson<int>(json['versionNumber']),
       fields: serializer.fromJson<List<Template>>(json['fields']),
       sections: serializer.fromJson<List<Template>>(json['sections']),
-      description: serializer.fromJson<String?>(json['description']),
-      validationStrategy: $DataFormTemplateVersionsTable
-          .$convertervalidationStrategyn
-          .fromJson(serializer.fromJson<String?>(json['validationStrategy'])),
     );
   }
   @override
@@ -6227,270 +6123,123 @@ class DataFormTemplateVersion extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
-      'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
-      'displayName': serializer.toJson<String?>(displayName),
-      'code': serializer.toJson<String?>(code),
-      'label': serializer.toJson<Map<String, dynamic>?>(label),
-      'translations': serializer.toJson<List<Translation>>(translations),
-      'version': serializer.toJson<int>(version),
-      'defaultLocal': serializer.toJson<String?>(defaultLocal),
+      'template': serializer.toJson<String>(template),
+      'versionNumber': serializer.toJson<int>(versionNumber),
       'fields': serializer.toJson<List<Template>>(fields),
       'sections': serializer.toJson<List<Template>>(sections),
-      'description': serializer.toJson<String?>(description),
-      'validationStrategy': serializer.toJson<String?>(
-          $DataFormTemplateVersionsTable.$convertervalidationStrategyn
-              .toJson(validationStrategy)),
     };
   }
 
-  DataFormTemplateVersion copyWith(
+  FormTemplateVersion copyWith(
           {String? id,
-          Value<DateTime?> lastModifiedDate = const Value.absent(),
-          Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
-          Value<String?> displayName = const Value.absent(),
-          Value<String?> code = const Value.absent(),
-          Value<Map<String, dynamic>?> label = const Value.absent(),
-          List<Translation>? translations,
-          int? version,
-          Value<String?> defaultLocal = const Value.absent(),
+          String? template,
+          int? versionNumber,
           List<Template>? fields,
-          List<Template>? sections,
-          Value<String?> description = const Value.absent(),
-          Value<ValidationStrategy?> validationStrategy =
-              const Value.absent()}) =>
-      DataFormTemplateVersion(
+          List<Template>? sections}) =>
+      FormTemplateVersion(
         id: id ?? this.id,
-        lastModifiedDate: lastModifiedDate.present
-            ? lastModifiedDate.value
-            : this.lastModifiedDate,
-        createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
-        displayName: displayName.present ? displayName.value : this.displayName,
-        code: code.present ? code.value : this.code,
-        label: label.present ? label.value : this.label,
-        translations: translations ?? this.translations,
-        version: version ?? this.version,
-        defaultLocal:
-            defaultLocal.present ? defaultLocal.value : this.defaultLocal,
+        template: template ?? this.template,
+        versionNumber: versionNumber ?? this.versionNumber,
         fields: fields ?? this.fields,
         sections: sections ?? this.sections,
-        description: description.present ? description.value : this.description,
-        validationStrategy: validationStrategy.present
-            ? validationStrategy.value
-            : this.validationStrategy,
       );
-  DataFormTemplateVersion copyWithCompanion(
-      DataFormTemplateVersionsCompanion data) {
-    return DataFormTemplateVersion(
+  FormTemplateVersion copyWithCompanion(FormTemplateVersionsCompanion data) {
+    return FormTemplateVersion(
       id: data.id.present ? data.id.value : this.id,
-      lastModifiedDate: data.lastModifiedDate.present
-          ? data.lastModifiedDate.value
-          : this.lastModifiedDate,
-      createdDate:
-          data.createdDate.present ? data.createdDate.value : this.createdDate,
-      name: data.name.present ? data.name.value : this.name,
-      displayName:
-          data.displayName.present ? data.displayName.value : this.displayName,
-      code: data.code.present ? data.code.value : this.code,
-      label: data.label.present ? data.label.value : this.label,
-      translations: data.translations.present
-          ? data.translations.value
-          : this.translations,
-      version: data.version.present ? data.version.value : this.version,
-      defaultLocal: data.defaultLocal.present
-          ? data.defaultLocal.value
-          : this.defaultLocal,
+      template: data.template.present ? data.template.value : this.template,
+      versionNumber: data.versionNumber.present
+          ? data.versionNumber.value
+          : this.versionNumber,
       fields: data.fields.present ? data.fields.value : this.fields,
       sections: data.sections.present ? data.sections.value : this.sections,
-      description:
-          data.description.present ? data.description.value : this.description,
-      validationStrategy: data.validationStrategy.present
-          ? data.validationStrategy.value
-          : this.validationStrategy,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('DataFormTemplateVersion(')
+    return (StringBuffer('FormTemplateVersion(')
           ..write('id: $id, ')
-          ..write('lastModifiedDate: $lastModifiedDate, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
-          ..write('label: $label, ')
-          ..write('translations: $translations, ')
-          ..write('version: $version, ')
-          ..write('defaultLocal: $defaultLocal, ')
+          ..write('template: $template, ')
+          ..write('versionNumber: $versionNumber, ')
           ..write('fields: $fields, ')
-          ..write('sections: $sections, ')
-          ..write('description: $description, ')
-          ..write('validationStrategy: $validationStrategy')
+          ..write('sections: $sections')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      lastModifiedDate,
-      createdDate,
-      name,
-      displayName,
-      code,
-      label,
-      translations,
-      version,
-      defaultLocal,
-      fields,
-      sections,
-      description,
-      validationStrategy);
+  int get hashCode =>
+      Object.hash(id, template, versionNumber, fields, sections);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is DataFormTemplateVersion &&
+      (other is FormTemplateVersion &&
           other.id == this.id &&
-          other.lastModifiedDate == this.lastModifiedDate &&
-          other.createdDate == this.createdDate &&
-          other.name == this.name &&
-          other.displayName == this.displayName &&
-          other.code == this.code &&
-          other.label == this.label &&
-          other.translations == this.translations &&
-          other.version == this.version &&
-          other.defaultLocal == this.defaultLocal &&
+          other.template == this.template &&
+          other.versionNumber == this.versionNumber &&
           other.fields == this.fields &&
-          other.sections == this.sections &&
-          other.description == this.description &&
-          other.validationStrategy == this.validationStrategy);
+          other.sections == this.sections);
 }
 
-class DataFormTemplateVersionsCompanion
-    extends UpdateCompanion<DataFormTemplateVersion> {
+class FormTemplateVersionsCompanion
+    extends UpdateCompanion<FormTemplateVersion> {
   final Value<String> id;
-  final Value<DateTime?> lastModifiedDate;
-  final Value<DateTime?> createdDate;
-  final Value<String?> name;
-  final Value<String?> displayName;
-  final Value<String?> code;
-  final Value<Map<String, dynamic>?> label;
-  final Value<List<Translation>> translations;
-  final Value<int> version;
-  final Value<String?> defaultLocal;
+  final Value<String> template;
+  final Value<int> versionNumber;
   final Value<List<Template>> fields;
   final Value<List<Template>> sections;
-  final Value<String?> description;
-  final Value<ValidationStrategy?> validationStrategy;
   final Value<int> rowid;
-  const DataFormTemplateVersionsCompanion({
+  const FormTemplateVersionsCompanion({
     this.id = const Value.absent(),
-    this.lastModifiedDate = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    this.label = const Value.absent(),
-    this.translations = const Value.absent(),
-    this.version = const Value.absent(),
-    this.defaultLocal = const Value.absent(),
+    this.template = const Value.absent(),
+    this.versionNumber = const Value.absent(),
     this.fields = const Value.absent(),
     this.sections = const Value.absent(),
-    this.description = const Value.absent(),
-    this.validationStrategy = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  DataFormTemplateVersionsCompanion.insert({
+  FormTemplateVersionsCompanion.insert({
     required String id,
-    this.lastModifiedDate = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    this.label = const Value.absent(),
-    this.translations = const Value.absent(),
-    required int version,
-    this.defaultLocal = const Value.absent(),
+    required String template,
+    required int versionNumber,
     required List<Template> fields,
     required List<Template> sections,
-    this.description = const Value.absent(),
-    this.validationStrategy = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        version = Value(version),
+        template = Value(template),
+        versionNumber = Value(versionNumber),
         fields = Value(fields),
         sections = Value(sections);
-  static Insertable<DataFormTemplateVersion> custom({
+  static Insertable<FormTemplateVersion> custom({
     Expression<String>? id,
-    Expression<DateTime>? lastModifiedDate,
-    Expression<DateTime>? createdDate,
-    Expression<String>? name,
-    Expression<String>? displayName,
-    Expression<String>? code,
-    Expression<String>? label,
-    Expression<String>? translations,
-    Expression<int>? version,
-    Expression<String>? defaultLocal,
+    Expression<String>? template,
+    Expression<int>? versionNumber,
     Expression<String>? fields,
     Expression<String>? sections,
-    Expression<String>? description,
-    Expression<String>? validationStrategy,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
-      if (createdDate != null) 'created_date': createdDate,
-      if (name != null) 'name': name,
-      if (displayName != null) 'display_name': displayName,
-      if (code != null) 'code': code,
-      if (label != null) 'label': label,
-      if (translations != null) 'translations': translations,
-      if (version != null) 'version': version,
-      if (defaultLocal != null) 'default_local': defaultLocal,
+      if (template != null) 'template': template,
+      if (versionNumber != null) 'version_number': versionNumber,
       if (fields != null) 'fields': fields,
       if (sections != null) 'sections': sections,
-      if (description != null) 'description': description,
-      if (validationStrategy != null) 'validation_strategy': validationStrategy,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  DataFormTemplateVersionsCompanion copyWith(
+  FormTemplateVersionsCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime?>? lastModifiedDate,
-      Value<DateTime?>? createdDate,
-      Value<String?>? name,
-      Value<String?>? displayName,
-      Value<String?>? code,
-      Value<Map<String, dynamic>?>? label,
-      Value<List<Translation>>? translations,
-      Value<int>? version,
-      Value<String?>? defaultLocal,
+      Value<String>? template,
+      Value<int>? versionNumber,
       Value<List<Template>>? fields,
       Value<List<Template>>? sections,
-      Value<String?>? description,
-      Value<ValidationStrategy?>? validationStrategy,
       Value<int>? rowid}) {
-    return DataFormTemplateVersionsCompanion(
+    return FormTemplateVersionsCompanion(
       id: id ?? this.id,
-      lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
-      createdDate: createdDate ?? this.createdDate,
-      name: name ?? this.name,
-      displayName: displayName ?? this.displayName,
-      code: code ?? this.code,
-      label: label ?? this.label,
-      translations: translations ?? this.translations,
-      version: version ?? this.version,
-      defaultLocal: defaultLocal ?? this.defaultLocal,
+      template: template ?? this.template,
+      versionNumber: versionNumber ?? this.versionNumber,
       fields: fields ?? this.fields,
       sections: sections ?? this.sections,
-      description: description ?? this.description,
-      validationStrategy: validationStrategy ?? this.validationStrategy,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -6501,52 +6250,19 @@ class DataFormTemplateVersionsCompanion
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (lastModifiedDate.present) {
-      map['last_modified_date'] = Variable<DateTime>(lastModifiedDate.value);
+    if (template.present) {
+      map['template'] = Variable<String>(template.value);
     }
-    if (createdDate.present) {
-      map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (displayName.present) {
-      map['display_name'] = Variable<String>(displayName.value);
-    }
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(
-          $DataFormTemplateVersionsTable.$converterlabel.toSql(label.value));
-    }
-    if (translations.present) {
-      map['translations'] = Variable<String>($DataFormTemplateVersionsTable
-          .$convertertranslations
-          .toSql(translations.value));
-    }
-    if (version.present) {
-      map['version'] = Variable<int>(version.value);
-    }
-    if (defaultLocal.present) {
-      map['default_local'] = Variable<String>(defaultLocal.value);
+    if (versionNumber.present) {
+      map['version_number'] = Variable<int>(versionNumber.value);
     }
     if (fields.present) {
       map['fields'] = Variable<String>(
-          $DataFormTemplateVersionsTable.$converterfields.toSql(fields.value));
+          $FormTemplateVersionsTable.$converterfields.toSql(fields.value));
     }
     if (sections.present) {
-      map['sections'] = Variable<String>($DataFormTemplateVersionsTable
-          .$convertersections
-          .toSql(sections.value));
-    }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
-    }
-    if (validationStrategy.present) {
-      map['validation_strategy'] = Variable<String>(
-          $DataFormTemplateVersionsTable.$convertervalidationStrategyn
-              .toSql(validationStrategy.value));
+      map['sections'] = Variable<String>(
+          $FormTemplateVersionsTable.$convertersections.toSql(sections.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -6556,21 +6272,12 @@ class DataFormTemplateVersionsCompanion
 
   @override
   String toString() {
-    return (StringBuffer('DataFormTemplateVersionsCompanion(')
+    return (StringBuffer('FormTemplateVersionsCompanion(')
           ..write('id: $id, ')
-          ..write('lastModifiedDate: $lastModifiedDate, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
-          ..write('label: $label, ')
-          ..write('translations: $translations, ')
-          ..write('version: $version, ')
-          ..write('defaultLocal: $defaultLocal, ')
+          ..write('template: $template, ')
+          ..write('versionNumber: $versionNumber, ')
           ..write('fields: $fields, ')
           ..write('sections: $sections, ')
-          ..write('description: $description, ')
-          ..write('validationStrategy: $validationStrategy, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6595,7 +6302,7 @@ class $DataSubmissionsTable extends DataSubmissions
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -6603,7 +6310,7 @@ class $DataSubmissionsTable extends DataSubmissions
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _deletedMeta =
       const VerificationMeta('deleted');
   @override
@@ -6613,7 +6320,7 @@ class $DataSubmissionsTable extends DataSubmissions
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("deleted" IN (0, 1))'),
-      defaultValue: Constant(false));
+      clientDefault: () => false);
   static const VerificationMeta _formMeta = const VerificationMeta('form');
   @override
   late final GeneratedColumn<String> form = GeneratedColumn<String>(
@@ -6621,7 +6328,22 @@ class $DataSubmissionsTable extends DataSubmissions
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES data_form_template_versions (id)'));
+          'REFERENCES form_template_versions (id)'));
+  static const VerificationMeta _formVersionMeta =
+      const VerificationMeta('formVersion');
+  @override
+  late final GeneratedColumn<String> formVersion = GeneratedColumn<String>(
+      'form_version', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES form_template_versions (id)'));
+  static const VerificationMeta _versionNumberMeta =
+      const VerificationMeta('versionNumber');
+  @override
+  late final GeneratedColumn<int> versionNumber = GeneratedColumn<int>(
+      'version_number', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _assignmentMeta =
       const VerificationMeta('assignment');
   @override
@@ -6661,6 +6383,12 @@ class $DataSubmissionsTable extends DataSubmissions
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<SubmissionStatus>(
               $DataSubmissionsTable.$converterstatus);
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+      formData = GeneratedColumn<String>('form_data', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<Map<String, dynamic>?>(
+              $DataSubmissionsTable.$converterformData);
   static const VerificationMeta _lastSyncDateMeta =
       const VerificationMeta('lastSyncDate');
   @override
@@ -6693,12 +6421,24 @@ class $DataSubmissionsTable extends DataSubmissions
   late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
       'created_by', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _canEditMeta =
+      const VerificationMeta('canEdit');
   @override
-  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      formData = GeneratedColumn<String>('form_data', aliasedName, true,
-              type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<Map<String, dynamic>?>(
-              $DataSubmissionsTable.$converterformData);
+  late final GeneratedColumn<bool> canEdit = GeneratedColumn<bool>(
+      'can_edit', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("can_edit" IN (0, 1))'));
+  static const VerificationMeta _canDeleteMeta =
+      const VerificationMeta('canDelete');
+  @override
+  late final GeneratedColumn<bool> canDelete = GeneratedColumn<bool>(
+      'can_delete', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("can_delete" IN (0, 1))'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -6706,17 +6446,21 @@ class $DataSubmissionsTable extends DataSubmissions
         createdDate,
         deleted,
         form,
+        formVersion,
+        versionNumber,
         assignment,
         team,
         orgUnit,
         progressStatus,
         status,
+        formData,
         lastSyncDate,
         lastSyncMessage,
         startEntryTime,
         finishedEntryTime,
         createdBy,
-        formData
+        canEdit,
+        canDelete
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6754,6 +6498,22 @@ class $DataSubmissionsTable extends DataSubmissions
           _formMeta, form.isAcceptableOrUnknown(data['form']!, _formMeta));
     } else if (isInserting) {
       context.missing(_formMeta);
+    }
+    if (data.containsKey('form_version')) {
+      context.handle(
+          _formVersionMeta,
+          formVersion.isAcceptableOrUnknown(
+              data['form_version']!, _formVersionMeta));
+    } else if (isInserting) {
+      context.missing(_formVersionMeta);
+    }
+    if (data.containsKey('version_number')) {
+      context.handle(
+          _versionNumberMeta,
+          versionNumber.isAcceptableOrUnknown(
+              data['version_number']!, _versionNumberMeta));
+    } else if (isInserting) {
+      context.missing(_versionNumberMeta);
     }
     if (data.containsKey('assignment')) {
       context.handle(
@@ -6801,6 +6561,14 @@ class $DataSubmissionsTable extends DataSubmissions
       context.handle(_createdByMeta,
           createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta));
     }
+    if (data.containsKey('can_edit')) {
+      context.handle(_canEditMeta,
+          canEdit.isAcceptableOrUnknown(data['can_edit']!, _canEditMeta));
+    }
+    if (data.containsKey('can_delete')) {
+      context.handle(_canDeleteMeta,
+          canDelete.isAcceptableOrUnknown(data['can_delete']!, _canDeleteMeta));
+    }
     return context;
   }
 
@@ -6820,6 +6588,10 @@ class $DataSubmissionsTable extends DataSubmissions
           .read(DriftSqlType.bool, data['${effectivePrefix}deleted'])!,
       form: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}form'])!,
+      formVersion: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}form_version'])!,
+      versionNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version_number'])!,
       assignment: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}assignment'])!,
       team: attachedDatabase.typeMapping
@@ -6832,6 +6604,9 @@ class $DataSubmissionsTable extends DataSubmissions
       status: $DataSubmissionsTable.$converterstatus.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}status'])!),
+      formData: $DataSubmissionsTable.$converterformData.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.string, data['${effectivePrefix}form_data'])),
       lastSyncDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}last_sync_date']),
       lastSyncMessage: attachedDatabase.typeMapping.read(
@@ -6842,9 +6617,10 @@ class $DataSubmissionsTable extends DataSubmissions
           DriftSqlType.dateTime, data['${effectivePrefix}finished_entry_time']),
       createdBy: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}created_by']),
-      formData: $DataSubmissionsTable.$converterformData.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}form_data'])),
+      canEdit: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}can_edit']),
+      canDelete: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}can_delete']),
     );
   }
 
@@ -6870,49 +6646,47 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
   final bool deleted;
-
-  /// Many-to-one references stored as text.
   final String form;
-
-  /// Nullable assignment reference.
+  final String formVersion;
+  final int versionNumber;
   final String assignment;
-
-  /// Many-to-one references stored as text.
   final String team;
-
-  /// Nullable orgUnit reference.
   final String? orgUnit;
-
-  /// Progress Status stored as text via a converter; nullable.
   final AssignmentStatus? progressStatus;
   final SubmissionStatus status;
+  final Map<String, dynamic>? formData;
   final DateTime? lastSyncDate;
   final String? lastSyncMessage;
   final DateTime startEntryTime;
-
-  /// last finalized time
   final DateTime? finishedEntryTime;
   final String? createdBy;
 
-  /// formData is stored as a JSON string.
-  final Map<String, dynamic>? formData;
+  /// canEdit a submitted data.
+  final bool? canEdit;
+
+  /// canDelete a submitted data.
+  final bool? canDelete;
   const DataSubmission(
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
       required this.deleted,
       required this.form,
+      required this.formVersion,
+      required this.versionNumber,
       required this.assignment,
       required this.team,
       this.orgUnit,
       this.progressStatus,
       required this.status,
+      this.formData,
       this.lastSyncDate,
       this.lastSyncMessage,
       required this.startEntryTime,
       this.finishedEntryTime,
       this.createdBy,
-      this.formData});
+      this.canEdit,
+      this.canDelete});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -6925,6 +6699,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
     }
     map['deleted'] = Variable<bool>(deleted);
     map['form'] = Variable<String>(form);
+    map['form_version'] = Variable<String>(formVersion);
+    map['version_number'] = Variable<int>(versionNumber);
     map['assignment'] = Variable<String>(assignment);
     map['team'] = Variable<String>(team);
     if (!nullToAbsent || orgUnit != null) {
@@ -6939,6 +6715,10 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
       map['status'] = Variable<String>(
           $DataSubmissionsTable.$converterstatus.toSql(status));
     }
+    if (!nullToAbsent || formData != null) {
+      map['form_data'] = Variable<String>(
+          $DataSubmissionsTable.$converterformData.toSql(formData));
+    }
     if (!nullToAbsent || lastSyncDate != null) {
       map['last_sync_date'] = Variable<DateTime>(lastSyncDate);
     }
@@ -6952,9 +6732,11 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
     if (!nullToAbsent || createdBy != null) {
       map['created_by'] = Variable<String>(createdBy);
     }
-    if (!nullToAbsent || formData != null) {
-      map['form_data'] = Variable<String>(
-          $DataSubmissionsTable.$converterformData.toSql(formData));
+    if (!nullToAbsent || canEdit != null) {
+      map['can_edit'] = Variable<bool>(canEdit);
+    }
+    if (!nullToAbsent || canDelete != null) {
+      map['can_delete'] = Variable<bool>(canDelete);
     }
     return map;
   }
@@ -6970,6 +6752,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           : Value(createdDate),
       deleted: Value(deleted),
       form: Value(form),
+      formVersion: Value(formVersion),
+      versionNumber: Value(versionNumber),
       assignment: Value(assignment),
       team: Value(team),
       orgUnit: orgUnit == null && nullToAbsent
@@ -6979,6 +6763,9 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           ? const Value.absent()
           : Value(progressStatus),
       status: Value(status),
+      formData: formData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(formData),
       lastSyncDate: lastSyncDate == null && nullToAbsent
           ? const Value.absent()
           : Value(lastSyncDate),
@@ -6992,9 +6779,12 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
       createdBy: createdBy == null && nullToAbsent
           ? const Value.absent()
           : Value(createdBy),
-      formData: formData == null && nullToAbsent
+      canEdit: canEdit == null && nullToAbsent
           ? const Value.absent()
-          : Value(formData),
+          : Value(canEdit),
+      canDelete: canDelete == null && nullToAbsent
+          ? const Value.absent()
+          : Value(canDelete),
     );
   }
 
@@ -7008,6 +6798,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       deleted: serializer.fromJson<bool>(json['deleted']),
       form: serializer.fromJson<String>(json['form']),
+      formVersion: serializer.fromJson<String>(json['formVersion']),
+      versionNumber: serializer.fromJson<int>(json['versionNumber']),
       assignment: serializer.fromJson<String>(json['assignment']),
       team: serializer.fromJson<String>(json['team']),
       orgUnit: serializer.fromJson<String?>(json['orgUnit']),
@@ -7015,13 +6807,15 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           .fromJson(serializer.fromJson<String?>(json['progressStatus'])),
       status: $DataSubmissionsTable.$converterstatus
           .fromJson(serializer.fromJson<String>(json['status'])),
+      formData: serializer.fromJson<Map<String, dynamic>?>(json['formData']),
       lastSyncDate: serializer.fromJson<DateTime?>(json['lastSyncDate']),
       lastSyncMessage: serializer.fromJson<String?>(json['lastSyncMessage']),
       startEntryTime: serializer.fromJson<DateTime>(json['startEntryTime']),
       finishedEntryTime:
           serializer.fromJson<DateTime?>(json['finishedEntryTime']),
       createdBy: serializer.fromJson<String?>(json['createdBy']),
-      formData: serializer.fromJson<Map<String, dynamic>?>(json['formData']),
+      canEdit: serializer.fromJson<bool?>(json['canEdit']),
+      canDelete: serializer.fromJson<bool?>(json['canDelete']),
     );
   }
   @override
@@ -7033,6 +6827,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
       'createdDate': serializer.toJson<DateTime?>(createdDate),
       'deleted': serializer.toJson<bool>(deleted),
       'form': serializer.toJson<String>(form),
+      'formVersion': serializer.toJson<String>(formVersion),
+      'versionNumber': serializer.toJson<int>(versionNumber),
       'assignment': serializer.toJson<String>(assignment),
       'team': serializer.toJson<String>(team),
       'orgUnit': serializer.toJson<String?>(orgUnit),
@@ -7041,12 +6837,14 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           .toJson(progressStatus)),
       'status': serializer.toJson<String>(
           $DataSubmissionsTable.$converterstatus.toJson(status)),
+      'formData': serializer.toJson<Map<String, dynamic>?>(formData),
       'lastSyncDate': serializer.toJson<DateTime?>(lastSyncDate),
       'lastSyncMessage': serializer.toJson<String?>(lastSyncMessage),
       'startEntryTime': serializer.toJson<DateTime>(startEntryTime),
       'finishedEntryTime': serializer.toJson<DateTime?>(finishedEntryTime),
       'createdBy': serializer.toJson<String?>(createdBy),
-      'formData': serializer.toJson<Map<String, dynamic>?>(formData),
+      'canEdit': serializer.toJson<bool?>(canEdit),
+      'canDelete': serializer.toJson<bool?>(canDelete),
     };
   }
 
@@ -7056,17 +6854,21 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           Value<DateTime?> createdDate = const Value.absent(),
           bool? deleted,
           String? form,
+          String? formVersion,
+          int? versionNumber,
           String? assignment,
           String? team,
           Value<String?> orgUnit = const Value.absent(),
           Value<AssignmentStatus?> progressStatus = const Value.absent(),
           SubmissionStatus? status,
+          Value<Map<String, dynamic>?> formData = const Value.absent(),
           Value<DateTime?> lastSyncDate = const Value.absent(),
           Value<String?> lastSyncMessage = const Value.absent(),
           DateTime? startEntryTime,
           Value<DateTime?> finishedEntryTime = const Value.absent(),
           Value<String?> createdBy = const Value.absent(),
-          Value<Map<String, dynamic>?> formData = const Value.absent()}) =>
+          Value<bool?> canEdit = const Value.absent(),
+          Value<bool?> canDelete = const Value.absent()}) =>
       DataSubmission(
         id: id ?? this.id,
         lastModifiedDate: lastModifiedDate.present
@@ -7075,12 +6877,15 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
         deleted: deleted ?? this.deleted,
         form: form ?? this.form,
+        formVersion: formVersion ?? this.formVersion,
+        versionNumber: versionNumber ?? this.versionNumber,
         assignment: assignment ?? this.assignment,
         team: team ?? this.team,
         orgUnit: orgUnit.present ? orgUnit.value : this.orgUnit,
         progressStatus:
             progressStatus.present ? progressStatus.value : this.progressStatus,
         status: status ?? this.status,
+        formData: formData.present ? formData.value : this.formData,
         lastSyncDate:
             lastSyncDate.present ? lastSyncDate.value : this.lastSyncDate,
         lastSyncMessage: lastSyncMessage.present
@@ -7091,7 +6896,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
             ? finishedEntryTime.value
             : this.finishedEntryTime,
         createdBy: createdBy.present ? createdBy.value : this.createdBy,
-        formData: formData.present ? formData.value : this.formData,
+        canEdit: canEdit.present ? canEdit.value : this.canEdit,
+        canDelete: canDelete.present ? canDelete.value : this.canDelete,
       );
   DataSubmission copyWithCompanion(DataSubmissionsCompanion data) {
     return DataSubmission(
@@ -7103,6 +6909,11 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           data.createdDate.present ? data.createdDate.value : this.createdDate,
       deleted: data.deleted.present ? data.deleted.value : this.deleted,
       form: data.form.present ? data.form.value : this.form,
+      formVersion:
+          data.formVersion.present ? data.formVersion.value : this.formVersion,
+      versionNumber: data.versionNumber.present
+          ? data.versionNumber.value
+          : this.versionNumber,
       assignment:
           data.assignment.present ? data.assignment.value : this.assignment,
       team: data.team.present ? data.team.value : this.team,
@@ -7111,6 +6922,7 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           ? data.progressStatus.value
           : this.progressStatus,
       status: data.status.present ? data.status.value : this.status,
+      formData: data.formData.present ? data.formData.value : this.formData,
       lastSyncDate: data.lastSyncDate.present
           ? data.lastSyncDate.value
           : this.lastSyncDate,
@@ -7124,7 +6936,8 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           ? data.finishedEntryTime.value
           : this.finishedEntryTime,
       createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
-      formData: data.formData.present ? data.formData.value : this.formData,
+      canEdit: data.canEdit.present ? data.canEdit.value : this.canEdit,
+      canDelete: data.canDelete.present ? data.canDelete.value : this.canDelete,
     );
   }
 
@@ -7136,17 +6949,21 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           ..write('createdDate: $createdDate, ')
           ..write('deleted: $deleted, ')
           ..write('form: $form, ')
+          ..write('formVersion: $formVersion, ')
+          ..write('versionNumber: $versionNumber, ')
           ..write('assignment: $assignment, ')
           ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
           ..write('progressStatus: $progressStatus, ')
           ..write('status: $status, ')
+          ..write('formData: $formData, ')
           ..write('lastSyncDate: $lastSyncDate, ')
           ..write('lastSyncMessage: $lastSyncMessage, ')
           ..write('startEntryTime: $startEntryTime, ')
           ..write('finishedEntryTime: $finishedEntryTime, ')
           ..write('createdBy: $createdBy, ')
-          ..write('formData: $formData')
+          ..write('canEdit: $canEdit, ')
+          ..write('canDelete: $canDelete')
           ..write(')'))
         .toString();
   }
@@ -7158,17 +6975,21 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
       createdDate,
       deleted,
       form,
+      formVersion,
+      versionNumber,
       assignment,
       team,
       orgUnit,
       progressStatus,
       status,
+      formData,
       lastSyncDate,
       lastSyncMessage,
       startEntryTime,
       finishedEntryTime,
       createdBy,
-      formData);
+      canEdit,
+      canDelete);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -7178,17 +6999,21 @@ class DataSubmission extends DataClass implements Insertable<DataSubmission> {
           other.createdDate == this.createdDate &&
           other.deleted == this.deleted &&
           other.form == this.form &&
+          other.formVersion == this.formVersion &&
+          other.versionNumber == this.versionNumber &&
           other.assignment == this.assignment &&
           other.team == this.team &&
           other.orgUnit == this.orgUnit &&
           other.progressStatus == this.progressStatus &&
           other.status == this.status &&
+          other.formData == this.formData &&
           other.lastSyncDate == this.lastSyncDate &&
           other.lastSyncMessage == this.lastSyncMessage &&
           other.startEntryTime == this.startEntryTime &&
           other.finishedEntryTime == this.finishedEntryTime &&
           other.createdBy == this.createdBy &&
-          other.formData == this.formData);
+          other.canEdit == this.canEdit &&
+          other.canDelete == this.canDelete);
 }
 
 class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
@@ -7197,17 +7022,21 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
   final Value<DateTime?> createdDate;
   final Value<bool> deleted;
   final Value<String> form;
+  final Value<String> formVersion;
+  final Value<int> versionNumber;
   final Value<String> assignment;
   final Value<String> team;
   final Value<String?> orgUnit;
   final Value<AssignmentStatus?> progressStatus;
   final Value<SubmissionStatus> status;
+  final Value<Map<String, dynamic>?> formData;
   final Value<DateTime?> lastSyncDate;
   final Value<String?> lastSyncMessage;
   final Value<DateTime> startEntryTime;
   final Value<DateTime?> finishedEntryTime;
   final Value<String?> createdBy;
-  final Value<Map<String, dynamic>?> formData;
+  final Value<bool?> canEdit;
+  final Value<bool?> canDelete;
   final Value<int> rowid;
   const DataSubmissionsCompanion({
     this.id = const Value.absent(),
@@ -7215,17 +7044,21 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
     this.createdDate = const Value.absent(),
     this.deleted = const Value.absent(),
     this.form = const Value.absent(),
+    this.formVersion = const Value.absent(),
+    this.versionNumber = const Value.absent(),
     this.assignment = const Value.absent(),
     this.team = const Value.absent(),
     this.orgUnit = const Value.absent(),
     this.progressStatus = const Value.absent(),
     this.status = const Value.absent(),
+    this.formData = const Value.absent(),
     this.lastSyncDate = const Value.absent(),
     this.lastSyncMessage = const Value.absent(),
     this.startEntryTime = const Value.absent(),
     this.finishedEntryTime = const Value.absent(),
     this.createdBy = const Value.absent(),
-    this.formData = const Value.absent(),
+    this.canEdit = const Value.absent(),
+    this.canDelete = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DataSubmissionsCompanion.insert({
@@ -7234,20 +7067,26 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
     this.createdDate = const Value.absent(),
     this.deleted = const Value.absent(),
     required String form,
+    required String formVersion,
+    required int versionNumber,
     required String assignment,
     required String team,
     this.orgUnit = const Value.absent(),
     this.progressStatus = const Value.absent(),
     required SubmissionStatus status,
+    this.formData = const Value.absent(),
     this.lastSyncDate = const Value.absent(),
     this.lastSyncMessage = const Value.absent(),
     this.startEntryTime = const Value.absent(),
     this.finishedEntryTime = const Value.absent(),
     this.createdBy = const Value.absent(),
-    this.formData = const Value.absent(),
+    this.canEdit = const Value.absent(),
+    this.canDelete = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         form = Value(form),
+        formVersion = Value(formVersion),
+        versionNumber = Value(versionNumber),
         assignment = Value(assignment),
         team = Value(team),
         status = Value(status);
@@ -7257,17 +7096,21 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
     Expression<DateTime>? createdDate,
     Expression<bool>? deleted,
     Expression<String>? form,
+    Expression<String>? formVersion,
+    Expression<int>? versionNumber,
     Expression<String>? assignment,
     Expression<String>? team,
     Expression<String>? orgUnit,
     Expression<String>? progressStatus,
     Expression<String>? status,
+    Expression<String>? formData,
     Expression<DateTime>? lastSyncDate,
     Expression<String>? lastSyncMessage,
     Expression<DateTime>? startEntryTime,
     Expression<DateTime>? finishedEntryTime,
     Expression<String>? createdBy,
-    Expression<String>? formData,
+    Expression<bool>? canEdit,
+    Expression<bool>? canDelete,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -7276,17 +7119,21 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
       if (createdDate != null) 'created_date': createdDate,
       if (deleted != null) 'deleted': deleted,
       if (form != null) 'form': form,
+      if (formVersion != null) 'form_version': formVersion,
+      if (versionNumber != null) 'version_number': versionNumber,
       if (assignment != null) 'assignment': assignment,
       if (team != null) 'team': team,
       if (orgUnit != null) 'org_unit': orgUnit,
       if (progressStatus != null) 'progress_status': progressStatus,
       if (status != null) 'status': status,
+      if (formData != null) 'form_data': formData,
       if (lastSyncDate != null) 'last_sync_date': lastSyncDate,
       if (lastSyncMessage != null) 'last_sync_message': lastSyncMessage,
       if (startEntryTime != null) 'start_entry_time': startEntryTime,
       if (finishedEntryTime != null) 'finished_entry_time': finishedEntryTime,
       if (createdBy != null) 'created_by': createdBy,
-      if (formData != null) 'form_data': formData,
+      if (canEdit != null) 'can_edit': canEdit,
+      if (canDelete != null) 'can_delete': canDelete,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -7297,17 +7144,21 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
       Value<DateTime?>? createdDate,
       Value<bool>? deleted,
       Value<String>? form,
+      Value<String>? formVersion,
+      Value<int>? versionNumber,
       Value<String>? assignment,
       Value<String>? team,
       Value<String?>? orgUnit,
       Value<AssignmentStatus?>? progressStatus,
       Value<SubmissionStatus>? status,
+      Value<Map<String, dynamic>?>? formData,
       Value<DateTime?>? lastSyncDate,
       Value<String?>? lastSyncMessage,
       Value<DateTime>? startEntryTime,
       Value<DateTime?>? finishedEntryTime,
       Value<String?>? createdBy,
-      Value<Map<String, dynamic>?>? formData,
+      Value<bool?>? canEdit,
+      Value<bool?>? canDelete,
       Value<int>? rowid}) {
     return DataSubmissionsCompanion(
       id: id ?? this.id,
@@ -7315,17 +7166,21 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
       createdDate: createdDate ?? this.createdDate,
       deleted: deleted ?? this.deleted,
       form: form ?? this.form,
+      formVersion: formVersion ?? this.formVersion,
+      versionNumber: versionNumber ?? this.versionNumber,
       assignment: assignment ?? this.assignment,
       team: team ?? this.team,
       orgUnit: orgUnit ?? this.orgUnit,
       progressStatus: progressStatus ?? this.progressStatus,
       status: status ?? this.status,
+      formData: formData ?? this.formData,
       lastSyncDate: lastSyncDate ?? this.lastSyncDate,
       lastSyncMessage: lastSyncMessage ?? this.lastSyncMessage,
       startEntryTime: startEntryTime ?? this.startEntryTime,
       finishedEntryTime: finishedEntryTime ?? this.finishedEntryTime,
       createdBy: createdBy ?? this.createdBy,
-      formData: formData ?? this.formData,
+      canEdit: canEdit ?? this.canEdit,
+      canDelete: canDelete ?? this.canDelete,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7348,6 +7203,12 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
     if (form.present) {
       map['form'] = Variable<String>(form.value);
     }
+    if (formVersion.present) {
+      map['form_version'] = Variable<String>(formVersion.value);
+    }
+    if (versionNumber.present) {
+      map['version_number'] = Variable<int>(versionNumber.value);
+    }
     if (assignment.present) {
       map['assignment'] = Variable<String>(assignment.value);
     }
@@ -7366,6 +7227,10 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
       map['status'] = Variable<String>(
           $DataSubmissionsTable.$converterstatus.toSql(status.value));
     }
+    if (formData.present) {
+      map['form_data'] = Variable<String>(
+          $DataSubmissionsTable.$converterformData.toSql(formData.value));
+    }
     if (lastSyncDate.present) {
       map['last_sync_date'] = Variable<DateTime>(lastSyncDate.value);
     }
@@ -7381,9 +7246,11 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
     if (createdBy.present) {
       map['created_by'] = Variable<String>(createdBy.value);
     }
-    if (formData.present) {
-      map['form_data'] = Variable<String>(
-          $DataSubmissionsTable.$converterformData.toSql(formData.value));
+    if (canEdit.present) {
+      map['can_edit'] = Variable<bool>(canEdit.value);
+    }
+    if (canDelete.present) {
+      map['can_delete'] = Variable<bool>(canDelete.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -7399,17 +7266,21 @@ class DataSubmissionsCompanion extends UpdateCompanion<DataSubmission> {
           ..write('createdDate: $createdDate, ')
           ..write('deleted: $deleted, ')
           ..write('form: $form, ')
+          ..write('formVersion: $formVersion, ')
+          ..write('versionNumber: $versionNumber, ')
           ..write('assignment: $assignment, ')
           ..write('team: $team, ')
           ..write('orgUnit: $orgUnit, ')
           ..write('progressStatus: $progressStatus, ')
           ..write('status: $status, ')
+          ..write('formData: $formData, ')
           ..write('lastSyncDate: $lastSyncDate, ')
           ..write('lastSyncMessage: $lastSyncMessage, ')
           ..write('startEntryTime: $startEntryTime, ')
           ..write('finishedEntryTime: $finishedEntryTime, ')
           ..write('createdBy: $createdBy, ')
-          ..write('formData: $formData, ')
+          ..write('canEdit: $canEdit, ')
+          ..write('canDelete: $canDelete, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -7434,7 +7305,7 @@ class $RepeatInstancesTable extends RepeatInstances
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -7442,7 +7313,7 @@ class $RepeatInstancesTable extends RepeatInstances
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _templatePathMeta =
       const VerificationMeta('templatePath');
   @override
@@ -7862,7 +7733,7 @@ class $DataElementsTable extends DataElements
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -7870,12 +7741,12 @@ class $DataElementsTable extends DataElements
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _displayNameMeta =
       const VerificationMeta('displayName');
   @override
@@ -7900,7 +7771,7 @@ class $DataElementsTable extends DataElements
       translations = GeneratedColumn<String>('translations', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
+              clientDefault: () => '[]')
           .withConverter<List<Translation>>(
               $DataElementsTable.$convertertranslations);
   static const VerificationMeta _descriptionMeta =
@@ -8006,6 +7877,8 @@ class $DataElementsTable extends DataElements
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('display_name')) {
       context.handle(
@@ -8061,7 +7934,7 @@ class $DataElementsTable extends DataElements
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
@@ -8121,7 +7994,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
   final String id;
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
-  final String? name;
+  final String name;
   final String? displayName;
   final String? code;
   final Map<String, dynamic>? label;
@@ -8152,7 +8025,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
-      this.name,
+      required this.name,
       this.displayName,
       this.code,
       this.label,
@@ -8175,9 +8048,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
     if (!nullToAbsent || createdDate != null) {
       map['created_date'] = Variable<DateTime>(createdDate);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     if (!nullToAbsent || displayName != null) {
       map['display_name'] = Variable<String>(displayName);
     }
@@ -8233,7 +8104,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       createdDate: createdDate == null && nullToAbsent
           ? const Value.absent()
           : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
@@ -8274,7 +8145,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       lastModifiedDate:
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
@@ -8302,7 +8173,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
       'id': serializer.toJson<String>(id),
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
@@ -8327,7 +8198,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
           {String? id,
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
+          String? name,
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -8347,7 +8218,7 @@ class DataElement extends DataClass implements Insertable<DataElement> {
             ? lastModifiedDate.value
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
+        name: name ?? this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
         label: label.present ? label.value : this.label,
@@ -8471,7 +8342,7 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
   final Value<String> id;
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String?> displayName;
   final Value<String?> code;
   final Value<Map<String, dynamic>?> label;
@@ -8508,7 +8379,7 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     required String id,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.label = const Value.absent(),
@@ -8523,6 +8394,7 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
     this.resourceMetadataSchema = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
+        name = Value(name),
         type = Value(type);
   static Insertable<DataElement> custom({
     Expression<String>? id,
@@ -8570,7 +8442,7 @@ class DataElementsCompanion extends UpdateCompanion<DataElement> {
       {Value<String>? id,
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
-      Value<String?>? name,
+      Value<String>? name,
       Value<String?>? displayName,
       Value<String?>? code,
       Value<Map<String, dynamic>?>? label,
@@ -8714,7 +8586,7 @@ class $DataValuesTable extends DataValues
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -8722,7 +8594,7 @@ class $DataValuesTable extends DataValues
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _templatePathMeta =
       const VerificationMeta('templatePath');
   @override
@@ -9186,7 +9058,7 @@ class $DataOptionSetsTable extends DataOptionSets
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -9194,12 +9066,12 @@ class $DataOptionSetsTable extends DataOptionSets
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _displayNameMeta =
       const VerificationMeta('displayName');
   @override
@@ -9224,7 +9096,7 @@ class $DataOptionSetsTable extends DataOptionSets
       translations = GeneratedColumn<String>('translations', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
+              clientDefault: () => '[]')
           .withConverter<List<Translation>>(
               $DataOptionSetsTable.$convertertranslations);
   @override
@@ -9277,6 +9149,8 @@ class $DataOptionSetsTable extends DataOptionSets
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('display_name')) {
       context.handle(
@@ -9304,7 +9178,7 @@ class $DataOptionSetsTable extends DataOptionSets
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       displayName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       code: attachedDatabase.typeMapping
@@ -9338,7 +9212,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
   final String id;
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
-  final String? name;
+  final String name;
   final String? displayName;
   final String? code;
   final Map<String, dynamic>? label;
@@ -9350,7 +9224,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
-      this.name,
+      required this.name,
       this.displayName,
       this.code,
       this.label,
@@ -9366,9 +9240,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
     if (!nullToAbsent || createdDate != null) {
       map['created_date'] = Variable<DateTime>(createdDate);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     if (!nullToAbsent || displayName != null) {
       map['display_name'] = Variable<String>(displayName);
     }
@@ -9399,7 +9271,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       createdDate: createdDate == null && nullToAbsent
           ? const Value.absent()
           : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
       displayName: displayName == null && nullToAbsent
           ? const Value.absent()
           : Value(displayName),
@@ -9419,7 +9291,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       lastModifiedDate:
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
       displayName: serializer.fromJson<String?>(json['displayName']),
       code: serializer.fromJson<String?>(json['code']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
@@ -9435,7 +9307,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
       'id': serializer.toJson<String>(id),
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
       'displayName': serializer.toJson<String?>(displayName),
       'code': serializer.toJson<String?>(code),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
@@ -9448,7 +9320,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
           {String? id,
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
+          String? name,
           Value<String?> displayName = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -9460,7 +9332,7 @@ class DataOptionSet extends DataClass implements Insertable<DataOptionSet> {
             ? lastModifiedDate.value
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
+        name: name ?? this.name,
         displayName: displayName.present ? displayName.value : this.displayName,
         code: code.present ? code.value : this.code,
         label: label.present ? label.value : this.label,
@@ -9525,7 +9397,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
   final Value<String> id;
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String?> displayName;
   final Value<String?> code;
   final Value<Map<String, dynamic>?> label;
@@ -9548,14 +9420,15 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
     required String id,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     this.displayName = const Value.absent(),
     this.code = const Value.absent(),
     this.label = const Value.absent(),
     this.translations = const Value.absent(),
     this.options = const Value.absent(),
     this.rowid = const Value.absent(),
-  }) : id = Value(id);
+  })  : id = Value(id),
+        name = Value(name);
   static Insertable<DataOptionSet> custom({
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
@@ -9586,7 +9459,7 @@ class DataOptionSetsCompanion extends UpdateCompanion<DataOptionSet> {
       {Value<String>? id,
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
-      Value<String?>? name,
+      Value<String>? name,
       Value<String?>? displayName,
       Value<String?>? code,
       Value<Map<String, dynamic>?>? label,
@@ -9683,7 +9556,7 @@ class $DataOptionsTable extends DataOptions
       GeneratedColumn<DateTime>('last_modified_date', aliasedName, true,
           type: DriftSqlType.dateTime,
           requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now().toUtc()));
+          clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _createdDateMeta =
       const VerificationMeta('createdDate');
   @override
@@ -9691,39 +9564,7 @@ class $DataOptionsTable extends DataOptions
       'created_date', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now().toUtc()));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _displayNameMeta =
-      const VerificationMeta('displayName');
-  @override
-  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
-      'display_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _codeMeta = const VerificationMeta('code');
-  @override
-  late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      label = GeneratedColumn<String>('label', aliasedName, true,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '{}')
-          .withConverter<Map<String, dynamic>?>(
-              $DataOptionsTable.$converterlabel);
-  @override
-  late final GeneratedColumnWithTypeConverter<List<Translation>, String>
-      translations = GeneratedColumn<String>('translations', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant('[]'))
-          .withConverter<List<Translation>>(
-              $DataOptionsTable.$convertertranslations);
+      clientDefault: () => DateTime.now().toUtc());
   static const VerificationMeta _optionSetMeta =
       const VerificationMeta('optionSet');
   @override
@@ -9739,20 +9580,10 @@ class $DataOptionsTable extends DataOptions
       'order', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: Constant(0));
+      clientDefault: () => 0);
   @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        lastModifiedDate,
-        createdDate,
-        name,
-        displayName,
-        code,
-        label,
-        translations,
-        optionSet,
-        order
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, lastModifiedDate, createdDate, optionSet, order];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -9780,20 +9611,6 @@ class $DataOptionsTable extends DataOptions
           createdDate.isAcceptableOrUnknown(
               data['created_date']!, _createdDateMeta));
     }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    }
-    if (data.containsKey('display_name')) {
-      context.handle(
-          _displayNameMeta,
-          displayName.isAcceptableOrUnknown(
-              data['display_name']!, _displayNameMeta));
-    }
-    if (data.containsKey('code')) {
-      context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
-    }
     if (data.containsKey('option_set')) {
       context.handle(_optionSetMeta,
           optionSet.isAcceptableOrUnknown(data['option_set']!, _optionSetMeta));
@@ -9819,18 +9636,6 @@ class $DataOptionsTable extends DataOptions
           DriftSqlType.dateTime, data['${effectivePrefix}last_modified_date']),
       createdDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
-      displayName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}display_name']),
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      label: $DataOptionsTable.$converterlabel.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}label'])),
-      translations: $DataOptionsTable.$convertertranslations.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}translations'])!),
       optionSet: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}option_set'])!,
       order: attachedDatabase.typeMapping
@@ -9842,35 +9647,18 @@ class $DataOptionsTable extends DataOptions
   $DataOptionsTable createAlias(String alias) {
     return $DataOptionsTable(attachedDatabase, alias);
   }
-
-  static TypeConverter<Map<String, dynamic>?, String?> $converterlabel =
-      const NullAwareMapConverter();
-  static TypeConverter<List<Translation>, String> $convertertranslations =
-      const TranslationConverter();
 }
 
 class DataOption extends DataClass implements Insertable<DataOption> {
   final String id;
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
-  final String? name;
-  final String? displayName;
-  final String? code;
-  final Map<String, dynamic>? label;
-
-  /// List of Translations
-  final List<Translation> translations;
   final String optionSet;
   final int order;
   const DataOption(
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
-      this.name,
-      this.displayName,
-      this.code,
-      this.label,
-      required this.translations,
       required this.optionSet,
       required this.order});
   @override
@@ -9882,23 +9670,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
     }
     if (!nullToAbsent || createdDate != null) {
       map['created_date'] = Variable<DateTime>(createdDate);
-    }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || displayName != null) {
-      map['display_name'] = Variable<String>(displayName);
-    }
-    if (!nullToAbsent || code != null) {
-      map['code'] = Variable<String>(code);
-    }
-    if (!nullToAbsent || label != null) {
-      map['label'] =
-          Variable<String>($DataOptionsTable.$converterlabel.toSql(label));
-    }
-    {
-      map['translations'] = Variable<String>(
-          $DataOptionsTable.$convertertranslations.toSql(translations));
     }
     map['option_set'] = Variable<String>(optionSet);
     map['order'] = Variable<int>(order);
@@ -9914,14 +9685,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       createdDate: createdDate == null && nullToAbsent
           ? const Value.absent()
           : Value(createdDate),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      displayName: displayName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(displayName),
-      code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      label:
-          label == null && nullToAbsent ? const Value.absent() : Value(label),
-      translations: Value(translations),
       optionSet: Value(optionSet),
       order: Value(order),
     );
@@ -9935,12 +9698,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       lastModifiedDate:
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
-      name: serializer.fromJson<String?>(json['name']),
-      displayName: serializer.fromJson<String?>(json['displayName']),
-      code: serializer.fromJson<String?>(json['code']),
-      label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
-      translations:
-          serializer.fromJson<List<Translation>>(json['translations']),
       optionSet: serializer.fromJson<String>(json['optionSet']),
       order: serializer.fromJson<int>(json['order']),
     );
@@ -9952,11 +9709,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
       'id': serializer.toJson<String>(id),
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
-      'name': serializer.toJson<String?>(name),
-      'displayName': serializer.toJson<String?>(displayName),
-      'code': serializer.toJson<String?>(code),
-      'label': serializer.toJson<Map<String, dynamic>?>(label),
-      'translations': serializer.toJson<List<Translation>>(translations),
       'optionSet': serializer.toJson<String>(optionSet),
       'order': serializer.toJson<int>(order),
     };
@@ -9966,11 +9718,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           {String? id,
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
-          Value<String?> name = const Value.absent(),
-          Value<String?> displayName = const Value.absent(),
-          Value<String?> code = const Value.absent(),
-          Value<Map<String, dynamic>?> label = const Value.absent(),
-          List<Translation>? translations,
           String? optionSet,
           int? order}) =>
       DataOption(
@@ -9979,11 +9726,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
             ? lastModifiedDate.value
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
-        name: name.present ? name.value : this.name,
-        displayName: displayName.present ? displayName.value : this.displayName,
-        code: code.present ? code.value : this.code,
-        label: label.present ? label.value : this.label,
-        translations: translations ?? this.translations,
         optionSet: optionSet ?? this.optionSet,
         order: order ?? this.order,
       );
@@ -9995,14 +9737,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           : this.lastModifiedDate,
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
-      name: data.name.present ? data.name.value : this.name,
-      displayName:
-          data.displayName.present ? data.displayName.value : this.displayName,
-      code: data.code.present ? data.code.value : this.code,
-      label: data.label.present ? data.label.value : this.label,
-      translations: data.translations.present
-          ? data.translations.value
-          : this.translations,
       optionSet: data.optionSet.present ? data.optionSet.value : this.optionSet,
       order: data.order.present ? data.order.value : this.order,
     );
@@ -10014,11 +9748,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           ..write('id: $id, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
-          ..write('label: $label, ')
-          ..write('translations: $translations, ')
           ..write('optionSet: $optionSet, ')
           ..write('order: $order')
           ..write(')'))
@@ -10026,8 +9755,8 @@ class DataOption extends DataClass implements Insertable<DataOption> {
   }
 
   @override
-  int get hashCode => Object.hash(id, lastModifiedDate, createdDate, name,
-      displayName, code, label, translations, optionSet, order);
+  int get hashCode =>
+      Object.hash(id, lastModifiedDate, createdDate, optionSet, order);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -10035,11 +9764,6 @@ class DataOption extends DataClass implements Insertable<DataOption> {
           other.id == this.id &&
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
-          other.name == this.name &&
-          other.displayName == this.displayName &&
-          other.code == this.code &&
-          other.label == this.label &&
-          other.translations == this.translations &&
           other.optionSet == this.optionSet &&
           other.order == this.order);
 }
@@ -10048,11 +9772,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
   final Value<String> id;
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
-  final Value<String?> name;
-  final Value<String?> displayName;
-  final Value<String?> code;
-  final Value<Map<String, dynamic>?> label;
-  final Value<List<Translation>> translations;
   final Value<String> optionSet;
   final Value<int> order;
   final Value<int> rowid;
@@ -10060,11 +9779,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     this.id = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    this.label = const Value.absent(),
-    this.translations = const Value.absent(),
     this.optionSet = const Value.absent(),
     this.order = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -10073,11 +9787,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     required String id,
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.displayName = const Value.absent(),
-    this.code = const Value.absent(),
-    this.label = const Value.absent(),
-    this.translations = const Value.absent(),
     required String optionSet,
     this.order = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -10087,11 +9796,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
-    Expression<String>? name,
-    Expression<String>? displayName,
-    Expression<String>? code,
-    Expression<String>? label,
-    Expression<String>? translations,
     Expression<String>? optionSet,
     Expression<int>? order,
     Expression<int>? rowid,
@@ -10100,11 +9804,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
       if (id != null) 'id': id,
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
-      if (name != null) 'name': name,
-      if (displayName != null) 'display_name': displayName,
-      if (code != null) 'code': code,
-      if (label != null) 'label': label,
-      if (translations != null) 'translations': translations,
       if (optionSet != null) 'option_set': optionSet,
       if (order != null) 'order': order,
       if (rowid != null) 'rowid': rowid,
@@ -10115,11 +9814,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
       {Value<String>? id,
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
-      Value<String?>? name,
-      Value<String?>? displayName,
-      Value<String?>? code,
-      Value<Map<String, dynamic>?>? label,
-      Value<List<Translation>>? translations,
       Value<String>? optionSet,
       Value<int>? order,
       Value<int>? rowid}) {
@@ -10127,11 +9821,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
       id: id ?? this.id,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
-      name: name ?? this.name,
-      displayName: displayName ?? this.displayName,
-      code: code ?? this.code,
-      label: label ?? this.label,
-      translations: translations ?? this.translations,
       optionSet: optionSet ?? this.optionSet,
       order: order ?? this.order,
       rowid: rowid ?? this.rowid,
@@ -10149,23 +9838,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (displayName.present) {
-      map['display_name'] = Variable<String>(displayName.value);
-    }
-    if (code.present) {
-      map['code'] = Variable<String>(code.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(
-          $DataOptionsTable.$converterlabel.toSql(label.value));
-    }
-    if (translations.present) {
-      map['translations'] = Variable<String>(
-          $DataOptionsTable.$convertertranslations.toSql(translations.value));
     }
     if (optionSet.present) {
       map['option_set'] = Variable<String>(optionSet.value);
@@ -10185,11 +9857,6 @@ class DataOptionsCompanion extends UpdateCompanion<DataOption> {
           ..write('id: $id, ')
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
-          ..write('name: $name, ')
-          ..write('displayName: $displayName, ')
-          ..write('code: $code, ')
-          ..write('label: $label, ')
-          ..write('translations: $translations, ')
           ..write('optionSet: $optionSet, ')
           ..write('order: $order, ')
           ..write('rowid: $rowid')
@@ -10216,7 +9883,10 @@ class $UserFormPermissionsTable extends UserFormPermissions
   @override
   late final GeneratedColumn<String> form = GeneratedColumn<String>(
       'form', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES form_templates (id)'));
   static const VerificationMeta _validFromMeta =
       const VerificationMeta('validFrom');
   @override
@@ -10529,10 +10199,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TeamsTable teams = $TeamsTable(this);
   late final $ManagedTeamsTable managedTeams = $ManagedTeamsTable(this);
   late final $AssignmentsTable assignments = $AssignmentsTable(this);
+  late final $FormTemplatesTable formTemplates = $FormTemplatesTable(this);
+  late final $AssignmentFormsTable assignmentForms =
+      $AssignmentFormsTable(this);
   late final $MetadataSubmissionsTable metadataSubmissions =
       $MetadataSubmissionsTable(this);
-  late final $DataFormTemplateVersionsTable dataFormTemplateVersions =
-      $DataFormTemplateVersionsTable(this);
+  late final $FormTemplateVersionsTable formTemplateVersions =
+      $FormTemplateVersionsTable(this);
   late final $DataSubmissionsTable dataSubmissions =
       $DataSubmissionsTable(this);
   late final $RepeatInstancesTable repeatInstances =
@@ -10559,10 +10232,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE INDEX managed_team_cod_idx ON managed_teams (code)');
   late final Index assignmentStatusIdx = Index('assignment_status_idx',
       'CREATE INDEX assignment_status_idx ON assignments (progress_status)');
-  late final Index assignmentStartDateIdx = Index('assignment_start_date_idx',
-      'CREATE INDEX assignment_start_date_idx ON assignments (start_date)');
-  late final Index assignmentScopeIdx = Index('assignment_scope_idx',
-      'CREATE INDEX assignment_scope_idx ON assignments (scope)');
   late final Index repeatTemplatePathIdx = Index('repeat_template_path_idx',
       'CREATE INDEX repeat_template_path_idx ON repeat_instances (template_path)');
   late final Index dataValueTemplatePathIdx = Index(
@@ -10574,11 +10243,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE INDEX data_option_order_idx ON data_options ("order")');
   late final Index submissionStatusIdx = Index('submission_status_idx',
       'CREATE INDEX submission_status_idx ON data_submissions (status)');
-  late final Index submissionProgressStatusIdx = Index(
-      'submission_progressStatus_idx',
-      'CREATE INDEX submission_progressStatus_idx ON data_submissions (progress_status)');
-  late final Index submissionDeletedIdx = Index('submission_deleted_idx',
-      'CREATE INDEX submission_deleted_idx ON data_submissions (deleted)');
+  late final Index templateVersionNumberIdx = Index(
+      'template_version_number_idx',
+      'CREATE INDEX template_version_number_idx ON form_template_versions (version_number)');
   late final Index formPermissionFormIdx = Index('form_permission_form_idx',
       'CREATE INDEX form_permission_form_idx ON user_form_permissions (team, form)');
   late final ActivitiesDao activitiesDao = ActivitiesDao(this as AppDatabase);
@@ -10594,8 +10261,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       DataOptionSetsDao(this as AppDatabase);
   late final OrgUnitsDao orgUnitsDao = OrgUnitsDao(this as AppDatabase);
   late final UsersDao usersDao = UsersDao(this as AppDatabase);
-  late final DataFormTemplateVersionsDao dataFormTemplateVersionsDao =
-      DataFormTemplateVersionsDao(this as AppDatabase);
+  late final FormTemplateVersionsDao formTemplateVersionsDao =
+      FormTemplateVersionsDao(this as AppDatabase);
+  late final FormTemplatesDao formTemplatesDao =
+      FormTemplatesDao(this as AppDatabase);
   late final DataElementsDao dataElementsDao =
       DataElementsDao(this as AppDatabase);
   @override
@@ -10611,8 +10280,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         teams,
         managedTeams,
         assignments,
+        formTemplates,
+        assignmentForms,
         metadataSubmissions,
-        dataFormTemplateVersions,
+        formTemplateVersions,
         dataSubmissions,
         repeatInstances,
         dataElements,
@@ -10628,17 +10299,26 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         teamCodIdx,
         managedTeamCodIdx,
         assignmentStatusIdx,
-        assignmentStartDateIdx,
-        assignmentScopeIdx,
         repeatTemplatePathIdx,
         dataValueTemplatePathIdx,
         dataElementNameIdx,
         dataOptionOrderIdx,
         submissionStatusIdx,
-        submissionProgressStatusIdx,
-        submissionDeletedIdx,
+        templateVersionNumberIdx,
         formPermissionFormIdx
       ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
+        [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('assignments',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('assignment_forms', kind: UpdateKind.update),
+            ],
+          ),
+        ],
+      );
   @override
   DriftDatabaseOptions get options =>
       const DriftDatabaseOptions(storeDateTimeAsText: true);
@@ -11220,7 +10900,7 @@ typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
   required String id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  required String name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -11234,7 +10914,7 @@ typedef $$OrgUnitsTableUpdateCompanionBuilder = OrgUnitsCompanion Function({
   Value<String> id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  Value<String> name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -11264,33 +10944,32 @@ final class $$OrgUnitsTableReferences
   }
 
   static MultiTypedResultKey<$AssignmentsTable, List<Assignment>>
-      _assignmentsRefsTable(_$AppDatabase db) =>
+      _orgUnitAssignmentsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.assignments,
               aliasName:
                   $_aliasNameGenerator(db.orgUnits.id, db.assignments.orgUnit));
 
-  $$AssignmentsTableProcessedTableManager get assignmentsRefs {
+  $$AssignmentsTableProcessedTableManager get orgUnitAssignments {
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
         .filter((f) => f.orgUnit.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_assignmentsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_orgUnitAssignmentsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
   static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
-      _dataSubmissionsRefsTable(_$AppDatabase db) =>
+      _orgUnitSubmissionsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.dataSubmissions,
               aliasName: $_aliasNameGenerator(
                   db.orgUnits.id, db.dataSubmissions.orgUnit));
 
-  $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
+  $$DataSubmissionsTableProcessedTableManager get orgUnitSubmissions {
     final manager =
         $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
             .filter((f) => f.orgUnit.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache =
-        $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_orgUnitSubmissionsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -11361,7 +11040,7 @@ class $$OrgUnitsTableFilterComposer
     return composer;
   }
 
-  Expression<bool> assignmentsRefs(
+  Expression<bool> orgUnitAssignments(
       Expression<bool> Function($$AssignmentsTableFilterComposer f) f) {
     final $$AssignmentsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -11382,7 +11061,7 @@ class $$OrgUnitsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> dataSubmissionsRefs(
+  Expression<bool> orgUnitSubmissions(
       Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
     final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -11526,7 +11205,7 @@ class $$OrgUnitsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> assignmentsRefs<T extends Object>(
+  Expression<T> orgUnitAssignments<T extends Object>(
       Expression<T> Function($$AssignmentsTableAnnotationComposer a) f) {
     final $$AssignmentsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -11547,7 +11226,7 @@ class $$OrgUnitsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> dataSubmissionsRefs<T extends Object>(
+  Expression<T> orgUnitSubmissions<T extends Object>(
       Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
     final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -11581,7 +11260,7 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
     (OrgUnit, $$OrgUnitsTableReferences),
     OrgUnit,
     PrefetchHooks Function(
-        {bool parent, bool assignmentsRefs, bool dataSubmissionsRefs})> {
+        {bool parent, bool orgUnitAssignments, bool orgUnitSubmissions})> {
   $$OrgUnitsTableTableManager(_$AppDatabase db, $OrgUnitsTable table)
       : super(TableManagerState(
           db: db,
@@ -11596,7 +11275,7 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            Value<String> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -11624,7 +11303,7 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
             required String id,
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            required String name,
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -11654,13 +11333,13 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {parent = false,
-              assignmentsRefs = false,
-              dataSubmissionsRefs = false}) {
+              orgUnitAssignments = false,
+              orgUnitSubmissions = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (assignmentsRefs) db.assignments,
-                if (dataSubmissionsRefs) db.dataSubmissions
+                if (orgUnitAssignments) db.assignments,
+                if (orgUnitSubmissions) db.dataSubmissions
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -11689,28 +11368,28 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (assignmentsRefs)
+                  if (orgUnitAssignments)
                     await $_getPrefetchedData<OrgUnit, $OrgUnitsTable,
                             Assignment>(
                         currentTable: table,
-                        referencedTable:
-                            $$OrgUnitsTableReferences._assignmentsRefsTable(db),
+                        referencedTable: $$OrgUnitsTableReferences
+                            ._orgUnitAssignmentsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$OrgUnitsTableReferences(db, table, p0)
-                                .assignmentsRefs,
+                                .orgUnitAssignments,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.orgUnit == item.id),
                         typedResults: items),
-                  if (dataSubmissionsRefs)
+                  if (orgUnitSubmissions)
                     await $_getPrefetchedData<OrgUnit, $OrgUnitsTable,
                             DataSubmission>(
                         currentTable: table,
                         referencedTable: $$OrgUnitsTableReferences
-                            ._dataSubmissionsRefsTable(db),
+                            ._orgUnitSubmissionsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$OrgUnitsTableReferences(db, table, p0)
-                                .dataSubmissionsRefs,
+                                .orgUnitSubmissions,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.orgUnit == item.id),
@@ -11734,12 +11413,12 @@ typedef $$OrgUnitsTableProcessedTableManager = ProcessedTableManager<
     (OrgUnit, $$OrgUnitsTableReferences),
     OrgUnit,
     PrefetchHooks Function(
-        {bool parent, bool assignmentsRefs, bool dataSubmissionsRefs})>;
+        {bool parent, bool orgUnitAssignments, bool orgUnitSubmissions})>;
 typedef $$OuLevelsTableCreateCompanionBuilder = OuLevelsCompanion Function({
   required String id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  required String name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -11752,7 +11431,7 @@ typedef $$OuLevelsTableUpdateCompanionBuilder = OuLevelsCompanion Function({
   Value<String> id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  Value<String> name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -11918,7 +11597,7 @@ class $$OuLevelsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            Value<String> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -11944,7 +11623,7 @@ class $$OuLevelsTableTableManager extends RootTableManager<
             required String id,
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            required String name,
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -11989,7 +11668,7 @@ typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
   required String id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  required String name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -12001,7 +11680,7 @@ typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
   Value<String> id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  Value<String> name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -12218,7 +11897,7 @@ class $$ProjectsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            Value<String> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -12242,7 +11921,7 @@ class $$ProjectsTableTableManager extends RootTableManager<
             required String id,
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            required String name,
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -12309,7 +11988,7 @@ typedef $$ActivitiesTableCreateCompanionBuilder = ActivitiesCompanion Function({
   required String id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  required String name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -12325,7 +12004,7 @@ typedef $$ActivitiesTableUpdateCompanionBuilder = ActivitiesCompanion Function({
   Value<String> id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  Value<String> name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -12387,16 +12066,17 @@ final class $$ActivitiesTableReferences
   }
 
   static MultiTypedResultKey<$AssignmentsTable, List<Assignment>>
-      _assignmentsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.assignments,
-          aliasName:
-              $_aliasNameGenerator(db.activities.id, db.assignments.activity));
+      _activityAssignmentsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.assignments,
+              aliasName: $_aliasNameGenerator(
+                  db.activities.id, db.assignments.activity));
 
-  $$AssignmentsTableProcessedTableManager get assignmentsRefs {
+  $$AssignmentsTableProcessedTableManager get activityAssignments {
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
         .filter((f) => f.activity.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_assignmentsRefsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_activityAssignmentsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -12515,7 +12195,7 @@ class $$ActivitiesTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> assignmentsRefs(
+  Expression<bool> activityAssignments(
       Expression<bool> Function($$AssignmentsTableFilterComposer f) f) {
     final $$AssignmentsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -12713,7 +12393,7 @@ class $$ActivitiesTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> assignmentsRefs<T extends Object>(
+  Expression<T> activityAssignments<T extends Object>(
       Expression<T> Function($$AssignmentsTableAnnotationComposer a) f) {
     final $$AssignmentsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -12750,7 +12430,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
         {bool project,
         bool activityTeams,
         bool activityManagedTeams,
-        bool assignmentsRefs})> {
+        bool activityAssignments})> {
   $$ActivitiesTableTableManager(_$AppDatabase db, $ActivitiesTable table)
       : super(TableManagerState(
           db: db,
@@ -12765,7 +12445,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            Value<String> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -12797,7 +12477,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             required String id,
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            required String name,
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -12835,13 +12515,13 @@ class $$ActivitiesTableTableManager extends RootTableManager<
               {project = false,
               activityTeams = false,
               activityManagedTeams = false,
-              assignmentsRefs = false}) {
+              activityAssignments = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (activityTeams) db.teams,
                 if (activityManagedTeams) db.managedTeams,
-                if (assignmentsRefs) db.assignments
+                if (activityAssignments) db.assignments
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -12896,15 +12576,15 @@ class $$ActivitiesTableTableManager extends RootTableManager<
                                 referencedItems) =>
                             referencedItems.where((e) => e.activity == item.id),
                         typedResults: items),
-                  if (assignmentsRefs)
+                  if (activityAssignments)
                     await $_getPrefetchedData<Activity, $ActivitiesTable,
                             Assignment>(
                         currentTable: table,
                         referencedTable: $$ActivitiesTableReferences
-                            ._assignmentsRefsTable(db),
+                            ._activityAssignmentsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$ActivitiesTableReferences(db, table, p0)
-                                .assignmentsRefs,
+                                .activityAssignments,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.activity == item.id),
@@ -12931,7 +12611,7 @@ typedef $$ActivitiesTableProcessedTableManager = ProcessedTableManager<
         {bool project,
         bool activityTeams,
         bool activityManagedTeams,
-        bool assignmentsRefs})>;
+        bool activityAssignments})>;
 typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
   required String id,
   Value<DateTime?> lastModifiedDate,
@@ -12986,49 +12666,49 @@ final class $$TeamsTableReferences
   }
 
   static MultiTypedResultKey<$AssignmentsTable, List<Assignment>>
-      _assignmentsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+      _teamAssignmentsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
           db.assignments,
           aliasName: $_aliasNameGenerator(db.teams.id, db.assignments.team));
 
-  $$AssignmentsTableProcessedTableManager get assignmentsRefs {
+  $$AssignmentsTableProcessedTableManager get teamAssignments {
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
         .filter((f) => f.team.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_assignmentsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_teamAssignmentsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
   static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
-      _dataSubmissionsRefsTable(_$AppDatabase db) =>
+      _teamSubmissionsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.dataSubmissions,
               aliasName:
                   $_aliasNameGenerator(db.teams.id, db.dataSubmissions.team));
 
-  $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
+  $$DataSubmissionsTableProcessedTableManager get teamSubmissions {
     final manager =
         $$DataSubmissionsTableTableManager($_db, $_db.dataSubmissions)
             .filter((f) => f.team.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache =
-        $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_teamSubmissionsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
 
   static MultiTypedResultKey<$UserFormPermissionsTable,
-      List<UserFormPermission>> _formPermissionsTable(
+      List<UserFormPermission>> _teamFormPermissionsTable(
           _$AppDatabase db) =>
       MultiTypedResultKey.fromTable(db.userFormPermissions,
           aliasName:
               $_aliasNameGenerator(db.teams.id, db.userFormPermissions.team));
 
-  $$UserFormPermissionsTableProcessedTableManager get formPermissions {
+  $$UserFormPermissionsTableProcessedTableManager get teamFormPermissions {
     final manager =
         $$UserFormPermissionsTableTableManager($_db, $_db.userFormPermissions)
             .filter((f) => f.team.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_formPermissionsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_teamFormPermissionsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -13098,7 +12778,7 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
     return composer;
   }
 
-  Expression<bool> assignmentsRefs(
+  Expression<bool> teamAssignments(
       Expression<bool> Function($$AssignmentsTableFilterComposer f) f) {
     final $$AssignmentsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -13119,7 +12799,7 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
     return f(composer);
   }
 
-  Expression<bool> dataSubmissionsRefs(
+  Expression<bool> teamSubmissions(
       Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
     final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -13140,7 +12820,7 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
     return f(composer);
   }
 
-  Expression<bool> formPermissions(
+  Expression<bool> teamFormPermissions(
       Expression<bool> Function($$UserFormPermissionsTableFilterComposer f) f) {
     final $$UserFormPermissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -13292,7 +12972,7 @@ class $$TeamsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> assignmentsRefs<T extends Object>(
+  Expression<T> teamAssignments<T extends Object>(
       Expression<T> Function($$AssignmentsTableAnnotationComposer a) f) {
     final $$AssignmentsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -13313,7 +12993,7 @@ class $$TeamsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> dataSubmissionsRefs<T extends Object>(
+  Expression<T> teamSubmissions<T extends Object>(
       Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
     final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -13334,7 +13014,7 @@ class $$TeamsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> formPermissions<T extends Object>(
+  Expression<T> teamFormPermissions<T extends Object>(
       Expression<T> Function($$UserFormPermissionsTableAnnotationComposer a)
           f) {
     final $$UserFormPermissionsTableAnnotationComposer composer =
@@ -13372,9 +13052,9 @@ class $$TeamsTableTableManager extends RootTableManager<
     PrefetchHooks Function(
         {bool activity,
         bool user,
-        bool assignmentsRefs,
-        bool dataSubmissionsRefs,
-        bool formPermissions})> {
+        bool teamAssignments,
+        bool teamSubmissions,
+        bool teamFormPermissions})> {
   $$TeamsTableTableManager(_$AppDatabase db, $TeamsTable table)
       : super(TableManagerState(
           db: db,
@@ -13432,15 +13112,15 @@ class $$TeamsTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {activity = false,
               user = false,
-              assignmentsRefs = false,
-              dataSubmissionsRefs = false,
-              formPermissions = false}) {
+              teamAssignments = false,
+              teamSubmissions = false,
+              teamFormPermissions = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (assignmentsRefs) db.assignments,
-                if (dataSubmissionsRefs) db.dataSubmissions,
-                if (formPermissions) db.userFormPermissions
+                if (teamAssignments) db.assignments,
+                if (teamSubmissions) db.dataSubmissions,
+                if (teamFormPermissions) db.userFormPermissions
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -13477,40 +13157,40 @@ class $$TeamsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (assignmentsRefs)
+                  if (teamAssignments)
                     await $_getPrefetchedData<Team, $TeamsTable, Assignment>(
                         currentTable: table,
                         referencedTable:
-                            $$TeamsTableReferences._assignmentsRefsTable(db),
+                            $$TeamsTableReferences._teamAssignmentsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$TeamsTableReferences(db, table, p0)
-                                .assignmentsRefs,
+                                .teamAssignments,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.team == item.id),
                         typedResults: items),
-                  if (dataSubmissionsRefs)
+                  if (teamSubmissions)
                     await $_getPrefetchedData<Team, $TeamsTable,
                             DataSubmission>(
                         currentTable: table,
-                        referencedTable: $$TeamsTableReferences
-                            ._dataSubmissionsRefsTable(db),
+                        referencedTable:
+                            $$TeamsTableReferences._teamSubmissionsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$TeamsTableReferences(db, table, p0)
-                                .dataSubmissionsRefs,
+                                .teamSubmissions,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.team == item.id),
                         typedResults: items),
-                  if (formPermissions)
+                  if (teamFormPermissions)
                     await $_getPrefetchedData<Team, $TeamsTable,
                             UserFormPermission>(
                         currentTable: table,
-                        referencedTable:
-                            $$TeamsTableReferences._formPermissionsTable(db),
+                        referencedTable: $$TeamsTableReferences
+                            ._teamFormPermissionsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$TeamsTableReferences(db, table, p0)
-                                .formPermissions,
+                                .teamFormPermissions,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.team == item.id),
@@ -13536,9 +13216,9 @@ typedef $$TeamsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function(
         {bool activity,
         bool user,
-        bool assignmentsRefs,
-        bool dataSubmissionsRefs,
-        bool formPermissions})>;
+        bool teamAssignments,
+        bool teamSubmissions,
+        bool teamFormPermissions})>;
 typedef $$ManagedTeamsTableCreateCompanionBuilder = ManagedTeamsCompanion
     Function({
   required String id,
@@ -13946,18 +13626,9 @@ typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
   required String activity,
   required String team,
   required String orgUnit,
-  required String activityName,
-  required String orgUnitCode,
-  required String orgUnitName,
-  required String teamCode,
-  Value<String?> parent,
-  Value<int?> level,
   Value<int?> startDay,
   Value<DateTime?> startDate,
   Value<AssignmentStatus?> progressStatus,
-  Value<Map<String, dynamic>?> allocatedResources,
-  Value<List<String>?> forms,
-  required EntityScope scope,
   Value<int> rowid,
 });
 typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
@@ -13968,18 +13639,9 @@ typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
   Value<String> activity,
   Value<String> team,
   Value<String> orgUnit,
-  Value<String> activityName,
-  Value<String> orgUnitCode,
-  Value<String> orgUnitName,
-  Value<String> teamCode,
-  Value<String?> parent,
-  Value<int?> level,
   Value<int?> startDay,
   Value<DateTime?> startDate,
   Value<AssignmentStatus?> progressStatus,
-  Value<Map<String, dynamic>?> allocatedResources,
-  Value<List<String>?> forms,
-  Value<EntityScope> scope,
   Value<int> rowid,
 });
 
@@ -14031,34 +13693,35 @@ final class $$AssignmentsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $AssignmentsTable _parentTable(_$AppDatabase db) =>
-      db.assignments.createAlias(
-          $_aliasNameGenerator(db.assignments.parent, db.assignments.id));
+  static MultiTypedResultKey<$AssignmentFormsTable, List<AssignmentForm>>
+      _assignmentFormsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.assignmentForms,
+              aliasName: $_aliasNameGenerator(
+                  db.assignments.id, db.assignmentForms.assignment));
 
-  $$AssignmentsTableProcessedTableManager? get parent {
-    final $_column = $_itemColumn<String>('parent');
-    if ($_column == null) return null;
-    final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_parentTable($_db));
-    if (item == null) return manager;
+  $$AssignmentFormsTableProcessedTableManager get assignmentForms {
+    final manager = $$AssignmentFormsTableTableManager(
+            $_db, $_db.assignmentForms)
+        .filter((f) => f.assignment.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_assignmentFormsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+        manager.$state.copyWith(prefetchedData: cache));
   }
 
   static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
-      _dataSubmissionsRefsTable(_$AppDatabase db) =>
+      _assignmentSubmissionsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.dataSubmissions,
               aliasName: $_aliasNameGenerator(
                   db.assignments.id, db.dataSubmissions.assignment));
 
-  $$DataSubmissionsTableProcessedTableManager get dataSubmissionsRefs {
+  $$DataSubmissionsTableProcessedTableManager get assignmentSubmissions {
     final manager = $$DataSubmissionsTableTableManager(
             $_db, $_db.dataSubmissions)
         .filter((f) => f.assignment.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache =
-        $_typedResult.readTableOrNull(_dataSubmissionsRefsTable($_db));
+        $_typedResult.readTableOrNull(_assignmentSubmissionsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -14083,21 +13746,6 @@ class $$AssignmentsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get activityName => $composableBuilder(
-      column: $table.activityName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get orgUnitCode => $composableBuilder(
-      column: $table.orgUnitCode, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get orgUnitName => $composableBuilder(
-      column: $table.orgUnitName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get teamCode => $composableBuilder(
-      column: $table.teamCode, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get level => $composableBuilder(
-      column: $table.level, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<int> get startDay => $composableBuilder(
       column: $table.startDay, builder: (column) => ColumnFilters(column));
 
@@ -14107,22 +13755,6 @@ class $$AssignmentsTableFilterComposer
   ColumnWithTypeConverterFilters<AssignmentStatus?, AssignmentStatus, String>
       get progressStatus => $composableBuilder(
           column: $table.progressStatus,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
-          String>
-      get allocatedResources => $composableBuilder(
-          column: $table.allocatedResources,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnWithTypeConverterFilters<List<String>?, List<String>, String>
-      get forms => $composableBuilder(
-          column: $table.forms,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnWithTypeConverterFilters<EntityScope, EntityScope, String> get scope =>
-      $composableBuilder(
-          column: $table.scope,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
   $$ActivitiesTableFilterComposer get activity {
@@ -14185,27 +13817,28 @@ class $$AssignmentsTableFilterComposer
     return composer;
   }
 
-  $$AssignmentsTableFilterComposer get parent {
-    final $$AssignmentsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> assignmentForms(
+      Expression<bool> Function($$AssignmentFormsTableFilterComposer f) f) {
+    final $$AssignmentFormsTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.parent,
-        referencedTable: $db.assignments,
-        getReferencedColumn: (t) => t.id,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.assignmentForms,
+        getReferencedColumn: (t) => t.assignment,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AssignmentsTableFilterComposer(
+            $$AssignmentFormsTableFilterComposer(
               $db: $db,
-              $table: $db.assignments,
+              $table: $db.assignmentForms,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
-    return composer;
+    return f(composer);
   }
 
-  Expression<bool> dataSubmissionsRefs(
+  Expression<bool> assignmentSubmissions(
       Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
     final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -14246,22 +13879,6 @@ class $$AssignmentsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get activityName => $composableBuilder(
-      column: $table.activityName,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get orgUnitCode => $composableBuilder(
-      column: $table.orgUnitCode, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get orgUnitName => $composableBuilder(
-      column: $table.orgUnitName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get teamCode => $composableBuilder(
-      column: $table.teamCode, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get level => $composableBuilder(
-      column: $table.level, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<int> get startDay => $composableBuilder(
       column: $table.startDay, builder: (column) => ColumnOrderings(column));
 
@@ -14271,16 +13888,6 @@ class $$AssignmentsTableOrderingComposer
   ColumnOrderings<String> get progressStatus => $composableBuilder(
       column: $table.progressStatus,
       builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get allocatedResources => $composableBuilder(
-      column: $table.allocatedResources,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get forms => $composableBuilder(
-      column: $table.forms, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get scope => $composableBuilder(
-      column: $table.scope, builder: (column) => ColumnOrderings(column));
 
   $$ActivitiesTableOrderingComposer get activity {
     final $$ActivitiesTableOrderingComposer composer = $composerBuilder(
@@ -14341,26 +13948,6 @@ class $$AssignmentsTableOrderingComposer
             ));
     return composer;
   }
-
-  $$AssignmentsTableOrderingComposer get parent {
-    final $$AssignmentsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.parent,
-        referencedTable: $db.assignments,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AssignmentsTableOrderingComposer(
-              $db: $db,
-              $table: $db.assignments,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
 }
 
 class $$AssignmentsTableAnnotationComposer
@@ -14381,21 +13968,6 @@ class $$AssignmentsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
 
-  GeneratedColumn<String> get activityName => $composableBuilder(
-      column: $table.activityName, builder: (column) => column);
-
-  GeneratedColumn<String> get orgUnitCode => $composableBuilder(
-      column: $table.orgUnitCode, builder: (column) => column);
-
-  GeneratedColumn<String> get orgUnitName => $composableBuilder(
-      column: $table.orgUnitName, builder: (column) => column);
-
-  GeneratedColumn<String> get teamCode =>
-      $composableBuilder(column: $table.teamCode, builder: (column) => column);
-
-  GeneratedColumn<int> get level =>
-      $composableBuilder(column: $table.level, builder: (column) => column);
-
   GeneratedColumn<int> get startDay =>
       $composableBuilder(column: $table.startDay, builder: (column) => column);
 
@@ -14405,16 +13977,6 @@ class $$AssignmentsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<AssignmentStatus?, String>
       get progressStatus => $composableBuilder(
           column: $table.progressStatus, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      get allocatedResources => $composableBuilder(
-          column: $table.allocatedResources, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<String>?, String> get forms =>
-      $composableBuilder(column: $table.forms, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<EntityScope, String> get scope =>
-      $composableBuilder(column: $table.scope, builder: (column) => column);
 
   $$ActivitiesTableAnnotationComposer get activity {
     final $$ActivitiesTableAnnotationComposer composer = $composerBuilder(
@@ -14476,27 +14038,28 @@ class $$AssignmentsTableAnnotationComposer
     return composer;
   }
 
-  $$AssignmentsTableAnnotationComposer get parent {
-    final $$AssignmentsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> assignmentForms<T extends Object>(
+      Expression<T> Function($$AssignmentFormsTableAnnotationComposer a) f) {
+    final $$AssignmentFormsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.parent,
-        referencedTable: $db.assignments,
-        getReferencedColumn: (t) => t.id,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.assignmentForms,
+        getReferencedColumn: (t) => t.assignment,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AssignmentsTableAnnotationComposer(
+            $$AssignmentFormsTableAnnotationComposer(
               $db: $db,
-              $table: $db.assignments,
+              $table: $db.assignmentForms,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
-    return composer;
+    return f(composer);
   }
 
-  Expression<T> dataSubmissionsRefs<T extends Object>(
+  Expression<T> assignmentSubmissions<T extends Object>(
       Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
     final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -14533,8 +14096,8 @@ class $$AssignmentsTableTableManager extends RootTableManager<
         {bool activity,
         bool team,
         bool orgUnit,
-        bool parent,
-        bool dataSubmissionsRefs})> {
+        bool assignmentForms,
+        bool assignmentSubmissions})> {
   $$AssignmentsTableTableManager(_$AppDatabase db, $AssignmentsTable table)
       : super(TableManagerState(
           db: db,
@@ -14552,19 +14115,9 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             Value<String> activity = const Value.absent(),
             Value<String> team = const Value.absent(),
             Value<String> orgUnit = const Value.absent(),
-            Value<String> activityName = const Value.absent(),
-            Value<String> orgUnitCode = const Value.absent(),
-            Value<String> orgUnitName = const Value.absent(),
-            Value<String> teamCode = const Value.absent(),
-            Value<String?> parent = const Value.absent(),
-            Value<int?> level = const Value.absent(),
             Value<int?> startDay = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
             Value<AssignmentStatus?> progressStatus = const Value.absent(),
-            Value<Map<String, dynamic>?> allocatedResources =
-                const Value.absent(),
-            Value<List<String>?> forms = const Value.absent(),
-            Value<EntityScope> scope = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AssignmentsCompanion(
@@ -14574,18 +14127,9 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             activity: activity,
             team: team,
             orgUnit: orgUnit,
-            activityName: activityName,
-            orgUnitCode: orgUnitCode,
-            orgUnitName: orgUnitName,
-            teamCode: teamCode,
-            parent: parent,
-            level: level,
             startDay: startDay,
             startDate: startDate,
             progressStatus: progressStatus,
-            allocatedResources: allocatedResources,
-            forms: forms,
-            scope: scope,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -14595,19 +14139,9 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             required String activity,
             required String team,
             required String orgUnit,
-            required String activityName,
-            required String orgUnitCode,
-            required String orgUnitName,
-            required String teamCode,
-            Value<String?> parent = const Value.absent(),
-            Value<int?> level = const Value.absent(),
             Value<int?> startDay = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
             Value<AssignmentStatus?> progressStatus = const Value.absent(),
-            Value<Map<String, dynamic>?> allocatedResources =
-                const Value.absent(),
-            Value<List<String>?> forms = const Value.absent(),
-            required EntityScope scope,
             Value<int> rowid = const Value.absent(),
           }) =>
               AssignmentsCompanion.insert(
@@ -14617,18 +14151,9 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             activity: activity,
             team: team,
             orgUnit: orgUnit,
-            activityName: activityName,
-            orgUnitCode: orgUnitCode,
-            orgUnitName: orgUnitName,
-            teamCode: teamCode,
-            parent: parent,
-            level: level,
             startDay: startDay,
             startDate: startDate,
             progressStatus: progressStatus,
-            allocatedResources: allocatedResources,
-            forms: forms,
-            scope: scope,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -14641,12 +14166,13 @@ class $$AssignmentsTableTableManager extends RootTableManager<
               {activity = false,
               team = false,
               orgUnit = false,
-              parent = false,
-              dataSubmissionsRefs = false}) {
+              assignmentForms = false,
+              assignmentSubmissions = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (dataSubmissionsRefs) db.dataSubmissions
+                if (assignmentForms) db.assignmentForms,
+                if (assignmentSubmissions) db.dataSubmissions
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -14691,30 +14217,33 @@ class $$AssignmentsTableTableManager extends RootTableManager<
                         $$AssignmentsTableReferences._orgUnitTable(db).id,
                   ) as T;
                 }
-                if (parent) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.parent,
-                    referencedTable:
-                        $$AssignmentsTableReferences._parentTable(db),
-                    referencedColumn:
-                        $$AssignmentsTableReferences._parentTable(db).id,
-                  ) as T;
-                }
 
                 return state;
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (dataSubmissionsRefs)
+                  if (assignmentForms)
+                    await $_getPrefetchedData<Assignment, $AssignmentsTable,
+                            AssignmentForm>(
+                        currentTable: table,
+                        referencedTable: $$AssignmentsTableReferences
+                            ._assignmentFormsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$AssignmentsTableReferences(db, table, p0)
+                                .assignmentForms,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.assignment == item.id),
+                        typedResults: items),
+                  if (assignmentSubmissions)
                     await $_getPrefetchedData<Assignment, $AssignmentsTable,
                             DataSubmission>(
                         currentTable: table,
                         referencedTable: $$AssignmentsTableReferences
-                            ._dataSubmissionsRefsTable(db),
+                            ._assignmentSubmissionsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$AssignmentsTableReferences(db, table, p0)
-                                .dataSubmissionsRefs,
+                                .assignmentSubmissions,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.assignment == item.id),
@@ -14741,18 +14270,811 @@ typedef $$AssignmentsTableProcessedTableManager = ProcessedTableManager<
         {bool activity,
         bool team,
         bool orgUnit,
-        bool parent,
-        bool dataSubmissionsRefs})>;
+        bool assignmentForms,
+        bool assignmentSubmissions})>;
+typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
+    Function({
+  required String id,
+  required String formVersion,
+  required int versionNumber,
+  required String name,
+  Value<Map<String, dynamic>?> label,
+  Value<String?> description,
+  Value<int> rowid,
+});
+typedef $$FormTemplatesTableUpdateCompanionBuilder = FormTemplatesCompanion
+    Function({
+  Value<String> id,
+  Value<String> formVersion,
+  Value<int> versionNumber,
+  Value<String> name,
+  Value<Map<String, dynamic>?> label,
+  Value<String?> description,
+  Value<int> rowid,
+});
+
+final class $$FormTemplatesTableReferences
+    extends BaseReferences<_$AppDatabase, $FormTemplatesTable, FormTemplate> {
+  $$FormTemplatesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$AssignmentFormsTable, List<AssignmentForm>>
+      _formAssignmentsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.assignmentForms,
+              aliasName: $_aliasNameGenerator(
+                  db.formTemplates.id, db.assignmentForms.form));
+
+  $$AssignmentFormsTableProcessedTableManager get formAssignments {
+    final manager =
+        $$AssignmentFormsTableTableManager($_db, $_db.assignmentForms)
+            .filter((f) => f.form.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_formAssignmentsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$FormTemplateVersionsTable,
+      List<FormTemplateVersion>> _formTemplateVersionsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.formTemplateVersions,
+          aliasName: $_aliasNameGenerator(
+              db.formTemplates.id, db.formTemplateVersions.template));
+
+  $$FormTemplateVersionsTableProcessedTableManager get formTemplateVersions {
+    final manager = $$FormTemplateVersionsTableTableManager(
+            $_db, $_db.formTemplateVersions)
+        .filter((f) => f.template.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_formTemplateVersionsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$UserFormPermissionsTable,
+      List<UserFormPermission>> _formPermissionsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.userFormPermissions,
+          aliasName: $_aliasNameGenerator(
+              db.formTemplates.id, db.userFormPermissions.form));
+
+  $$UserFormPermissionsTableProcessedTableManager get formPermissions {
+    final manager =
+        $$UserFormPermissionsTableTableManager($_db, $_db.userFormPermissions)
+            .filter((f) => f.form.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_formPermissionsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$FormTemplatesTableFilterComposer
+    extends Composer<_$AppDatabase, $FormTemplatesTable> {
+  $$FormTemplatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get formVersion => $composableBuilder(
+      column: $table.formVersion, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
+          String>
+      get label => $composableBuilder(
+          column: $table.label,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> formAssignments(
+      Expression<bool> Function($$AssignmentFormsTableFilterComposer f) f) {
+    final $$AssignmentFormsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.assignmentForms,
+        getReferencedColumn: (t) => t.form,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AssignmentFormsTableFilterComposer(
+              $db: $db,
+              $table: $db.assignmentForms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> formTemplateVersions(
+      Expression<bool> Function($$FormTemplateVersionsTableFilterComposer f)
+          f) {
+    final $$FormTemplateVersionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.formTemplateVersions,
+        getReferencedColumn: (t) => t.template,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplateVersionsTableFilterComposer(
+              $db: $db,
+              $table: $db.formTemplateVersions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> formPermissions(
+      Expression<bool> Function($$UserFormPermissionsTableFilterComposer f) f) {
+    final $$UserFormPermissionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.userFormPermissions,
+        getReferencedColumn: (t) => t.form,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$UserFormPermissionsTableFilterComposer(
+              $db: $db,
+              $table: $db.userFormPermissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$FormTemplatesTableOrderingComposer
+    extends Composer<_$AppDatabase, $FormTemplatesTable> {
+  $$FormTemplatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get formVersion => $composableBuilder(
+      column: $table.formVersion, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+}
+
+class $$FormTemplatesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FormTemplatesTable> {
+  $$FormTemplatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get formVersion => $composableBuilder(
+      column: $table.formVersion, builder: (column) => column);
+
+  GeneratedColumn<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  Expression<T> formAssignments<T extends Object>(
+      Expression<T> Function($$AssignmentFormsTableAnnotationComposer a) f) {
+    final $$AssignmentFormsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.assignmentForms,
+        getReferencedColumn: (t) => t.form,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AssignmentFormsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.assignmentForms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> formTemplateVersions<T extends Object>(
+      Expression<T> Function($$FormTemplateVersionsTableAnnotationComposer a)
+          f) {
+    final $$FormTemplateVersionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.formTemplateVersions,
+            getReferencedColumn: (t) => t.template,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$FormTemplateVersionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.formTemplateVersions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> formPermissions<T extends Object>(
+      Expression<T> Function($$UserFormPermissionsTableAnnotationComposer a)
+          f) {
+    final $$UserFormPermissionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.userFormPermissions,
+            getReferencedColumn: (t) => t.form,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$UserFormPermissionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.userFormPermissions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$FormTemplatesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FormTemplatesTable,
+    FormTemplate,
+    $$FormTemplatesTableFilterComposer,
+    $$FormTemplatesTableOrderingComposer,
+    $$FormTemplatesTableAnnotationComposer,
+    $$FormTemplatesTableCreateCompanionBuilder,
+    $$FormTemplatesTableUpdateCompanionBuilder,
+    (FormTemplate, $$FormTemplatesTableReferences),
+    FormTemplate,
+    PrefetchHooks Function(
+        {bool formAssignments,
+        bool formTemplateVersions,
+        bool formPermissions})> {
+  $$FormTemplatesTableTableManager(_$AppDatabase db, $FormTemplatesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FormTemplatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FormTemplatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FormTemplatesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> formVersion = const Value.absent(),
+            Value<int> versionNumber = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<Map<String, dynamic>?> label = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              FormTemplatesCompanion(
+            id: id,
+            formVersion: formVersion,
+            versionNumber: versionNumber,
+            name: name,
+            label: label,
+            description: description,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String formVersion,
+            required int versionNumber,
+            required String name,
+            Value<Map<String, dynamic>?> label = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              FormTemplatesCompanion.insert(
+            id: id,
+            formVersion: formVersion,
+            versionNumber: versionNumber,
+            name: name,
+            label: label,
+            description: description,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$FormTemplatesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {formAssignments = false,
+              formTemplateVersions = false,
+              formPermissions = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (formAssignments) db.assignmentForms,
+                if (formTemplateVersions) db.formTemplateVersions,
+                if (formPermissions) db.userFormPermissions
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (formAssignments)
+                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable, AssignmentForm>(
+                        currentTable: table,
+                        referencedTable: $$FormTemplatesTableReferences
+                            ._formAssignmentsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$FormTemplatesTableReferences(db, table, p0)
+                                .formAssignments,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) =>
+                                referencedItems.where((e) => e.form == item.id),
+                        typedResults: items),
+                  if (formTemplateVersions)
+                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
+                            FormTemplateVersion>(
+                        currentTable: table,
+                        referencedTable: $$FormTemplatesTableReferences
+                            ._formTemplateVersionsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$FormTemplatesTableReferences(db, table, p0)
+                                .formTemplateVersions,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.template == item.id),
+                        typedResults: items),
+                  if (formPermissions)
+                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
+                            UserFormPermission>(
+                        currentTable: table,
+                        referencedTable: $$FormTemplatesTableReferences
+                            ._formPermissionsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$FormTemplatesTableReferences(db, table, p0)
+                                .formPermissions,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) =>
+                                referencedItems.where((e) => e.form == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$FormTemplatesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FormTemplatesTable,
+    FormTemplate,
+    $$FormTemplatesTableFilterComposer,
+    $$FormTemplatesTableOrderingComposer,
+    $$FormTemplatesTableAnnotationComposer,
+    $$FormTemplatesTableCreateCompanionBuilder,
+    $$FormTemplatesTableUpdateCompanionBuilder,
+    (FormTemplate, $$FormTemplatesTableReferences),
+    FormTemplate,
+    PrefetchHooks Function(
+        {bool formAssignments,
+        bool formTemplateVersions,
+        bool formPermissions})>;
+typedef $$AssignmentFormsTableCreateCompanionBuilder = AssignmentFormsCompanion
+    Function({
+  required String assignment,
+  required String form,
+  Value<bool?> canAddSubmissions,
+  Value<bool?> canEditSubmissions,
+  Value<bool?> canDeleteSubmissions,
+  Value<int> rowid,
+});
+typedef $$AssignmentFormsTableUpdateCompanionBuilder = AssignmentFormsCompanion
+    Function({
+  Value<String> assignment,
+  Value<String> form,
+  Value<bool?> canAddSubmissions,
+  Value<bool?> canEditSubmissions,
+  Value<bool?> canDeleteSubmissions,
+  Value<int> rowid,
+});
+
+final class $$AssignmentFormsTableReferences extends BaseReferences<
+    _$AppDatabase, $AssignmentFormsTable, AssignmentForm> {
+  $$AssignmentFormsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $AssignmentsTable _assignmentTable(_$AppDatabase db) =>
+      db.assignments.createAlias($_aliasNameGenerator(
+          db.assignmentForms.assignment, db.assignments.id));
+
+  $$AssignmentsTableProcessedTableManager get assignment {
+    final $_column = $_itemColumn<String>('assignment')!;
+
+    final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_assignmentTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $FormTemplatesTable _formTable(_$AppDatabase db) =>
+      db.formTemplates.createAlias(
+          $_aliasNameGenerator(db.assignmentForms.form, db.formTemplates.id));
+
+  $$FormTemplatesTableProcessedTableManager get form {
+    final $_column = $_itemColumn<String>('form')!;
+
+    final manager = $$FormTemplatesTableTableManager($_db, $_db.formTemplates)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_formTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$AssignmentFormsTableFilterComposer
+    extends Composer<_$AppDatabase, $AssignmentFormsTable> {
+  $$AssignmentFormsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get canAddSubmissions => $composableBuilder(
+      column: $table.canAddSubmissions,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get canEditSubmissions => $composableBuilder(
+      column: $table.canEditSubmissions,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get canDeleteSubmissions => $composableBuilder(
+      column: $table.canDeleteSubmissions,
+      builder: (column) => ColumnFilters(column));
+
+  $$AssignmentsTableFilterComposer get assignment {
+    final $$AssignmentsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.assignment,
+        referencedTable: $db.assignments,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AssignmentsTableFilterComposer(
+              $db: $db,
+              $table: $db.assignments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$FormTemplatesTableFilterComposer get form {
+    final $$FormTemplatesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.form,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableFilterComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AssignmentFormsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AssignmentFormsTable> {
+  $$AssignmentFormsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get canAddSubmissions => $composableBuilder(
+      column: $table.canAddSubmissions,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get canEditSubmissions => $composableBuilder(
+      column: $table.canEditSubmissions,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get canDeleteSubmissions => $composableBuilder(
+      column: $table.canDeleteSubmissions,
+      builder: (column) => ColumnOrderings(column));
+
+  $$AssignmentsTableOrderingComposer get assignment {
+    final $$AssignmentsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.assignment,
+        referencedTable: $db.assignments,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AssignmentsTableOrderingComposer(
+              $db: $db,
+              $table: $db.assignments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$FormTemplatesTableOrderingComposer get form {
+    final $$FormTemplatesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.form,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableOrderingComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AssignmentFormsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AssignmentFormsTable> {
+  $$AssignmentFormsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get canAddSubmissions => $composableBuilder(
+      column: $table.canAddSubmissions, builder: (column) => column);
+
+  GeneratedColumn<bool> get canEditSubmissions => $composableBuilder(
+      column: $table.canEditSubmissions, builder: (column) => column);
+
+  GeneratedColumn<bool> get canDeleteSubmissions => $composableBuilder(
+      column: $table.canDeleteSubmissions, builder: (column) => column);
+
+  $$AssignmentsTableAnnotationComposer get assignment {
+    final $$AssignmentsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.assignment,
+        referencedTable: $db.assignments,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AssignmentsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.assignments,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$FormTemplatesTableAnnotationComposer get form {
+    final $$FormTemplatesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.form,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$AssignmentFormsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AssignmentFormsTable,
+    AssignmentForm,
+    $$AssignmentFormsTableFilterComposer,
+    $$AssignmentFormsTableOrderingComposer,
+    $$AssignmentFormsTableAnnotationComposer,
+    $$AssignmentFormsTableCreateCompanionBuilder,
+    $$AssignmentFormsTableUpdateCompanionBuilder,
+    (AssignmentForm, $$AssignmentFormsTableReferences),
+    AssignmentForm,
+    PrefetchHooks Function({bool assignment, bool form})> {
+  $$AssignmentFormsTableTableManager(
+      _$AppDatabase db, $AssignmentFormsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AssignmentFormsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AssignmentFormsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AssignmentFormsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> assignment = const Value.absent(),
+            Value<String> form = const Value.absent(),
+            Value<bool?> canAddSubmissions = const Value.absent(),
+            Value<bool?> canEditSubmissions = const Value.absent(),
+            Value<bool?> canDeleteSubmissions = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AssignmentFormsCompanion(
+            assignment: assignment,
+            form: form,
+            canAddSubmissions: canAddSubmissions,
+            canEditSubmissions: canEditSubmissions,
+            canDeleteSubmissions: canDeleteSubmissions,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String assignment,
+            required String form,
+            Value<bool?> canAddSubmissions = const Value.absent(),
+            Value<bool?> canEditSubmissions = const Value.absent(),
+            Value<bool?> canDeleteSubmissions = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AssignmentFormsCompanion.insert(
+            assignment: assignment,
+            form: form,
+            canAddSubmissions: canAddSubmissions,
+            canEditSubmissions: canEditSubmissions,
+            canDeleteSubmissions: canDeleteSubmissions,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$AssignmentFormsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({assignment = false, form = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (assignment) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.assignment,
+                    referencedTable:
+                        $$AssignmentFormsTableReferences._assignmentTable(db),
+                    referencedColumn: $$AssignmentFormsTableReferences
+                        ._assignmentTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (form) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.form,
+                    referencedTable:
+                        $$AssignmentFormsTableReferences._formTable(db),
+                    referencedColumn:
+                        $$AssignmentFormsTableReferences._formTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$AssignmentFormsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AssignmentFormsTable,
+    AssignmentForm,
+    $$AssignmentFormsTableFilterComposer,
+    $$AssignmentFormsTableOrderingComposer,
+    $$AssignmentFormsTableAnnotationComposer,
+    $$AssignmentFormsTableCreateCompanionBuilder,
+    $$AssignmentFormsTableUpdateCompanionBuilder,
+    (AssignmentForm, $$AssignmentFormsTableReferences),
+    AssignmentForm,
+    PrefetchHooks Function({bool assignment, bool form})>;
 typedef $$MetadataSubmissionsTableCreateCompanionBuilder
     = MetadataSubmissionsCompanion Function({
   required String id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<Map<String, dynamic>?> label,
-  Value<List<Translation>> translations,
   required MetadataResourceType resourceType,
   required String metadataSchema,
   required int serialNumber,
@@ -14768,11 +15090,6 @@ typedef $$MetadataSubmissionsTableUpdateCompanionBuilder
   Value<String> id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<Map<String, dynamic>?> label,
-  Value<List<Translation>> translations,
   Value<MetadataResourceType> resourceType,
   Value<String> metadataSchema,
   Value<int> serialNumber,
@@ -14802,26 +15119,6 @@ class $$MetadataSubmissionsTableFilterComposer
 
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
-          String>
-      get label => $composableBuilder(
-          column: $table.label,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
-      get translations => $composableBuilder(
-          column: $table.translations,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<MetadataResourceType, MetadataResourceType,
           String>
@@ -14875,22 +15172,6 @@ class $$MetadataSubmissionsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get label => $composableBuilder(
-      column: $table.label, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get translations => $composableBuilder(
-      column: $table.translations,
-      builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get resourceType => $composableBuilder(
       column: $table.resourceType,
       builder: (column) => ColumnOrderings(column));
@@ -14937,22 +15218,6 @@ class $$MetadataSubmissionsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => column);
-
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get label =>
-      $composableBuilder(column: $table.label, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<Translation>, String>
-      get translations => $composableBuilder(
-          column: $table.translations, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<MetadataResourceType, String>
       get resourceType => $composableBuilder(
@@ -15014,11 +15279,6 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<List<Translation>> translations = const Value.absent(),
             Value<MetadataResourceType> resourceType = const Value.absent(),
             Value<String> metadataSchema = const Value.absent(),
             Value<int> serialNumber = const Value.absent(),
@@ -15033,11 +15293,6 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             id: id,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
-            label: label,
-            translations: translations,
             resourceType: resourceType,
             metadataSchema: metadataSchema,
             serialNumber: serialNumber,
@@ -15052,11 +15307,6 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             required String id,
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<List<Translation>> translations = const Value.absent(),
             required MetadataResourceType resourceType,
             required String metadataSchema,
             required int serialNumber,
@@ -15071,11 +15321,6 @@ class $$MetadataSubmissionsTableTableManager extends RootTableManager<
             id: id,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
-            label: label,
-            translations: translations,
             resourceType: resourceType,
             metadataSchema: metadataSchema,
             serialNumber: serialNumber,
@@ -15109,53 +15354,50 @@ typedef $$MetadataSubmissionsTableProcessedTableManager = ProcessedTableManager<
     ),
     MetadataSubmission,
     PrefetchHooks Function()>;
-typedef $$DataFormTemplateVersionsTableCreateCompanionBuilder
-    = DataFormTemplateVersionsCompanion Function({
+typedef $$FormTemplateVersionsTableCreateCompanionBuilder
+    = FormTemplateVersionsCompanion Function({
   required String id,
-  Value<DateTime?> lastModifiedDate,
-  Value<DateTime?> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<Map<String, dynamic>?> label,
-  Value<List<Translation>> translations,
-  required int version,
-  Value<String?> defaultLocal,
+  required String template,
+  required int versionNumber,
   required List<Template> fields,
   required List<Template> sections,
-  Value<String?> description,
-  Value<ValidationStrategy?> validationStrategy,
   Value<int> rowid,
 });
-typedef $$DataFormTemplateVersionsTableUpdateCompanionBuilder
-    = DataFormTemplateVersionsCompanion Function({
+typedef $$FormTemplateVersionsTableUpdateCompanionBuilder
+    = FormTemplateVersionsCompanion Function({
   Value<String> id,
-  Value<DateTime?> lastModifiedDate,
-  Value<DateTime?> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<Map<String, dynamic>?> label,
-  Value<List<Translation>> translations,
-  Value<int> version,
-  Value<String?> defaultLocal,
+  Value<String> template,
+  Value<int> versionNumber,
   Value<List<Template>> fields,
   Value<List<Template>> sections,
-  Value<String?> description,
-  Value<ValidationStrategy?> validationStrategy,
   Value<int> rowid,
 });
 
-final class $$DataFormTemplateVersionsTableReferences extends BaseReferences<
-    _$AppDatabase, $DataFormTemplateVersionsTable, DataFormTemplateVersion> {
-  $$DataFormTemplateVersionsTableReferences(
+final class $$FormTemplateVersionsTableReferences extends BaseReferences<
+    _$AppDatabase, $FormTemplateVersionsTable, FormTemplateVersion> {
+  $$FormTemplateVersionsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
+
+  static $FormTemplatesTable _templateTable(_$AppDatabase db) =>
+      db.formTemplates.createAlias($_aliasNameGenerator(
+          db.formTemplateVersions.template, db.formTemplates.id));
+
+  $$FormTemplatesTableProcessedTableManager get template {
+    final $_column = $_itemColumn<String>('template')!;
+
+    final manager = $$FormTemplatesTableTableManager($_db, $_db.formTemplates)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_templateTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
 
   static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
       _formSubmissionsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.dataSubmissions,
               aliasName: $_aliasNameGenerator(
-                  db.dataFormTemplateVersions.id, db.dataSubmissions.form));
+                  db.formTemplateVersions.id, db.dataSubmissions.form));
 
   $$DataSubmissionsTableProcessedTableManager get formSubmissions {
     final manager =
@@ -15166,11 +15408,28 @@ final class $$DataFormTemplateVersionsTableReferences extends BaseReferences<
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$DataSubmissionsTable, List<DataSubmission>>
+      _formVersionSubmissionsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.dataSubmissions,
+              aliasName: $_aliasNameGenerator(
+                  db.formTemplateVersions.id, db.dataSubmissions.formVersion));
+
+  $$DataSubmissionsTableProcessedTableManager get formVersionSubmissions {
+    final manager = $$DataSubmissionsTableTableManager(
+            $_db, $_db.dataSubmissions)
+        .filter((f) => f.formVersion.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_formVersionSubmissionsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
-class $$DataFormTemplateVersionsTableFilterComposer
-    extends Composer<_$AppDatabase, $DataFormTemplateVersionsTable> {
-  $$DataFormTemplateVersionsTableFilterComposer({
+class $$FormTemplateVersionsTableFilterComposer
+    extends Composer<_$AppDatabase, $FormTemplateVersionsTable> {
+  $$FormTemplateVersionsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15180,38 +15439,8 @@ class $$DataFormTemplateVersionsTableFilterComposer
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get lastModifiedDate => $composableBuilder(
-      column: $table.lastModifiedDate,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdDate => $composableBuilder(
-      column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
-          String>
-      get label => $composableBuilder(
-          column: $table.label,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
-      get translations => $composableBuilder(
-          column: $table.translations,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<int> get version => $composableBuilder(
-      column: $table.version, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get defaultLocal => $composableBuilder(
-      column: $table.defaultLocal, builder: (column) => ColumnFilters(column));
+  ColumnFilters<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<Template>, List<Template>, String>
       get fields => $composableBuilder(
@@ -15223,14 +15452,25 @@ class $$DataFormTemplateVersionsTableFilterComposer
           column: $table.sections,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<ValidationStrategy?, ValidationStrategy,
-          String>
-      get validationStrategy => $composableBuilder(
-          column: $table.validationStrategy,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  $$FormTemplatesTableFilterComposer get template {
+    final $$FormTemplatesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.template,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableFilterComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   Expression<bool> formSubmissions(
       Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
@@ -15252,11 +15492,32 @@ class $$DataFormTemplateVersionsTableFilterComposer
             ));
     return f(composer);
   }
+
+  Expression<bool> formVersionSubmissions(
+      Expression<bool> Function($$DataSubmissionsTableFilterComposer f) f) {
+    final $$DataSubmissionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.formVersion,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableFilterComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
-class $$DataFormTemplateVersionsTableOrderingComposer
-    extends Composer<_$AppDatabase, $DataFormTemplateVersionsTable> {
-  $$DataFormTemplateVersionsTableOrderingComposer({
+class $$FormTemplateVersionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FormTemplateVersionsTable> {
+  $$FormTemplateVersionsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15266,34 +15527,8 @@ class $$DataFormTemplateVersionsTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get lastModifiedDate => $composableBuilder(
-      column: $table.lastModifiedDate,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdDate => $composableBuilder(
-      column: $table.createdDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get label => $composableBuilder(
-      column: $table.label, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get translations => $composableBuilder(
-      column: $table.translations,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get version => $composableBuilder(
-      column: $table.version, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get defaultLocal => $composableBuilder(
-      column: $table.defaultLocal,
+  ColumnOrderings<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber,
       builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get fields => $composableBuilder(
@@ -15302,17 +15537,30 @@ class $$DataFormTemplateVersionsTableOrderingComposer
   ColumnOrderings<String> get sections => $composableBuilder(
       column: $table.sections, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get validationStrategy => $composableBuilder(
-      column: $table.validationStrategy,
-      builder: (column) => ColumnOrderings(column));
+  $$FormTemplatesTableOrderingComposer get template {
+    final $$FormTemplatesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.template,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableOrderingComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
-class $$DataFormTemplateVersionsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $DataFormTemplateVersionsTable> {
-  $$DataFormTemplateVersionsTableAnnotationComposer({
+class $$FormTemplateVersionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FormTemplateVersionsTable> {
+  $$FormTemplateVersionsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -15322,33 +15570,8 @@ class $$DataFormTemplateVersionsTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get lastModifiedDate => $composableBuilder(
-      column: $table.lastModifiedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdDate => $composableBuilder(
-      column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => column);
-
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get label =>
-      $composableBuilder(column: $table.label, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<Translation>, String>
-      get translations => $composableBuilder(
-          column: $table.translations, builder: (column) => column);
-
-  GeneratedColumn<int> get version =>
-      $composableBuilder(column: $table.version, builder: (column) => column);
-
-  GeneratedColumn<String> get defaultLocal => $composableBuilder(
-      column: $table.defaultLocal, builder: (column) => column);
+  GeneratedColumn<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<List<Template>, String> get fields =>
       $composableBuilder(column: $table.fields, builder: (column) => column);
@@ -15356,12 +15579,25 @@ class $$DataFormTemplateVersionsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<List<Template>, String> get sections =>
       $composableBuilder(column: $table.sections, builder: (column) => column);
 
-  GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<ValidationStrategy?, String>
-      get validationStrategy => $composableBuilder(
-          column: $table.validationStrategy, builder: (column) => column);
+  $$FormTemplatesTableAnnotationComposer get template {
+    final $$FormTemplatesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.template,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   Expression<T> formSubmissions<T extends Object>(
       Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
@@ -15383,133 +15619,157 @@ class $$DataFormTemplateVersionsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> formVersionSubmissions<T extends Object>(
+      Expression<T> Function($$DataSubmissionsTableAnnotationComposer a) f) {
+    final $$DataSubmissionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.dataSubmissions,
+        getReferencedColumn: (t) => t.formVersion,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataSubmissionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.dataSubmissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
-class $$DataFormTemplateVersionsTableTableManager extends RootTableManager<
+class $$FormTemplateVersionsTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $DataFormTemplateVersionsTable,
-    DataFormTemplateVersion,
-    $$DataFormTemplateVersionsTableFilterComposer,
-    $$DataFormTemplateVersionsTableOrderingComposer,
-    $$DataFormTemplateVersionsTableAnnotationComposer,
-    $$DataFormTemplateVersionsTableCreateCompanionBuilder,
-    $$DataFormTemplateVersionsTableUpdateCompanionBuilder,
-    (DataFormTemplateVersion, $$DataFormTemplateVersionsTableReferences),
-    DataFormTemplateVersion,
-    PrefetchHooks Function({bool formSubmissions})> {
-  $$DataFormTemplateVersionsTableTableManager(
-      _$AppDatabase db, $DataFormTemplateVersionsTable table)
+    $FormTemplateVersionsTable,
+    FormTemplateVersion,
+    $$FormTemplateVersionsTableFilterComposer,
+    $$FormTemplateVersionsTableOrderingComposer,
+    $$FormTemplateVersionsTableAnnotationComposer,
+    $$FormTemplateVersionsTableCreateCompanionBuilder,
+    $$FormTemplateVersionsTableUpdateCompanionBuilder,
+    (FormTemplateVersion, $$FormTemplateVersionsTableReferences),
+    FormTemplateVersion,
+    PrefetchHooks Function(
+        {bool template, bool formSubmissions, bool formVersionSubmissions})> {
+  $$FormTemplateVersionsTableTableManager(
+      _$AppDatabase db, $FormTemplateVersionsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$DataFormTemplateVersionsTableFilterComposer(
-                  $db: db, $table: table),
+              $$FormTemplateVersionsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$DataFormTemplateVersionsTableOrderingComposer(
+              $$FormTemplateVersionsTableOrderingComposer(
                   $db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$DataFormTemplateVersionsTableAnnotationComposer(
+              $$FormTemplateVersionsTableAnnotationComposer(
                   $db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime?> lastModifiedDate = const Value.absent(),
-            Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<List<Translation>> translations = const Value.absent(),
-            Value<int> version = const Value.absent(),
-            Value<String?> defaultLocal = const Value.absent(),
+            Value<String> template = const Value.absent(),
+            Value<int> versionNumber = const Value.absent(),
             Value<List<Template>> fields = const Value.absent(),
             Value<List<Template>> sections = const Value.absent(),
-            Value<String?> description = const Value.absent(),
-            Value<ValidationStrategy?> validationStrategy =
-                const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
-              DataFormTemplateVersionsCompanion(
+              FormTemplateVersionsCompanion(
             id: id,
-            lastModifiedDate: lastModifiedDate,
-            createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
-            label: label,
-            translations: translations,
-            version: version,
-            defaultLocal: defaultLocal,
+            template: template,
+            versionNumber: versionNumber,
             fields: fields,
             sections: sections,
-            description: description,
-            validationStrategy: validationStrategy,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required String id,
-            Value<DateTime?> lastModifiedDate = const Value.absent(),
-            Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<List<Translation>> translations = const Value.absent(),
-            required int version,
-            Value<String?> defaultLocal = const Value.absent(),
+            required String template,
+            required int versionNumber,
             required List<Template> fields,
             required List<Template> sections,
-            Value<String?> description = const Value.absent(),
-            Value<ValidationStrategy?> validationStrategy =
-                const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
-              DataFormTemplateVersionsCompanion.insert(
+              FormTemplateVersionsCompanion.insert(
             id: id,
-            lastModifiedDate: lastModifiedDate,
-            createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
-            label: label,
-            translations: translations,
-            version: version,
-            defaultLocal: defaultLocal,
+            template: template,
+            versionNumber: versionNumber,
             fields: fields,
             sections: sections,
-            description: description,
-            validationStrategy: validationStrategy,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
                     e.readTable(table),
-                    $$DataFormTemplateVersionsTableReferences(db, table, e)
+                    $$FormTemplateVersionsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({formSubmissions = false}) {
+          prefetchHooksCallback: (
+              {template = false,
+              formSubmissions = false,
+              formVersionSubmissions = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (formSubmissions) db.dataSubmissions
+                if (formSubmissions) db.dataSubmissions,
+                if (formVersionSubmissions) db.dataSubmissions
               ],
-              addJoins: null,
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (template) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.template,
+                    referencedTable: $$FormTemplateVersionsTableReferences
+                        ._templateTable(db),
+                    referencedColumn: $$FormTemplateVersionsTableReferences
+                        ._templateTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (formSubmissions)
-                    await $_getPrefetchedData<DataFormTemplateVersion,
-                            $DataFormTemplateVersionsTable, DataSubmission>(
+                    await $_getPrefetchedData<FormTemplateVersion,
+                            $FormTemplateVersionsTable, DataSubmission>(
                         currentTable: table,
-                        referencedTable:
-                            $$DataFormTemplateVersionsTableReferences
-                                ._formSubmissionsTable(db),
+                        referencedTable: $$FormTemplateVersionsTableReferences
+                            ._formSubmissionsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$DataFormTemplateVersionsTableReferences(
-                                    db, table, p0)
+                            $$FormTemplateVersionsTableReferences(db, table, p0)
                                 .formSubmissions,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.form == item.id),
+                        typedResults: items),
+                  if (formVersionSubmissions)
+                    await $_getPrefetchedData<FormTemplateVersion,
+                            $FormTemplateVersionsTable, DataSubmission>(
+                        currentTable: table,
+                        referencedTable: $$FormTemplateVersionsTableReferences
+                            ._formVersionSubmissionsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$FormTemplateVersionsTableReferences(db, table, p0)
+                                .formVersionSubmissions,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.formVersion == item.id),
                         typedResults: items)
                 ];
               },
@@ -15518,19 +15778,22 @@ class $$DataFormTemplateVersionsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$DataFormTemplateVersionsTableProcessedTableManager
+typedef $$FormTemplateVersionsTableProcessedTableManager
     = ProcessedTableManager<
         _$AppDatabase,
-        $DataFormTemplateVersionsTable,
-        DataFormTemplateVersion,
-        $$DataFormTemplateVersionsTableFilterComposer,
-        $$DataFormTemplateVersionsTableOrderingComposer,
-        $$DataFormTemplateVersionsTableAnnotationComposer,
-        $$DataFormTemplateVersionsTableCreateCompanionBuilder,
-        $$DataFormTemplateVersionsTableUpdateCompanionBuilder,
-        (DataFormTemplateVersion, $$DataFormTemplateVersionsTableReferences),
-        DataFormTemplateVersion,
-        PrefetchHooks Function({bool formSubmissions})>;
+        $FormTemplateVersionsTable,
+        FormTemplateVersion,
+        $$FormTemplateVersionsTableFilterComposer,
+        $$FormTemplateVersionsTableOrderingComposer,
+        $$FormTemplateVersionsTableAnnotationComposer,
+        $$FormTemplateVersionsTableCreateCompanionBuilder,
+        $$FormTemplateVersionsTableUpdateCompanionBuilder,
+        (FormTemplateVersion, $$FormTemplateVersionsTableReferences),
+        FormTemplateVersion,
+        PrefetchHooks Function(
+            {bool template,
+            bool formSubmissions,
+            bool formVersionSubmissions})>;
 typedef $$DataSubmissionsTableCreateCompanionBuilder = DataSubmissionsCompanion
     Function({
   required String id,
@@ -15538,17 +15801,21 @@ typedef $$DataSubmissionsTableCreateCompanionBuilder = DataSubmissionsCompanion
   Value<DateTime?> createdDate,
   Value<bool> deleted,
   required String form,
+  required String formVersion,
+  required int versionNumber,
   required String assignment,
   required String team,
   Value<String?> orgUnit,
   Value<AssignmentStatus?> progressStatus,
   required SubmissionStatus status,
+  Value<Map<String, dynamic>?> formData,
   Value<DateTime?> lastSyncDate,
   Value<String?> lastSyncMessage,
   Value<DateTime> startEntryTime,
   Value<DateTime?> finishedEntryTime,
   Value<String?> createdBy,
-  Value<Map<String, dynamic>?> formData,
+  Value<bool?> canEdit,
+  Value<bool?> canDelete,
   Value<int> rowid,
 });
 typedef $$DataSubmissionsTableUpdateCompanionBuilder = DataSubmissionsCompanion
@@ -15558,17 +15825,21 @@ typedef $$DataSubmissionsTableUpdateCompanionBuilder = DataSubmissionsCompanion
   Value<DateTime?> createdDate,
   Value<bool> deleted,
   Value<String> form,
+  Value<String> formVersion,
+  Value<int> versionNumber,
   Value<String> assignment,
   Value<String> team,
   Value<String?> orgUnit,
   Value<AssignmentStatus?> progressStatus,
   Value<SubmissionStatus> status,
+  Value<Map<String, dynamic>?> formData,
   Value<DateTime?> lastSyncDate,
   Value<String?> lastSyncMessage,
   Value<DateTime> startEntryTime,
   Value<DateTime?> finishedEntryTime,
   Value<String?> createdBy,
-  Value<Map<String, dynamic>?> formData,
+  Value<bool?> canEdit,
+  Value<bool?> canDelete,
   Value<int> rowid,
 });
 
@@ -15577,17 +15848,33 @@ final class $$DataSubmissionsTableReferences extends BaseReferences<
   $$DataSubmissionsTableReferences(
       super.$_db, super.$_table, super.$_typedResult);
 
-  static $DataFormTemplateVersionsTable _formTable(_$AppDatabase db) =>
-      db.dataFormTemplateVersions.createAlias($_aliasNameGenerator(
-          db.dataSubmissions.form, db.dataFormTemplateVersions.id));
+  static $FormTemplateVersionsTable _formTable(_$AppDatabase db) =>
+      db.formTemplateVersions.createAlias($_aliasNameGenerator(
+          db.dataSubmissions.form, db.formTemplateVersions.id));
 
-  $$DataFormTemplateVersionsTableProcessedTableManager get form {
+  $$FormTemplateVersionsTableProcessedTableManager get form {
     final $_column = $_itemColumn<String>('form')!;
 
-    final manager = $$DataFormTemplateVersionsTableTableManager(
-            $_db, $_db.dataFormTemplateVersions)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager =
+        $$FormTemplateVersionsTableTableManager($_db, $_db.formTemplateVersions)
+            .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_formTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $FormTemplateVersionsTable _formVersionTable(_$AppDatabase db) =>
+      db.formTemplateVersions.createAlias($_aliasNameGenerator(
+          db.dataSubmissions.formVersion, db.formTemplateVersions.id));
+
+  $$FormTemplateVersionsTableProcessedTableManager get formVersion {
+    final $_column = $_itemColumn<String>('form_version')!;
+
+    final manager =
+        $$FormTemplateVersionsTableTableManager($_db, $_db.formTemplateVersions)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_formVersionTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -15692,6 +15979,9 @@ class $$DataSubmissionsTableFilterComposer
   ColumnFilters<bool> get deleted => $composableBuilder(
       column: $table.deleted, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber, builder: (column) => ColumnFilters(column));
+
   ColumnWithTypeConverterFilters<AssignmentStatus?, AssignmentStatus, String>
       get progressStatus => $composableBuilder(
           column: $table.progressStatus,
@@ -15700,6 +15990,12 @@ class $$DataSubmissionsTableFilterComposer
   ColumnWithTypeConverterFilters<SubmissionStatus, SubmissionStatus, String>
       get status => $composableBuilder(
           column: $table.status,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
+          String>
+      get formData => $composableBuilder(
+          column: $table.formData,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<DateTime> get lastSyncDate => $composableBuilder(
@@ -15720,30 +16016,49 @@ class $$DataSubmissionsTableFilterComposer
   ColumnFilters<String> get createdBy => $composableBuilder(
       column: $table.createdBy, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
-          String>
-      get formData => $composableBuilder(
-          column: $table.formData,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  ColumnFilters<bool> get canEdit => $composableBuilder(
+      column: $table.canEdit, builder: (column) => ColumnFilters(column));
 
-  $$DataFormTemplateVersionsTableFilterComposer get form {
-    final $$DataFormTemplateVersionsTableFilterComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.form,
-            referencedTable: $db.dataFormTemplateVersions,
-            getReferencedColumn: (t) => t.id,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormTemplateVersionsTableFilterComposer(
-                  $db: $db,
-                  $table: $db.dataFormTemplateVersions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
+  ColumnFilters<bool> get canDelete => $composableBuilder(
+      column: $table.canDelete, builder: (column) => ColumnFilters(column));
+
+  $$FormTemplateVersionsTableFilterComposer get form {
+    final $$FormTemplateVersionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.form,
+        referencedTable: $db.formTemplateVersions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplateVersionsTableFilterComposer(
+              $db: $db,
+              $table: $db.formTemplateVersions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$FormTemplateVersionsTableFilterComposer get formVersion {
+    final $$FormTemplateVersionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.formVersion,
+        referencedTable: $db.formTemplateVersions,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplateVersionsTableFilterComposer(
+              $db: $db,
+              $table: $db.formTemplateVersions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return composer;
   }
 
@@ -15872,12 +16187,19 @@ class $$DataSubmissionsTableOrderingComposer
   ColumnOrderings<bool> get deleted => $composableBuilder(
       column: $table.deleted, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get progressStatus => $composableBuilder(
       column: $table.progressStatus,
       builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get status => $composableBuilder(
       column: $table.status, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get formData => $composableBuilder(
+      column: $table.formData, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get lastSyncDate => $composableBuilder(
       column: $table.lastSyncDate,
@@ -15898,22 +16220,46 @@ class $$DataSubmissionsTableOrderingComposer
   ColumnOrderings<String> get createdBy => $composableBuilder(
       column: $table.createdBy, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get formData => $composableBuilder(
-      column: $table.formData, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<bool> get canEdit => $composableBuilder(
+      column: $table.canEdit, builder: (column) => ColumnOrderings(column));
 
-  $$DataFormTemplateVersionsTableOrderingComposer get form {
-    final $$DataFormTemplateVersionsTableOrderingComposer composer =
+  ColumnOrderings<bool> get canDelete => $composableBuilder(
+      column: $table.canDelete, builder: (column) => ColumnOrderings(column));
+
+  $$FormTemplateVersionsTableOrderingComposer get form {
+    final $$FormTemplateVersionsTableOrderingComposer composer =
         $composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.form,
-            referencedTable: $db.dataFormTemplateVersions,
+            referencedTable: $db.formTemplateVersions,
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder,
                     {$addJoinBuilderToRootComposer,
                     $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormTemplateVersionsTableOrderingComposer(
+                $$FormTemplateVersionsTableOrderingComposer(
                   $db: $db,
-                  $table: $db.dataFormTemplateVersions,
+                  $table: $db.formTemplateVersions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  $$FormTemplateVersionsTableOrderingComposer get formVersion {
+    final $$FormTemplateVersionsTableOrderingComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.formVersion,
+            referencedTable: $db.formTemplateVersions,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$FormTemplateVersionsTableOrderingComposer(
+                  $db: $db,
+                  $table: $db.formTemplateVersions,
                   $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                   joinBuilder: joinBuilder,
                   $removeJoinBuilderFromRootComposer:
@@ -16004,12 +16350,19 @@ class $$DataSubmissionsTableAnnotationComposer
   GeneratedColumn<bool> get deleted =>
       $composableBuilder(column: $table.deleted, builder: (column) => column);
 
+  GeneratedColumn<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<AssignmentStatus?, String>
       get progressStatus => $composableBuilder(
           column: $table.progressStatus, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<SubmissionStatus, String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+      get formData => $composableBuilder(
+          column: $table.formData, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastSyncDate => $composableBuilder(
       column: $table.lastSyncDate, builder: (column) => column);
@@ -16026,23 +16379,46 @@ class $$DataSubmissionsTableAnnotationComposer
   GeneratedColumn<String> get createdBy =>
       $composableBuilder(column: $table.createdBy, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      get formData => $composableBuilder(
-          column: $table.formData, builder: (column) => column);
+  GeneratedColumn<bool> get canEdit =>
+      $composableBuilder(column: $table.canEdit, builder: (column) => column);
 
-  $$DataFormTemplateVersionsTableAnnotationComposer get form {
-    final $$DataFormTemplateVersionsTableAnnotationComposer composer =
+  GeneratedColumn<bool> get canDelete =>
+      $composableBuilder(column: $table.canDelete, builder: (column) => column);
+
+  $$FormTemplateVersionsTableAnnotationComposer get form {
+    final $$FormTemplateVersionsTableAnnotationComposer composer =
         $composerBuilder(
             composer: this,
             getCurrentColumn: (t) => t.form,
-            referencedTable: $db.dataFormTemplateVersions,
+            referencedTable: $db.formTemplateVersions,
             getReferencedColumn: (t) => t.id,
             builder: (joinBuilder,
                     {$addJoinBuilderToRootComposer,
                     $removeJoinBuilderFromRootComposer}) =>
-                $$DataFormTemplateVersionsTableAnnotationComposer(
+                $$FormTemplateVersionsTableAnnotationComposer(
                   $db: $db,
-                  $table: $db.dataFormTemplateVersions,
+                  $table: $db.formTemplateVersions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  $$FormTemplateVersionsTableAnnotationComposer get formVersion {
+    final $$FormTemplateVersionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.formVersion,
+            referencedTable: $db.formTemplateVersions,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$FormTemplateVersionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.formTemplateVersions,
                   $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                   joinBuilder: joinBuilder,
                   $removeJoinBuilderFromRootComposer:
@@ -16167,6 +16543,7 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
     DataSubmission,
     PrefetchHooks Function(
         {bool form,
+        bool formVersion,
         bool assignment,
         bool team,
         bool orgUnit,
@@ -16189,17 +16566,21 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
             Value<DateTime?> createdDate = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
             Value<String> form = const Value.absent(),
+            Value<String> formVersion = const Value.absent(),
+            Value<int> versionNumber = const Value.absent(),
             Value<String> assignment = const Value.absent(),
             Value<String> team = const Value.absent(),
             Value<String?> orgUnit = const Value.absent(),
             Value<AssignmentStatus?> progressStatus = const Value.absent(),
             Value<SubmissionStatus> status = const Value.absent(),
+            Value<Map<String, dynamic>?> formData = const Value.absent(),
             Value<DateTime?> lastSyncDate = const Value.absent(),
             Value<String?> lastSyncMessage = const Value.absent(),
             Value<DateTime> startEntryTime = const Value.absent(),
             Value<DateTime?> finishedEntryTime = const Value.absent(),
             Value<String?> createdBy = const Value.absent(),
-            Value<Map<String, dynamic>?> formData = const Value.absent(),
+            Value<bool?> canEdit = const Value.absent(),
+            Value<bool?> canDelete = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               DataSubmissionsCompanion(
@@ -16208,17 +16589,21 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
             createdDate: createdDate,
             deleted: deleted,
             form: form,
+            formVersion: formVersion,
+            versionNumber: versionNumber,
             assignment: assignment,
             team: team,
             orgUnit: orgUnit,
             progressStatus: progressStatus,
             status: status,
+            formData: formData,
             lastSyncDate: lastSyncDate,
             lastSyncMessage: lastSyncMessage,
             startEntryTime: startEntryTime,
             finishedEntryTime: finishedEntryTime,
             createdBy: createdBy,
-            formData: formData,
+            canEdit: canEdit,
+            canDelete: canDelete,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -16227,17 +16612,21 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
             Value<DateTime?> createdDate = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
             required String form,
+            required String formVersion,
+            required int versionNumber,
             required String assignment,
             required String team,
             Value<String?> orgUnit = const Value.absent(),
             Value<AssignmentStatus?> progressStatus = const Value.absent(),
             required SubmissionStatus status,
+            Value<Map<String, dynamic>?> formData = const Value.absent(),
             Value<DateTime?> lastSyncDate = const Value.absent(),
             Value<String?> lastSyncMessage = const Value.absent(),
             Value<DateTime> startEntryTime = const Value.absent(),
             Value<DateTime?> finishedEntryTime = const Value.absent(),
             Value<String?> createdBy = const Value.absent(),
-            Value<Map<String, dynamic>?> formData = const Value.absent(),
+            Value<bool?> canEdit = const Value.absent(),
+            Value<bool?> canDelete = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               DataSubmissionsCompanion.insert(
@@ -16246,17 +16635,21 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
             createdDate: createdDate,
             deleted: deleted,
             form: form,
+            formVersion: formVersion,
+            versionNumber: versionNumber,
             assignment: assignment,
             team: team,
             orgUnit: orgUnit,
             progressStatus: progressStatus,
             status: status,
+            formData: formData,
             lastSyncDate: lastSyncDate,
             lastSyncMessage: lastSyncMessage,
             startEntryTime: startEntryTime,
             finishedEntryTime: finishedEntryTime,
             createdBy: createdBy,
-            formData: formData,
+            canEdit: canEdit,
+            canDelete: canDelete,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -16267,6 +16660,7 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {form = false,
+              formVersion = false,
               assignment = false,
               team = false,
               orgUnit = false,
@@ -16299,6 +16693,17 @@ class $$DataSubmissionsTableTableManager extends RootTableManager<
                         $$DataSubmissionsTableReferences._formTable(db),
                     referencedColumn:
                         $$DataSubmissionsTableReferences._formTable(db).id,
+                  ) as T;
+                }
+                if (formVersion) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.formVersion,
+                    referencedTable:
+                        $$DataSubmissionsTableReferences._formVersionTable(db),
+                    referencedColumn: $$DataSubmissionsTableReferences
+                        ._formVersionTable(db)
+                        .id,
                   ) as T;
                 }
                 if (assignment) {
@@ -16383,6 +16788,7 @@ typedef $$DataSubmissionsTableProcessedTableManager = ProcessedTableManager<
     DataSubmission,
     PrefetchHooks Function(
         {bool form,
+        bool formVersion,
         bool assignment,
         bool team,
         bool orgUnit,
@@ -16856,7 +17262,7 @@ typedef $$DataElementsTableCreateCompanionBuilder = DataElementsCompanion
   required String id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  required String name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -16876,7 +17282,7 @@ typedef $$DataElementsTableUpdateCompanionBuilder = DataElementsCompanion
   Value<String> id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  Value<String> name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -17178,7 +17584,7 @@ class $$DataElementsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            Value<String> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -17217,7 +17623,7 @@ class $$DataElementsTableTableManager extends RootTableManager<
             required String id,
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            required String name,
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -17778,7 +18184,7 @@ typedef $$DataOptionSetsTableCreateCompanionBuilder = DataOptionSetsCompanion
   required String id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  required String name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -17791,7 +18197,7 @@ typedef $$DataOptionSetsTableUpdateCompanionBuilder = DataOptionSetsCompanion
   Value<String> id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
+  Value<String> name,
   Value<String?> displayName,
   Value<String?> code,
   Value<Map<String, dynamic>?> label,
@@ -18012,7 +18418,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            Value<String> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -18036,7 +18442,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
             required String id,
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            required String name,
             Value<String?> displayName = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -18106,11 +18512,6 @@ typedef $$DataOptionsTableCreateCompanionBuilder = DataOptionsCompanion
   required String id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<Map<String, dynamic>?> label,
-  Value<List<Translation>> translations,
   required String optionSet,
   Value<int> order,
   Value<int> rowid,
@@ -18120,11 +18521,6 @@ typedef $$DataOptionsTableUpdateCompanionBuilder = DataOptionsCompanion
   Value<String> id,
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
-  Value<String?> name,
-  Value<String?> displayName,
-  Value<String?> code,
-  Value<Map<String, dynamic>?> label,
-  Value<List<Translation>> translations,
   Value<String> optionSet,
   Value<int> order,
   Value<int> rowid,
@@ -18169,26 +18565,6 @@ class $$DataOptionsTableFilterComposer
   ColumnFilters<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
-          String>
-      get label => $composableBuilder(
-          column: $table.label,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnWithTypeConverterFilters<List<Translation>, List<Translation>, String>
-      get translations => $composableBuilder(
-          column: $table.translations,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   ColumnFilters<int> get order => $composableBuilder(
       column: $table.order, builder: (column) => ColumnFilters(column));
 
@@ -18232,22 +18608,6 @@ class $$DataOptionsTableOrderingComposer
   ColumnOrderings<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get label => $composableBuilder(
-      column: $table.label, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get translations => $composableBuilder(
-      column: $table.translations,
-      builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<int> get order => $composableBuilder(
       column: $table.order, builder: (column) => ColumnOrderings(column));
 
@@ -18289,22 +18649,6 @@ class $$DataOptionsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdDate => $composableBuilder(
       column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get displayName => $composableBuilder(
-      column: $table.displayName, builder: (column) => column);
-
-  GeneratedColumn<String> get code =>
-      $composableBuilder(column: $table.code, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get label =>
-      $composableBuilder(column: $table.label, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<Translation>, String>
-      get translations => $composableBuilder(
-          column: $table.translations, builder: (column) => column);
 
   GeneratedColumn<int> get order =>
       $composableBuilder(column: $table.order, builder: (column) => column);
@@ -18356,11 +18700,6 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<List<Translation>> translations = const Value.absent(),
             Value<String> optionSet = const Value.absent(),
             Value<int> order = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -18369,11 +18708,6 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             id: id,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
-            label: label,
-            translations: translations,
             optionSet: optionSet,
             order: order,
             rowid: rowid,
@@ -18382,11 +18716,6 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             required String id,
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<String?> displayName = const Value.absent(),
-            Value<String?> code = const Value.absent(),
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<List<Translation>> translations = const Value.absent(),
             required String optionSet,
             Value<int> order = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -18395,11 +18724,6 @@ class $$DataOptionsTableTableManager extends RootTableManager<
             id: id,
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
-            name: name,
-            displayName: displayName,
-            code: code,
-            label: label,
-            translations: translations,
             optionSet: optionSet,
             order: order,
             rowid: rowid,
@@ -18497,6 +18821,21 @@ final class $$UserFormPermissionsTableReferences extends BaseReferences<
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
   }
+
+  static $FormTemplatesTable _formTable(_$AppDatabase db) =>
+      db.formTemplates.createAlias($_aliasNameGenerator(
+          db.userFormPermissions.form, db.formTemplates.id));
+
+  $$FormTemplatesTableProcessedTableManager get form {
+    final $_column = $_itemColumn<String>('form')!;
+
+    final manager = $$FormTemplatesTableTableManager($_db, $_db.formTemplates)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_formTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
 }
 
 class $$UserFormPermissionsTableFilterComposer
@@ -18508,9 +18847,6 @@ class $$UserFormPermissionsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<String> get form => $composableBuilder(
-      column: $table.form, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<DateTime> get validFrom => $composableBuilder(
       column: $table.validFrom, builder: (column) => ColumnFilters(column));
 
@@ -18542,6 +18878,26 @@ class $$UserFormPermissionsTableFilterComposer
             ));
     return composer;
   }
+
+  $$FormTemplatesTableFilterComposer get form {
+    final $$FormTemplatesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.form,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableFilterComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$UserFormPermissionsTableOrderingComposer
@@ -18553,9 +18909,6 @@ class $$UserFormPermissionsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<String> get form => $composableBuilder(
-      column: $table.form, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<DateTime> get validFrom => $composableBuilder(
       column: $table.validFrom, builder: (column) => ColumnOrderings(column));
 
@@ -18584,6 +18937,26 @@ class $$UserFormPermissionsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$FormTemplatesTableOrderingComposer get form {
+    final $$FormTemplatesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.form,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableOrderingComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$UserFormPermissionsTableAnnotationComposer
@@ -18595,9 +18968,6 @@ class $$UserFormPermissionsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<String> get form =>
-      $composableBuilder(column: $table.form, builder: (column) => column);
-
   GeneratedColumn<DateTime> get validFrom =>
       $composableBuilder(column: $table.validFrom, builder: (column) => column);
 
@@ -18627,6 +18997,26 @@ class $$UserFormPermissionsTableAnnotationComposer
             ));
     return composer;
   }
+
+  $$FormTemplatesTableAnnotationComposer get form {
+    final $$FormTemplatesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.form,
+        referencedTable: $db.formTemplates,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplatesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.formTemplates,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$UserFormPermissionsTableTableManager extends RootTableManager<
@@ -18640,7 +19030,7 @@ class $$UserFormPermissionsTableTableManager extends RootTableManager<
     $$UserFormPermissionsTableUpdateCompanionBuilder,
     (UserFormPermission, $$UserFormPermissionsTableReferences),
     UserFormPermission,
-    PrefetchHooks Function({bool team})> {
+    PrefetchHooks Function({bool team, bool form})> {
   $$UserFormPermissionsTableTableManager(
       _$AppDatabase db, $UserFormPermissionsTable table)
       : super(TableManagerState(
@@ -18692,7 +19082,7 @@ class $$UserFormPermissionsTableTableManager extends RootTableManager<
                     $$UserFormPermissionsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({team = false}) {
+          prefetchHooksCallback: ({team = false, form = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -18719,6 +19109,16 @@ class $$UserFormPermissionsTableTableManager extends RootTableManager<
                         $$UserFormPermissionsTableReferences._teamTable(db).id,
                   ) as T;
                 }
+                if (form) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.form,
+                    referencedTable:
+                        $$UserFormPermissionsTableReferences._formTable(db),
+                    referencedColumn:
+                        $$UserFormPermissionsTableReferences._formTable(db).id,
+                  ) as T;
+                }
 
                 return state;
               },
@@ -18741,7 +19141,7 @@ typedef $$UserFormPermissionsTableProcessedTableManager = ProcessedTableManager<
     $$UserFormPermissionsTableUpdateCompanionBuilder,
     (UserFormPermission, $$UserFormPermissionsTableReferences),
     UserFormPermission,
-    PrefetchHooks Function({bool team})>;
+    PrefetchHooks Function({bool team, bool form})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -18762,11 +19162,14 @@ class $AppDatabaseManager {
       $$ManagedTeamsTableTableManager(_db, _db.managedTeams);
   $$AssignmentsTableTableManager get assignments =>
       $$AssignmentsTableTableManager(_db, _db.assignments);
+  $$FormTemplatesTableTableManager get formTemplates =>
+      $$FormTemplatesTableTableManager(_db, _db.formTemplates);
+  $$AssignmentFormsTableTableManager get assignmentForms =>
+      $$AssignmentFormsTableTableManager(_db, _db.assignmentForms);
   $$MetadataSubmissionsTableTableManager get metadataSubmissions =>
       $$MetadataSubmissionsTableTableManager(_db, _db.metadataSubmissions);
-  $$DataFormTemplateVersionsTableTableManager get dataFormTemplateVersions =>
-      $$DataFormTemplateVersionsTableTableManager(
-          _db, _db.dataFormTemplateVersions);
+  $$FormTemplateVersionsTableTableManager get formTemplateVersions =>
+      $$FormTemplateVersionsTableTableManager(_db, _db.formTemplateVersions);
   $$DataSubmissionsTableTableManager get dataSubmissions =>
       $$DataSubmissionsTableTableManager(_db, _db.dataSubmissions);
   $$RepeatInstancesTableTableManager get repeatInstances =>

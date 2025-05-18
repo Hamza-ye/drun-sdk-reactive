@@ -4,10 +4,11 @@ import 'package:drift/drift.dart';
 
 @TableIndex(name: 'form_permission_form_idx', columns: {#team, #form})
 class UserFormPermissions extends Table {
-  @ReferenceName("formPermissions")
+  @ReferenceName("teamFormPermissions")
   TextColumn get team => text().references(Teams, #id)();
 
-  TextColumn get form => text()();
+  @ReferenceName("formPermissions")
+  TextColumn get form => text().references(FormTemplates, #id)();
 
   DateTimeColumn get validFrom => dateTime().nullable()();
 

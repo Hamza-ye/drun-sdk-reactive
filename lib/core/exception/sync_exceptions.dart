@@ -2,7 +2,7 @@ import 'package:d_sdk/core/exception/exception.dart';
 
 class DSyncException extends DError {
   DSyncException(
-    String message, {
+  { String message = '',
     super.url,
     super.cause,
     super.errorCode = DRunErrorCode.syncError,

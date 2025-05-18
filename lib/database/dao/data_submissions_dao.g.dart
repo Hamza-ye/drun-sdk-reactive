@@ -4,8 +4,9 @@ part of 'data_submissions_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$DataSubmissionsDaoMixin on DatabaseAccessor<AppDatabase> {
-  $DataFormTemplateVersionsTable get dataFormTemplateVersions =>
-      attachedDatabase.dataFormTemplateVersions;
+  $FormTemplatesTable get formTemplates => attachedDatabase.formTemplates;
+  $FormTemplateVersionsTable get formTemplateVersions =>
+      attachedDatabase.formTemplateVersions;
   $ProjectsTable get projects => attachedDatabase.projects;
   $ActivitiesTable get activities => attachedDatabase.activities;
   $UsersTable get users => attachedDatabase.users;

@@ -5,85 +5,64 @@ import 'package:intl/intl.dart';
 class AssignmentModel with EquatableMixin {
   AssignmentModel({
     required this.id,
-    required this.activity,
+    this.activity,
     required this.orgUnit,
     required this.team,
-    // required this.activityId,
-    // required this.activityName,
-    // required this.entityId,
-    // required this.entityCode,
-    // required this.entityName,
-    // required this.teamId,
-    // required this.teamCode,
-    // required this.teamName,
-    required this.scope,
     required this.status,
     this.startDay,
     this.startDate,
     this.dueDate,
     this.rescheduledDate,
-    this.allocatedResources = const {},
-    this.reportedResources = const {},
-    required this.forms,
+    // this.allocatedResources = const {},
+    // this.reportedResources = const {},
+    // this.forms = const [],
   });
 
   /// assignment
 
   final String id;
 
-  final IdentifiableModel activity;
+  final IdentifiableModel? activity;
   final IdentifiableModel team;
   final IdentifiableModel orgUnit;
-
-  // final String activityId;
-  // final String activityName;
-  //
-  // final String entityId;
-  // final String entityCode;
-  // final String entityName;
-  // final String teamId;
-  // final String teamCode;
-  // final String teamName;
-
-  final EntityScope scope;
   final AssignmentStatus status;
   final int? startDay;
   final DateTime? startDate;
   final DateTime? dueDate;
   final DateTime? rescheduledDate;
-  final List<String> forms;
-  final Map<String, dynamic> allocatedResources; // E.g., ITNs, Population
-  final Map<String, dynamic> reportedResources; // E.g., ITNs, Population
+
+  // final List<String> forms;
+
+  // final Map<String, dynamic> allocatedResources; // E.g., ITNs, Population
+  // final Map<String, dynamic> reportedResources; // E.g., ITNs, Population
 
   AssignmentModel copyWith({
     String? id,
     IdentifiableModel? activity,
     IdentifiableModel? orgUnit,
     IdentifiableModel? team,
-    EntityScope? scope,
     AssignmentStatus? status,
     int? startDay,
     DateTime? startDate,
     DateTime? dueDate,
     DateTime? rescheduledDate,
-    List<String>? forms,
-    Map<String, int>? allocatedResources,
-    Map<String, int>? reportedResources,
+    // List<String>? forms,
+    // Map<String, int>? allocatedResources,
+    // Map<String, int>? reportedResources,
   }) {
     return AssignmentModel(
       id: id ?? this.id,
       activity: activity ?? this.activity,
       orgUnit: orgUnit ?? this.orgUnit,
       team: team ?? this.team,
-      scope: scope ?? this.scope,
       status: status ?? this.status,
       startDay: startDay ?? this.startDay,
       startDate: startDate ?? this.startDate,
       dueDate: dueDate ?? this.dueDate,
       rescheduledDate: rescheduledDate ?? this.rescheduledDate,
-      forms: forms ?? this.forms,
-      allocatedResources: allocatedResources ?? this.allocatedResources,
-      reportedResources: reportedResources ?? this.reportedResources,
+      // forms: forms ?? this.forms,
+      // allocatedResources: allocatedResources ?? this.allocatedResources,
+      // reportedResources: reportedResources ?? this.reportedResources,
     );
   }
 
@@ -111,14 +90,14 @@ class AssignmentModel with EquatableMixin {
         activity,
         orgUnit,
         team,
-        scope,
+        // scope,
         status,
         startDay,
         startDate,
         dueDate,
         rescheduledDate,
-        forms,
-        allocatedResources,
-        reportedResources
+        // forms,
+        // allocatedResources,
+        // reportedResources
       ];
 }

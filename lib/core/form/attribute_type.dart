@@ -4,13 +4,12 @@ enum AttributeType {
   username,
   userUid,
   phoneNumber,
-  scope,
   userInfo,
   deviceId,
   deviceModel,
   form,
-  team,
-  activity,
+  // team,
+  // activity,
   version;
 
   static AttributeType? getAttributeType(String? attributeType) {
@@ -33,12 +32,10 @@ enum AttributeType {
         return AttributeType.deviceModel;
       case 'form':
         return AttributeType.form;
-      case 'team':
-        return AttributeType.team;
-      case 'scope':
-        return AttributeType.scope;
-      case 'activity':
-        return AttributeType.activity;
+      // case 'team':
+      //   return AttributeType.team;
+      // case 'activity':
+      //   return AttributeType.activity;
       case 'version':
         return AttributeType.version;
       default:

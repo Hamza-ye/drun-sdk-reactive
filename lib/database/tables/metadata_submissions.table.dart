@@ -3,7 +3,7 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-class MetadataSubmissions extends Table with BaseTableMixin, IdentifiableMixin {
+class MetadataSubmissions extends Table with BaseTableMixin {
   /// Resource type (non-null), stored as text using a converter.
   TextColumn get resourceType =>
       text().map(const EnumNameConverter(MetadataResourceType.values))();

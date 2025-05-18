@@ -4,7 +4,7 @@ import 'package:drift/drift.dart';
 import 'base.entity.mixin.dart';
 
 mixin IdentifiableMixin on BaseTableMixin {
-  TextColumn get name => text().nullable()();
+  TextColumn get name => text()();
 
   TextColumn get displayName => text().nullable()();
 

@@ -1,3 +1,4 @@
+import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:d_sdk/database/shared/d_run_base.model.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,7 @@ class IdentifiableModel extends DRunBaseModel {
   IdentifiableModel(
       {required this.id,
       this.code,
-      this.name,
+      required this.name,
       this.disabled = false,
       this.deleted = false,
       IMap<String, dynamic> label = const IMapConst({})})
@@ -15,10 +16,13 @@ class IdentifiableModel extends DRunBaseModel {
 
   final String id;
   final String? code;
-  final String? name;
+  final String name;
   final bool disabled;
   final bool deleted;
   final IMap<String, dynamic> label;
+
+  String get displayLabel =>
+      getItemLocalString(label.unlockView, defaultString: name);
 
   IdentifiableModel copyWith({
     String? id,

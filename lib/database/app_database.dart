@@ -17,6 +17,7 @@ part 'app_database.g.dart';
   Teams,
   ManagedTeams,
   Assignments,
+  AssignmentForms,
   MetadataSubmissions,
   RepeatInstances,
   DataValues,
@@ -24,7 +25,8 @@ part 'app_database.g.dart';
   DataOptionSets,
   DataOptions,
   DataSubmissions,
-  DataFormTemplateVersions,
+  FormTemplateVersions,
+  FormTemplates,
   UserFormPermissions,
 ], daos: [
   ActivitiesDao,
@@ -36,8 +38,9 @@ part 'app_database.g.dart';
   DataOptionSetsDao,
   OrgUnitsDao,
   UsersDao,
-  DataFormTemplateVersionsDao,
-  DataElementsDao
+  FormTemplateVersionsDao,
+  FormTemplatesDao,
+  DataElementsDao,
 ])
 class AppDatabase extends _$AppDatabase {
   // AppDatabase(super.e, {String? databaseName});
@@ -64,6 +67,15 @@ class AppDatabase extends _$AppDatabase {
                 ),
               ),*/
             );
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      beforeOpen: (OpeningDetails details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
 
   @override
   int get schemaVersion => 1;

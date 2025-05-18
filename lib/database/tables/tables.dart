@@ -1,13 +1,15 @@
 //GENERATED BARREL FILE 
 export 'activities.table.dart';
+export 'assignment_forms.table.dart';
 export 'assignments.table.dart';
 export 'base.entity.mixin.dart';
 export 'data_elements.table.dart';
-export 'data_form_template_versions.table.dart';
 export 'data_option_sets.table.dart';
 export 'data_options.table.dart';
 export 'data_submissions.table.dart';
 export 'data_values.table.dart';
+export 'form_template_versions.table.dart';
+export 'form_templates.table.dart';
 export 'identifiable.entity.mixin.dart';
 export 'managed_teams.table.dart';
 export 'metadata_submissions.table.dart';
