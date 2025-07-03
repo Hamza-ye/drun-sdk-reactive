@@ -14,7 +14,7 @@ class DSOrder {
   static const int team = 1100;
   static const int managedTeam = 1200;
   static const int userFormAccess = 1300;
-  static const int assignment = 1400;
+  static const int flowInstance = 1400;
 
   // static const int assignmentForms = 1450;
   static const int dataSubmission = 1500;

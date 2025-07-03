@@ -3,8 +3,6 @@ abstract class AppEnvironment {
   static const apiBaseUrl = String.fromEnvironment('api_base_url');
   static const defaultLocale =
       String.fromEnvironment('default_locale', defaultValue: 'en');
-  static const apiRequestSentTimeout =
-      int.fromEnvironment('api_request_send_timeout', defaultValue: 60);
 
   // if not present it defaults to false
   static const secureDatabase = bool.fromEnvironment('secure_database');

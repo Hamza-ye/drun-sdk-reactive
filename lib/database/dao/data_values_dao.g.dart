@@ -4,17 +4,22 @@ part of 'data_values_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$DataValuesDaoMixin on DatabaseAccessor<AppDatabase> {
+  $DataOptionSetsTable get dataOptionSets => attachedDatabase.dataOptionSets;
+  $DataElementsTable get dataElements => attachedDatabase.dataElements;
   $FormTemplatesTable get formTemplates => attachedDatabase.formTemplates;
   $FormTemplateVersionsTable get formTemplateVersions =>
       attachedDatabase.formTemplateVersions;
   $ProjectsTable get projects => attachedDatabase.projects;
   $ActivitiesTable get activities => attachedDatabase.activities;
+  $FlowTypesTable get flowTypes => attachedDatabase.flowTypes;
   $UsersTable get users => attachedDatabase.users;
   $TeamsTable get teams => attachedDatabase.teams;
   $OrgUnitsTable get orgUnits => attachedDatabase.orgUnits;
-  $AssignmentsTable get assignments => attachedDatabase.assignments;
+  $EntityTypesTable get entityTypes => attachedDatabase.entityTypes;
+  $EntityInstancesTable get entityInstances => attachedDatabase.entityInstances;
+  $FlowInstancesTable get flowInstances => attachedDatabase.flowInstances;
+  $StageDefinitionsTable get stageDefinitions =>
+      attachedDatabase.stageDefinitions;
   $DataSubmissionsTable get dataSubmissions => attachedDatabase.dataSubmissions;
-  $RepeatInstancesTable get repeatInstances => attachedDatabase.repeatInstances;
-  $DataElementsTable get dataElements => attachedDatabase.dataElements;
   $DataValuesTable get dataValues => attachedDatabase.dataValues;
 }

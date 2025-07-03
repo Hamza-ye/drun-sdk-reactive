@@ -2,22 +2,23 @@ import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/database/shared/assignment_status.dart';
+import 'package:d_sdk/database/shared/submission_status.dart';
 import 'package:d_sdk/datasource/datasource.dart';
 import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
-@Order(DSOrder.assignment)
+@Order(DSOrder.flowInstance)
 @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
-class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
-    implements MetaDataSource<Assignment> {
-  AssignmentDatasource({required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.assignments);
+class FlowInstanceDatasource extends BaseDataSource<$FlowInstancesTable, FlowInstance>
+    implements MetaDataSource<FlowInstance> {
+  FlowInstanceDatasource({required super.apiClient, required DbManager dbManager})
+      : super(dbManager: dbManager, table: dbManager.db.flowInstances);
 
   @override
-  String get resourceName => 'assignments/forms';
+  String get resourceName => 'flowInstances/forms';
 
-  Future<List<Assignment>> syncWithRemote(
+  Future<List<FlowInstance>> syncWithRemote(
       {SyncConfig? options, ProgressCallback? progressCallback}) async {
     final resourcePath = '$resourceName$pathPostfix';
     final response =
@@ -26,73 +27,77 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
     final raw = response.data;
 
     /// expecting paged list ({ apiResourceName: [...] }),
-    List dataItems = raw?['assignments']?.toList() ?? [];
+    List dataItems = raw?['flowInstances']?.toList() ?? [];
 
-    final assignmentModels = dataItems
+    final flowInstanceModels = dataItems
         .map((item) =>
-            _AssignmentWithAccess.fromJson(item as Map<String, dynamic>))
+            _FlowInstanceWithAccess.fromJson(item as Map<String, dynamic>))
         .toList();
 
-    final assignments = assignmentModels
-        .map((t) => Assignment(
-            id: t.assignment,
+    final flowInstances = flowInstanceModels
+        .map((t) => FlowInstance(
+            id: t.flowInstance,
             activity: t.activity,
             team: t.team,
             orgUnit: t.orgUnit,
-            progressStatus: t.progressStatus))
+            flowStatus: t.progressStatus,
+            flowType: t.flowInstanceType,
+            syncState: InstanceSyncStatus.synced))
         .toList();
 
-    final assignmentForms =
-        assignmentModels.expand((t) => t.accessibleForms).toList();
+    final flowInstanceForms =
+        flowInstanceModels.expand((t) => t.accessibleForms).toList();
 
     progressCallback?.call(60);
 
-    if (assignments.isNotEmpty) {
+    if (flowInstances.isNotEmpty) {
       db.transaction(() async {
         await db.batch((b) {
-          b.insertAllOnConflictUpdate(table, assignments);
+          b.insertAllOnConflictUpdate(table, flowInstances);
         });
-        if (assignmentForms.isNotEmpty) {
+        if (flowInstanceForms.isNotEmpty) {
           await db.batch((b) {
-            b.insertAllOnConflictUpdate(db.assignmentForms, assignmentForms);
+            b.insertAllOnConflictUpdate(db.assignmentForms, flowInstanceForms);
           });
         }
       });
     }
     progressCallback?.call(100);
-    return assignments;
+    return flowInstances;
   }
 
   @override
-  Assignment fromApiJson(Map<String, dynamic> data,
+  FlowInstance fromApiJson(Map<String, dynamic> data,
       {ValueSerializer? serializer}) {
-    return Assignment.fromJson(data, serializer: serializer);
+    return FlowInstance.fromJson(data, serializer: serializer);
   }
 }
 
-class _AssignmentWithAccess {
-  final String assignment;
+class _FlowInstanceWithAccess {
+  final String flowInstance;
   final String activity;
   final String team;
   final String orgUnit;
+  final String flowInstanceType;
   final AssignmentStatus progressStatus;
   final List<AssignmentForm> accessibleForms;
 
-  _AssignmentWithAccess(
-      {required this.assignment,
+  _FlowInstanceWithAccess(
+      {required this.flowInstance,
       required this.activity,
       required this.team,
       required this.orgUnit,
       required this.progressStatus,
+      required this.flowInstanceType,
       required this.accessibleForms});
 
-  factory _AssignmentWithAccess.fromJson(Map<String, dynamic> map) {
+  factory _FlowInstanceWithAccess.fromJson(Map<String, dynamic> map) {
     final accessibleForms = (map['accessibleForms'] as List? ?? [])
         .map<AssignmentForm>((access) => AssignmentForm.fromJson(
               {
                 ...access,
                 'form': access['form'],
-                'assignment': map['assignment'],
+                'flowInstance': map['flowInstance'],
               },
               serializer: CustomSerializer(),
             ))
@@ -100,13 +105,14 @@ class _AssignmentWithAccess {
 
     final progressStatus =
         AssignmentStatus.getType(map['progressStatus'] as String?) ??
-            AssignmentStatus.NOT_STARTED;
-    return _AssignmentWithAccess(
-      assignment: map['assignment'],
+            AssignmentStatus.PLANNED;
+    return _FlowInstanceWithAccess(
+      flowInstance: map['flowInstance'],
       activity: map['activity'] as String,
       team: map['team'] as String,
       orgUnit: map['orgUnit'] as String,
       progressStatus: progressStatus,
+      flowInstanceType: map['flowInstanceType']['uid'],
       accessibleForms: accessibleForms,
     );
   }

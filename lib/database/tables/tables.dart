@@ -1,13 +1,18 @@
-//GENERATED BARREL FILE 
+//GENERATED BARREL FILE
 export 'activities.table.dart';
 export 'assignment_forms.table.dart';
-export 'assignments.table.dart';
 export 'base.entity.mixin.dart';
 export 'data_elements.table.dart';
 export 'data_option_sets.table.dart';
 export 'data_options.table.dart';
 export 'data_submissions.table.dart';
 export 'data_values.table.dart';
+export 'entity_attribute_values.table.dart';
+export 'entity_attributes.table.dart';
+export 'entity_instances.table.dart';
+export 'entity_types.table.dart';
+export 'flow_instances.table.dart';
+export 'flow_types.table.dart';
 export 'form_template_versions.table.dart';
 export 'form_templates.table.dart';
 export 'identifiable.entity.mixin.dart';
@@ -17,6 +22,7 @@ export 'org_units.table.dart';
 export 'ou_levels.table.dart';
 export 'projects.table.dart';
 export 'repeat_instances.table.dart';
+export 'stage_definitions.table.dart';
 export 'teams.table.dart';
 export 'user_form_permissions.dart';
 export 'users.table.dart';

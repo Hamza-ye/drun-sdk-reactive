@@ -37,7 +37,7 @@ class DataSubmissionDatasource
     final team = data['team'];
     return DataSubmission.fromJson({
       ...data,
-      'status': SubmissionStatus.synced.name,
+      'status': InstanceSyncStatus.synced.name,
       'progressStatus': data['status'],
       'form': formId,
       'assignment': assignment,
@@ -48,8 +48,8 @@ class DataSubmissionDatasource
 
   Future<List<DataSubmission>> upload(List<String> uids) async {
     List<DataSubmission> submissions = await db.managers.dataSubmissions
-        .filter((f) => f.status
-            .isIn([SubmissionStatus.finalized, SubmissionStatus.syncFailed]))
+        .filter((f) => f.syncState
+            .isIn([InstanceSyncStatus.finalized, InstanceSyncStatus.syncFailed]))
         .get();
 
     List<String> syncableEntityIds = [];
@@ -59,9 +59,9 @@ class DataSubmissionDatasource
     submissions.forEach((submission) {
       syncableEntityIds.add(submission.id);
 
-      syncableAssignments.removeWhere((id) => id == submission.assignment);
-      if (submission.assignment != null) {
-        syncableAssignments.add(submission.assignment!);
+      syncableAssignments.removeWhere((id) => id == submission.flowInstance);
+      if (submission.flowInstance != null) {
+        syncableAssignments.add(submission.flowInstance!);
       }
 
       syncableTeamIds.removeWhere((id) => id == submission.team);
@@ -92,13 +92,13 @@ class DataSubmissionDatasource
       DataSubmission newEntity = submission;
       if (syncCreated || syncUpdated) {
         newEntity = submission.copyWith(
-            status: SubmissionStatus.synced,
+            syncState: InstanceSyncStatus.synced,
             lastSyncMessage: Value(null),
             lastSyncDate: Value(DateTime.now().toUtc()));
         // availableItemCount++;
       } else if (syncFailed) {
         newEntity = submission.copyWith(
-            status: SubmissionStatus.syncFailed,
+            syncState: InstanceSyncStatus.syncFailed,
             lastSyncMessage: Value(summary.failed[submission.id]));
 
         // availableItemCount++;

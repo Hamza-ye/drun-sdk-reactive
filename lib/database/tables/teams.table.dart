@@ -5,7 +5,6 @@ import 'package:drift/drift.dart';
 class Teams extends Table with BaseTableMixin {
   TextColumn get code => text().nullable()();
 
-  /// Boolean columns with defaults.
   BoolColumn get disabled => boolean().nullable()();
 
   @ReferenceName("activityTeams")

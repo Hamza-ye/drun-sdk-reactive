@@ -1,35 +1,43 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
-import 'package:d_sdk/database/tables/assignments.table.dart';
+import 'package:d_sdk/database/tables/flow_instances.table.dart';
 import 'package:drift/drift.dart';
 
-part 'assignments_dao.g.dart';
+part 'flow_instances_dao.g.dart';
 
-@DriftAccessor(tables: [Assignments])
-class AssignmentsDao extends DatabaseAccessor<AppDatabase>
-    with _$AssignmentsDaoMixin {
-  AssignmentsDao(AppDatabase db) : super(db);
+@DriftAccessor(tables: [FlowInstances])
+class FlowInstancesDao extends DatabaseAccessor<AppDatabase>
+    with _$FlowInstancesDaoMixin {
+  FlowInstancesDao(AppDatabase db) : super(db);
 
-  Future<List<Assignment>> getAllItems() => select(assignments).get();
+  Future<List<FlowInstance>> getAll() => select(flowInstances).get();
 
-  Future<Assignment?> getItemById(String id) {
-    return (select(assignments)..where((tbl) => tbl.id.equals(id)))
+  Future<List<FlowInstance>> getByIds(Iterable<String> ids) {
+    return (select(flowInstances)..where((tbl) => tbl.id.isIn(ids))).get();
+  }
+
+  Future<FlowInstance?> getById(String id) {
+    return (select(flowInstances)..where((tbl) => tbl.id.equals(id)))
         .getSingleOrNull();
   }
 
-  Future<int> insertItem(Insertable<Assignment> entry) {
-    return into(assignments).insert(entry);
+  Future<int> insert(Insertable<FlowInstance> entry) {
+    return into(flowInstances).insert(entry);
   }
 
-  Future<bool> updateItem(Assignment item) {
-    return update(assignments).replace(item);
+  Future<bool> updateObject(FlowInstance item) {
+    return update(flowInstances).replace(item);
   }
 
-  Future<int> deleteItem(String id) {
-    return (delete(assignments)..where((tbl) => tbl.id.equals(id))).go();
+  Future<int> deleteById(String id) {
+    return (delete(flowInstances)..where((tbl) => tbl.id.equals(id))).go();
   }
 
-  Selectable<AssignmentModel> watchAssignmentCardsForActivity({
+  Future<int> deleteObject(FlowInstance flowInstance) {
+    return deleteById(flowInstance.id);
+  }
+
+  Selectable<AssignmentModel> selectFlowInstances({
     String? activityId,
     String ouSearchFilter = '',
     int page = 1, // 1-based page index
@@ -41,12 +49,12 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
     final act = alias(activities, 'act');
     // Base join query
     final JoinedSelectStatement<HasResultSet, dynamic> query =
-        select(assignments)
+        select(flowInstances)
             // ..where((a) => a.activity.equals(activityId)))
             .join([
-      innerJoin(teams, teams.id.equalsExp(assignments.team)),
-      innerJoin(act, act.id.equalsExp(assignments.activity)),
-      innerJoin(ous, ous.id.equalsExp(assignments.orgUnit)),
+      innerJoin(teams, teams.id.equalsExp(flowInstances.team)),
+      innerJoin(act, act.id.equalsExp(flowInstances.activity)),
+      innerJoin(ous, ous.id.equalsExp(flowInstances.orgUnit)),
     ]);
 
     // Apply activity filter if provided
@@ -66,13 +74,14 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
       ..orderBy([
         // order for stable paging
         OrderingTerm(
-            expression: db.assignments.startDate, mode: OrderingMode.desc),
-        OrderingTerm(expression: db.assignments.id),
+            expression: db.flowInstances.flowInstanceDate,
+            mode: OrderingMode.desc),
+        OrderingTerm(expression: db.flowInstances.id),
       ]);
 
     // Map rows to model
     return query.map((row) {
-      final a = row.readTable(assignments);
+      final a = row.readTable(flowInstances);
       final t = row.readTable(teams);
       final ou = row.readTable(ous);
       final ac = row.readTable(act);
@@ -92,47 +101,47 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
           code: t.code,
           name: t.code ?? '',
         ),
-        startDay: a.startDay,
-        startDate: a.startDate,
+        // startDay: a.startDay,
+        startDate: a.flowInstanceDate,
         dueDate: null,
-        status: a.progressStatus ?? AssignmentStatus.NOT_STARTED,
+        status: a.flowStatus ?? AssignmentStatus.PLANNED,
       );
     });
   }
 //
-// // AssignmentCardProjection is a simple class to hold flat query results
-// // map List<AssignmentCardProjection> to List<AssignmentCardViewModel>
-//   Selectable<AssignmentModel> watchAssignmentCardsForActivity2(
+// // FlowInstanceCardProjection is a simple class to hold flat query results
+// // map List<FlowInstanceCardProjection> to List<FlowInstanceCardViewModel>
+//   Selectable<FlowInstanceModel> watchFlowInstanceCardsForActivity2(
 //       String activityId,
 //       {int page = 1,
 //       int pageSize = 20}) {
 //     // final offset = (page - 1) * pageSize;
 //     final JoinedSelectStatement<HasResultSet, dynamic> query =
-//         (select(db.assignments)..where((a) => a.activity.equals(activityId)))
+//         (select(db.flowInstances)..where((a) => a.activity.equals(activityId)))
 //             .join([
-//       innerJoin(db.teams, db.teams.id.equalsExp(db.assignments.team)),
+//       innerJoin(db.teams, db.teams.id.equalsExp(db.flowInstances.team)),
 //       innerJoin(
-//           db.activities, db.activities.id.equalsExp(db.assignments.activity)),
-//       innerJoin(db.orgUnits, db.orgUnits.id.equalsExp(db.assignments.orgUnit)),
+//           db.activities, db.activities.id.equalsExp(db.flowInstances.activity)),
+//       innerJoin(db.orgUnits, db.orgUnits.id.equalsExp(db.flowInstances.orgUnit)),
 //     ]);
 //
 //     final result = query.map((row) {
 //       final activity = row.readTable(activities);
 //       final team = row.readTable(teams);
 //       final orgUnit = row.readTable(orgUnits);
-//       return AssignmentModel(
-//         id: row.readTable(assignments).id,
+//       return FlowInstanceModel(
+//         id: row.readTable(flowInstances).id,
 //         activity: IdentifiableModel(
 //             id: activityId, code: activity.code, name: activity.name),
 //         orgUnit: IdentifiableModel(
 //             id: orgUnit.id, code: orgUnit.code, name: orgUnit.name),
 //         team: IdentifiableModel(id: team.id, code: team.code, name: team.code),
-//         startDay: row.readTable(assignments).startDay,
-//         startDate: row.readTable(assignments).startDate,
+//         startDay: row.readTable(flowInstances).startDay,
+//         startDate: row.readTable(flowInstances).startDate,
 //         dueDate: null,
 //         // reportedResources: {},
-//         status: row.readTable(assignments).progressStatus ??
-//             AssignmentStatus.NOT_STARTED,
+//         status: row.readTable(flowInstances).progressStatus ??
+//             FlowInstanceStatus.NOT_STARTED,
 //       );
 //     });
 //     return result;

@@ -134,8 +134,8 @@ Future<_i174.GetIt> initActiveSessionContextScope(
                 apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
-      gh.factory<_i277.AbstractDatasource<_i210.Assignment>>(
-          () => _i90.AssignmentDatasource(
+      gh.factory<_i277.AbstractDatasource<_i210.FlowInstance>>(
+          () => _i90.FlowInstanceDatasource(
                 apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));

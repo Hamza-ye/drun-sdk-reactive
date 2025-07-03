@@ -6,7 +6,6 @@ import 'package:drift/drift.dart';
 class ManagedTeams extends Table with BaseTableMixin {
   TextColumn get code => text().nullable()();
 
-  /// Boolean columns with defaults.
   BoolColumn get disabled => boolean().nullable()();
 
   @ReferenceName("activityManagedTeams")
@@ -15,7 +14,6 @@ class ManagedTeams extends Table with BaseTableMixin {
   @ReferenceName("managedTeams")
   TextColumn get user => text().references(Users, #id)();
 
-  /// Form permissions stored as JSON representing a list of TeamFormPermission.
   TextColumn get teamUsers =>
       text().map(const TeamUsersConverter()).clientDefault(() => '[]')();
 }

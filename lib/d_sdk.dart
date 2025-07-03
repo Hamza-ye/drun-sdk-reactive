@@ -23,7 +23,7 @@ class DSdk {
   // db DAOs:
   static ActivitiesDao get activity => db.activitiesDao;
 
-  static AssignmentsDao get assignment => db.assignmentsDao;
+  static FlowInstancesDao get assignment => db.flowInstancesDao;
 
   static OrgUnitsDao get orgUnit => db.orgUnitsDao;
 

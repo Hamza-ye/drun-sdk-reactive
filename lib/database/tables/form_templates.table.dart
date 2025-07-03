@@ -19,8 +19,6 @@ class FormTemplates extends Table {
 
   TextColumn get description => text().nullable()();
 
-  // BoolColumn get disabled => boolean().nullable()();
-
   @override
   Set<Column<Object>> get primaryKey => {id};
 }

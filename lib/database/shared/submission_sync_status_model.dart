@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class SubmissionSyncStatusModel with EquatableMixin {
-  final SubmissionStatus status;
+  final InstanceSyncStatus syncState;
   final int count;
 
-  SubmissionSyncStatusModel({required this.status, required this.count});
+  SubmissionSyncStatusModel({required this.syncState, required this.count});
 
   @override
-  List<Object?> get props => [status, count];
+  List<Object?> get props => [syncState, count];
 }

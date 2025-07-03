@@ -1,4 +1,6 @@
 enum AssignmentStatus {
+  PLANNED,
+  @Deprecated("use planned instead")
   NOT_STARTED,
   IN_PROGRESS, // Active
   DONE, // Completed
@@ -15,8 +17,13 @@ enum AssignmentStatus {
     return this == AssignmentStatus.IN_PROGRESS;
   }
 
+  bool isPlanned() {
+    return this == AssignmentStatus.PLANNED;
+  }
+
+  @Deprecated("use isPlanned instead")
   bool isNotStarted() {
-    return this == AssignmentStatus.NOT_STARTED;
+    return isPlanned();
   }
 
   bool isRescheduled() {
@@ -35,6 +42,28 @@ enum AssignmentStatus {
     return this == AssignmentStatus.CANCELLED;
   }
 
+  bool isActive() => isActiveStatuses().contains(this);
+
+  bool isCompleted() => isCompletedStatuses().contains(this);
+
+  static List<AssignmentStatus> isActiveStatuses() {
+    return [
+      PLANNED,
+      NOT_STARTED,
+      IN_PROGRESS, // Active
+      RESCHEDULED,
+      MERGED,
+      REASSIGNED,
+    ];
+  }
+
+  static List<AssignmentStatus> isCompletedStatuses() {
+    return [
+      DONE, // Completed
+      CANCELLED
+    ];
+  }
+
   // static AssignmentStatus? fromString(String? status) {
   //   return AssignmentStatus.values
   //       .firstOrNullWhere((e) => e.toString().split('.').last == status);
@@ -42,8 +71,10 @@ enum AssignmentStatus {
 
   static AssignmentStatus? getType(String? value) {
     switch (value?.toLowerCase()) {
+      case 'planned':
+        return AssignmentStatus.PLANNED;
       case 'not_started':
-        return AssignmentStatus.NOT_STARTED;
+        return AssignmentStatus.PLANNED;
       case 'in_progress':
         return AssignmentStatus.IN_PROGRESS;
       case 'done':
