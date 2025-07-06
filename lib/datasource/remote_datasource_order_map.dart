@@ -17,7 +17,7 @@ class DSOrder {
   static const int assignment = 1400;
 
   // static const int assignmentForms = 1450;
-  static const int dataSubmission = 1500;
+  static const int dataInstance = 1500;
 
   // static const int repeatInstance = 1600;
   static const int dataValue = 1700;

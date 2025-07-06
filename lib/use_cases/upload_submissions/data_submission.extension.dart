@@ -1,13 +1,13 @@
 import 'package:d_sdk/database/app_database.dart';
 
-extension DataSubmissionUploadExt on DataSubmission {
+extension DataSubmissionUploadExt on DataInstance {
   Map<String, dynamic> toUpload() {
     Map<String, dynamic> syncableToUpload = {
       "uid": this.id,
-      "formVersion": form,
-      "form": form.split('_')[0],
-      "version": int.parse(form.split('_')[1]),
-      "status": this.progressStatus?.name,
+      "formVersion": templateVersion,
+      "form": formTemplate,
+      // "version": int.parse(form.split('_')[1]),
+      // "status": this.progressStatus?.name,
       "deleted": this.deleted,
       "lastSyncMassage": this.lastSyncMessage,
       "lastSyncDate": this.lastSyncDate,

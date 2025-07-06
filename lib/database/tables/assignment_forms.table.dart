@@ -2,14 +2,17 @@ import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
 class AssignmentForms extends Table {
-  @ReferenceName("assignmentForms")
+  @ReferenceName("forms")
   TextColumn get assignment =>
       text().references(Assignments, #id, onUpdate: KeyAction.cascade)();
 
-  @ReferenceName("formAssignments")
-  TextColumn get form => text().references(FormTemplates, #id)();
+  @ReferenceName("assignments")
+  TextColumn get form => text().references(Assignments, #id)();
 
   BoolColumn get canAddSubmissions =>
+      boolean().nullable().clientDefault(() => false)();
+
+  BoolColumn get canViewSubmissions =>
       boolean().nullable().clientDefault(() => false)();
 
   BoolColumn get canEditSubmissions =>

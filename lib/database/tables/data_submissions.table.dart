@@ -3,50 +3,56 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'submission_status_idx', columns: {#status})
-class DataSubmissions extends Table with BaseTableMixin {
+/// each submission, referencing either FORM_TEMPLATE if single‐submission,
+/// or DATA_STAGE if staged
+@TableIndex(name: 'data_instance_status_idx', columns: {#syncState})
+class DataInstances extends Table with BaseTableMixin {
   BoolColumn get deleted => boolean().clientDefault(() => false)();
 
-  @ReferenceName("formSubmissions")
-  TextColumn get form => text().references(FormTemplateVersions, #id)();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 
-  @ReferenceName("formVersionSubmissions")
-  TextColumn get formVersion => text().references(FormTemplateVersions, #id)();
+  /// analogous to program
+  @ReferenceName("templateDataInstances")
+  TextColumn get formTemplate => text().references(FormTemplates, #id)();
 
-  IntColumn get versionNumber => integer()();
+  @ReferenceName("VersionDataInstances")
+  TextColumn get templateVersion =>
+      text().references(FormTemplateVersions, #id)();
 
-  @ReferenceName("assignmentSubmissions")
-  TextColumn get assignment => text().references(Assignments, #id)();
+  /// analogous to enrollment
+  @ReferenceName("assignmentDataInstances")
+  TextColumn get assignment =>
+      text().references(Assignments, #id).nullable()();
 
-  @ReferenceName("teamSubmissions")
-  TextColumn get team => text().references(Teams, #id)();
+  /// who
+  @ReferenceName("teamDataInstances")
+  TextColumn get team => text().references(Teams, #id).nullable()();
 
-  @ReferenceName("orgUnitSubmissions")
+  /// where
+  @ReferenceName("ouDataInstances")
   TextColumn get orgUnit => text().references(OrgUnits, #id).nullable()();
-
-  TextColumn get progressStatus =>
-      text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
-
-  TextColumn get status =>
-      text().map(const EnumNameConverter(SubmissionStatus.values))();
-
-  TextColumn get formData =>
-      text().map(const NullAwareMapConverter()).nullable()();
-
-  DateTimeColumn get lastSyncDate => dateTime().nullable()();
-
-  TextColumn get lastSyncMessage => text().nullable()();
 
   DateTimeColumn get startEntryTime =>
       dateTime().clientDefault(() => DateTime.now().toUtc())();
 
   DateTimeColumn get finishedEntryTime => dateTime().nullable()();
 
-  TextColumn get createdBy => text().nullable()();
+  TextColumn get formData =>
+      text().map(const NullAwareMapConverter()).nullable()();
 
-  /// canEdit a submitted data.
-  BoolColumn get canEdit => boolean().nullable()();
+  DateTimeColumn get updatedAtClient => dateTime().nullable()();
 
-  /// canDelete a submitted data.
-  BoolColumn get canDelete => boolean().nullable()();
+  //<editor-fold desc=" local states">
+  TextColumn get syncState =>
+      text().map(const EnumNameConverter(InstanceSyncStatus.values))();
+
+  DateTimeColumn get lastSyncDate => dateTime().nullable()();
+
+  TextColumn get lastSyncMessage => text().nullable()();
+
+  /// is already synced to server
+  BoolColumn get isToUpdate => boolean()();
+
+
+//</editor-fold>
 }

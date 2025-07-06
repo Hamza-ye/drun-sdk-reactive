@@ -10,22 +10,22 @@ import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
-@Order(DSOrder.dataSubmission)
+@Order(DSOrder.dataInstance)
 @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
-class DataSubmissionDatasource
-    extends BaseDataSource<$DataSubmissionsTable, DataSubmission>
-    implements MetaDataSource<DataSubmission> {
-  DataSubmissionDatasource(
+class DataInstanceDatasource
+    extends BaseDataSource<$DataInstancesTable, DataInstance>
+    implements MetaDataSource<DataInstance> {
+  DataInstanceDatasource(
       {required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.dataSubmissions);
+      : super(dbManager: dbManager, table: dbManager.db.dataInstances);
 
   String get pathPostfix => '/objects${super.pathPostfix}';
 
   @override
-  String get resourceName => 'dataSubmission';
+  String get resourceName => 'dataInstance';
 
   @override
-  DataSubmission fromApiJson(Map<String, dynamic> data,
+  DataInstance fromApiJson(Map<String, dynamic> data,
       {ValueSerializer? serializer}) {
     final form = data['form'];
     final version = data['version'];
@@ -35,9 +35,9 @@ class DataSubmissionDatasource
     final assignment = data['assignment'];
     final orgUnit = data['orgUnit'];
     final team = data['team'];
-    return DataSubmission.fromJson({
+    return DataInstance.fromJson({
       ...data,
-      'status': SubmissionStatus.synced.name,
+      'status': InstanceSyncStatus.synced.name,
       'progressStatus': data['status'],
       'form': formId,
       'assignment': assignment,
@@ -46,10 +46,10 @@ class DataSubmissionDatasource
     }, serializer: serializer);
   }
 
-  Future<List<DataSubmission>> upload(List<String> uids) async {
-    List<DataSubmission> submissions = await db.managers.dataSubmissions
-        .filter((f) => f.status
-            .isIn([SubmissionStatus.finalized, SubmissionStatus.syncFailed]))
+  Future<List<DataInstance>> upload(List<String> uids) async {
+    List<DataInstance> submissions = await db.managers.dataInstances
+        .filter((f) => f.syncState
+            .isIn([InstanceSyncStatus.finalized, InstanceSyncStatus.syncFailed]))
         .get();
 
     List<String> syncableEntityIds = [];
@@ -83,22 +83,22 @@ class DataSubmissionDatasource
     SyncSummary summary = SyncSummary.fromJson(response.data);
     logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});
 
-    final List<DataSubmission> queue = [];
+    final List<DataInstance> queue = [];
 
     for (var submission in submissions) {
       final syncFailed = summary.failed.containsKey(submission.id);
       final syncCreated = summary.created.contains(submission.id);
       final syncUpdated = summary.updated.contains(submission.id);
-      DataSubmission newEntity = submission;
+      DataInstance newEntity = submission;
       if (syncCreated || syncUpdated) {
         newEntity = submission.copyWith(
-            status: SubmissionStatus.synced,
+            syncState: InstanceSyncStatus.synced,
             lastSyncMessage: Value(null),
             lastSyncDate: Value(DateTime.now().toUtc()));
         // availableItemCount++;
       } else if (syncFailed) {
         newEntity = submission.copyWith(
-            status: SubmissionStatus.syncFailed,
+            syncState: InstanceSyncStatus.syncFailed,
             lastSyncMessage: Value(summary.failed[submission.id]));
 
         // availableItemCount++;

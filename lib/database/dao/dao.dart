@@ -3,6 +3,7 @@ export 'activities_dao.dart';
 export 'assignments_dao.dart';
 export 'data_elements_dao.dart';
 export 'data_option_sets_dao.dart';
+export 'data_options_dao.dart';
 export 'data_submissions_dao.dart';
 export 'data_values_dao.dart';
 export 'form_template_versions_dao.dart';

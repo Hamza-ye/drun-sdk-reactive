@@ -12,14 +12,14 @@ class ElementTreeService {
       path.endsWith('.') ? path.substring(0, path.length - 1) : path;
 
   static T? getParent<T extends TreeElement>(
-      String fieldPath, List<T> flatFields) {
+      String fieldPath, Iterable<T> flatFields) {
     final parentPath = fieldPath.split('.')..removeLast();
     if (parentPath.isEmpty) return null; // Root node has no parent
     return flatFields.firstOrNullWhere((n) => n.path == parentPath.join('.'));
   }
 
   static List<T> getImmediateChildren<T extends TreeElement>(
-      String path, List<T> flatFields) {
+      String path, Iterable<T> flatFields) {
     final normalizedPath = _normalizedPath(path);
 
     final depth = normalizedPath.split('.').length + 1;
@@ -32,7 +32,7 @@ class ElementTreeService {
 
   /// Get ancestors of a specific path
   static List<T> getAncestors<T extends TreeElement>(
-      String path, List<T> flatFields) {
+      String path, Iterable<T> flatFields) {
     final ancestors = <T>[];
     while (path != '') {
       final parent = getParent<T>(path, flatFields);
@@ -47,7 +47,8 @@ class ElementTreeService {
   }
 
   /// Get first descendant by its id
-  static T? getFirstById<T extends TreeElement>(String id, List<T> flatFields) {
+  static T? getFirstById<T extends TreeElement>(
+      String id, Iterable<T> flatFields) {
     final element =
         flatFields.firstOrNullWhere((node) => node.path!.endsWith('$id'));
     return element;
@@ -55,19 +56,19 @@ class ElementTreeService {
 
   /// Get element by path
   static T? getTemplateByPath<T extends TreeElement>(
-      String path, List<T> flatFields) {
+      String path, Iterable<T> flatFields) {
     return flatFields.firstOrNullWhere((element) => element.path == path);
   }
 
   /// Get all descendants of a specific path
   static List<T> getDescendants<T extends TreeElement>(
-      String path, List<T> flatFields) {
+      String path, Iterable<T> flatFields) {
     return flatFields.where((node) => node.path!.startsWith('$path.')).toList();
   }
 
   /// Get children of a specific path
   static List<T> getChildren<T extends TreeElement>(
-      String path, List<T> flatFields) {
+      String path, Iterable<T> flatFields) {
     final normalizedPath = _normalizedPath(path);
 
     return flatFields
@@ -80,7 +81,7 @@ class ElementTreeService {
 
   /// Get ImmediateChildren of a specific path
   static List<T> getChildrenOfType<T extends TreeElement>(
-      String path, List<T> flatFields) {
+      String path, Iterable<T> flatFields) {
     final normalizedPath =
         path.endsWith('.') ? path.substring(0, path.length - 1) : path;
 
@@ -94,7 +95,7 @@ class ElementTreeService {
   }
 
   static T? getScopedDependencyById<T extends TreeElement>(
-      String id, String currentPath, List<T> flatFields) {
+      String id, String currentPath, Iterable<T> flatFields) {
     final pathSegments = currentPath.split('.');
 
     // upwards in the path
@@ -124,7 +125,7 @@ class ElementTreeService {
   }
 
   static T? getScopedElement<T extends TreeElement>(
-      T rootElement, String id, List<T> flatFields) {
+      T rootElement, String id, Iterable<T> flatFields) {
     if (rootElement.id == id) {
       return rootElement;
     }

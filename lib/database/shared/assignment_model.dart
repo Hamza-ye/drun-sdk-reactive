@@ -8,7 +8,7 @@ class AssignmentModel with EquatableMixin {
     this.activity,
     required this.orgUnit,
     required this.team,
-    required this.status,
+    this.status = AssignmentStatus.NOT_STARTED,
     this.startDay,
     this.startDate,
     this.dueDate,

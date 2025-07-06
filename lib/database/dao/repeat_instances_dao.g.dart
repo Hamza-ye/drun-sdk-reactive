@@ -13,6 +13,6 @@ mixin _$RepeatInstancesDaoMixin on DatabaseAccessor<AppDatabase> {
   $TeamsTable get teams => attachedDatabase.teams;
   $OrgUnitsTable get orgUnits => attachedDatabase.orgUnits;
   $AssignmentsTable get assignments => attachedDatabase.assignments;
-  $DataSubmissionsTable get dataSubmissions => attachedDatabase.dataSubmissions;
+  $DataInstancesTable get dataInstances => attachedDatabase.dataInstances;
   $RepeatInstancesTable get repeatInstances => attachedDatabase.repeatInstances;
 }

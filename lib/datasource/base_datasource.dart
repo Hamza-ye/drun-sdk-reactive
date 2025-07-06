@@ -61,7 +61,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
 
     return dataItems.map((item) {
       item['dirty'] = false;
-      item['synced'] = true;
+      item['isToUpdate'] = true;
 
       return fromApiJson({
         ...item,
@@ -70,33 +70,4 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       }, serializer: CustomSerializer());
     }).toList();
   }
-
-// @override
-// Future<List<D>> getOnline() async {
-//   try {
-//     final response = await dioClient.get(resourceFullPath,
-//         options: Options(
-//           receiveTimeout: Duration(seconds: 70),
-//           sendTimeout: Duration(seconds: 40),
-//         ));
-//
-//     final raw = response.data;
-//
-//     /// expecting paged list ({ apiResourceName: [...] }),
-//     List dataItems = raw?[resourceName]?.toList() ?? [];
-//
-//     return dataItems.map((item) {
-//       item['dirty'] = false;
-//       item['synced'] = true;
-//
-//       return fromApiJson({
-//         ...item,
-//         'id': item['uid']!,
-//         'translations': (item['translations'] as List?) ?? [],
-//       }, serializer: CustomSerializer());
-//     }).toList();
-//   } on RevokeTokenException {
-//     throw SessionExpiredException();
-//   }
-// }
 }

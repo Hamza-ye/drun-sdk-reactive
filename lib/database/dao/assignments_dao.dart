@@ -1,6 +1,6 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
-import 'package:d_sdk/database/tables/assignments.table.dart';
+import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
 part 'assignments_dao.g.dart';
@@ -10,26 +10,34 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
     with _$AssignmentsDaoMixin {
   AssignmentsDao(AppDatabase db) : super(db);
 
-  Future<List<Assignment>> getAllItems() => select(assignments).get();
+  Future<List<Assignment>> getAll() => select(assignments).get();
 
-  Future<Assignment?> getItemById(String id) {
+  Future<List<Assignment>> getByIds(Iterable<String> ids) {
+    return (select(assignments)..where((tbl) => tbl.id.isIn(ids))).get();
+  }
+
+  Future<Assignment?> getById(String id) {
     return (select(assignments)..where((tbl) => tbl.id.equals(id)))
         .getSingleOrNull();
   }
 
-  Future<int> insertItem(Insertable<Assignment> entry) {
+  Future<int> insert(Insertable<Assignment> entry) {
     return into(assignments).insert(entry);
   }
 
-  Future<bool> updateItem(Assignment item) {
+  Future<bool> updateObject(Assignment item) {
     return update(assignments).replace(item);
   }
 
-  Future<int> deleteItem(String id) {
+  Future<int> deleteById(String id) {
     return (delete(assignments)..where((tbl) => tbl.id.equals(id))).go();
   }
 
-  Selectable<AssignmentModel> watchAssignmentCardsForActivity({
+  Future<int> deleteObject(Assignment assignment) {
+    return deleteById(assignment.id);
+  }
+
+  Selectable<AssignmentModel> selectAssignments({
     String? activityId,
     String ouSearchFilter = '',
     int page = 1, // 1-based page index
@@ -66,7 +74,7 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
       ..orderBy([
         // order for stable paging
         OrderingTerm(
-            expression: db.assignments.startDate, mode: OrderingMode.desc),
+            expression: db.assignments.instanceDate, mode: OrderingMode.desc),
         OrderingTerm(expression: db.assignments.id),
       ]);
 
@@ -92,10 +100,10 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
           code: t.code,
           name: t.code ?? '',
         ),
-        startDay: a.startDay,
-        startDate: a.startDate,
+        // startDay: a.startDay,
+        startDate: a.instanceDate,
         dueDate: null,
-        status: a.progressStatus ?? AssignmentStatus.NOT_STARTED,
+        // status: a.assignmentStatus ?? AssignmentStatus.PLANNED,
       );
     });
   }

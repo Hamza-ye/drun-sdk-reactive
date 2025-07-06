@@ -1,4 +1,5 @@
 import 'package:d_sdk/database/converters/converters.dart';
+import 'package:d_sdk/database/tables/form_templates.table.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 

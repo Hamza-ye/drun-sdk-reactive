@@ -1,9 +1,12 @@
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-/// DActivity Table
 @TableIndex(name: 'activity_disabled_idx', columns: {#disabled})
 class Activities extends Table with BaseTableMixin, IdentifiableMixin {
+  TextColumn get name => text()();
+
+  TextColumn get code => text().nullable()();
+
   TextColumn get project => text().references(Projects, #id)();
 
   BoolColumn get disabled => boolean().clientDefault(() => false)();

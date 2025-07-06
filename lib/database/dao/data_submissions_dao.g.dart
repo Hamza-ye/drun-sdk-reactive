@@ -3,7 +3,7 @@
 part of 'data_submissions_dao.dart';
 
 // ignore_for_file: type=lint
-mixin _$DataSubmissionsDaoMixin on DatabaseAccessor<AppDatabase> {
+mixin _$DataInstancesDaoMixin on DatabaseAccessor<AppDatabase> {
   $FormTemplatesTable get formTemplates => attachedDatabase.formTemplates;
   $FormTemplateVersionsTable get formTemplateVersions =>
       attachedDatabase.formTemplateVersions;
@@ -13,5 +13,5 @@ mixin _$DataSubmissionsDaoMixin on DatabaseAccessor<AppDatabase> {
   $TeamsTable get teams => attachedDatabase.teams;
   $OrgUnitsTable get orgUnits => attachedDatabase.orgUnits;
   $AssignmentsTable get assignments => attachedDatabase.assignments;
-  $DataSubmissionsTable get dataSubmissions => attachedDatabase.dataSubmissions;
+  $DataInstancesTable get dataInstances => attachedDatabase.dataInstances;
 }

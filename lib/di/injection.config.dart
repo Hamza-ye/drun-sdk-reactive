@@ -43,7 +43,7 @@ import 'package:d_sdk/datasource/remote_data_sources/user_form_permission_dataso
     as _i588;
 import 'package:d_sdk/di/third_party_services.module.dart' as _i276;
 import 'package:d_sdk/user_session/session_context.dart' as _i368;
-import 'package:d_sdk/user_session/session_repository.dart' as _i993;
+import 'package:d_sdk/user_session/user_session.dart' as _i1010;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -71,9 +71,9 @@ Future<_i174.GetIt> initActiveSessionContextScope(
     dispose: dispose,
     init: (_i526.GetItHelper gh) async {
       final thirdPartyServicesModule = _$ThirdPartyServicesModule();
-      await gh.factoryAsync<_i368.SessionContext>(
+      await gh.factoryAsync<_i1010.SessionContext>(
         () => thirdPartyServicesModule
-            .getSessionScope(gh<_i993.SessionRepository>()),
+            .getSessionScope(gh<_i1010.SessionRepository>()),
         preResolve: true,
       );
       gh.singleton<_i312.DbManager>(
@@ -139,8 +139,8 @@ Future<_i174.GetIt> initActiveSessionContextScope(
                 apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
-      gh.factory<_i277.AbstractDatasource<_i210.DataSubmission>>(
-          () => _i646.DataSubmissionDatasource(
+      gh.factory<_i277.AbstractDatasource<_i210.DataInstance>>(
+          () => _i646.DataInstanceDatasource(
                 apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));

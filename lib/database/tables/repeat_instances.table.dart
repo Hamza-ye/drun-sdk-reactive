@@ -6,7 +6,7 @@ class RepeatInstances extends Table with BaseTableMixin {
   /// Path of the Repeat in the FormTemplate (non-null)
   TextColumn get templatePath => text()();
 
-  TextColumn get submission => text().references(DataSubmissions, #id)();
+  TextColumn get submission => text().references(DataInstances, #id)();
 
   /// reference to nearest parent RepeatInstance (nullable)
   TextColumn get parent => text().references(RepeatInstances, #id).nullable()();

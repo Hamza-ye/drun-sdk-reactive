@@ -2,6 +2,7 @@ import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/database/shared/assignment_status.dart';
+import 'package:d_sdk/database/shared/submission_status.dart';
 import 'package:d_sdk/datasource/datasource.dart';
 import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
@@ -39,7 +40,7 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
             activity: t.activity,
             team: t.team,
             orgUnit: t.orgUnit,
-            progressStatus: t.progressStatus))
+            syncState: InstanceSyncStatus.synced))
         .toList();
 
     final assignmentForms =
@@ -75,6 +76,7 @@ class _AssignmentWithAccess {
   final String activity;
   final String team;
   final String orgUnit;
+  final String assignmentType;
   final AssignmentStatus progressStatus;
   final List<AssignmentForm> accessibleForms;
 
@@ -84,6 +86,7 @@ class _AssignmentWithAccess {
       required this.team,
       required this.orgUnit,
       required this.progressStatus,
+      required this.assignmentType,
       required this.accessibleForms});
 
   factory _AssignmentWithAccess.fromJson(Map<String, dynamic> map) {
@@ -100,13 +103,14 @@ class _AssignmentWithAccess {
 
     final progressStatus =
         AssignmentStatus.getType(map['progressStatus'] as String?) ??
-            AssignmentStatus.NOT_STARTED;
+            AssignmentStatus.PLANNED;
     return _AssignmentWithAccess(
       assignment: map['assignment'],
       activity: map['activity'] as String,
       team: map['team'] as String,
       orgUnit: map['orgUnit'] as String,
       progressStatus: progressStatus,
+      assignmentType: map['assignmentType']['uid'],
       accessibleForms: accessibleForms,
     );
   }
