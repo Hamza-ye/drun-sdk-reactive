@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class OrgUnitDatasource extends BaseDataSource<$OrgUnitsTable, OrgUnit>
     implements MetaDataSource<OrgUnit> {
   OrgUnitDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.orgUnits);
 

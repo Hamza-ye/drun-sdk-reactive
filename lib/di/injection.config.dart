@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:d_sdk/core/http/http_client.dart' as _i8;
 import 'package:d_sdk/database/database.dart' as _i210;
 import 'package:d_sdk/database/dbManager.dart' as _i312;
 import 'package:d_sdk/datasource/datasource.dart' as _i277;
@@ -18,12 +19,10 @@ import 'package:d_sdk/datasource/remote_data_sources/assignment_datasource.dart'
     as _i90;
 import 'package:d_sdk/datasource/remote_data_sources/data_element_datasource.dart'
     as _i827;
-import 'package:d_sdk/datasource/remote_data_sources/data_form_template_version_datasource.dart'
-    as _i1014;
 import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.dart'
     as _i646;
-import 'package:d_sdk/datasource/remote_data_sources/form_version_datasource.dart'
-    as _i474;
+import 'package:d_sdk/datasource/remote_data_sources/form_template_datasource.dart'
+    as _i569;
 import 'package:d_sdk/datasource/remote_data_sources/managed_team_datasource.dart'
     as _i718;
 import 'package:d_sdk/datasource/remote_data_sources/metadata_submission_datasource.dart'
@@ -40,12 +39,11 @@ import 'package:d_sdk/datasource/remote_data_sources/team_datasource.dart'
     as _i143;
 import 'package:d_sdk/datasource/remote_data_sources/user_datasource.dart'
     as _i822;
-import 'package:d_sdk/datasource/remote_data_sources/user_form_accesses_datasource.dart'
-    as _i4;
+import 'package:d_sdk/datasource/remote_data_sources/user_form_permission_datasource.dart'
+    as _i588;
 import 'package:d_sdk/di/third_party_services.module.dart' as _i276;
 import 'package:d_sdk/user_session/session_context.dart' as _i368;
 import 'package:d_sdk/user_session/user_session.dart' as _i1010;
-import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -82,79 +80,73 @@ Future<_i174.GetIt> initActiveSessionContextScope(
         () => _i312.DbManager(context: gh<_i368.SessionContext>()),
         dispose: (i) => i.closeDatabase(),
       );
-      gh.factory<_i277.AbstractDatasource<_i210.User>>(
-          () => _i822.UserDatasource(
-                dioClient: gh<_i361.Dio>(),
-                dbManager: gh<_i210.DbManager>(),
-              ));
+      gh.factory<_i822.UserDatasource>(() => _i822.UserDatasource(
+            apiClient: gh<_i8.HttpClient<dynamic>>(),
+            dbManager: gh<_i210.DbManager>(),
+          ));
       gh.factory<_i277.AbstractDatasource<_i210.Project>>(
           () => _i589.ProjectDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.Activity>>(
           () => _i434.ActivityDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.OuLevel>>(
           () => _i790.OuLevelDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.OrgUnit>>(
           () => _i185.OrgUnitDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.DataOptionSet>>(
           () => _i756.OptionSetDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.DataElement>>(
           () => _i827.DataElementDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
-      gh.factory<_i277.AbstractDatasource<_i210.DataFormTemplateVersion>>(
-          () => _i1014.DataFormTemplateDatasource(
-                dioClient: gh<_i361.Dio>(),
-                dbManager: gh<_i210.DbManager>(),
-              ));
-      gh.factory<_i277.AbstractDatasource<_i210.FormVersion>>(
-          () => _i474.FormVersionDatasource(
-                dioClient: gh<_i361.Dio>(),
+      gh.factory<_i277.AbstractDatasource<_i210.FormTemplate>>(
+          () => _i569.DataFormTemplateDatasource(
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.Team>>(
           () => _i143.TeamDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.ManagedTeam>>(
           () => _i718.ManagedTeamDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.UserFormPermission>>(
-          () => _i4.UserFormAccessesDatasource(
-                dioClient: gh<_i361.Dio>(),
+          () => _i588.UserFormAccessesDatasource(
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.Assignment>>(
           () => _i90.AssignmentDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
-      gh.factory<_i277.AbstractDatasource<_i210.DataSubmission>>(
-          () => _i646.DataSubmissionDatasource(
-                dioClient: gh<_i361.Dio>(),
+      gh.factory<_i277.AbstractDatasource<_i210.DataInstance>>(
+          () => _i646.DataInstanceDatasource(
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
       gh.factory<_i277.AbstractDatasource<_i210.MetadataSubmission>>(
           () => _i1071.MetadataSubmissionDatasource(
-                dioClient: gh<_i361.Dio>(),
+                apiClient: gh<_i8.HttpClient<dynamic>>(),
                 dbManager: gh<_i210.DbManager>(),
               ));
     },

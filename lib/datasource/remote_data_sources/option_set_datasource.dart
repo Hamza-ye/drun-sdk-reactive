@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class OptionSetDatasource
     extends BaseDataSource<$DataOptionSetsTable, DataOptionSet>
     implements MetaDataSource<DataOptionSet> {
-  OptionSetDatasource({required super.dioClient,
+  OptionSetDatasource({required super.apiClient,
     required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.dataOptionSets);
 

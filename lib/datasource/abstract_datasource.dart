@@ -1,5 +1,4 @@
 import 'package:d_sdk/core/sync/model/sync_config.dart';
-import 'package:d_sdk/di/app_environment.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 
@@ -13,12 +12,7 @@ abstract class AbstractDatasource<D> {
 
   String get resourceName;
 
-  String get pathPostfix => 'paged=false';
-
-  String get apiVersionPath => '/${AppEnvironment.apiV1Path}';
-
-  String get resourceFullPath =>
-      '${this.apiVersionPath}/$resourceName${pathPostfix.isNotEmpty ? '?$pathPostfix' : ''}';
+  String get pathPostfix => '?paged=false';
 
   @protected
   Future<List<D>> getOnline();

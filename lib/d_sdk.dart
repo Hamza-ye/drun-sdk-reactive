@@ -17,8 +17,8 @@ class DSdk {
 
   static AppDatabase get db => dbManager.db;
 
-  static DataSubmissionDatasource get dataSubmissionDataSource =>
-      rSdkLocator<DataSubmissionDatasource>();
+  static DataInstanceDatasource get dataInstanceSource =>
+      rSdkLocator<DataInstanceDatasource>();
 
   // db DAOs:
   static ActivitiesDao get activity => db.activitiesDao;
@@ -32,12 +32,11 @@ class DSdk {
   static UsersDao get user => db.usersDao;
 
   @Deprecated("use DataFormTemplateVersionsDao")
-  static FormVersionsDao get formVersion => db.formVersionsDao;
+  static FormTemplateVersionsDao get formVersion => db.formTemplateVersionsDao;
 
-  static DataFormTemplateVersionsDao get formTemplate =>
-      db.dataFormTemplateVersionsDao;
+  static FormTemplateVersionsDao get formTemplate => db.formTemplateVersionsDao;
 
-  static DataSubmissionsDao get dataSubmission => db.dataSubmissionsDao;
+  static DataInstancesDao get dataInstance => db.dataInstancesDao;
 
   static DataElementsDao get dataElement => db.dataElementsDao;
 

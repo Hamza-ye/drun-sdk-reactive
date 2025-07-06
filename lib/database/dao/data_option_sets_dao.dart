@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/tables/data_option_sets.table.dart';
+import 'package:d_sdk/database/tables/option_sets.table.dart';
 import 'package:drift/drift.dart';
 
 part 'data_option_sets_dao.g.dart';

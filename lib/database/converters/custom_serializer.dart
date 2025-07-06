@@ -6,33 +6,43 @@ import 'package:drift/drift.dart';
 class CustomSerializer extends ValueSerializer {
   @override
   T fromJson<T>(dynamic json) {
-    if (T == List<Translation>) {
+    if (json == null) {
+      return null as T;
+    }
+
+    final typeList = <T>[];
+
+    if (typeList is List<List<String>?>) {
+      return json.map<String>((e) => e as String).toList() as T;
+    }
+
+    if (typeList is List<List<Translation>?>) {
       return (json as List<dynamic>?)
-          ?.map((e) => Translation.fromJson(e))
+          ?.map<Translation>((e) => Translation.fromJson(e))
           .toList() as T;
-    } else if (T == List<FormOption>) {
+    } else if (typeList is List<List<FormOption>?>) {
       return (json as List<dynamic>?)
-          ?.map((e) => FormOption.fromJson(e))
+          ?.map<FormOption>((e) => FormOption.fromJson(e))
           .toList() as T;
-    } else if (T == List<DOptionSet>) {
+    } else if (typeList is List<List<DOptionSet>?>) {
       return (json as List<dynamic>?)
-          ?.map((e) => DOptionSet.fromJson(e))
+          ?.map<DOptionSet>((e) => DOptionSet.fromJson(e))
           .toList() as T;
-    } else if (T == List<AllowedAction>) {
+    } else if (typeList is List<List<FormPermission>?>) {
       return (json as List<dynamic>?)
-          ?.map((e) => AllowedAction.getValueType(e as String?))
+          ?.map<FormPermission>((e) => FormPermission.getType(e)!)
           .toList() as T;
-    } else if (T == List<TeamFormPermission>) {
+    } else if (typeList is List<List<TeamFormPermission>?>) {
       return (json as List<dynamic>?)
-          ?.map((e) => TeamFormPermission.fromJson(e))
+          ?.map<TeamFormPermission>((e) => TeamFormPermission.fromJson(e))
           .toList() as T;
-    } else if (T == List<Template>) {
+    } else if (typeList is List<List<Template>?>) {
       return (json as List<dynamic>?)
-          ?.map((e) => Template.fromJsonFactory(e))
+          ?.map<Template>((e) => Template.fromJsonFactory(e))
           .toList() as T;
-    } else if (T == List<User>) {
+    } else if (typeList is List<List<User>?>) {
       return (json as List<dynamic>?)
-          ?.map((e) => User.fromJson(e, serializer: CustomSerializer()))
+          ?.map<User>((e) => User.fromJson(e, serializer: CustomSerializer()))
           .toList() as T;
     }
 
@@ -52,8 +62,6 @@ class CustomSerializer extends ValueSerializer {
       return value.map((e) => e.toJson()).toList();
     } else if (value is List<DOptionSet>) {
       return value.map((e) => e.toJson()).toList();
-    } else if (value is List<AllowedAction>) {
-      return value.map((e) => e.name).toList();
     } else if (value is List<TeamFormPermission>) {
       return value.map((e) => e.toJson()).toList();
     } else if (value is List<Template>) {

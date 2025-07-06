@@ -3,7 +3,6 @@ import 'package:d_sdk/core/platform/platform.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/dao/dao.dart';
 import 'package:d_sdk/database/shared/shared.dart';
-import 'package:d_sdk/database/tables/managed_teams.table.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
@@ -18,29 +17,32 @@ part 'app_database.g.dart';
   Teams,
   ManagedTeams,
   Assignments,
-  FormVersions,
+  AssignmentForms,
+  FormTemplates,
+  FormTemplateVersions,
   MetadataSubmissions,
   RepeatInstances,
   DataValues,
   DataElements,
   DataOptionSets,
   DataOptions,
-  DataSubmissions,
-  DataFormTemplateVersions,
+  DataInstances,
+  FormTemplateVersions,
   UserFormPermissions
 ], daos: [
   ActivitiesDao,
   AssignmentsDao,
-  DataSubmissionsDao,
+  DataElementsDao,
+  DataOptionSetsDao,
+  DataOptionsDao,
+  DataInstancesDao,
   DataValuesDao,
-  FormVersionsDao,
+  FormTemplateVersionsDao,
+  FormTemplatesDao,
+  OrgUnitsDao,
   RepeatInstancesDao,
   TeamsDao,
-  DataOptionSetsDao,
-  OrgUnitsDao,
   UsersDao,
-  DataFormTemplateVersionsDao,
-  DataElementsDao
 ])
 class AppDatabase extends _$AppDatabase {
   // AppDatabase(super.e, {String? databaseName});

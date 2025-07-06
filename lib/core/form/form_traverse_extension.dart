@@ -3,7 +3,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'element_template/element_template.dart';
 
-extension FormTraverseExtension on DataFormTemplateVersion {
+extension FormTraverseExtension on FormTemplateVersion {
   Map<String, Template> get flatFields =>
       IMap.fromIterable([...sections, ...fields].where((t) => t.path != null),
           keyMapper: (template) => template.path!,

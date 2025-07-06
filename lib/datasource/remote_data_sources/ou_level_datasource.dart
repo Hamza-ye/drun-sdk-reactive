@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class OuLevelDatasource extends BaseDataSource<$OuLevelsTable, OuLevel>
     implements MetaDataSource<OuLevel> {
   OuLevelDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.ouLevels);
 

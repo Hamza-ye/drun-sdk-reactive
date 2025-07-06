@@ -1,6 +1,5 @@
 //GENERATED BARREL FILE 
 export 'allocated_resources.converter.dart';
-export 'allowed_action_list.converter.dart';
 export 'custom_serializer.dart';
 export 'form_option_list.converter.dart';
 export 'form_permissions.converter.dart';

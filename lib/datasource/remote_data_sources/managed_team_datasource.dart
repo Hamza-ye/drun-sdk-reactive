@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class ManagedTeamDatasource
     extends BaseDataSource<$ManagedTeamsTable, ManagedTeam>
     implements MetaDataSource<ManagedTeam> {
-  ManagedTeamDatasource({required super.dioClient,
+  ManagedTeamDatasource({required super.apiClient,
     required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.managedTeams);
 

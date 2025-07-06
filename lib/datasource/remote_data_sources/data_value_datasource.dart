@@ -8,7 +8,7 @@ import 'package:drift/drift.dart';
 class DataValueDatasource extends BaseDataSource<$DataValuesTable, DataValue>
     implements MetaDataSource<DataValue> {
   DataValueDatasource(
-      {required super.dioClient,
+      {required super.apiClient,
       required DbManager dbManager})
       : super(table: dbManager.db.dataValues, dbManager: dbManager);
 

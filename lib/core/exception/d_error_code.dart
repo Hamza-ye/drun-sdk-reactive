@@ -18,7 +18,8 @@ enum DRunErrorCode {
   invalidCredentials, // Invalid credentials provided
   sessionExpired, // User session has expired
   noLoggedInUser,
-  noLoggedInUserOffline,
+  noUserDetailsFetchedFromServer,
+  // noLoggedInUserOffline,
   accountDisabled,
 
   // Database-related errors

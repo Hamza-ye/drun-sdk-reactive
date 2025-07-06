@@ -48,7 +48,6 @@ class FieldTemplate extends Template {
   final MetadataResourceType? resourceType;
   final String? resourceMetadataSchema;
   final IList<String> displayAttributes;
-  final IList<AllowedAction> allowedActions;
 
   @override
   bool get repeatable => false;
@@ -81,7 +80,6 @@ class FieldTemplate extends Template {
     Iterable<FormOption>? options,
     Iterable<String>? appearance,
     Iterable<String>? displayAttributes,
-    Iterable<AllowedAction>? allowedActions,
     this.label = const IMap.empty(),
     this.properties,
     this.scannedCodeProperties,
@@ -92,9 +90,7 @@ class FieldTemplate extends Template {
         this.appearance =
             IList.orNull(appearance) ?? const IList<String>.empty(),
         this.displayAttributes =
-            IList.orNull(displayAttributes) ?? const IList<String>.empty(),
-        this.allowedActions =
-            IList.orNull(allowedActions) ?? const IList<AllowedAction>.empty();
+            IList.orNull(displayAttributes) ?? const IList<String>.empty();
 
   @override
   List<Object?> get props => [
@@ -125,12 +121,6 @@ class FieldTemplate extends Template {
                 Rule.fromJson({...ruleField, 'field': json['name']}))
             .toList()
         : <Rule>[];
-
-    final allowedActions = json['allowedActions'] != null
-        ? (parseDynamicJson(json['allowedActions']) as List)
-            .map<AllowedAction>((action) => AllowedAction.getValueType(action))
-            .toList()
-        : <AllowedAction>[];
 
     final optionMap = json['optionMap'] != null
         ? Map<String, List<FormOption>>.from(json['optionMap'] is String
@@ -183,7 +173,6 @@ class FieldTemplate extends Template {
       code: json['code'],
       description: json['description'],
       options: options,
-      allowedActions: allowedActions,
       displayAttributes: displayAttributes,
       path: json['path'],
       order: json['order'] ?? 0,
