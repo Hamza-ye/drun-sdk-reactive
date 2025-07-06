@@ -103,7 +103,7 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
         // startDay: a.startDay,
         startDate: a.instanceDate,
         dueDate: null,
-        status: a.assignmentStatus ?? AssignmentStatus.PLANNED,
+        // status: a.assignmentStatus ?? AssignmentStatus.PLANNED,
       );
     });
   }

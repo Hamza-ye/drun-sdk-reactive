@@ -40,7 +40,6 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
             activity: t.activity,
             team: t.team,
             orgUnit: t.orgUnit,
-            assignmentStatus: t.progressStatus,
             syncState: InstanceSyncStatus.synced))
         .toList();
 

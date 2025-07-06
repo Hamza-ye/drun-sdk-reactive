@@ -8,7 +8,7 @@ class AssignmentModel with EquatableMixin {
     this.activity,
     required this.orgUnit,
     required this.team,
-    required this.status,
+    this.status = AssignmentStatus.NOT_STARTED,
     this.startDay,
     this.startDate,
     this.dueDate,
@@ -86,18 +86,18 @@ class AssignmentModel with EquatableMixin {
 
   @override
   List<Object?> get props => [
-    id,
-    activity,
-    orgUnit,
-    team,
-    // scope,
-    status,
-    startDay,
-    startDate,
-    dueDate,
-    rescheduledDate,
-    // forms,
-    // allocatedResources,
-    // reportedResources
-  ];
+        id,
+        activity,
+        orgUnit,
+        team,
+        // scope,
+        status,
+        startDay,
+        startDate,
+        dueDate,
+        rescheduledDate,
+        // forms,
+        // allocatedResources,
+        // reportedResources
+      ];
 }
