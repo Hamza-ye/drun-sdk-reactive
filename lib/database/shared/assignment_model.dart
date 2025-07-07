@@ -1,3 +1,4 @@
+import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
@@ -13,9 +14,8 @@ class AssignmentModel with EquatableMixin {
     this.startDate,
     this.dueDate,
     this.rescheduledDate,
-    // this.allocatedResources = const {},
-    // this.reportedResources = const {},
-    // this.forms = const [],
+    this.formCount = 0,
+    this.userForms = const [],
   });
 
   /// assignment
@@ -30,41 +30,8 @@ class AssignmentModel with EquatableMixin {
   final DateTime? startDate;
   final DateTime? dueDate;
   final DateTime? rescheduledDate;
-
-  // final List<String> forms;
-
-  // final Map<String, dynamic> allocatedResources; // E.g., ITNs, Population
-  // final Map<String, dynamic> reportedResources; // E.g., ITNs, Population
-
-  AssignmentModel copyWith({
-    String? id,
-    IdentifiableModel? activity,
-    IdentifiableModel? orgUnit,
-    IdentifiableModel? team,
-    AssignmentStatus? status,
-    int? startDay,
-    DateTime? startDate,
-    DateTime? dueDate,
-    DateTime? rescheduledDate,
-    // List<String>? forms,
-    // Map<String, int>? allocatedResources,
-    // Map<String, int>? reportedResources,
-  }) {
-    return AssignmentModel(
-      id: id ?? this.id,
-      activity: activity ?? this.activity,
-      orgUnit: orgUnit ?? this.orgUnit,
-      team: team ?? this.team,
-      status: status ?? this.status,
-      startDay: startDay ?? this.startDay,
-      startDate: startDate ?? this.startDate,
-      dueDate: dueDate ?? this.dueDate,
-      rescheduledDate: rescheduledDate ?? this.rescheduledDate,
-      // forms: forms ?? this.forms,
-      // allocatedResources: allocatedResources ?? this.allocatedResources,
-      // reportedResources: reportedResources ?? this.reportedResources,
-    );
-  }
+  final List<AssignmentForm> userForms;
+  final int formCount;
 
   static int calculateStartDay(
       String activityStartDate, String assignmentStartDate) {
@@ -77,8 +44,6 @@ class AssignmentModel with EquatableMixin {
 
   static DateTime? calculateAssignmentDate(
       DateTime? activityStartDate, int? startDay) {
-    // final DateTime? activityStart = DateTime.tryParse(
-    //     DateHelper.fromDbUtcToUiLocalFormat(activityStartDate));
     return activityStartDate != null
         ? activityStartDate.toLocal().add(Duration(days: (startDay ?? 1) - 1))
         : null;
@@ -96,8 +61,36 @@ class AssignmentModel with EquatableMixin {
         startDate,
         dueDate,
         rescheduledDate,
-        // forms,
+        formCount,
         // allocatedResources,
         // reportedResources
       ];
+
+  AssignmentModel copyWith({
+    String? id,
+    IdentifiableModel? activity,
+    IdentifiableModel? team,
+    IdentifiableModel? orgUnit,
+    AssignmentStatus? status,
+    int? startDay,
+    DateTime? startDate,
+    DateTime? dueDate,
+    DateTime? rescheduledDate,
+    List<AssignmentForm>? userForms,
+    int? formCount,
+  }) {
+    return AssignmentModel(
+      id: id ?? this.id,
+      activity: activity ?? this.activity,
+      team: team ?? this.team,
+      orgUnit: orgUnit ?? this.orgUnit,
+      status: status ?? this.status,
+      startDay: startDay ?? this.startDay,
+      startDate: startDate ?? this.startDate,
+      dueDate: dueDate ?? this.dueDate,
+      rescheduledDate: rescheduledDate ?? this.rescheduledDate,
+      userForms: userForms ?? this.userForms,
+      formCount: formCount ?? this.formCount,
+    );
+  }
 }

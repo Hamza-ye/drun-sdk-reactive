@@ -4155,6 +4155,12 @@ class $AssignmentsTable extends Assignments
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<InstanceSyncStatus>(
               $AssignmentsTable.$convertersyncState);
+  @override
+  late final GeneratedColumnWithTypeConverter<AssignmentStatus?, String>
+      status = GeneratedColumn<String>('status', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<AssignmentStatus?>(
+              $AssignmentsTable.$converterstatusn);
   static const VerificationMeta _completedDateMeta =
       const VerificationMeta('completedDate');
   @override
@@ -4177,6 +4183,7 @@ class $AssignmentsTable extends Assignments
         orgUnit,
         instanceDate,
         syncState,
+        status,
         completedDate,
         updatedAtClient
       ];
@@ -4269,6 +4276,9 @@ class $AssignmentsTable extends Assignments
       syncState: $AssignmentsTable.$convertersyncState.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}sync_state'])!),
+      status: $AssignmentsTable.$converterstatusn.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}status'])),
       completedDate: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}completed_date']),
       updatedAtClient: attachedDatabase.typeMapping.read(
@@ -4283,6 +4293,10 @@ class $AssignmentsTable extends Assignments
 
   static JsonTypeConverter2<InstanceSyncStatus, String, String>
       $convertersyncState = const EnumNameConverter(InstanceSyncStatus.values);
+  static JsonTypeConverter2<AssignmentStatus, String, String> $converterstatus =
+      const EnumNameConverter(AssignmentStatus.values);
+  static JsonTypeConverter2<AssignmentStatus?, String?, String?>
+      $converterstatusn = JsonTypeConverter2.asNullable($converterstatus);
 }
 
 class Assignment extends DataClass implements Insertable<Assignment> {
@@ -4294,6 +4308,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   final String orgUnit;
   final DateTime? instanceDate;
   final InstanceSyncStatus syncState;
+  final AssignmentStatus? status;
   final DateTime? completedDate;
   final DateTime? updatedAtClient;
   const Assignment(
@@ -4305,6 +4320,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       required this.orgUnit,
       this.instanceDate,
       required this.syncState,
+      this.status,
       this.completedDate,
       this.updatedAtClient});
   @override
@@ -4326,6 +4342,10 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     {
       map['sync_state'] = Variable<String>(
           $AssignmentsTable.$convertersyncState.toSql(syncState));
+    }
+    if (!nullToAbsent || status != null) {
+      map['status'] =
+          Variable<String>($AssignmentsTable.$converterstatusn.toSql(status));
     }
     if (!nullToAbsent || completedDate != null) {
       map['completed_date'] = Variable<DateTime>(completedDate);
@@ -4352,6 +4372,8 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           ? const Value.absent()
           : Value(instanceDate),
       syncState: Value(syncState),
+      status:
+          status == null && nullToAbsent ? const Value.absent() : Value(status),
       completedDate: completedDate == null && nullToAbsent
           ? const Value.absent()
           : Value(completedDate),
@@ -4375,6 +4397,8 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       instanceDate: serializer.fromJson<DateTime?>(json['instanceDate']),
       syncState: $AssignmentsTable.$convertersyncState
           .fromJson(serializer.fromJson<String>(json['syncState'])),
+      status: $AssignmentsTable.$converterstatusn
+          .fromJson(serializer.fromJson<String?>(json['status'])),
       completedDate: serializer.fromJson<DateTime?>(json['completedDate']),
       updatedAtClient: serializer.fromJson<DateTime?>(json['updatedAtClient']),
     );
@@ -4392,6 +4416,8 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       'instanceDate': serializer.toJson<DateTime?>(instanceDate),
       'syncState': serializer.toJson<String>(
           $AssignmentsTable.$convertersyncState.toJson(syncState)),
+      'status': serializer
+          .toJson<String?>($AssignmentsTable.$converterstatusn.toJson(status)),
       'completedDate': serializer.toJson<DateTime?>(completedDate),
       'updatedAtClient': serializer.toJson<DateTime?>(updatedAtClient),
     };
@@ -4406,6 +4432,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           String? orgUnit,
           Value<DateTime?> instanceDate = const Value.absent(),
           InstanceSyncStatus? syncState,
+          Value<AssignmentStatus?> status = const Value.absent(),
           Value<DateTime?> completedDate = const Value.absent(),
           Value<DateTime?> updatedAtClient = const Value.absent()}) =>
       Assignment(
@@ -4420,6 +4447,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
         instanceDate:
             instanceDate.present ? instanceDate.value : this.instanceDate,
         syncState: syncState ?? this.syncState,
+        status: status.present ? status.value : this.status,
         completedDate:
             completedDate.present ? completedDate.value : this.completedDate,
         updatedAtClient: updatedAtClient.present
@@ -4441,6 +4469,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           ? data.instanceDate.value
           : this.instanceDate,
       syncState: data.syncState.present ? data.syncState.value : this.syncState,
+      status: data.status.present ? data.status.value : this.status,
       completedDate: data.completedDate.present
           ? data.completedDate.value
           : this.completedDate,
@@ -4461,6 +4490,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           ..write('orgUnit: $orgUnit, ')
           ..write('instanceDate: $instanceDate, ')
           ..write('syncState: $syncState, ')
+          ..write('status: $status, ')
           ..write('completedDate: $completedDate, ')
           ..write('updatedAtClient: $updatedAtClient')
           ..write(')'))
@@ -4468,8 +4498,18 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   }
 
   @override
-  int get hashCode => Object.hash(id, lastModifiedDate, createdDate, activity,
-      team, orgUnit, instanceDate, syncState, completedDate, updatedAtClient);
+  int get hashCode => Object.hash(
+      id,
+      lastModifiedDate,
+      createdDate,
+      activity,
+      team,
+      orgUnit,
+      instanceDate,
+      syncState,
+      status,
+      completedDate,
+      updatedAtClient);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4482,6 +4522,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           other.orgUnit == this.orgUnit &&
           other.instanceDate == this.instanceDate &&
           other.syncState == this.syncState &&
+          other.status == this.status &&
           other.completedDate == this.completedDate &&
           other.updatedAtClient == this.updatedAtClient);
 }
@@ -4495,6 +4536,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<String> orgUnit;
   final Value<DateTime?> instanceDate;
   final Value<InstanceSyncStatus> syncState;
+  final Value<AssignmentStatus?> status;
   final Value<DateTime?> completedDate;
   final Value<DateTime?> updatedAtClient;
   final Value<int> rowid;
@@ -4507,6 +4549,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     this.orgUnit = const Value.absent(),
     this.instanceDate = const Value.absent(),
     this.syncState = const Value.absent(),
+    this.status = const Value.absent(),
     this.completedDate = const Value.absent(),
     this.updatedAtClient = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -4520,6 +4563,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     required String orgUnit,
     this.instanceDate = const Value.absent(),
     required InstanceSyncStatus syncState,
+    this.status = const Value.absent(),
     this.completedDate = const Value.absent(),
     this.updatedAtClient = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -4537,6 +4581,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     Expression<String>? orgUnit,
     Expression<DateTime>? instanceDate,
     Expression<String>? syncState,
+    Expression<String>? status,
     Expression<DateTime>? completedDate,
     Expression<DateTime>? updatedAtClient,
     Expression<int>? rowid,
@@ -4550,6 +4595,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       if (orgUnit != null) 'org_unit': orgUnit,
       if (instanceDate != null) 'instance_date': instanceDate,
       if (syncState != null) 'sync_state': syncState,
+      if (status != null) 'status': status,
       if (completedDate != null) 'completed_date': completedDate,
       if (updatedAtClient != null) 'updated_at_client': updatedAtClient,
       if (rowid != null) 'rowid': rowid,
@@ -4565,6 +4611,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       Value<String>? orgUnit,
       Value<DateTime?>? instanceDate,
       Value<InstanceSyncStatus>? syncState,
+      Value<AssignmentStatus?>? status,
       Value<DateTime?>? completedDate,
       Value<DateTime?>? updatedAtClient,
       Value<int>? rowid}) {
@@ -4577,6 +4624,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       orgUnit: orgUnit ?? this.orgUnit,
       instanceDate: instanceDate ?? this.instanceDate,
       syncState: syncState ?? this.syncState,
+      status: status ?? this.status,
       completedDate: completedDate ?? this.completedDate,
       updatedAtClient: updatedAtClient ?? this.updatedAtClient,
       rowid: rowid ?? this.rowid,
@@ -4611,6 +4659,10 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       map['sync_state'] = Variable<String>(
           $AssignmentsTable.$convertersyncState.toSql(syncState.value));
     }
+    if (status.present) {
+      map['status'] = Variable<String>(
+          $AssignmentsTable.$converterstatusn.toSql(status.value));
+    }
     if (completedDate.present) {
       map['completed_date'] = Variable<DateTime>(completedDate.value);
     }
@@ -4634,6 +4686,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
           ..write('orgUnit: $orgUnit, ')
           ..write('instanceDate: $instanceDate, ')
           ..write('syncState: $syncState, ')
+          ..write('status: $status, ')
           ..write('completedDate: $completedDate, ')
           ..write('updatedAtClient: $updatedAtClient, ')
           ..write('rowid: $rowid')
@@ -10358,7 +10411,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index managedTeamCodIdx = Index('managed_team_cod_idx',
       'CREATE INDEX managed_team_cod_idx ON managed_teams (code)');
   late final Index assignmentStatusIdx = Index('assignment_status_idx',
-      'CREATE INDEX assignment_status_idx ON assignments ()');
+      'CREATE INDEX assignment_status_idx ON assignments (status)');
   late final Index templateVersionNumberIdx = Index(
       'template_version_number_idx',
       'CREATE INDEX template_version_number_idx ON form_template_versions (version_number)');
@@ -13760,6 +13813,7 @@ typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
   required String orgUnit,
   Value<DateTime?> instanceDate,
   required InstanceSyncStatus syncState,
+  Value<AssignmentStatus?> status,
   Value<DateTime?> completedDate,
   Value<DateTime?> updatedAtClient,
   Value<int> rowid,
@@ -13774,6 +13828,7 @@ typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
   Value<String> orgUnit,
   Value<DateTime?> instanceDate,
   Value<InstanceSyncStatus> syncState,
+  Value<AssignmentStatus?> status,
   Value<DateTime?> completedDate,
   Value<DateTime?> updatedAtClient,
   Value<int> rowid,
@@ -13901,6 +13956,11 @@ class $$AssignmentsTableFilterComposer
   ColumnWithTypeConverterFilters<InstanceSyncStatus, InstanceSyncStatus, String>
       get syncState => $composableBuilder(
           column: $table.syncState,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<AssignmentStatus?, AssignmentStatus, String>
+      get status => $composableBuilder(
+          column: $table.status,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<DateTime> get completedDate => $composableBuilder(
@@ -14060,6 +14120,9 @@ class $$AssignmentsTableOrderingComposer
   ColumnOrderings<String> get syncState => $composableBuilder(
       column: $table.syncState, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get completedDate => $composableBuilder(
       column: $table.completedDate,
       builder: (column) => ColumnOrderings(column));
@@ -14152,6 +14215,9 @@ class $$AssignmentsTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<InstanceSyncStatus, String> get syncState =>
       $composableBuilder(column: $table.syncState, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AssignmentStatus?, String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
 
   GeneratedColumn<DateTime> get completedDate => $composableBuilder(
       column: $table.completedDate, builder: (column) => column);
@@ -14320,6 +14386,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             Value<String> orgUnit = const Value.absent(),
             Value<DateTime?> instanceDate = const Value.absent(),
             Value<InstanceSyncStatus> syncState = const Value.absent(),
+            Value<AssignmentStatus?> status = const Value.absent(),
             Value<DateTime?> completedDate = const Value.absent(),
             Value<DateTime?> updatedAtClient = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -14333,6 +14400,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             orgUnit: orgUnit,
             instanceDate: instanceDate,
             syncState: syncState,
+            status: status,
             completedDate: completedDate,
             updatedAtClient: updatedAtClient,
             rowid: rowid,
@@ -14346,6 +14414,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             required String orgUnit,
             Value<DateTime?> instanceDate = const Value.absent(),
             required InstanceSyncStatus syncState,
+            Value<AssignmentStatus?> status = const Value.absent(),
             Value<DateTime?> completedDate = const Value.absent(),
             Value<DateTime?> updatedAtClient = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -14359,6 +14428,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             orgUnit: orgUnit,
             instanceDate: instanceDate,
             syncState: syncState,
+            status: status,
             completedDate: completedDate,
             updatedAtClient: updatedAtClient,
             rowid: rowid,

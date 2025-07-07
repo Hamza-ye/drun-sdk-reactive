@@ -65,6 +65,9 @@ enum ValueType {
         Percentage
       ];
 
+  static List<ValueType> get DECIMAL_TYPES =>
+      <ValueType>[Number, UnitInterval, Percentage];
+
   static List<ValueType> get BASIC_TYPES => <ValueType>[
         Text,
         LongText,
@@ -109,6 +112,8 @@ enum ValueType {
   bool get isBasicType => BASIC_TYPES.contains(this);
 
   bool get isInteger => INTEGER_TYPES.contains(this);
+
+  bool get isDecimal => DECIMAL_TYPES.contains(this);
 
   // bool get isSectionType => SECTION_TYPES.contains(this);
 

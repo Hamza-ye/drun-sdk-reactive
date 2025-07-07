@@ -4,7 +4,7 @@
 // import 'package:d_sdk/modules/datarun/form/shared/element_template/scanned_code_properties.dart';
 // import 'package:d_sdk/modules/datarun/form/shared/metadata_resource_type.dart';
 // import 'package:d_sdk/modules/datarun/form/shared/rule/rule.dart';
-// import 'package:d_sdk/modules/datarun/form/shared/value_type.dart';
+// import 'package:d_sdk/database/shared/value_type.dart';
 // import 'package:d_sdk/modules/datarun_shared/utilities/parsing_helpers.dart';
 // import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 //

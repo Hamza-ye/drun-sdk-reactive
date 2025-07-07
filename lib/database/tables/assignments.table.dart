@@ -3,7 +3,7 @@ import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
-@TableIndex(name: 'assignment_status_idx', columns: {#assignmentStatus})
+@TableIndex(name: 'assignment_status_idx', columns: {#status})
 class Assignments extends Table with BaseTableMixin {
   @ReferenceName("activityAssignments")
   TextColumn get activity => text().references(Activities, #id)();
@@ -19,12 +19,8 @@ class Assignments extends Table with BaseTableMixin {
   TextColumn get syncState =>
       text().map(const EnumNameConverter(InstanceSyncStatus.values))();
 
-  //
-  // TextColumn get flowStatus =>
-  //     text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
-
-  // TextColumn get assignmentStatus =>
-  //     text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
+  TextColumn get status =>
+      text().map(const EnumNameConverter(AssignmentStatus.values)).nullable()();
 
   DateTimeColumn get completedDate => dateTime().nullable()();
 

@@ -5,7 +5,8 @@ import 'element_template/element_template.dart';
 
 extension FormTraverseExtension on FormTemplateVersion {
   Map<String, Template> get flatFields =>
-      IMap.fromIterable([...sections, ...fields].where((t) => t.path != null),
+      IMap.fromIterable([...sections, ...fields]
+          .where((t) => t.path != null),
           keyMapper: (template) => template.path!,
           valueMapper: (template) => template).unlockView;
 

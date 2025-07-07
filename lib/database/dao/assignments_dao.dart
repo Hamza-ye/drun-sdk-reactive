@@ -47,14 +47,15 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
 
     final ous = alias(orgUnits, 'ou');
     final act = alias(activities, 'act');
+    final forms = alias(db.assignmentForms, 'f');
+    final formsCount = forms.assignment.equalsExp(assignments.id).count();
     // Base join query
     final JoinedSelectStatement<HasResultSet, dynamic> query =
-        select(assignments)
-            // ..where((a) => a.activity.equals(activityId)))
-            .join([
+        select(assignments).addColumns([formsCount]).join([
       innerJoin(teams, teams.id.equalsExp(assignments.team)),
       innerJoin(act, act.id.equalsExp(assignments.activity)),
       innerJoin(ous, ous.id.equalsExp(assignments.orgUnit)),
+      innerJoin(forms, forms.assignment.equalsExp(assignments.id)),
     ]);
 
     // Apply activity filter if provided
@@ -84,27 +85,28 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
       final t = row.readTable(teams);
       final ou = row.readTable(ous);
       final ac = row.readTable(act);
-
+      final forms = row.read(formsCount)!;
       return AssignmentModel(
-        id: a.id,
-        activity: activityId != null
-            ? IdentifiableModel(id: activityId, code: ac.code, name: ac.name)
-            : null,
-        orgUnit: IdentifiableModel(
-          id: ou.id,
-          code: ou.code,
-          name: ou.name,
-        ),
-        team: IdentifiableModel(
-          id: t.id,
-          code: t.code,
-          name: t.code ?? '',
-        ),
-        // startDay: a.startDay,
-        startDate: a.instanceDate,
-        dueDate: null,
-        // status: a.assignmentStatus ?? AssignmentStatus.PLANNED,
-      );
+          id: a.id,
+          activity: activityId != null
+              ? IdentifiableModel(id: activityId, code: ac.code, name: ac.name)
+              : null,
+          orgUnit: IdentifiableModel(
+            id: ou.id,
+            code: ou.code,
+            name: ou.name,
+          ),
+          team: IdentifiableModel(
+            id: t.id,
+            code: t.code,
+            name: t.code ?? '',
+          ),
+          // startDay: a.startDay,
+          startDate: a.instanceDate,
+          dueDate: null,
+          formCount: forms
+          // status: a.assignmentStatus ?? AssignmentStatus.PLANNED,
+          );
     });
   }
 //

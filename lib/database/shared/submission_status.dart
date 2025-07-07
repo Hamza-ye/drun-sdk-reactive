@@ -5,13 +5,20 @@ enum InstanceSyncStatus {
   synced, // Successfully sent to the server
   syncFailed; // Tried to sync but failed
 
-  bool isToSync() => toSyncStatuses.contains(this);
+  bool get isToSync => toSyncStatuses.contains(this);
+
+  bool get isSynced => synced == this;
+
+  bool get isFinalized => finalized == this;
+
+  bool get isDraft => draft == this;
+
+  bool get isSyncFailed => syncFailed == this;
 
   static List<InstanceSyncStatus> get toSyncStatuses =>
       [InstanceSyncStatus.finalized, InstanceSyncStatus.syncFailed];
 
-  static List<String> get toNames => values.map((v) => v.name)
-      .toList();
+  static List<String> get toNames => values.map((v) => v.name).toList();
 
   static InstanceSyncStatus getValue(String? status) {
     return switch (status?.toLowerCase()) {
