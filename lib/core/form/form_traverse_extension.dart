@@ -4,11 +4,12 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'element_template/element_template.dart';
 
 extension FormTraverseExtension on FormTemplateVersion {
-  Map<String, Template> get flatFields =>
-      IMap.fromIterable([...sections, ...fields]
-          .where((t) => t.path != null),
-          keyMapper: (template) => template.path!,
-          valueMapper: (template) => template).unlockView;
+  Map<String, Template> get flatFields => IMap.fromIterable(
+      [...sections, ...fields]
+        ..sort((a, b) => (a.order).compareTo(b.order))
+        ..where((t) => t.path != null),
+      keyMapper: (template) => template.path!,
+      valueMapper: (template) => template).unlockView;
 
 //   /// Get element by path
 //   Template? getTemplateByPath(String path) {

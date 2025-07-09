@@ -115,6 +115,10 @@ enum ValueType {
 
   bool get isDecimal => DECIMAL_TYPES.contains(this);
 
+  bool get isSection => this == Section;
+
+  bool get isRepeatSection => this == RepeatableSection;
+
   // bool get isSectionType => SECTION_TYPES.contains(this);
 
   // bool get isSection => this == ValueType.Section;

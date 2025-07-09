@@ -7,7 +7,7 @@ class AssignmentForms extends Table {
       text().references(Assignments, #id, onUpdate: KeyAction.cascade)();
 
   @ReferenceName("assignments")
-  TextColumn get form => text().references(Assignments, #id)();
+  TextColumn get form => text().references(FormTemplates, #id)();
 
   BoolColumn get canAddSubmissions =>
       boolean().nullable().clientDefault(() => false)();

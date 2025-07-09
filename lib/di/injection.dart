@@ -1,3 +1,4 @@
+import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/database/dbManager.dart';
 import 'package:d_sdk/user_session/session_repository.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +16,7 @@ GetIt rSdkLocator = GetIt.instance;
       SessionRepository,
       Dio,
       DbManager,
+      HttpClient,
     ])
 GetIt setupSdkLocator() {
   // rSdkLocator.enableRegisteringMultipleInstancesOfOneType();

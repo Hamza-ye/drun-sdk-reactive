@@ -1,6 +1,6 @@
 enum AssignmentStatus {
   PLANNED,
-  @Deprecated("use planned instead")
+  // @Deprecated("use planned instead")
   NOT_STARTED,
   IN_PROGRESS, // Active
   DONE, // Completed
@@ -21,7 +21,7 @@ enum AssignmentStatus {
     return this == AssignmentStatus.PLANNED;
   }
 
-  @Deprecated("use isPlanned instead")
+  // @Deprecated("use isPlanned instead")
   bool isNotStarted() {
     return isPlanned();
   }

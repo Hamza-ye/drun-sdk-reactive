@@ -53,10 +53,9 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
     final t = alias(db.teams, 't');
 
     final assignedAssignmentsCount = a.activity.equalsExp(act.id).count();
-    final managedTeamsCount = mt.activity.equalsExp(act.id).count();
 
-    final JoinedSelectStatement<HasResultSet, dynamic> query = select(act)
-        .addColumns([assignedAssignmentsCount, managedTeamsCount]).join([
+    final JoinedSelectStatement<HasResultSet, dynamic> query =
+        select(act).addColumns([assignedAssignmentsCount]).join([
       innerJoin(a, a.activity.equalsExp(act.id), useColumns: false),
       innerJoin(mt, mt.activity.equalsExp(act.id), useColumns: false),
       innerJoin(t, t.activity.equalsExp(t.activity), useColumns: false),
@@ -82,13 +81,9 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
     return query.map((row) {
       final ac = row.readTable(act);
       final assignedAssignments = row.read(assignedAssignmentsCount)!;
-      final managedTeams = row.read(managedTeamsCount)!;
 
       return ActivityModel(
-          id: ac.id,
-          managedTeams: managedTeams,
-          assignedAssignments: assignedAssignments,
-          name: ac.name);
+          id: ac.id, assignedAssignments: assignedAssignments, name: ac.name);
     });
   }
 }

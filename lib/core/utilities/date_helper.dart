@@ -1,3 +1,4 @@
+import 'package:d_sdk/database/shared/value_type.dart';
 import 'package:intl/intl.dart';
 
 extension UiDateString on String {}
@@ -13,6 +14,13 @@ class DateHelper {
   static const String UI_DATE_FORMAT = 'yyyy-MM-dd';
 
   static const String TIME_FORMAT = 'HH:mm';
+
+  static String getEffectiveUiFormat(ValueType? valueType) =>
+      switch (valueType) {
+        ValueType.Date => DateHelper.UI_DATE_FORMAT,
+        ValueType.Time => DateHelper.TIME_FORMAT,
+        _ => DateHelper.DATE_TIME_FORMAT_EXPRESSION,
+      };
 
   static DateFormat databaseDateFormat() {
     return DateFormat(DATABASE_FORMAT_EXPRESSION, 'en_US');
@@ -39,7 +47,7 @@ class DateHelper {
 
   /// from DbUtc To Ui Local Format
   static String fromDbUtcToUiLocalFormat(String date,
-      {bool includeTime = false}) {
+      {bool includeTime = false, onlyTime = false}) {
     final DateTime? parsed =
         DateTime.tryParse(date.endsWith('Z') ? date : '${date}Z');
     return parsed != null
@@ -50,8 +58,12 @@ class DateHelper {
   static String formatForUi(DateTime dateTime,
       {bool includeTime = false, bool onlyTime = false}) {
     final DateTime localDate = dateTime.toLocal();
-    final DateFormat formatter =
-        includeTime ? uiDateFormatNoSeconds() : uiDateFormat();
+
+    final DateFormat formatter = onlyTime
+        ? timeFormat()
+        : includeTime
+            ? uiDateFormatNoSeconds()
+            : uiDateFormat();
     return formatter.format(localDate);
   }
 

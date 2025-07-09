@@ -6,6 +6,5 @@ part of 'teams_dao.dart';
 mixin _$TeamsDaoMixin on DatabaseAccessor<AppDatabase> {
   $ProjectsTable get projects => attachedDatabase.projects;
   $ActivitiesTable get activities => attachedDatabase.activities;
-  $UsersTable get users => attachedDatabase.users;
   $TeamsTable get teams => attachedDatabase.teams;
 }

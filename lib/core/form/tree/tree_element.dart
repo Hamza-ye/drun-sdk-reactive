@@ -7,6 +7,8 @@ mixin TreeElement {
 
   String? get path;
 
+  int get order;
+
   String? get name;
 
   ValueType? get type => null;

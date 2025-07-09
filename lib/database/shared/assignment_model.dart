@@ -1,4 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/shared/collections.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +20,6 @@ class AssignmentModel with EquatableMixin {
   });
 
   /// assignment
-
   final String id;
 
   final IdentifiableModel? activity;
@@ -30,27 +30,33 @@ class AssignmentModel with EquatableMixin {
   final DateTime? startDate;
   final DateTime? dueDate;
   final DateTime? rescheduledDate;
-  final List<AssignmentForm> userForms;
+  final List<Pair<AssignmentForm, bool>> userForms;
   final int formCount;
 
-  static int calculateStartDay(
-      String activityStartDate, String assignmentStartDate) {
+  List<Pair<AssignmentForm, bool>> get availableForms =>
+      userForms.where((form) => form.second).toList();
+
+  static int calculateStartDay(String activityStartDate,
+      String assignmentStartDate) {
     final dateFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     final activityStart = dateFormat.parse(activityStartDate);
     final assignmentStart = dateFormat.parse(assignmentStartDate);
 
-    return assignmentStart.difference(activityStart).inDays + 1;
+    return assignmentStart
+        .difference(activityStart)
+        .inDays + 1;
   }
 
-  static DateTime? calculateAssignmentDate(
-      DateTime? activityStartDate, int? startDay) {
+  static DateTime? calculateAssignmentDate(DateTime? activityStartDate,
+      int? startDay) {
     return activityStartDate != null
         ? activityStartDate.toLocal().add(Duration(days: (startDay ?? 1) - 1))
         : null;
   }
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         id,
         activity,
         orgUnit,
@@ -76,7 +82,7 @@ class AssignmentModel with EquatableMixin {
     DateTime? startDate,
     DateTime? dueDate,
     DateTime? rescheduledDate,
-    List<AssignmentForm>? userForms,
+    List<Pair<AssignmentForm, bool>>? userForms,
     int? formCount,
   }) {
     return AssignmentModel(

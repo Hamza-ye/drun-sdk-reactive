@@ -3279,17 +3279,9 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES activities (id)'));
-  static const VerificationMeta _userMeta = const VerificationMeta('user');
-  @override
-  late final GeneratedColumn<String> user = GeneratedColumn<String>(
-      'user', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES users (id)'));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, lastModifiedDate, createdDate, code, disabled, activity, user];
+      [id, lastModifiedDate, createdDate, code, disabled, activity];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3331,12 +3323,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
     } else if (isInserting) {
       context.missing(_activityMeta);
     }
-    if (data.containsKey('user')) {
-      context.handle(
-          _userMeta, user.isAcceptableOrUnknown(data['user']!, _userMeta));
-    } else if (isInserting) {
-      context.missing(_userMeta);
-    }
     return context;
   }
 
@@ -3358,8 +3344,6 @@ class $TeamsTable extends Teams with TableInfo<$TeamsTable, Team> {
           .read(DriftSqlType.bool, data['${effectivePrefix}disabled']),
       activity: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}activity'])!,
-      user: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}user'])!,
     );
   }
 
@@ -3376,15 +3360,13 @@ class Team extends DataClass implements Insertable<Team> {
   final String? code;
   final bool? disabled;
   final String activity;
-  final String user;
   const Team(
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
       this.code,
       this.disabled,
-      required this.activity,
-      required this.user});
+      required this.activity});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3402,7 +3384,6 @@ class Team extends DataClass implements Insertable<Team> {
       map['disabled'] = Variable<bool>(disabled);
     }
     map['activity'] = Variable<String>(activity);
-    map['user'] = Variable<String>(user);
     return map;
   }
 
@@ -3420,7 +3401,6 @@ class Team extends DataClass implements Insertable<Team> {
           ? const Value.absent()
           : Value(disabled),
       activity: Value(activity),
-      user: Value(user),
     );
   }
 
@@ -3435,7 +3415,6 @@ class Team extends DataClass implements Insertable<Team> {
       code: serializer.fromJson<String?>(json['code']),
       disabled: serializer.fromJson<bool?>(json['disabled']),
       activity: serializer.fromJson<String>(json['activity']),
-      user: serializer.fromJson<String>(json['user']),
     );
   }
   @override
@@ -3448,7 +3427,6 @@ class Team extends DataClass implements Insertable<Team> {
       'code': serializer.toJson<String?>(code),
       'disabled': serializer.toJson<bool?>(disabled),
       'activity': serializer.toJson<String>(activity),
-      'user': serializer.toJson<String>(user),
     };
   }
 
@@ -3458,8 +3436,7 @@ class Team extends DataClass implements Insertable<Team> {
           Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> code = const Value.absent(),
           Value<bool?> disabled = const Value.absent(),
-          String? activity,
-          String? user}) =>
+          String? activity}) =>
       Team(
         id: id ?? this.id,
         lastModifiedDate: lastModifiedDate.present
@@ -3469,7 +3446,6 @@ class Team extends DataClass implements Insertable<Team> {
         code: code.present ? code.value : this.code,
         disabled: disabled.present ? disabled.value : this.disabled,
         activity: activity ?? this.activity,
-        user: user ?? this.user,
       );
   Team copyWithCompanion(TeamsCompanion data) {
     return Team(
@@ -3482,7 +3458,6 @@ class Team extends DataClass implements Insertable<Team> {
       code: data.code.present ? data.code.value : this.code,
       disabled: data.disabled.present ? data.disabled.value : this.disabled,
       activity: data.activity.present ? data.activity.value : this.activity,
-      user: data.user.present ? data.user.value : this.user,
     );
   }
 
@@ -3494,15 +3469,14 @@ class Team extends DataClass implements Insertable<Team> {
           ..write('createdDate: $createdDate, ')
           ..write('code: $code, ')
           ..write('disabled: $disabled, ')
-          ..write('activity: $activity, ')
-          ..write('user: $user')
+          ..write('activity: $activity')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, lastModifiedDate, createdDate, code, disabled, activity, user);
+  int get hashCode =>
+      Object.hash(id, lastModifiedDate, createdDate, code, disabled, activity);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3512,8 +3486,7 @@ class Team extends DataClass implements Insertable<Team> {
           other.createdDate == this.createdDate &&
           other.code == this.code &&
           other.disabled == this.disabled &&
-          other.activity == this.activity &&
-          other.user == this.user);
+          other.activity == this.activity);
 }
 
 class TeamsCompanion extends UpdateCompanion<Team> {
@@ -3523,7 +3496,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
   final Value<String?> code;
   final Value<bool?> disabled;
   final Value<String> activity;
-  final Value<String> user;
   final Value<int> rowid;
   const TeamsCompanion({
     this.id = const Value.absent(),
@@ -3532,7 +3504,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     this.code = const Value.absent(),
     this.disabled = const Value.absent(),
     this.activity = const Value.absent(),
-    this.user = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TeamsCompanion.insert({
@@ -3542,11 +3513,9 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     this.code = const Value.absent(),
     this.disabled = const Value.absent(),
     required String activity,
-    required String user,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        activity = Value(activity),
-        user = Value(user);
+        activity = Value(activity);
   static Insertable<Team> custom({
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
@@ -3554,7 +3523,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     Expression<String>? code,
     Expression<bool>? disabled,
     Expression<String>? activity,
-    Expression<String>? user,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3564,7 +3532,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
       if (code != null) 'code': code,
       if (disabled != null) 'disabled': disabled,
       if (activity != null) 'activity': activity,
-      if (user != null) 'user': user,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3576,7 +3543,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
       Value<String?>? code,
       Value<bool?>? disabled,
       Value<String>? activity,
-      Value<String>? user,
       Value<int>? rowid}) {
     return TeamsCompanion(
       id: id ?? this.id,
@@ -3585,7 +3551,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
       code: code ?? this.code,
       disabled: disabled ?? this.disabled,
       activity: activity ?? this.activity,
-      user: user ?? this.user,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3611,9 +3576,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
     if (activity.present) {
       map['activity'] = Variable<String>(activity.value);
     }
-    if (user.present) {
-      map['user'] = Variable<String>(user.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3629,7 +3591,6 @@ class TeamsCompanion extends UpdateCompanion<Team> {
           ..write('code: $code, ')
           ..write('disabled: $disabled, ')
           ..write('activity: $activity, ')
-          ..write('user: $user, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3668,15 +3629,6 @@ class $ManagedTeamsTable extends ManagedTeams
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _disabledMeta =
-      const VerificationMeta('disabled');
-  @override
-  late final GeneratedColumn<bool> disabled = GeneratedColumn<bool>(
-      'disabled', aliasedName, true,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("disabled" IN (0, 1))'));
   static const VerificationMeta _activityMeta =
       const VerificationMeta('activity');
   @override
@@ -3686,32 +3638,18 @@ class $ManagedTeamsTable extends ManagedTeams
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES activities (id)'));
-  static const VerificationMeta _userMeta = const VerificationMeta('user');
+  static const VerificationMeta _managedByMeta =
+      const VerificationMeta('managedBy');
   @override
-  late final GeneratedColumn<String> user = GeneratedColumn<String>(
-      'user', aliasedName, false,
+  late final GeneratedColumn<String> managedBy = GeneratedColumn<String>(
+      'managed_by', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES users (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES teams (id)'));
   @override
-  late final GeneratedColumnWithTypeConverter<List<dynamic>, String> teamUsers =
-      GeneratedColumn<String>('team_users', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '[]')
-          .withConverter<List<dynamic>>($ManagedTeamsTable.$converterteamUsers);
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        lastModifiedDate,
-        createdDate,
-        code,
-        disabled,
-        activity,
-        user,
-        teamUsers
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, lastModifiedDate, createdDate, code, activity, managedBy];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3743,21 +3681,17 @@ class $ManagedTeamsTable extends ManagedTeams
       context.handle(
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     }
-    if (data.containsKey('disabled')) {
-      context.handle(_disabledMeta,
-          disabled.isAcceptableOrUnknown(data['disabled']!, _disabledMeta));
-    }
     if (data.containsKey('activity')) {
       context.handle(_activityMeta,
           activity.isAcceptableOrUnknown(data['activity']!, _activityMeta));
     } else if (isInserting) {
       context.missing(_activityMeta);
     }
-    if (data.containsKey('user')) {
-      context.handle(
-          _userMeta, user.isAcceptableOrUnknown(data['user']!, _userMeta));
+    if (data.containsKey('managed_by')) {
+      context.handle(_managedByMeta,
+          managedBy.isAcceptableOrUnknown(data['managed_by']!, _managedByMeta));
     } else if (isInserting) {
-      context.missing(_userMeta);
+      context.missing(_managedByMeta);
     }
     return context;
   }
@@ -3776,15 +3710,10 @@ class $ManagedTeamsTable extends ManagedTeams
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_date']),
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
-      disabled: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}disabled']),
       activity: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}activity'])!,
-      user: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}user'])!,
-      teamUsers: $ManagedTeamsTable.$converterteamUsers.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}team_users'])!),
+      managedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}managed_by'])!,
     );
   }
 
@@ -3792,9 +3721,6 @@ class $ManagedTeamsTable extends ManagedTeams
   $ManagedTeamsTable createAlias(String alias) {
     return $ManagedTeamsTable(attachedDatabase, alias);
   }
-
-  static TypeConverter<List<dynamic>, String> $converterteamUsers =
-      const TeamUsersConverter();
 }
 
 class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
@@ -3802,19 +3728,15 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
   final DateTime? lastModifiedDate;
   final DateTime? createdDate;
   final String? code;
-  final bool? disabled;
   final String activity;
-  final String user;
-  final List<dynamic> teamUsers;
+  final String managedBy;
   const ManagedTeam(
       {required this.id,
       this.lastModifiedDate,
       this.createdDate,
       this.code,
-      this.disabled,
       required this.activity,
-      required this.user,
-      required this.teamUsers});
+      required this.managedBy});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3828,15 +3750,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    if (!nullToAbsent || disabled != null) {
-      map['disabled'] = Variable<bool>(disabled);
-    }
     map['activity'] = Variable<String>(activity);
-    map['user'] = Variable<String>(user);
-    {
-      map['team_users'] = Variable<String>(
-          $ManagedTeamsTable.$converterteamUsers.toSql(teamUsers));
-    }
+    map['managed_by'] = Variable<String>(managedBy);
     return map;
   }
 
@@ -3850,12 +3765,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
           ? const Value.absent()
           : Value(createdDate),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      disabled: disabled == null && nullToAbsent
-          ? const Value.absent()
-          : Value(disabled),
       activity: Value(activity),
-      user: Value(user),
-      teamUsers: Value(teamUsers),
+      managedBy: Value(managedBy),
     );
   }
 
@@ -3868,10 +3779,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
           serializer.fromJson<DateTime?>(json['lastModifiedDate']),
       createdDate: serializer.fromJson<DateTime?>(json['createdDate']),
       code: serializer.fromJson<String?>(json['code']),
-      disabled: serializer.fromJson<bool?>(json['disabled']),
       activity: serializer.fromJson<String>(json['activity']),
-      user: serializer.fromJson<String>(json['user']),
-      teamUsers: serializer.fromJson<List<dynamic>>(json['teamUsers']),
+      managedBy: serializer.fromJson<String>(json['managedBy']),
     );
   }
   @override
@@ -3882,10 +3791,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
       'lastModifiedDate': serializer.toJson<DateTime?>(lastModifiedDate),
       'createdDate': serializer.toJson<DateTime?>(createdDate),
       'code': serializer.toJson<String?>(code),
-      'disabled': serializer.toJson<bool?>(disabled),
       'activity': serializer.toJson<String>(activity),
-      'user': serializer.toJson<String>(user),
-      'teamUsers': serializer.toJson<List<dynamic>>(teamUsers),
+      'managedBy': serializer.toJson<String>(managedBy),
     };
   }
 
@@ -3894,10 +3801,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
           Value<DateTime?> lastModifiedDate = const Value.absent(),
           Value<DateTime?> createdDate = const Value.absent(),
           Value<String?> code = const Value.absent(),
-          Value<bool?> disabled = const Value.absent(),
           String? activity,
-          String? user,
-          List<dynamic>? teamUsers}) =>
+          String? managedBy}) =>
       ManagedTeam(
         id: id ?? this.id,
         lastModifiedDate: lastModifiedDate.present
@@ -3905,10 +3810,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
             : this.lastModifiedDate,
         createdDate: createdDate.present ? createdDate.value : this.createdDate,
         code: code.present ? code.value : this.code,
-        disabled: disabled.present ? disabled.value : this.disabled,
         activity: activity ?? this.activity,
-        user: user ?? this.user,
-        teamUsers: teamUsers ?? this.teamUsers,
+        managedBy: managedBy ?? this.managedBy,
       );
   ManagedTeam copyWithCompanion(ManagedTeamsCompanion data) {
     return ManagedTeam(
@@ -3919,10 +3822,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
       createdDate:
           data.createdDate.present ? data.createdDate.value : this.createdDate,
       code: data.code.present ? data.code.value : this.code,
-      disabled: data.disabled.present ? data.disabled.value : this.disabled,
       activity: data.activity.present ? data.activity.value : this.activity,
-      user: data.user.present ? data.user.value : this.user,
-      teamUsers: data.teamUsers.present ? data.teamUsers.value : this.teamUsers,
+      managedBy: data.managedBy.present ? data.managedBy.value : this.managedBy,
     );
   }
 
@@ -3933,17 +3834,15 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('code: $code, ')
-          ..write('disabled: $disabled, ')
           ..write('activity: $activity, ')
-          ..write('user: $user, ')
-          ..write('teamUsers: $teamUsers')
+          ..write('managedBy: $managedBy')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, lastModifiedDate, createdDate, code,
-      disabled, activity, user, teamUsers);
+  int get hashCode =>
+      Object.hash(id, lastModifiedDate, createdDate, code, activity, managedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3952,10 +3851,8 @@ class ManagedTeam extends DataClass implements Insertable<ManagedTeam> {
           other.lastModifiedDate == this.lastModifiedDate &&
           other.createdDate == this.createdDate &&
           other.code == this.code &&
-          other.disabled == this.disabled &&
           other.activity == this.activity &&
-          other.user == this.user &&
-          other.teamUsers == this.teamUsers);
+          other.managedBy == this.managedBy);
 }
 
 class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
@@ -3963,20 +3860,16 @@ class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
   final Value<DateTime?> lastModifiedDate;
   final Value<DateTime?> createdDate;
   final Value<String?> code;
-  final Value<bool?> disabled;
   final Value<String> activity;
-  final Value<String> user;
-  final Value<List<dynamic>> teamUsers;
+  final Value<String> managedBy;
   final Value<int> rowid;
   const ManagedTeamsCompanion({
     this.id = const Value.absent(),
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.code = const Value.absent(),
-    this.disabled = const Value.absent(),
     this.activity = const Value.absent(),
-    this.user = const Value.absent(),
-    this.teamUsers = const Value.absent(),
+    this.managedBy = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ManagedTeamsCompanion.insert({
@@ -3984,23 +3877,19 @@ class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
     this.lastModifiedDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.code = const Value.absent(),
-    this.disabled = const Value.absent(),
     required String activity,
-    required String user,
-    this.teamUsers = const Value.absent(),
+    required String managedBy,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         activity = Value(activity),
-        user = Value(user);
+        managedBy = Value(managedBy);
   static Insertable<ManagedTeam> custom({
     Expression<String>? id,
     Expression<DateTime>? lastModifiedDate,
     Expression<DateTime>? createdDate,
     Expression<String>? code,
-    Expression<bool>? disabled,
     Expression<String>? activity,
-    Expression<String>? user,
-    Expression<String>? teamUsers,
+    Expression<String>? managedBy,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4008,10 +3897,8 @@ class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
       if (lastModifiedDate != null) 'last_modified_date': lastModifiedDate,
       if (createdDate != null) 'created_date': createdDate,
       if (code != null) 'code': code,
-      if (disabled != null) 'disabled': disabled,
       if (activity != null) 'activity': activity,
-      if (user != null) 'user': user,
-      if (teamUsers != null) 'team_users': teamUsers,
+      if (managedBy != null) 'managed_by': managedBy,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4021,20 +3908,16 @@ class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
       Value<DateTime?>? lastModifiedDate,
       Value<DateTime?>? createdDate,
       Value<String?>? code,
-      Value<bool?>? disabled,
       Value<String>? activity,
-      Value<String>? user,
-      Value<List<dynamic>>? teamUsers,
+      Value<String>? managedBy,
       Value<int>? rowid}) {
     return ManagedTeamsCompanion(
       id: id ?? this.id,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       createdDate: createdDate ?? this.createdDate,
       code: code ?? this.code,
-      disabled: disabled ?? this.disabled,
       activity: activity ?? this.activity,
-      user: user ?? this.user,
-      teamUsers: teamUsers ?? this.teamUsers,
+      managedBy: managedBy ?? this.managedBy,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4054,18 +3937,11 @@ class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
     if (code.present) {
       map['code'] = Variable<String>(code.value);
     }
-    if (disabled.present) {
-      map['disabled'] = Variable<bool>(disabled.value);
-    }
     if (activity.present) {
       map['activity'] = Variable<String>(activity.value);
     }
-    if (user.present) {
-      map['user'] = Variable<String>(user.value);
-    }
-    if (teamUsers.present) {
-      map['team_users'] = Variable<String>(
-          $ManagedTeamsTable.$converterteamUsers.toSql(teamUsers.value));
+    if (managedBy.present) {
+      map['managed_by'] = Variable<String>(managedBy.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -4080,10 +3956,8 @@ class ManagedTeamsCompanion extends UpdateCompanion<ManagedTeam> {
           ..write('lastModifiedDate: $lastModifiedDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('code: $code, ')
-          ..write('disabled: $disabled, ')
           ..write('activity: $activity, ')
-          ..write('user: $user, ')
-          ..write('teamUsers: $teamUsers, ')
+          ..write('managedBy: $managedBy, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4695,6 +4569,371 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   }
 }
 
+class $FormTemplatesTable extends FormTemplates
+    with TableInfo<$FormTemplatesTable, FormTemplate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FormTemplatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _formVersionMeta =
+      const VerificationMeta('formVersion');
+  @override
+  late final GeneratedColumn<String> formVersion = GeneratedColumn<String>(
+      'form_version', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionNumberMeta =
+      const VerificationMeta('versionNumber');
+  @override
+  late final GeneratedColumn<int> versionNumber = GeneratedColumn<int>(
+      'version_number', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+      label = GeneratedColumn<String>('label', aliasedName, true,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              clientDefault: () => '{}')
+          .withConverter<Map<String, dynamic>?>(
+              $FormTemplatesTable.$converterlabel);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, formVersion, versionNumber, name, label, description];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'form_templates';
+  @override
+  VerificationContext validateIntegrity(Insertable<FormTemplate> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('form_version')) {
+      context.handle(
+          _formVersionMeta,
+          formVersion.isAcceptableOrUnknown(
+              data['form_version']!, _formVersionMeta));
+    } else if (isInserting) {
+      context.missing(_formVersionMeta);
+    }
+    if (data.containsKey('version_number')) {
+      context.handle(
+          _versionNumberMeta,
+          versionNumber.isAcceptableOrUnknown(
+              data['version_number']!, _versionNumberMeta));
+    } else if (isInserting) {
+      context.missing(_versionNumberMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FormTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FormTemplate(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      formVersion: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}form_version'])!,
+      versionNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version_number'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      label: $FormTemplatesTable.$converterlabel.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}label'])),
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+    );
+  }
+
+  @override
+  $FormTemplatesTable createAlias(String alias) {
+    return $FormTemplatesTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<Map<String, dynamic>?, String?> $converterlabel =
+      const NullAwareMapConverter();
+}
+
+class FormTemplate extends DataClass implements Insertable<FormTemplate> {
+  final String id;
+
+  /// current form version uid
+  final String formVersion;
+
+  /// current form version number
+  final int versionNumber;
+  final String name;
+  final Map<String, dynamic>? label;
+  final String? description;
+  const FormTemplate(
+      {required this.id,
+      required this.formVersion,
+      required this.versionNumber,
+      required this.name,
+      this.label,
+      this.description});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['form_version'] = Variable<String>(formVersion);
+    map['version_number'] = Variable<int>(versionNumber);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || label != null) {
+      map['label'] =
+          Variable<String>($FormTemplatesTable.$converterlabel.toSql(label));
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    return map;
+  }
+
+  FormTemplatesCompanion toCompanion(bool nullToAbsent) {
+    return FormTemplatesCompanion(
+      id: Value(id),
+      formVersion: Value(formVersion),
+      versionNumber: Value(versionNumber),
+      name: Value(name),
+      label:
+          label == null && nullToAbsent ? const Value.absent() : Value(label),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+    );
+  }
+
+  factory FormTemplate.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FormTemplate(
+      id: serializer.fromJson<String>(json['id']),
+      formVersion: serializer.fromJson<String>(json['formVersion']),
+      versionNumber: serializer.fromJson<int>(json['versionNumber']),
+      name: serializer.fromJson<String>(json['name']),
+      label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
+      description: serializer.fromJson<String?>(json['description']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'formVersion': serializer.toJson<String>(formVersion),
+      'versionNumber': serializer.toJson<int>(versionNumber),
+      'name': serializer.toJson<String>(name),
+      'label': serializer.toJson<Map<String, dynamic>?>(label),
+      'description': serializer.toJson<String?>(description),
+    };
+  }
+
+  FormTemplate copyWith(
+          {String? id,
+          String? formVersion,
+          int? versionNumber,
+          String? name,
+          Value<Map<String, dynamic>?> label = const Value.absent(),
+          Value<String?> description = const Value.absent()}) =>
+      FormTemplate(
+        id: id ?? this.id,
+        formVersion: formVersion ?? this.formVersion,
+        versionNumber: versionNumber ?? this.versionNumber,
+        name: name ?? this.name,
+        label: label.present ? label.value : this.label,
+        description: description.present ? description.value : this.description,
+      );
+  FormTemplate copyWithCompanion(FormTemplatesCompanion data) {
+    return FormTemplate(
+      id: data.id.present ? data.id.value : this.id,
+      formVersion:
+          data.formVersion.present ? data.formVersion.value : this.formVersion,
+      versionNumber: data.versionNumber.present
+          ? data.versionNumber.value
+          : this.versionNumber,
+      name: data.name.present ? data.name.value : this.name,
+      label: data.label.present ? data.label.value : this.label,
+      description:
+          data.description.present ? data.description.value : this.description,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FormTemplate(')
+          ..write('id: $id, ')
+          ..write('formVersion: $formVersion, ')
+          ..write('versionNumber: $versionNumber, ')
+          ..write('name: $name, ')
+          ..write('label: $label, ')
+          ..write('description: $description')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, formVersion, versionNumber, name, label, description);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FormTemplate &&
+          other.id == this.id &&
+          other.formVersion == this.formVersion &&
+          other.versionNumber == this.versionNumber &&
+          other.name == this.name &&
+          other.label == this.label &&
+          other.description == this.description);
+}
+
+class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
+  final Value<String> id;
+  final Value<String> formVersion;
+  final Value<int> versionNumber;
+  final Value<String> name;
+  final Value<Map<String, dynamic>?> label;
+  final Value<String?> description;
+  final Value<int> rowid;
+  const FormTemplatesCompanion({
+    this.id = const Value.absent(),
+    this.formVersion = const Value.absent(),
+    this.versionNumber = const Value.absent(),
+    this.name = const Value.absent(),
+    this.label = const Value.absent(),
+    this.description = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FormTemplatesCompanion.insert({
+    required String id,
+    required String formVersion,
+    required int versionNumber,
+    required String name,
+    this.label = const Value.absent(),
+    this.description = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        formVersion = Value(formVersion),
+        versionNumber = Value(versionNumber),
+        name = Value(name);
+  static Insertable<FormTemplate> custom({
+    Expression<String>? id,
+    Expression<String>? formVersion,
+    Expression<int>? versionNumber,
+    Expression<String>? name,
+    Expression<String>? label,
+    Expression<String>? description,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (formVersion != null) 'form_version': formVersion,
+      if (versionNumber != null) 'version_number': versionNumber,
+      if (name != null) 'name': name,
+      if (label != null) 'label': label,
+      if (description != null) 'description': description,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FormTemplatesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? formVersion,
+      Value<int>? versionNumber,
+      Value<String>? name,
+      Value<Map<String, dynamic>?>? label,
+      Value<String?>? description,
+      Value<int>? rowid}) {
+    return FormTemplatesCompanion(
+      id: id ?? this.id,
+      formVersion: formVersion ?? this.formVersion,
+      versionNumber: versionNumber ?? this.versionNumber,
+      name: name ?? this.name,
+      label: label ?? this.label,
+      description: description ?? this.description,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (formVersion.present) {
+      map['form_version'] = Variable<String>(formVersion.value);
+    }
+    if (versionNumber.present) {
+      map['version_number'] = Variable<int>(versionNumber.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(
+          $FormTemplatesTable.$converterlabel.toSql(label.value));
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FormTemplatesCompanion(')
+          ..write('id: $id, ')
+          ..write('formVersion: $formVersion, ')
+          ..write('versionNumber: $versionNumber, ')
+          ..write('name: $name, ')
+          ..write('label: $label, ')
+          ..write('description: $description, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AssignmentFormsTable extends AssignmentForms
     with TableInfo<$AssignmentFormsTable, AssignmentForm> {
   @override
@@ -4717,7 +4956,7 @@ class $AssignmentFormsTable extends AssignmentForms
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES assignments (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES form_templates (id)'));
   static const VerificationMeta _canAddSubmissionsMeta =
       const VerificationMeta('canAddSubmissions');
   @override
@@ -5109,371 +5348,6 @@ class AssignmentFormsCompanion extends UpdateCompanion<AssignmentForm> {
   }
 }
 
-class $FormTemplatesTable extends FormTemplates
-    with TableInfo<$FormTemplatesTable, FormTemplate> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $FormTemplatesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _formVersionMeta =
-      const VerificationMeta('formVersion');
-  @override
-  late final GeneratedColumn<String> formVersion = GeneratedColumn<String>(
-      'form_version', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _versionNumberMeta =
-      const VerificationMeta('versionNumber');
-  @override
-  late final GeneratedColumn<int> versionNumber = GeneratedColumn<int>(
-      'version_number', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  @override
-  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      label = GeneratedColumn<String>('label', aliasedName, true,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '{}')
-          .withConverter<Map<String, dynamic>?>(
-              $FormTemplatesTable.$converterlabel);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
-  @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, formVersion, versionNumber, name, label, description];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'form_templates';
-  @override
-  VerificationContext validateIntegrity(Insertable<FormTemplate> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('form_version')) {
-      context.handle(
-          _formVersionMeta,
-          formVersion.isAcceptableOrUnknown(
-              data['form_version']!, _formVersionMeta));
-    } else if (isInserting) {
-      context.missing(_formVersionMeta);
-    }
-    if (data.containsKey('version_number')) {
-      context.handle(
-          _versionNumberMeta,
-          versionNumber.isAcceptableOrUnknown(
-              data['version_number']!, _versionNumberMeta));
-    } else if (isInserting) {
-      context.missing(_versionNumberMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('description')) {
-      context.handle(
-          _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  FormTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return FormTemplate(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      formVersion: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}form_version'])!,
-      versionNumber: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}version_number'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      label: $FormTemplatesTable.$converterlabel.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}label'])),
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description']),
-    );
-  }
-
-  @override
-  $FormTemplatesTable createAlias(String alias) {
-    return $FormTemplatesTable(attachedDatabase, alias);
-  }
-
-  static TypeConverter<Map<String, dynamic>?, String?> $converterlabel =
-      const NullAwareMapConverter();
-}
-
-class FormTemplate extends DataClass implements Insertable<FormTemplate> {
-  final String id;
-
-  /// current form version uid
-  final String formVersion;
-
-  /// current form version number
-  final int versionNumber;
-  final String name;
-  final Map<String, dynamic>? label;
-  final String? description;
-  const FormTemplate(
-      {required this.id,
-      required this.formVersion,
-      required this.versionNumber,
-      required this.name,
-      this.label,
-      this.description});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['form_version'] = Variable<String>(formVersion);
-    map['version_number'] = Variable<int>(versionNumber);
-    map['name'] = Variable<String>(name);
-    if (!nullToAbsent || label != null) {
-      map['label'] =
-          Variable<String>($FormTemplatesTable.$converterlabel.toSql(label));
-    }
-    if (!nullToAbsent || description != null) {
-      map['description'] = Variable<String>(description);
-    }
-    return map;
-  }
-
-  FormTemplatesCompanion toCompanion(bool nullToAbsent) {
-    return FormTemplatesCompanion(
-      id: Value(id),
-      formVersion: Value(formVersion),
-      versionNumber: Value(versionNumber),
-      name: Value(name),
-      label:
-          label == null && nullToAbsent ? const Value.absent() : Value(label),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
-    );
-  }
-
-  factory FormTemplate.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return FormTemplate(
-      id: serializer.fromJson<String>(json['id']),
-      formVersion: serializer.fromJson<String>(json['formVersion']),
-      versionNumber: serializer.fromJson<int>(json['versionNumber']),
-      name: serializer.fromJson<String>(json['name']),
-      label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
-      description: serializer.fromJson<String?>(json['description']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'formVersion': serializer.toJson<String>(formVersion),
-      'versionNumber': serializer.toJson<int>(versionNumber),
-      'name': serializer.toJson<String>(name),
-      'label': serializer.toJson<Map<String, dynamic>?>(label),
-      'description': serializer.toJson<String?>(description),
-    };
-  }
-
-  FormTemplate copyWith(
-          {String? id,
-          String? formVersion,
-          int? versionNumber,
-          String? name,
-          Value<Map<String, dynamic>?> label = const Value.absent(),
-          Value<String?> description = const Value.absent()}) =>
-      FormTemplate(
-        id: id ?? this.id,
-        formVersion: formVersion ?? this.formVersion,
-        versionNumber: versionNumber ?? this.versionNumber,
-        name: name ?? this.name,
-        label: label.present ? label.value : this.label,
-        description: description.present ? description.value : this.description,
-      );
-  FormTemplate copyWithCompanion(FormTemplatesCompanion data) {
-    return FormTemplate(
-      id: data.id.present ? data.id.value : this.id,
-      formVersion:
-          data.formVersion.present ? data.formVersion.value : this.formVersion,
-      versionNumber: data.versionNumber.present
-          ? data.versionNumber.value
-          : this.versionNumber,
-      name: data.name.present ? data.name.value : this.name,
-      label: data.label.present ? data.label.value : this.label,
-      description:
-          data.description.present ? data.description.value : this.description,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FormTemplate(')
-          ..write('id: $id, ')
-          ..write('formVersion: $formVersion, ')
-          ..write('versionNumber: $versionNumber, ')
-          ..write('name: $name, ')
-          ..write('label: $label, ')
-          ..write('description: $description')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id, formVersion, versionNumber, name, label, description);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is FormTemplate &&
-          other.id == this.id &&
-          other.formVersion == this.formVersion &&
-          other.versionNumber == this.versionNumber &&
-          other.name == this.name &&
-          other.label == this.label &&
-          other.description == this.description);
-}
-
-class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
-  final Value<String> id;
-  final Value<String> formVersion;
-  final Value<int> versionNumber;
-  final Value<String> name;
-  final Value<Map<String, dynamic>?> label;
-  final Value<String?> description;
-  final Value<int> rowid;
-  const FormTemplatesCompanion({
-    this.id = const Value.absent(),
-    this.formVersion = const Value.absent(),
-    this.versionNumber = const Value.absent(),
-    this.name = const Value.absent(),
-    this.label = const Value.absent(),
-    this.description = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  FormTemplatesCompanion.insert({
-    required String id,
-    required String formVersion,
-    required int versionNumber,
-    required String name,
-    this.label = const Value.absent(),
-    this.description = const Value.absent(),
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        formVersion = Value(formVersion),
-        versionNumber = Value(versionNumber),
-        name = Value(name);
-  static Insertable<FormTemplate> custom({
-    Expression<String>? id,
-    Expression<String>? formVersion,
-    Expression<int>? versionNumber,
-    Expression<String>? name,
-    Expression<String>? label,
-    Expression<String>? description,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (formVersion != null) 'form_version': formVersion,
-      if (versionNumber != null) 'version_number': versionNumber,
-      if (name != null) 'name': name,
-      if (label != null) 'label': label,
-      if (description != null) 'description': description,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  FormTemplatesCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? formVersion,
-      Value<int>? versionNumber,
-      Value<String>? name,
-      Value<Map<String, dynamic>?>? label,
-      Value<String?>? description,
-      Value<int>? rowid}) {
-    return FormTemplatesCompanion(
-      id: id ?? this.id,
-      formVersion: formVersion ?? this.formVersion,
-      versionNumber: versionNumber ?? this.versionNumber,
-      name: name ?? this.name,
-      label: label ?? this.label,
-      description: description ?? this.description,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (formVersion.present) {
-      map['form_version'] = Variable<String>(formVersion.value);
-    }
-    if (versionNumber.present) {
-      map['version_number'] = Variable<int>(versionNumber.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(
-          $FormTemplatesTable.$converterlabel.toSql(label.value));
-    }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FormTemplatesCompanion(')
-          ..write('id: $id, ')
-          ..write('formVersion: $formVersion, ')
-          ..write('versionNumber: $versionNumber, ')
-          ..write('name: $name, ')
-          ..write('label: $label, ')
-          ..write('description: $description, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $FormTemplateVersionsTable extends FormTemplateVersions
     with TableInfo<$FormTemplateVersionsTable, FormTemplateVersion> {
   @override
@@ -5500,6 +5374,25 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
   late final GeneratedColumn<int> versionNumber = GeneratedColumn<int>(
       'version_number', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+      label = GeneratedColumn<String>('label', aliasedName, true,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              clientDefault: () => '{}')
+          .withConverter<Map<String, dynamic>?>(
+              $FormTemplateVersionsTable.$converterlabel);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> fields =
       GeneratedColumn<String>('fields', aliasedName, false,
@@ -5514,7 +5407,7 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
               $FormTemplateVersionsTable.$convertersections);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, template, versionNumber, fields, sections];
+      [id, template, versionNumber, name, label, description, fields, sections];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5545,6 +5438,18 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
     } else if (isInserting) {
       context.missing(_versionNumberMeta);
     }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
     return context;
   }
 
@@ -5560,6 +5465,13 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
           .read(DriftSqlType.string, data['${effectivePrefix}template'])!,
       versionNumber: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}version_number'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      label: $FormTemplateVersionsTable.$converterlabel.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}label'])),
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       fields: $FormTemplateVersionsTable.$converterfields.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.string, data['${effectivePrefix}fields'])!),
@@ -5574,6 +5486,8 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
     return $FormTemplateVersionsTable(attachedDatabase, alias);
   }
 
+  static TypeConverter<Map<String, dynamic>?, String?> $converterlabel =
+      const NullAwareMapConverter();
   static TypeConverter<List<Template>, String> $converterfields =
       const TemplateListConverter();
   static TypeConverter<List<Template>, String> $convertersections =
@@ -5585,12 +5499,24 @@ class FormTemplateVersion extends DataClass
   final String id;
   final String template;
   final int versionNumber;
+
+  /// copied from parent template
+  final String name;
+
+  /// copied from parent template
+  final Map<String, dynamic>? label;
+
+  /// copied from parent template
+  final String? description;
   final List<Template> fields;
   final List<Template> sections;
   const FormTemplateVersion(
       {required this.id,
       required this.template,
       required this.versionNumber,
+      required this.name,
+      this.label,
+      this.description,
       required this.fields,
       required this.sections});
   @override
@@ -5599,6 +5525,14 @@ class FormTemplateVersion extends DataClass
     map['id'] = Variable<String>(id);
     map['template'] = Variable<String>(template);
     map['version_number'] = Variable<int>(versionNumber);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || label != null) {
+      map['label'] = Variable<String>(
+          $FormTemplateVersionsTable.$converterlabel.toSql(label));
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
     {
       map['fields'] = Variable<String>(
           $FormTemplateVersionsTable.$converterfields.toSql(fields));
@@ -5615,6 +5549,12 @@ class FormTemplateVersion extends DataClass
       id: Value(id),
       template: Value(template),
       versionNumber: Value(versionNumber),
+      name: Value(name),
+      label:
+          label == null && nullToAbsent ? const Value.absent() : Value(label),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
       fields: Value(fields),
       sections: Value(sections),
     );
@@ -5627,6 +5567,9 @@ class FormTemplateVersion extends DataClass
       id: serializer.fromJson<String>(json['id']),
       template: serializer.fromJson<String>(json['template']),
       versionNumber: serializer.fromJson<int>(json['versionNumber']),
+      name: serializer.fromJson<String>(json['name']),
+      label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
+      description: serializer.fromJson<String?>(json['description']),
       fields: serializer.fromJson<List<Template>>(json['fields']),
       sections: serializer.fromJson<List<Template>>(json['sections']),
     );
@@ -5638,6 +5581,9 @@ class FormTemplateVersion extends DataClass
       'id': serializer.toJson<String>(id),
       'template': serializer.toJson<String>(template),
       'versionNumber': serializer.toJson<int>(versionNumber),
+      'name': serializer.toJson<String>(name),
+      'label': serializer.toJson<Map<String, dynamic>?>(label),
+      'description': serializer.toJson<String?>(description),
       'fields': serializer.toJson<List<Template>>(fields),
       'sections': serializer.toJson<List<Template>>(sections),
     };
@@ -5647,12 +5593,18 @@ class FormTemplateVersion extends DataClass
           {String? id,
           String? template,
           int? versionNumber,
+          String? name,
+          Value<Map<String, dynamic>?> label = const Value.absent(),
+          Value<String?> description = const Value.absent(),
           List<Template>? fields,
           List<Template>? sections}) =>
       FormTemplateVersion(
         id: id ?? this.id,
         template: template ?? this.template,
         versionNumber: versionNumber ?? this.versionNumber,
+        name: name ?? this.name,
+        label: label.present ? label.value : this.label,
+        description: description.present ? description.value : this.description,
         fields: fields ?? this.fields,
         sections: sections ?? this.sections,
       );
@@ -5663,6 +5615,10 @@ class FormTemplateVersion extends DataClass
       versionNumber: data.versionNumber.present
           ? data.versionNumber.value
           : this.versionNumber,
+      name: data.name.present ? data.name.value : this.name,
+      label: data.label.present ? data.label.value : this.label,
+      description:
+          data.description.present ? data.description.value : this.description,
       fields: data.fields.present ? data.fields.value : this.fields,
       sections: data.sections.present ? data.sections.value : this.sections,
     );
@@ -5674,6 +5630,9 @@ class FormTemplateVersion extends DataClass
           ..write('id: $id, ')
           ..write('template: $template, ')
           ..write('versionNumber: $versionNumber, ')
+          ..write('name: $name, ')
+          ..write('label: $label, ')
+          ..write('description: $description, ')
           ..write('fields: $fields, ')
           ..write('sections: $sections')
           ..write(')'))
@@ -5681,8 +5640,8 @@ class FormTemplateVersion extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, template, versionNumber, fields, sections);
+  int get hashCode => Object.hash(
+      id, template, versionNumber, name, label, description, fields, sections);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5690,6 +5649,9 @@ class FormTemplateVersion extends DataClass
           other.id == this.id &&
           other.template == this.template &&
           other.versionNumber == this.versionNumber &&
+          other.name == this.name &&
+          other.label == this.label &&
+          other.description == this.description &&
           other.fields == this.fields &&
           other.sections == this.sections);
 }
@@ -5699,6 +5661,9 @@ class FormTemplateVersionsCompanion
   final Value<String> id;
   final Value<String> template;
   final Value<int> versionNumber;
+  final Value<String> name;
+  final Value<Map<String, dynamic>?> label;
+  final Value<String?> description;
   final Value<List<Template>> fields;
   final Value<List<Template>> sections;
   final Value<int> rowid;
@@ -5706,6 +5671,9 @@ class FormTemplateVersionsCompanion
     this.id = const Value.absent(),
     this.template = const Value.absent(),
     this.versionNumber = const Value.absent(),
+    this.name = const Value.absent(),
+    this.label = const Value.absent(),
+    this.description = const Value.absent(),
     this.fields = const Value.absent(),
     this.sections = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -5714,18 +5682,25 @@ class FormTemplateVersionsCompanion
     required String id,
     required String template,
     required int versionNumber,
+    required String name,
+    this.label = const Value.absent(),
+    this.description = const Value.absent(),
     required List<Template> fields,
     required List<Template> sections,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         template = Value(template),
         versionNumber = Value(versionNumber),
+        name = Value(name),
         fields = Value(fields),
         sections = Value(sections);
   static Insertable<FormTemplateVersion> custom({
     Expression<String>? id,
     Expression<String>? template,
     Expression<int>? versionNumber,
+    Expression<String>? name,
+    Expression<String>? label,
+    Expression<String>? description,
     Expression<String>? fields,
     Expression<String>? sections,
     Expression<int>? rowid,
@@ -5734,6 +5709,9 @@ class FormTemplateVersionsCompanion
       if (id != null) 'id': id,
       if (template != null) 'template': template,
       if (versionNumber != null) 'version_number': versionNumber,
+      if (name != null) 'name': name,
+      if (label != null) 'label': label,
+      if (description != null) 'description': description,
       if (fields != null) 'fields': fields,
       if (sections != null) 'sections': sections,
       if (rowid != null) 'rowid': rowid,
@@ -5744,6 +5722,9 @@ class FormTemplateVersionsCompanion
       {Value<String>? id,
       Value<String>? template,
       Value<int>? versionNumber,
+      Value<String>? name,
+      Value<Map<String, dynamic>?>? label,
+      Value<String?>? description,
       Value<List<Template>>? fields,
       Value<List<Template>>? sections,
       Value<int>? rowid}) {
@@ -5751,6 +5732,9 @@ class FormTemplateVersionsCompanion
       id: id ?? this.id,
       template: template ?? this.template,
       versionNumber: versionNumber ?? this.versionNumber,
+      name: name ?? this.name,
+      label: label ?? this.label,
+      description: description ?? this.description,
       fields: fields ?? this.fields,
       sections: sections ?? this.sections,
       rowid: rowid ?? this.rowid,
@@ -5768,6 +5752,16 @@ class FormTemplateVersionsCompanion
     }
     if (versionNumber.present) {
       map['version_number'] = Variable<int>(versionNumber.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(
+          $FormTemplateVersionsTable.$converterlabel.toSql(label.value));
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
     }
     if (fields.present) {
       map['fields'] = Variable<String>(
@@ -5789,6 +5783,9 @@ class FormTemplateVersionsCompanion
           ..write('id: $id, ')
           ..write('template: $template, ')
           ..write('versionNumber: $versionNumber, ')
+          ..write('name: $name, ')
+          ..write('label: $label, ')
+          ..write('description: $description, ')
           ..write('fields: $fields, ')
           ..write('sections: $sections, ')
           ..write('rowid: $rowid')
@@ -9573,7 +9570,7 @@ class $DataOptionsTable extends DataOptions
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES data_option_sets (id)'));
+          'REFERENCES data_option_sets (id) ON UPDATE CASCADE ON DELETE CASCADE'));
   static const VerificationMeta _orderMeta = const VerificationMeta('order');
   @override
   late final GeneratedColumn<int> order = GeneratedColumn<int>(
@@ -10378,9 +10375,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TeamsTable teams = $TeamsTable(this);
   late final $ManagedTeamsTable managedTeams = $ManagedTeamsTable(this);
   late final $AssignmentsTable assignments = $AssignmentsTable(this);
+  late final $FormTemplatesTable formTemplates = $FormTemplatesTable(this);
   late final $AssignmentFormsTable assignmentForms =
       $AssignmentFormsTable(this);
-  late final $FormTemplatesTable formTemplates = $FormTemplatesTable(this);
   late final $FormTemplateVersionsTable formTemplateVersions =
       $FormTemplateVersionsTable(this);
   late final $MetadataSubmissionsTable metadataSubmissions =
@@ -10422,11 +10419,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index optionSetNameIdx = Index('option_set_name_idx',
       'CREATE INDEX option_set_name_idx ON data_option_sets (name)');
   late final Index optionSetCodeIdx = Index('option_set_code_idx',
-      'CREATE UNIQUE INDEX option_set_code_idx ON data_option_sets (code)');
+      'CREATE INDEX option_set_code_idx ON data_option_sets (code)');
   late final Index optionNameIdx = Index(
       'option_name_idx', 'CREATE INDEX option_name_idx ON data_options (name)');
-  late final Index optionCodeIdx = Index('option_code_idx',
-      'CREATE UNIQUE INDEX option_code_idx ON data_options (code)');
+  late final Index optionCodeIdx = Index(
+      'option_code_idx', 'CREATE INDEX option_code_idx ON data_options (code)');
   late final Index dataInstanceStatusIdx = Index('data_instance_status_idx',
       'CREATE INDEX data_instance_status_idx ON data_instances (sync_state)');
   late final Index formPermissionFormIdx = Index('form_permission_form_idx',
@@ -10465,8 +10462,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         teams,
         managedTeams,
         assignments,
-        assignmentForms,
         formTemplates,
+        assignmentForms,
         formTemplateVersions,
         metadataSubmissions,
         dataInstances,
@@ -10503,6 +10500,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.update),
             result: [
               TableUpdate('assignment_forms', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('data_option_sets',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('data_options', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('data_option_sets',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('data_options', kind: UpdateKind.update),
             ],
           ),
         ],
@@ -10558,39 +10569,6 @@ typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<List<String>> userFormsUIDs,
   Value<int> rowid,
 });
-
-final class $$UsersTableReferences
-    extends BaseReferences<_$AppDatabase, $UsersTable, User> {
-  $$UsersTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$TeamsTable, List<Team>> _userTeamsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.teams,
-          aliasName: $_aliasNameGenerator(db.users.id, db.teams.user));
-
-  $$TeamsTableProcessedTableManager get userTeams {
-    final manager = $$TeamsTableTableManager($_db, $_db.teams)
-        .filter((f) => f.user.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_userTeamsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$ManagedTeamsTable, List<ManagedTeam>>
-      _managedTeamsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.managedTeams,
-          aliasName: $_aliasNameGenerator(db.users.id, db.managedTeams.user));
-
-  $$ManagedTeamsTableProcessedTableManager get managedTeams {
-    final manager = $$ManagedTeamsTableTableManager($_db, $_db.managedTeams)
-        .filter((f) => f.user.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_managedTeamsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-}
 
 class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
   $$UsersTableFilterComposer({
@@ -10674,48 +10652,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
       get userFormsUIDs => $composableBuilder(
           column: $table.userFormsUIDs,
           builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  Expression<bool> userTeams(
-      Expression<bool> Function($$TeamsTableFilterComposer f) f) {
-    final $$TeamsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.teams,
-        getReferencedColumn: (t) => t.user,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TeamsTableFilterComposer(
-              $db: $db,
-              $table: $db.teams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> managedTeams(
-      Expression<bool> Function($$ManagedTeamsTableFilterComposer f) f) {
-    final $$ManagedTeamsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.managedTeams,
-        getReferencedColumn: (t) => t.user,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ManagedTeamsTableFilterComposer(
-              $db: $db,
-              $table: $db.managedTeams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
 }
 
 class $$UsersTableOrderingComposer
@@ -10871,48 +10807,6 @@ class $$UsersTableAnnotationComposer
   GeneratedColumnWithTypeConverter<List<String>, String> get userFormsUIDs =>
       $composableBuilder(
           column: $table.userFormsUIDs, builder: (column) => column);
-
-  Expression<T> userTeams<T extends Object>(
-      Expression<T> Function($$TeamsTableAnnotationComposer a) f) {
-    final $$TeamsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.teams,
-        getReferencedColumn: (t) => t.user,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TeamsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.teams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> managedTeams<T extends Object>(
-      Expression<T> Function($$ManagedTeamsTableAnnotationComposer a) f) {
-    final $$ManagedTeamsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.managedTeams,
-        getReferencedColumn: (t) => t.user,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ManagedTeamsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.managedTeams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
 }
 
 class $$UsersTableTableManager extends RootTableManager<
@@ -10924,9 +10818,9 @@ class $$UsersTableTableManager extends RootTableManager<
     $$UsersTableAnnotationComposer,
     $$UsersTableCreateCompanionBuilder,
     $$UsersTableUpdateCompanionBuilder,
-    (User, $$UsersTableReferences),
+    (User, BaseReferences<_$AppDatabase, $UsersTable, User>),
     User,
-    PrefetchHooks Function({bool userTeams, bool managedTeams})> {
+    PrefetchHooks Function()> {
   $$UsersTableTableManager(_$AppDatabase db, $UsersTable table)
       : super(TableManagerState(
           db: db,
@@ -11030,45 +10924,9 @@ class $$UsersTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$UsersTableReferences(db, table, e)))
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({userTeams = false, managedTeams = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (userTeams) db.teams,
-                if (managedTeams) db.managedTeams
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (userTeams)
-                    await $_getPrefetchedData<User, $UsersTable, Team>(
-                        currentTable: table,
-                        referencedTable:
-                            $$UsersTableReferences._userTeamsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$UsersTableReferences(db, table, p0).userTeams,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.user == item.id),
-                        typedResults: items),
-                  if (managedTeams)
-                    await $_getPrefetchedData<User, $UsersTable, ManagedTeam>(
-                        currentTable: table,
-                        referencedTable:
-                            $$UsersTableReferences._managedTeamsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$UsersTableReferences(db, table, p0).managedTeams,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.user == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
+          prefetchHooksCallback: null,
         ));
 }
 
@@ -11081,9 +10939,9 @@ typedef $$UsersTableProcessedTableManager = ProcessedTableManager<
     $$UsersTableAnnotationComposer,
     $$UsersTableCreateCompanionBuilder,
     $$UsersTableUpdateCompanionBuilder,
-    (User, $$UsersTableReferences),
+    (User, BaseReferences<_$AppDatabase, $UsersTable, User>),
     User,
-    PrefetchHooks Function({bool userTeams, bool managedTeams})>;
+    PrefetchHooks Function()>;
 typedef $$OrgUnitsTableCreateCompanionBuilder = OrgUnitsCompanion Function({
   required String id,
   Value<DateTime?> lastModifiedDate,
@@ -12222,16 +12080,16 @@ final class $$ActivitiesTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$TeamsTable, List<Team>> _activityTeamsTable(
+  static MultiTypedResultKey<$TeamsTable, List<Team>> _assignedTeamsTable(
           _$AppDatabase db) =>
       MultiTypedResultKey.fromTable(db.teams,
           aliasName: $_aliasNameGenerator(db.activities.id, db.teams.activity));
 
-  $$TeamsTableProcessedTableManager get activityTeams {
+  $$TeamsTableProcessedTableManager get assignedTeams {
     final manager = $$TeamsTableTableManager($_db, $_db.teams)
         .filter((f) => f.activity.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_activityTeamsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_assignedTeamsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -12340,7 +12198,7 @@ class $$ActivitiesTableFilterComposer
     return composer;
   }
 
-  Expression<bool> activityTeams(
+  Expression<bool> assignedTeams(
       Expression<bool> Function($$TeamsTableFilterComposer f) f) {
     final $$TeamsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -12538,7 +12396,7 @@ class $$ActivitiesTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> activityTeams<T extends Object>(
+  Expression<T> assignedTeams<T extends Object>(
       Expression<T> Function($$TeamsTableAnnotationComposer a) f) {
     final $$TeamsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -12615,7 +12473,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
     Activity,
     PrefetchHooks Function(
         {bool project,
-        bool activityTeams,
+        bool assignedTeams,
         bool activityManagedTeams,
         bool activityAssignments})> {
   $$ActivitiesTableTableManager(_$AppDatabase db, $ActivitiesTable table)
@@ -12700,13 +12558,13 @@ class $$ActivitiesTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {project = false,
-              activityTeams = false,
+              assignedTeams = false,
               activityManagedTeams = false,
               activityAssignments = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (activityTeams) db.teams,
+                if (assignedTeams) db.teams,
                 if (activityManagedTeams) db.managedTeams,
                 if (activityAssignments) db.assignments
               ],
@@ -12738,14 +12596,14 @@ class $$ActivitiesTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (activityTeams)
+                  if (assignedTeams)
                     await $_getPrefetchedData<Activity, $ActivitiesTable, Team>(
                         currentTable: table,
                         referencedTable:
-                            $$ActivitiesTableReferences._activityTeamsTable(db),
+                            $$ActivitiesTableReferences._assignedTeamsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$ActivitiesTableReferences(db, table, p0)
-                                .activityTeams,
+                                .assignedTeams,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.activity == item.id),
@@ -12796,7 +12654,7 @@ typedef $$ActivitiesTableProcessedTableManager = ProcessedTableManager<
     Activity,
     PrefetchHooks Function(
         {bool project,
-        bool activityTeams,
+        bool assignedTeams,
         bool activityManagedTeams,
         bool activityAssignments})>;
 typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
@@ -12806,7 +12664,6 @@ typedef $$TeamsTableCreateCompanionBuilder = TeamsCompanion Function({
   Value<String?> code,
   Value<bool?> disabled,
   required String activity,
-  required String user,
   Value<int> rowid,
 });
 typedef $$TeamsTableUpdateCompanionBuilder = TeamsCompanion Function({
@@ -12816,7 +12673,6 @@ typedef $$TeamsTableUpdateCompanionBuilder = TeamsCompanion Function({
   Value<String?> code,
   Value<bool?> disabled,
   Value<String> activity,
-  Value<String> user,
   Value<int> rowid,
 });
 
@@ -12838,18 +12694,19 @@ final class $$TeamsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $UsersTable _userTable(_$AppDatabase db) =>
-      db.users.createAlias($_aliasNameGenerator(db.teams.user, db.users.id));
+  static MultiTypedResultKey<$ManagedTeamsTable, List<ManagedTeam>>
+      _managedTeamsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.managedTeams,
+              aliasName:
+                  $_aliasNameGenerator(db.teams.id, db.managedTeams.managedBy));
 
-  $$UsersTableProcessedTableManager get user {
-    final $_column = $_itemColumn<String>('user')!;
+  $$ManagedTeamsTableProcessedTableManager get managedTeams {
+    final manager = $$ManagedTeamsTableTableManager($_db, $_db.managedTeams)
+        .filter((f) => f.managedBy.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final manager = $$UsersTableTableManager($_db, $_db.users)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_userTable($_db));
-    if (item == null) return manager;
+    final cache = $_typedResult.readTableOrNull(_managedTeamsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+        manager.$state.copyWith(prefetchedData: cache));
   }
 
   static MultiTypedResultKey<$AssignmentsTable, List<Assignment>>
@@ -12944,24 +12801,25 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
     return composer;
   }
 
-  $$UsersTableFilterComposer get user {
-    final $$UsersTableFilterComposer composer = $composerBuilder(
+  Expression<bool> managedTeams(
+      Expression<bool> Function($$ManagedTeamsTableFilterComposer f) f) {
+    final $$ManagedTeamsTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
-        getReferencedColumn: (t) => t.id,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.managedTeams,
+        getReferencedColumn: (t) => t.managedBy,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableFilterComposer(
+            $$ManagedTeamsTableFilterComposer(
               $db: $db,
-              $table: $db.users,
+              $table: $db.managedTeams,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
-    return composer;
+    return f(composer);
   }
 
   Expression<bool> teamAssignments(
@@ -13072,26 +12930,6 @@ class $$TeamsTableOrderingComposer
             ));
     return composer;
   }
-
-  $$UsersTableOrderingComposer get user {
-    final $$UsersTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableOrderingComposer(
-              $db: $db,
-              $table: $db.users,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
 }
 
 class $$TeamsTableAnnotationComposer
@@ -13138,24 +12976,25 @@ class $$TeamsTableAnnotationComposer
     return composer;
   }
 
-  $$UsersTableAnnotationComposer get user {
-    final $$UsersTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> managedTeams<T extends Object>(
+      Expression<T> Function($$ManagedTeamsTableAnnotationComposer a) f) {
+    final $$ManagedTeamsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
-        getReferencedColumn: (t) => t.id,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.managedTeams,
+        getReferencedColumn: (t) => t.managedBy,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableAnnotationComposer(
+            $$ManagedTeamsTableAnnotationComposer(
               $db: $db,
-              $table: $db.users,
+              $table: $db.managedTeams,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
-    return composer;
+    return f(composer);
   }
 
   Expression<T> teamAssignments<T extends Object>(
@@ -13237,7 +13076,7 @@ class $$TeamsTableTableManager extends RootTableManager<
     Team,
     PrefetchHooks Function(
         {bool activity,
-        bool user,
+        bool managedTeams,
         bool teamAssignments,
         bool teamDataInstances,
         bool teamFormPermissions})> {
@@ -13258,7 +13097,6 @@ class $$TeamsTableTableManager extends RootTableManager<
             Value<String?> code = const Value.absent(),
             Value<bool?> disabled = const Value.absent(),
             Value<String> activity = const Value.absent(),
-            Value<String> user = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TeamsCompanion(
@@ -13268,7 +13106,6 @@ class $$TeamsTableTableManager extends RootTableManager<
             code: code,
             disabled: disabled,
             activity: activity,
-            user: user,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -13278,7 +13115,6 @@ class $$TeamsTableTableManager extends RootTableManager<
             Value<String?> code = const Value.absent(),
             Value<bool?> disabled = const Value.absent(),
             required String activity,
-            required String user,
             Value<int> rowid = const Value.absent(),
           }) =>
               TeamsCompanion.insert(
@@ -13288,7 +13124,6 @@ class $$TeamsTableTableManager extends RootTableManager<
             code: code,
             disabled: disabled,
             activity: activity,
-            user: user,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -13297,13 +13132,14 @@ class $$TeamsTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {activity = false,
-              user = false,
+              managedTeams = false,
               teamAssignments = false,
               teamDataInstances = false,
               teamFormPermissions = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
+                if (managedTeams) db.managedTeams,
                 if (teamAssignments) db.assignments,
                 if (teamDataInstances) db.dataInstances,
                 if (teamFormPermissions) db.userFormPermissions
@@ -13330,19 +13166,22 @@ class $$TeamsTableTableManager extends RootTableManager<
                         $$TeamsTableReferences._activityTable(db).id,
                   ) as T;
                 }
-                if (user) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.user,
-                    referencedTable: $$TeamsTableReferences._userTable(db),
-                    referencedColumn: $$TeamsTableReferences._userTable(db).id,
-                  ) as T;
-                }
 
                 return state;
               },
               getPrefetchedDataCallback: (items) async {
                 return [
+                  if (managedTeams)
+                    await $_getPrefetchedData<Team, $TeamsTable, ManagedTeam>(
+                        currentTable: table,
+                        referencedTable:
+                            $$TeamsTableReferences._managedTeamsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$TeamsTableReferences(db, table, p0).managedTeams,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.managedBy == item.id),
+                        typedResults: items),
                   if (teamAssignments)
                     await $_getPrefetchedData<Team, $TeamsTable, Assignment>(
                         currentTable: table,
@@ -13400,7 +13239,7 @@ typedef $$TeamsTableProcessedTableManager = ProcessedTableManager<
     Team,
     PrefetchHooks Function(
         {bool activity,
-        bool user,
+        bool managedTeams,
         bool teamAssignments,
         bool teamDataInstances,
         bool teamFormPermissions})>;
@@ -13410,10 +13249,8 @@ typedef $$ManagedTeamsTableCreateCompanionBuilder = ManagedTeamsCompanion
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
   Value<String?> code,
-  Value<bool?> disabled,
   required String activity,
-  required String user,
-  Value<List<dynamic>> teamUsers,
+  required String managedBy,
   Value<int> rowid,
 });
 typedef $$ManagedTeamsTableUpdateCompanionBuilder = ManagedTeamsCompanion
@@ -13422,10 +13259,8 @@ typedef $$ManagedTeamsTableUpdateCompanionBuilder = ManagedTeamsCompanion
   Value<DateTime?> lastModifiedDate,
   Value<DateTime?> createdDate,
   Value<String?> code,
-  Value<bool?> disabled,
   Value<String> activity,
-  Value<String> user,
-  Value<List<dynamic>> teamUsers,
+  Value<String> managedBy,
   Value<int> rowid,
 });
 
@@ -13448,15 +13283,15 @@ final class $$ManagedTeamsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $UsersTable _userTable(_$AppDatabase db) => db.users
-      .createAlias($_aliasNameGenerator(db.managedTeams.user, db.users.id));
+  static $TeamsTable _managedByTable(_$AppDatabase db) => db.teams.createAlias(
+      $_aliasNameGenerator(db.managedTeams.managedBy, db.teams.id));
 
-  $$UsersTableProcessedTableManager get user {
-    final $_column = $_itemColumn<String>('user')!;
+  $$TeamsTableProcessedTableManager get managedBy {
+    final $_column = $_itemColumn<String>('managed_by')!;
 
-    final manager = $$UsersTableTableManager($_db, $_db.users)
+    final manager = $$TeamsTableTableManager($_db, $_db.teams)
         .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_userTable($_db));
+    final item = $_typedResult.readTableOrNull(_managedByTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -13485,14 +13320,6 @@ class $$ManagedTeamsTableFilterComposer
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get disabled => $composableBuilder(
-      column: $table.disabled, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<List<dynamic>, List<dynamic>, String>
-      get teamUsers => $composableBuilder(
-          column: $table.teamUsers,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
   $$ActivitiesTableFilterComposer get activity {
     final $$ActivitiesTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -13513,18 +13340,18 @@ class $$ManagedTeamsTableFilterComposer
     return composer;
   }
 
-  $$UsersTableFilterComposer get user {
-    final $$UsersTableFilterComposer composer = $composerBuilder(
+  $$TeamsTableFilterComposer get managedBy {
+    final $$TeamsTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
+        getCurrentColumn: (t) => t.managedBy,
+        referencedTable: $db.teams,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableFilterComposer(
+            $$TeamsTableFilterComposer(
               $db: $db,
-              $table: $db.users,
+              $table: $db.teams,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13556,12 +13383,6 @@ class $$ManagedTeamsTableOrderingComposer
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get disabled => $composableBuilder(
-      column: $table.disabled, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get teamUsers => $composableBuilder(
-      column: $table.teamUsers, builder: (column) => ColumnOrderings(column));
-
   $$ActivitiesTableOrderingComposer get activity {
     final $$ActivitiesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -13582,18 +13403,18 @@ class $$ManagedTeamsTableOrderingComposer
     return composer;
   }
 
-  $$UsersTableOrderingComposer get user {
-    final $$UsersTableOrderingComposer composer = $composerBuilder(
+  $$TeamsTableOrderingComposer get managedBy {
+    final $$TeamsTableOrderingComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
+        getCurrentColumn: (t) => t.managedBy,
+        referencedTable: $db.teams,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableOrderingComposer(
+            $$TeamsTableOrderingComposer(
               $db: $db,
-              $table: $db.users,
+              $table: $db.teams,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13624,12 +13445,6 @@ class $$ManagedTeamsTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumn<bool> get disabled =>
-      $composableBuilder(column: $table.disabled, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<List<dynamic>, String> get teamUsers =>
-      $composableBuilder(column: $table.teamUsers, builder: (column) => column);
-
   $$ActivitiesTableAnnotationComposer get activity {
     final $$ActivitiesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -13650,18 +13465,18 @@ class $$ManagedTeamsTableAnnotationComposer
     return composer;
   }
 
-  $$UsersTableAnnotationComposer get user {
-    final $$UsersTableAnnotationComposer composer = $composerBuilder(
+  $$TeamsTableAnnotationComposer get managedBy {
+    final $$TeamsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.user,
-        referencedTable: $db.users,
+        getCurrentColumn: (t) => t.managedBy,
+        referencedTable: $db.teams,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$UsersTableAnnotationComposer(
+            $$TeamsTableAnnotationComposer(
               $db: $db,
-              $table: $db.users,
+              $table: $db.teams,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13682,7 +13497,7 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
     $$ManagedTeamsTableUpdateCompanionBuilder,
     (ManagedTeam, $$ManagedTeamsTableReferences),
     ManagedTeam,
-    PrefetchHooks Function({bool activity, bool user})> {
+    PrefetchHooks Function({bool activity, bool managedBy})> {
   $$ManagedTeamsTableTableManager(_$AppDatabase db, $ManagedTeamsTable table)
       : super(TableManagerState(
           db: db,
@@ -13698,10 +13513,8 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<bool?> disabled = const Value.absent(),
             Value<String> activity = const Value.absent(),
-            Value<String> user = const Value.absent(),
-            Value<List<dynamic>> teamUsers = const Value.absent(),
+            Value<String> managedBy = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ManagedTeamsCompanion(
@@ -13709,10 +13522,8 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             code: code,
-            disabled: disabled,
             activity: activity,
-            user: user,
-            teamUsers: teamUsers,
+            managedBy: managedBy,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -13720,10 +13531,8 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
             Value<DateTime?> lastModifiedDate = const Value.absent(),
             Value<DateTime?> createdDate = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<bool?> disabled = const Value.absent(),
             required String activity,
-            required String user,
-            Value<List<dynamic>> teamUsers = const Value.absent(),
+            required String managedBy,
             Value<int> rowid = const Value.absent(),
           }) =>
               ManagedTeamsCompanion.insert(
@@ -13731,10 +13540,8 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
             lastModifiedDate: lastModifiedDate,
             createdDate: createdDate,
             code: code,
-            disabled: disabled,
             activity: activity,
-            user: user,
-            teamUsers: teamUsers,
+            managedBy: managedBy,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -13743,7 +13550,7 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
                     $$ManagedTeamsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({activity = false, user = false}) {
+          prefetchHooksCallback: ({activity = false, managedBy = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -13770,14 +13577,14 @@ class $$ManagedTeamsTableTableManager extends RootTableManager<
                         $$ManagedTeamsTableReferences._activityTable(db).id,
                   ) as T;
                 }
-                if (user) {
+                if (managedBy) {
                   state = state.withJoin(
                     currentTable: table,
-                    currentColumn: table.user,
+                    currentColumn: table.managedBy,
                     referencedTable:
-                        $$ManagedTeamsTableReferences._userTable(db),
+                        $$ManagedTeamsTableReferences._managedByTable(db),
                     referencedColumn:
-                        $$ManagedTeamsTableReferences._userTable(db).id,
+                        $$ManagedTeamsTableReferences._managedByTable(db).id,
                   ) as T;
                 }
 
@@ -13802,7 +13609,7 @@ typedef $$ManagedTeamsTableProcessedTableManager = ProcessedTableManager<
     $$ManagedTeamsTableUpdateCompanionBuilder,
     (ManagedTeam, $$ManagedTeamsTableReferences),
     ManagedTeam,
-    PrefetchHooks Function({bool activity, bool user})>;
+    PrefetchHooks Function({bool activity, bool managedBy})>;
 typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
     Function({
   required String id,
@@ -13894,22 +13701,6 @@ final class $$AssignmentsTableReferences
         .filter((f) => f.assignment.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_formsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$AssignmentFormsTable, List<AssignmentForm>>
-      _assignmentsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.assignmentForms,
-          aliasName:
-              $_aliasNameGenerator(db.assignments.id, db.assignmentForms.form));
-
-  $$AssignmentFormsTableProcessedTableManager get assignments {
-    final manager =
-        $$AssignmentFormsTableTableManager($_db, $_db.assignmentForms)
-            .filter((f) => f.form.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_assignmentsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -14037,27 +13828,6 @@ class $$AssignmentsTableFilterComposer
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.assignmentForms,
         getReferencedColumn: (t) => t.assignment,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AssignmentFormsTableFilterComposer(
-              $db: $db,
-              $table: $db.assignmentForms,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> assignments(
-      Expression<bool> Function($$AssignmentFormsTableFilterComposer f) f) {
-    final $$AssignmentFormsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.assignmentForms,
-        getReferencedColumn: (t) => t.form,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -14306,27 +14076,6 @@ class $$AssignmentsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> assignments<T extends Object>(
-      Expression<T> Function($$AssignmentFormsTableAnnotationComposer a) f) {
-    final $$AssignmentFormsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.assignmentForms,
-        getReferencedColumn: (t) => t.form,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$AssignmentFormsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.assignmentForms,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
   Expression<T> assignmentDataInstances<T extends Object>(
       Expression<T> Function($$DataInstancesTableAnnotationComposer a) f) {
     final $$DataInstancesTableAnnotationComposer composer = $composerBuilder(
@@ -14365,7 +14114,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
         bool team,
         bool orgUnit,
         bool forms,
-        bool assignments,
         bool assignmentDataInstances})> {
   $$AssignmentsTableTableManager(_$AppDatabase db, $AssignmentsTable table)
       : super(TableManagerState(
@@ -14444,13 +14192,11 @@ class $$AssignmentsTableTableManager extends RootTableManager<
               team = false,
               orgUnit = false,
               forms = false,
-              assignments = false,
               assignmentDataInstances = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (forms) db.assignmentForms,
-                if (assignments) db.assignmentForms,
                 if (assignmentDataInstances) db.dataInstances
               ],
               addJoins: <
@@ -14513,19 +14259,6 @@ class $$AssignmentsTableTableManager extends RootTableManager<
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.assignment == item.id),
                         typedResults: items),
-                  if (assignments)
-                    await $_getPrefetchedData<Assignment, $AssignmentsTable,
-                            AssignmentForm>(
-                        currentTable: table,
-                        referencedTable:
-                            $$AssignmentsTableReferences._assignmentsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$AssignmentsTableReferences(db, table, p0)
-                                .assignments,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.form == item.id),
-                        typedResults: items),
                   if (assignmentDataInstances)
                     await $_getPrefetchedData<Assignment, $AssignmentsTable,
                             DataInstance>(
@@ -14562,8 +14295,521 @@ typedef $$AssignmentsTableProcessedTableManager = ProcessedTableManager<
         bool team,
         bool orgUnit,
         bool forms,
-        bool assignments,
         bool assignmentDataInstances})>;
+typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
+    Function({
+  required String id,
+  required String formVersion,
+  required int versionNumber,
+  required String name,
+  Value<Map<String, dynamic>?> label,
+  Value<String?> description,
+  Value<int> rowid,
+});
+typedef $$FormTemplatesTableUpdateCompanionBuilder = FormTemplatesCompanion
+    Function({
+  Value<String> id,
+  Value<String> formVersion,
+  Value<int> versionNumber,
+  Value<String> name,
+  Value<Map<String, dynamic>?> label,
+  Value<String?> description,
+  Value<int> rowid,
+});
+
+final class $$FormTemplatesTableReferences
+    extends BaseReferences<_$AppDatabase, $FormTemplatesTable, FormTemplate> {
+  $$FormTemplatesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$AssignmentFormsTable, List<AssignmentForm>>
+      _assignmentsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.assignmentForms,
+              aliasName: $_aliasNameGenerator(
+                  db.formTemplates.id, db.assignmentForms.form));
+
+  $$AssignmentFormsTableProcessedTableManager get assignments {
+    final manager =
+        $$AssignmentFormsTableTableManager($_db, $_db.assignmentForms)
+            .filter((f) => f.form.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_assignmentsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$FormTemplateVersionsTable,
+      List<FormTemplateVersion>> _versionsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.formTemplateVersions,
+          aliasName: $_aliasNameGenerator(
+              db.formTemplates.id, db.formTemplateVersions.template));
+
+  $$FormTemplateVersionsTableProcessedTableManager get versions {
+    final manager = $$FormTemplateVersionsTableTableManager(
+            $_db, $_db.formTemplateVersions)
+        .filter((f) => f.template.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_versionsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$DataInstancesTable, List<DataInstance>>
+      _templateDataInstancesTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.dataInstances,
+              aliasName: $_aliasNameGenerator(
+                  db.formTemplates.id, db.dataInstances.formTemplate));
+
+  $$DataInstancesTableProcessedTableManager get templateDataInstances {
+    final manager = $$DataInstancesTableTableManager($_db, $_db.dataInstances)
+        .filter(
+            (f) => f.formTemplate.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_templateDataInstancesTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$UserFormPermissionsTable,
+      List<UserFormPermission>> _formPermissionsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.userFormPermissions,
+          aliasName: $_aliasNameGenerator(
+              db.formTemplates.id, db.userFormPermissions.form));
+
+  $$UserFormPermissionsTableProcessedTableManager get formPermissions {
+    final manager =
+        $$UserFormPermissionsTableTableManager($_db, $_db.userFormPermissions)
+            .filter((f) => f.form.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_formPermissionsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$FormTemplatesTableFilterComposer
+    extends Composer<_$AppDatabase, $FormTemplatesTable> {
+  $$FormTemplatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get formVersion => $composableBuilder(
+      column: $table.formVersion, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
+          String>
+      get label => $composableBuilder(
+          column: $table.label,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> assignments(
+      Expression<bool> Function($$AssignmentFormsTableFilterComposer f) f) {
+    final $$AssignmentFormsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.assignmentForms,
+        getReferencedColumn: (t) => t.form,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AssignmentFormsTableFilterComposer(
+              $db: $db,
+              $table: $db.assignmentForms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> versions(
+      Expression<bool> Function($$FormTemplateVersionsTableFilterComposer f)
+          f) {
+    final $$FormTemplateVersionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.formTemplateVersions,
+        getReferencedColumn: (t) => t.template,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$FormTemplateVersionsTableFilterComposer(
+              $db: $db,
+              $table: $db.formTemplateVersions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> templateDataInstances(
+      Expression<bool> Function($$DataInstancesTableFilterComposer f) f) {
+    final $$DataInstancesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.dataInstances,
+        getReferencedColumn: (t) => t.formTemplate,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataInstancesTableFilterComposer(
+              $db: $db,
+              $table: $db.dataInstances,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> formPermissions(
+      Expression<bool> Function($$UserFormPermissionsTableFilterComposer f) f) {
+    final $$UserFormPermissionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.userFormPermissions,
+        getReferencedColumn: (t) => t.form,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$UserFormPermissionsTableFilterComposer(
+              $db: $db,
+              $table: $db.userFormPermissions,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$FormTemplatesTableOrderingComposer
+    extends Composer<_$AppDatabase, $FormTemplatesTable> {
+  $$FormTemplatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get formVersion => $composableBuilder(
+      column: $table.formVersion, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+}
+
+class $$FormTemplatesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FormTemplatesTable> {
+  $$FormTemplatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get formVersion => $composableBuilder(
+      column: $table.formVersion, builder: (column) => column);
+
+  GeneratedColumn<int> get versionNumber => $composableBuilder(
+      column: $table.versionNumber, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  Expression<T> assignments<T extends Object>(
+      Expression<T> Function($$AssignmentFormsTableAnnotationComposer a) f) {
+    final $$AssignmentFormsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.assignmentForms,
+        getReferencedColumn: (t) => t.form,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AssignmentFormsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.assignmentForms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> versions<T extends Object>(
+      Expression<T> Function($$FormTemplateVersionsTableAnnotationComposer a)
+          f) {
+    final $$FormTemplateVersionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.formTemplateVersions,
+            getReferencedColumn: (t) => t.template,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$FormTemplateVersionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.formTemplateVersions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> templateDataInstances<T extends Object>(
+      Expression<T> Function($$DataInstancesTableAnnotationComposer a) f) {
+    final $$DataInstancesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.dataInstances,
+        getReferencedColumn: (t) => t.formTemplate,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$DataInstancesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.dataInstances,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> formPermissions<T extends Object>(
+      Expression<T> Function($$UserFormPermissionsTableAnnotationComposer a)
+          f) {
+    final $$UserFormPermissionsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.userFormPermissions,
+            getReferencedColumn: (t) => t.form,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$UserFormPermissionsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.userFormPermissions,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$FormTemplatesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FormTemplatesTable,
+    FormTemplate,
+    $$FormTemplatesTableFilterComposer,
+    $$FormTemplatesTableOrderingComposer,
+    $$FormTemplatesTableAnnotationComposer,
+    $$FormTemplatesTableCreateCompanionBuilder,
+    $$FormTemplatesTableUpdateCompanionBuilder,
+    (FormTemplate, $$FormTemplatesTableReferences),
+    FormTemplate,
+    PrefetchHooks Function(
+        {bool assignments,
+        bool versions,
+        bool templateDataInstances,
+        bool formPermissions})> {
+  $$FormTemplatesTableTableManager(_$AppDatabase db, $FormTemplatesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FormTemplatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FormTemplatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FormTemplatesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> formVersion = const Value.absent(),
+            Value<int> versionNumber = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<Map<String, dynamic>?> label = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              FormTemplatesCompanion(
+            id: id,
+            formVersion: formVersion,
+            versionNumber: versionNumber,
+            name: name,
+            label: label,
+            description: description,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String formVersion,
+            required int versionNumber,
+            required String name,
+            Value<Map<String, dynamic>?> label = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              FormTemplatesCompanion.insert(
+            id: id,
+            formVersion: formVersion,
+            versionNumber: versionNumber,
+            name: name,
+            label: label,
+            description: description,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$FormTemplatesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {assignments = false,
+              versions = false,
+              templateDataInstances = false,
+              formPermissions = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (assignments) db.assignmentForms,
+                if (versions) db.formTemplateVersions,
+                if (templateDataInstances) db.dataInstances,
+                if (formPermissions) db.userFormPermissions
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (assignments)
+                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
+                            AssignmentForm>(
+                        currentTable: table,
+                        referencedTable: $$FormTemplatesTableReferences
+                            ._assignmentsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$FormTemplatesTableReferences(db, table, p0)
+                                .assignments,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) =>
+                                referencedItems.where((e) => e.form == item.id),
+                        typedResults: items),
+                  if (versions)
+                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
+                            FormTemplateVersion>(
+                        currentTable: table,
+                        referencedTable:
+                            $$FormTemplatesTableReferences._versionsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$FormTemplatesTableReferences(db, table, p0)
+                                .versions,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.template == item.id),
+                        typedResults: items),
+                  if (templateDataInstances)
+                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
+                            DataInstance>(
+                        currentTable: table,
+                        referencedTable: $$FormTemplatesTableReferences
+                            ._templateDataInstancesTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$FormTemplatesTableReferences(db, table, p0)
+                                .templateDataInstances,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.formTemplate == item.id),
+                        typedResults: items),
+                  if (formPermissions)
+                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
+                            UserFormPermission>(
+                        currentTable: table,
+                        referencedTable: $$FormTemplatesTableReferences
+                            ._formPermissionsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$FormTemplatesTableReferences(db, table, p0)
+                                .formPermissions,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) =>
+                                referencedItems.where((e) => e.form == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$FormTemplatesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FormTemplatesTable,
+    FormTemplate,
+    $$FormTemplatesTableFilterComposer,
+    $$FormTemplatesTableOrderingComposer,
+    $$FormTemplatesTableAnnotationComposer,
+    $$FormTemplatesTableCreateCompanionBuilder,
+    $$FormTemplatesTableUpdateCompanionBuilder,
+    (FormTemplate, $$FormTemplatesTableReferences),
+    FormTemplate,
+    PrefetchHooks Function(
+        {bool assignments,
+        bool versions,
+        bool templateDataInstances,
+        bool formPermissions})>;
 typedef $$AssignmentFormsTableCreateCompanionBuilder = AssignmentFormsCompanion
     Function({
   required String assignment,
@@ -14605,14 +14851,14 @@ final class $$AssignmentFormsTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $AssignmentsTable _formTable(_$AppDatabase db) =>
-      db.assignments.createAlias(
-          $_aliasNameGenerator(db.assignmentForms.form, db.assignments.id));
+  static $FormTemplatesTable _formTable(_$AppDatabase db) =>
+      db.formTemplates.createAlias(
+          $_aliasNameGenerator(db.assignmentForms.form, db.formTemplates.id));
 
-  $$AssignmentsTableProcessedTableManager get form {
+  $$FormTemplatesTableProcessedTableManager get form {
     final $_column = $_itemColumn<String>('form')!;
 
-    final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
+    final manager = $$FormTemplatesTableTableManager($_db, $_db.formTemplates)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_formTable($_db));
     if (item == null) return manager;
@@ -14666,18 +14912,18 @@ class $$AssignmentFormsTableFilterComposer
     return composer;
   }
 
-  $$AssignmentsTableFilterComposer get form {
-    final $$AssignmentsTableFilterComposer composer = $composerBuilder(
+  $$FormTemplatesTableFilterComposer get form {
+    final $$FormTemplatesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.form,
-        referencedTable: $db.assignments,
+        referencedTable: $db.formTemplates,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AssignmentsTableFilterComposer(
+            $$FormTemplatesTableFilterComposer(
               $db: $db,
-              $table: $db.assignments,
+              $table: $db.formTemplates,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -14732,18 +14978,18 @@ class $$AssignmentFormsTableOrderingComposer
     return composer;
   }
 
-  $$AssignmentsTableOrderingComposer get form {
-    final $$AssignmentsTableOrderingComposer composer = $composerBuilder(
+  $$FormTemplatesTableOrderingComposer get form {
+    final $$FormTemplatesTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.form,
-        referencedTable: $db.assignments,
+        referencedTable: $db.formTemplates,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AssignmentsTableOrderingComposer(
+            $$FormTemplatesTableOrderingComposer(
               $db: $db,
-              $table: $db.assignments,
+              $table: $db.formTemplates,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -14794,18 +15040,18 @@ class $$AssignmentFormsTableAnnotationComposer
     return composer;
   }
 
-  $$AssignmentsTableAnnotationComposer get form {
-    final $$AssignmentsTableAnnotationComposer composer = $composerBuilder(
+  $$FormTemplatesTableAnnotationComposer get form {
+    final $$FormTemplatesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.form,
-        referencedTable: $db.assignments,
+        referencedTable: $db.formTemplates,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$AssignmentsTableAnnotationComposer(
+            $$FormTemplatesTableAnnotationComposer(
               $db: $db,
-              $table: $db.assignments,
+              $table: $db.formTemplates,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -14941,446 +15187,14 @@ typedef $$AssignmentFormsTableProcessedTableManager = ProcessedTableManager<
     (AssignmentForm, $$AssignmentFormsTableReferences),
     AssignmentForm,
     PrefetchHooks Function({bool assignment, bool form})>;
-typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
-    Function({
-  required String id,
-  required String formVersion,
-  required int versionNumber,
-  required String name,
-  Value<Map<String, dynamic>?> label,
-  Value<String?> description,
-  Value<int> rowid,
-});
-typedef $$FormTemplatesTableUpdateCompanionBuilder = FormTemplatesCompanion
-    Function({
-  Value<String> id,
-  Value<String> formVersion,
-  Value<int> versionNumber,
-  Value<String> name,
-  Value<Map<String, dynamic>?> label,
-  Value<String?> description,
-  Value<int> rowid,
-});
-
-final class $$FormTemplatesTableReferences
-    extends BaseReferences<_$AppDatabase, $FormTemplatesTable, FormTemplate> {
-  $$FormTemplatesTableReferences(
-      super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$FormTemplateVersionsTable,
-      List<FormTemplateVersion>> _versionsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.formTemplateVersions,
-          aliasName: $_aliasNameGenerator(
-              db.formTemplates.id, db.formTemplateVersions.template));
-
-  $$FormTemplateVersionsTableProcessedTableManager get versions {
-    final manager = $$FormTemplateVersionsTableTableManager(
-            $_db, $_db.formTemplateVersions)
-        .filter((f) => f.template.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_versionsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$DataInstancesTable, List<DataInstance>>
-      _templateDataInstancesTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.dataInstances,
-              aliasName: $_aliasNameGenerator(
-                  db.formTemplates.id, db.dataInstances.formTemplate));
-
-  $$DataInstancesTableProcessedTableManager get templateDataInstances {
-    final manager = $$DataInstancesTableTableManager($_db, $_db.dataInstances)
-        .filter(
-            (f) => f.formTemplate.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache =
-        $_typedResult.readTableOrNull(_templateDataInstancesTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$UserFormPermissionsTable,
-      List<UserFormPermission>> _formPermissionsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.userFormPermissions,
-          aliasName: $_aliasNameGenerator(
-              db.formTemplates.id, db.userFormPermissions.form));
-
-  $$UserFormPermissionsTableProcessedTableManager get formPermissions {
-    final manager =
-        $$UserFormPermissionsTableTableManager($_db, $_db.userFormPermissions)
-            .filter((f) => f.form.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_formPermissionsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-}
-
-class $$FormTemplatesTableFilterComposer
-    extends Composer<_$AppDatabase, $FormTemplatesTable> {
-  $$FormTemplatesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get formVersion => $composableBuilder(
-      column: $table.formVersion, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get versionNumber => $composableBuilder(
-      column: $table.versionNumber, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
-          String>
-      get label => $composableBuilder(
-          column: $table.label,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
-
-  Expression<bool> versions(
-      Expression<bool> Function($$FormTemplateVersionsTableFilterComposer f)
-          f) {
-    final $$FormTemplateVersionsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.formTemplateVersions,
-        getReferencedColumn: (t) => t.template,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$FormTemplateVersionsTableFilterComposer(
-              $db: $db,
-              $table: $db.formTemplateVersions,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> templateDataInstances(
-      Expression<bool> Function($$DataInstancesTableFilterComposer f) f) {
-    final $$DataInstancesTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataInstances,
-        getReferencedColumn: (t) => t.formTemplate,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$DataInstancesTableFilterComposer(
-              $db: $db,
-              $table: $db.dataInstances,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> formPermissions(
-      Expression<bool> Function($$UserFormPermissionsTableFilterComposer f) f) {
-    final $$UserFormPermissionsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.userFormPermissions,
-        getReferencedColumn: (t) => t.form,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$UserFormPermissionsTableFilterComposer(
-              $db: $db,
-              $table: $db.userFormPermissions,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$FormTemplatesTableOrderingComposer
-    extends Composer<_$AppDatabase, $FormTemplatesTable> {
-  $$FormTemplatesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get formVersion => $composableBuilder(
-      column: $table.formVersion, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get versionNumber => $composableBuilder(
-      column: $table.versionNumber,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get label => $composableBuilder(
-      column: $table.label, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
-}
-
-class $$FormTemplatesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $FormTemplatesTable> {
-  $$FormTemplatesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get formVersion => $composableBuilder(
-      column: $table.formVersion, builder: (column) => column);
-
-  GeneratedColumn<int> get versionNumber => $composableBuilder(
-      column: $table.versionNumber, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get label =>
-      $composableBuilder(column: $table.label, builder: (column) => column);
-
-  GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
-
-  Expression<T> versions<T extends Object>(
-      Expression<T> Function($$FormTemplateVersionsTableAnnotationComposer a)
-          f) {
-    final $$FormTemplateVersionsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.formTemplateVersions,
-            getReferencedColumn: (t) => t.template,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$FormTemplateVersionsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.formTemplateVersions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
-    return f(composer);
-  }
-
-  Expression<T> templateDataInstances<T extends Object>(
-      Expression<T> Function($$DataInstancesTableAnnotationComposer a) f) {
-    final $$DataInstancesTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataInstances,
-        getReferencedColumn: (t) => t.formTemplate,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$DataInstancesTableAnnotationComposer(
-              $db: $db,
-              $table: $db.dataInstances,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> formPermissions<T extends Object>(
-      Expression<T> Function($$UserFormPermissionsTableAnnotationComposer a)
-          f) {
-    final $$UserFormPermissionsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.userFormPermissions,
-            getReferencedColumn: (t) => t.form,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$UserFormPermissionsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.userFormPermissions,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
-    return f(composer);
-  }
-}
-
-class $$FormTemplatesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $FormTemplatesTable,
-    FormTemplate,
-    $$FormTemplatesTableFilterComposer,
-    $$FormTemplatesTableOrderingComposer,
-    $$FormTemplatesTableAnnotationComposer,
-    $$FormTemplatesTableCreateCompanionBuilder,
-    $$FormTemplatesTableUpdateCompanionBuilder,
-    (FormTemplate, $$FormTemplatesTableReferences),
-    FormTemplate,
-    PrefetchHooks Function(
-        {bool versions, bool templateDataInstances, bool formPermissions})> {
-  $$FormTemplatesTableTableManager(_$AppDatabase db, $FormTemplatesTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$FormTemplatesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$FormTemplatesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$FormTemplatesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> formVersion = const Value.absent(),
-            Value<int> versionNumber = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<String?> description = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              FormTemplatesCompanion(
-            id: id,
-            formVersion: formVersion,
-            versionNumber: versionNumber,
-            name: name,
-            label: label,
-            description: description,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String formVersion,
-            required int versionNumber,
-            required String name,
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<String?> description = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              FormTemplatesCompanion.insert(
-            id: id,
-            formVersion: formVersion,
-            versionNumber: versionNumber,
-            name: name,
-            label: label,
-            description: description,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$FormTemplatesTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: (
-              {versions = false,
-              templateDataInstances = false,
-              formPermissions = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (versions) db.formTemplateVersions,
-                if (templateDataInstances) db.dataInstances,
-                if (formPermissions) db.userFormPermissions
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (versions)
-                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
-                            FormTemplateVersion>(
-                        currentTable: table,
-                        referencedTable:
-                            $$FormTemplatesTableReferences._versionsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$FormTemplatesTableReferences(db, table, p0)
-                                .versions,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.template == item.id),
-                        typedResults: items),
-                  if (templateDataInstances)
-                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
-                            DataInstance>(
-                        currentTable: table,
-                        referencedTable: $$FormTemplatesTableReferences
-                            ._templateDataInstancesTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$FormTemplatesTableReferences(db, table, p0)
-                                .templateDataInstances,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.formTemplate == item.id),
-                        typedResults: items),
-                  if (formPermissions)
-                    await $_getPrefetchedData<FormTemplate, $FormTemplatesTable,
-                            UserFormPermission>(
-                        currentTable: table,
-                        referencedTable: $$FormTemplatesTableReferences
-                            ._formPermissionsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$FormTemplatesTableReferences(db, table, p0)
-                                .formPermissions,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.form == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$FormTemplatesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $FormTemplatesTable,
-    FormTemplate,
-    $$FormTemplatesTableFilterComposer,
-    $$FormTemplatesTableOrderingComposer,
-    $$FormTemplatesTableAnnotationComposer,
-    $$FormTemplatesTableCreateCompanionBuilder,
-    $$FormTemplatesTableUpdateCompanionBuilder,
-    (FormTemplate, $$FormTemplatesTableReferences),
-    FormTemplate,
-    PrefetchHooks Function(
-        {bool versions, bool templateDataInstances, bool formPermissions})>;
 typedef $$FormTemplateVersionsTableCreateCompanionBuilder
     = FormTemplateVersionsCompanion Function({
   required String id,
   required String template,
   required int versionNumber,
+  required String name,
+  Value<Map<String, dynamic>?> label,
+  Value<String?> description,
   required List<Template> fields,
   required List<Template> sections,
   Value<int> rowid,
@@ -15390,6 +15204,9 @@ typedef $$FormTemplateVersionsTableUpdateCompanionBuilder
   Value<String> id,
   Value<String> template,
   Value<int> versionNumber,
+  Value<String> name,
+  Value<Map<String, dynamic>?> label,
+  Value<String?> description,
   Value<List<Template>> fields,
   Value<List<Template>> sections,
   Value<int> rowid,
@@ -15447,6 +15264,18 @@ class $$FormTemplateVersionsTableFilterComposer
 
   ColumnFilters<int> get versionNumber => $composableBuilder(
       column: $table.versionNumber, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
+          String>
+      get label => $composableBuilder(
+          column: $table.label,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<Template>, List<Template>, String>
       get fields => $composableBuilder(
@@ -15516,6 +15345,15 @@ class $$FormTemplateVersionsTableOrderingComposer
       column: $table.versionNumber,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get fields => $composableBuilder(
       column: $table.fields, builder: (column) => ColumnOrderings(column));
 
@@ -15557,6 +15395,15 @@ class $$FormTemplateVersionsTableAnnotationComposer
 
   GeneratedColumn<int> get versionNumber => $composableBuilder(
       column: $table.versionNumber, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<List<Template>, String> get fields =>
       $composableBuilder(column: $table.fields, builder: (column) => column);
@@ -15635,6 +15482,9 @@ class $$FormTemplateVersionsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> template = const Value.absent(),
             Value<int> versionNumber = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<Map<String, dynamic>?> label = const Value.absent(),
+            Value<String?> description = const Value.absent(),
             Value<List<Template>> fields = const Value.absent(),
             Value<List<Template>> sections = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -15643,6 +15493,9 @@ class $$FormTemplateVersionsTableTableManager extends RootTableManager<
             id: id,
             template: template,
             versionNumber: versionNumber,
+            name: name,
+            label: label,
+            description: description,
             fields: fields,
             sections: sections,
             rowid: rowid,
@@ -15651,6 +15504,9 @@ class $$FormTemplateVersionsTableTableManager extends RootTableManager<
             required String id,
             required String template,
             required int versionNumber,
+            required String name,
+            Value<Map<String, dynamic>?> label = const Value.absent(),
+            Value<String?> description = const Value.absent(),
             required List<Template> fields,
             required List<Template> sections,
             Value<int> rowid = const Value.absent(),
@@ -15659,6 +15515,9 @@ class $$FormTemplateVersionsTableTableManager extends RootTableManager<
             id: id,
             template: template,
             versionNumber: versionNumber,
+            name: name,
+            label: label,
+            description: description,
             fields: fields,
             sections: sections,
             rowid: rowid,
@@ -17417,17 +17276,17 @@ final class $$DataOptionSetsTableReferences
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$DataOptionsTable, List<DataOption>>
-      _optionSetOptionsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.dataOptions,
-              aliasName: $_aliasNameGenerator(
-                  db.dataOptionSets.id, db.dataOptions.optionSet));
+  static MultiTypedResultKey<$DataOptionsTable, List<DataOption>> _optionsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.dataOptions,
+          aliasName: $_aliasNameGenerator(
+              db.dataOptionSets.id, db.dataOptions.optionSet));
 
-  $$DataOptionsTableProcessedTableManager get optionSetOptions {
+  $$DataOptionsTableProcessedTableManager get options {
     final manager = $$DataOptionsTableTableManager($_db, $_db.dataOptions)
         .filter((f) => f.optionSet.id.sqlEquals($_itemColumn<String>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_optionSetOptionsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_optionsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -17493,7 +17352,7 @@ class $$DataOptionSetsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> optionSetOptions(
+  Expression<bool> options(
       Expression<bool> Function($$DataOptionsTableFilterComposer f) f) {
     final $$DataOptionsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -17606,7 +17465,7 @@ class $$DataOptionSetsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> optionSetOptions<T extends Object>(
+  Expression<T> options<T extends Object>(
       Expression<T> Function($$DataOptionsTableAnnotationComposer a) f) {
     final $$DataOptionsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -17639,7 +17498,7 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
     $$DataOptionSetsTableUpdateCompanionBuilder,
     (DataOptionSet, $$DataOptionSetsTableReferences),
     DataOptionSet,
-    PrefetchHooks Function({bool dataElementsRefs, bool optionSetOptions})> {
+    PrefetchHooks Function({bool dataElementsRefs, bool options})> {
   $$DataOptionSetsTableTableManager(
       _$AppDatabase db, $DataOptionSetsTable table)
       : super(TableManagerState(
@@ -17701,13 +17560,12 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
                     $$DataOptionSetsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: (
-              {dataElementsRefs = false, optionSetOptions = false}) {
+          prefetchHooksCallback: ({dataElementsRefs = false, options = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (dataElementsRefs) db.dataElements,
-                if (optionSetOptions) db.dataOptions
+                if (options) db.dataOptions
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -17725,15 +17583,15 @@ class $$DataOptionSetsTableTableManager extends RootTableManager<
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.optionSet == item.id),
                         typedResults: items),
-                  if (optionSetOptions)
+                  if (options)
                     await $_getPrefetchedData<DataOptionSet,
                             $DataOptionSetsTable, DataOption>(
                         currentTable: table,
-                        referencedTable: $$DataOptionSetsTableReferences
-                            ._optionSetOptionsTable(db),
+                        referencedTable:
+                            $$DataOptionSetsTableReferences._optionsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$DataOptionSetsTableReferences(db, table, p0)
-                                .optionSetOptions,
+                                .options,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.optionSet == item.id),
@@ -17756,7 +17614,7 @@ typedef $$DataOptionSetsTableProcessedTableManager = ProcessedTableManager<
     $$DataOptionSetsTableUpdateCompanionBuilder,
     (DataOptionSet, $$DataOptionSetsTableReferences),
     DataOptionSet,
-    PrefetchHooks Function({bool dataElementsRefs, bool optionSetOptions})>;
+    PrefetchHooks Function({bool dataElementsRefs, bool options})>;
 typedef $$DataElementsTableCreateCompanionBuilder = DataElementsCompanion
     Function({
   required String id,
@@ -19427,10 +19285,10 @@ class $AppDatabaseManager {
       $$ManagedTeamsTableTableManager(_db, _db.managedTeams);
   $$AssignmentsTableTableManager get assignments =>
       $$AssignmentsTableTableManager(_db, _db.assignments);
-  $$AssignmentFormsTableTableManager get assignmentForms =>
-      $$AssignmentFormsTableTableManager(_db, _db.assignmentForms);
   $$FormTemplatesTableTableManager get formTemplates =>
       $$FormTemplatesTableTableManager(_db, _db.formTemplates);
+  $$AssignmentFormsTableTableManager get assignmentForms =>
+      $$AssignmentFormsTableTableManager(_db, _db.assignmentForms);
   $$FormTemplateVersionsTableTableManager get formTemplateVersions =>
       $$FormTemplateVersionsTableTableManager(_db, _db.formTemplateVersions);
   $$MetadataSubmissionsTableTableManager get metadataSubmissions =>

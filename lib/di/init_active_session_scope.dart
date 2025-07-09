@@ -23,8 +23,6 @@ import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.
 as _i646;
 import 'package:d_sdk/datasource/remote_data_sources/form_template_datasource.dart'
 as _i569;
-import 'package:d_sdk/datasource/remote_data_sources/managed_team_datasource.dart'
-as _i718;
 import 'package:d_sdk/datasource/remote_data_sources/metadata_submission_datasource.dart'
 as _i1071;
 import 'package:d_sdk/datasource/remote_data_sources/option_set_datasource.dart'
@@ -108,11 +106,6 @@ Future<_i174.GetIt> initActiveSessionScope(
           ));
       gh.factory<_i277.AbstractDatasource>(
               () => _i143.TeamDatasource(
-            apiClient: gh<_i8.HttpClient<dynamic>>(),
-            dbManager: gh<_i210.DbManager>(),
-          ));
-      gh.factory<_i277.AbstractDatasource>(
-              () => _i718.ManagedTeamDatasource(
             apiClient: gh<_i8.HttpClient<dynamic>>(),
             dbManager: gh<_i210.DbManager>(),
           ));

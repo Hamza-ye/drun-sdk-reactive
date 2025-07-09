@@ -7,11 +7,11 @@ class Teams extends Table with BaseTableMixin {
 
   BoolColumn get disabled => boolean().nullable()();
 
-  @ReferenceName("activityTeams")
+  @ReferenceName("assignedTeams")
   TextColumn get activity => text().references(Activities, #id)();
 
-  @ReferenceName("userTeams")
-  TextColumn get user => text().references(Users, #id)();
+// @ReferenceName("userTeams")
+// TextColumn get user => text().references(Users, #id)();
 
 // /// Form permissions stored as JSON representing a list of TeamFormPermission.
 // TextColumn get formPermissions => text()

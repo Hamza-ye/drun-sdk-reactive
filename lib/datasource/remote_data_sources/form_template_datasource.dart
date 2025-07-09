@@ -27,6 +27,18 @@ class DataFormTemplateDatasource
     // fetch versions
     final List<FormTemplateVersion> formVersions = await _getFormVersions();
     final versionsFormUIDs = formVersions.map((v) => v.template);
+
+    final Map<String, List<FormTemplateVersion>> templateVersionMap = {};
+    final Map<String, FormTemplate> templateMap = {
+      for (var template in remoteData) template.id: template
+    };
+
+    for (var templateVersion in formVersions) {
+      templateVersionMap
+          .putIfAbsent(templateVersion.template, () => [])
+          .add(templateVersion);
+    }
+
     final formTemplatesWithoutVersion =
         remoteData.where((template) => !versionsFormUIDs.contains(template.id));
     if (formTemplatesWithoutVersion.isNotEmpty) {
@@ -44,7 +56,13 @@ class DataFormTemplateDatasource
         });
 
         await db.batch((b) {
-          b.insertAllOnConflictUpdate(db.formTemplateVersions, formVersions);
+          b.insertAllOnConflictUpdate(
+              db.formTemplateVersions,
+              formVersions.map((v) => v.copyWith(
+                    name: templateMap[v.template]!.name,
+                    label: Value(templateMap[v.template]!.label),
+                    description: Value(templateMap[v.template]!.description),
+                  )));
         });
       });
     }

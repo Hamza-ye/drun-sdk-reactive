@@ -1,5 +1,3 @@
-import 'package:d_sdk/use_cases/logout_strategies/logout_strategies.dart';
-import 'package:injectable/injectable.dart';
 
 // @Injectable()
 abstract class LogoutHandler {
