@@ -4,6 +4,7 @@ import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
 @TableIndex(name: 'template_version_number_idx', columns: {#versionNumber})
+@TableIndex(name: 'template_version_template_idx', columns: {#template})
 class FormTemplateVersions extends Table {
   TextColumn get id => text()();
 
@@ -12,17 +13,17 @@ class FormTemplateVersions extends Table {
 
   IntColumn get versionNumber => integer()();
 
-  /// copied from parent template
-  TextColumn get name => text()();
-
-  /// copied from parent template
-  TextColumn get label => text()
-      .map(const NullAwareMapConverter())
-      .nullable()
-      .clientDefault(() => '{}')();
-
-  /// copied from parent template
-  TextColumn get description => text().nullable()();
+  // /// copied from parent template
+  // TextColumn get name => text().nullable()();
+  //
+  // /// copied from parent template
+  // TextColumn get label => text()
+  //     .map(const NullAwareMapConverter())
+  //     .nullable()
+  //     .clientDefault(() => '{}')();
+  //
+  // /// copied from parent template
+  // TextColumn get description => text().nullable()();
 
   TextColumn get fields => text().map(const TemplateListConverter())();
 

@@ -62,9 +62,11 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
     return dataItems.map((item) {
       item['dirty'] = false;
       item['isToUpdate'] = true;
+      final label = item['label'];
 
       return fromApiJson({
         ...item,
+        'label': label,
         'id': item['uid']!,
         'translations': (item['translations'] as List?) ?? [],
       }, serializer: CustomSerializer());

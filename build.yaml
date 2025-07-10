@@ -1,6 +1,10 @@
 targets:
   $default:
     builders:
+      built_value_generator:
+        enabled: true
+        generate_for:
+          - lib/core/form/element_template/*.dart
       drift_dev:
         # These options change how drift generates code
         options:

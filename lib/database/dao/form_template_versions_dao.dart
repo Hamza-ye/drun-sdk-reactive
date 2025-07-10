@@ -36,9 +36,9 @@ class FormTemplateVersionsDao extends DatabaseAccessor<AppDatabase>
       innerJoin(
         ftv,
         ftv.template.equalsExp(formTemplates.id) // match on template ID
-        &
-        ftv.versionNumber.equalsExp(latestVersionsSub
-            .ref(latestVersionsNumbers.versionNumber.max())),
+            &
+            ftv.versionNumber.equalsExp(latestVersionsSub
+                .ref(latestVersionsNumbers.versionNumber.max())),
       ),
       innerJoin(formTemplates, af.form.equalsExp(formTemplates.id),
           useColumns: false),
@@ -49,7 +49,7 @@ class FormTemplateVersionsDao extends DatabaseAccessor<AppDatabase>
     }
 
     // Execute and map results
-    final JoinedSelectStatement<HasResultSet, dynamic> rows = query;
+    // final JoinedSelectStatement<HasResultSet, dynamic> rows = query;
     return query.map((row) {
       final tmpl = row.readTable(formTemplates);
       final ver = row.readTable(ftv);
@@ -57,32 +57,32 @@ class FormTemplateVersionsDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-// Future<List<(FormTemplate, FormTemplateVersion)>>
-//     selectFormTemplatesWithRefs() async {
-// final latestVersions = Subquery(
-//   select(formTemplateVersions)
-//     ..orderBy([(row) => OrderingTerm.desc(row.versionNumber)])
-//     ..limit(1),
-//   's',
-// );
-//
-// final query = select(formTemplates).join(
-//   [
-//     innerJoin(
-//         latestVersions,
-//         // Again using .ref() here to access the category in the outer select
-//         // statement.
-//         latestVersions
-//             .ref(formTemplateVersions.template)
-//             .equalsExp(formTemplates.id))
-//   ],
-// )..groupBy([formTemplates.id]);
-//
-// final rows = await query.get();
-//
-// return [
-//   for (final row in rows)
-//     (row.readTable(formTemplates), row.readTable(latestVersions)!),
-// ];
-// }
+  // Future<List<(FormTemplate, FormTemplateVersion)>>
+  //     selectFormTemplatesWithRefs() async {
+  //   final latestVersions = Subquery(
+  //     select(formTemplateVersions)
+  //       ..orderBy([(row) => OrderingTerm.desc(row.versionNumber)])
+  //       ..limit(1),
+  //     's',
+  //   );
+  //
+  //   final query = select(formTemplates).join(
+  //     [
+  //       innerJoin(
+  //           latestVersions,
+  //           // Again using .ref() here to access the category in the outer select
+  //           // statement.
+  //           latestVersions
+  //               .ref(formTemplateVersions.template)
+  //               .equalsExp(formTemplates.id))
+  //     ],
+  //   )..groupBy([formTemplates.id]);
+  //
+  //   final rows = await query.get();
+  //
+  //   return [
+  //     for (final row in rows)
+  //       (row.readTable(formTemplates), row.readTable(latestVersions)!),
+  //   ];
+  // }
 }

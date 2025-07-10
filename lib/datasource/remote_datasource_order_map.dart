@@ -8,9 +8,9 @@ class DSOrder {
 
   // static const int option = 700;
   static const int dataElement = 800;
-  static const int formTemplate = 900;
+  static const int formTemplateVersion = 900;
 
-  // static const int formTemplateVersion = 1000;
+  static const int formTemplate = 1000;
   static const int team = 1100;
   static const int managedTeam = 1200;
   static const int userFormAccess = 1300;

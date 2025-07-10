@@ -5,7 +5,7 @@ class FormTemplates extends Table {
   TextColumn get id => text()();
 
   /// current form version uid
-  TextColumn get formVersion => text()();
+  TextColumn get versionUid => text()();
 
   /// current form version number
   IntColumn get versionNumber => integer()();

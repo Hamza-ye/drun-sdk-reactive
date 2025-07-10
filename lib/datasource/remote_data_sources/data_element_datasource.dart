@@ -10,8 +10,7 @@ class DataElementDatasource
     extends BaseDataSource<$DataElementsTable, DataElement>
     implements MetaDataSource<DataElement> {
   DataElementDatasource(
-      {required super.apiClient,
-      required DbManager dbManager})
+      {required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.dataElements);
 
   @override
@@ -19,6 +18,12 @@ class DataElementDatasource
 
   @override
   DataElement fromApiJson(Map<String, dynamic> data,
-          {ValueSerializer? serializer}) =>
-      DataElement.fromJson(data, serializer: serializer);
+      {ValueSerializer? serializer}) {
+    final String? optionSet = data['optionSet']?['uid'];
+
+    return DataElement.fromJson({
+      ...data,
+      'optionSet': optionSet,
+    }, serializer: serializer);
+  }
 }

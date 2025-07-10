@@ -3,6 +3,7 @@ import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
+import 'package:d_sdk/datasource/remote_data_sources/form_template_version_datasource.dart';
 import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
@@ -13,8 +14,12 @@ class DataFormTemplateDatasource
     extends BaseDataSource<$FormTemplatesTable, FormTemplate>
     implements MetaDataSource<FormTemplate> {
   DataFormTemplateDatasource(
-      {required super.apiClient, required DbManager dbManager})
+      {required super.apiClient,
+      required DbManager dbManager,
+      required this.versionDatasource})
       : super(dbManager: dbManager, table: dbManager.db.formTemplates);
+
+  final FormTemplateVersionDatasource versionDatasource;
 
   @override
   String get resourceName => 'formTemplates';
@@ -56,13 +61,7 @@ class DataFormTemplateDatasource
         });
 
         await db.batch((b) {
-          b.insertAllOnConflictUpdate(
-              db.formTemplateVersions,
-              formVersions.map((v) => v.copyWith(
-                    name: templateMap[v.template]!.name,
-                    label: Value(templateMap[v.template]!.label),
-                    description: Value(templateMap[v.template]!.description),
-                  )));
+          b.insertAllOnConflictUpdate(db.formTemplateVersions, formVersions);
         });
       });
     }

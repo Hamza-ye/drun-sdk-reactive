@@ -4580,11 +4580,11 @@ class $FormTemplatesTable extends FormTemplates
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _formVersionMeta =
-      const VerificationMeta('formVersion');
+  static const VerificationMeta _versionUidMeta =
+      const VerificationMeta('versionUid');
   @override
-  late final GeneratedColumn<String> formVersion = GeneratedColumn<String>(
-      'form_version', aliasedName, false,
+  late final GeneratedColumn<String> versionUid = GeneratedColumn<String>(
+      'version_uid', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _versionNumberMeta =
       const VerificationMeta('versionNumber');
@@ -4613,7 +4613,7 @@ class $FormTemplatesTable extends FormTemplates
       type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, formVersion, versionNumber, name, label, description];
+      [id, versionUid, versionNumber, name, label, description];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4629,13 +4629,13 @@ class $FormTemplatesTable extends FormTemplates
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('form_version')) {
+    if (data.containsKey('version_uid')) {
       context.handle(
-          _formVersionMeta,
-          formVersion.isAcceptableOrUnknown(
-              data['form_version']!, _formVersionMeta));
+          _versionUidMeta,
+          versionUid.isAcceptableOrUnknown(
+              data['version_uid']!, _versionUidMeta));
     } else if (isInserting) {
-      context.missing(_formVersionMeta);
+      context.missing(_versionUidMeta);
     }
     if (data.containsKey('version_number')) {
       context.handle(
@@ -4668,8 +4668,8 @@ class $FormTemplatesTable extends FormTemplates
     return FormTemplate(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      formVersion: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}form_version'])!,
+      versionUid: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}version_uid'])!,
       versionNumber: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}version_number'])!,
       name: attachedDatabase.typeMapping
@@ -4695,7 +4695,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   final String id;
 
   /// current form version uid
-  final String formVersion;
+  final String versionUid;
 
   /// current form version number
   final int versionNumber;
@@ -4704,7 +4704,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   final String? description;
   const FormTemplate(
       {required this.id,
-      required this.formVersion,
+      required this.versionUid,
       required this.versionNumber,
       required this.name,
       this.label,
@@ -4713,7 +4713,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['form_version'] = Variable<String>(formVersion);
+    map['version_uid'] = Variable<String>(versionUid);
     map['version_number'] = Variable<int>(versionNumber);
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || label != null) {
@@ -4729,7 +4729,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   FormTemplatesCompanion toCompanion(bool nullToAbsent) {
     return FormTemplatesCompanion(
       id: Value(id),
-      formVersion: Value(formVersion),
+      versionUid: Value(versionUid),
       versionNumber: Value(versionNumber),
       name: Value(name),
       label:
@@ -4745,7 +4745,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return FormTemplate(
       id: serializer.fromJson<String>(json['id']),
-      formVersion: serializer.fromJson<String>(json['formVersion']),
+      versionUid: serializer.fromJson<String>(json['versionUid']),
       versionNumber: serializer.fromJson<int>(json['versionNumber']),
       name: serializer.fromJson<String>(json['name']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
@@ -4757,7 +4757,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'formVersion': serializer.toJson<String>(formVersion),
+      'versionUid': serializer.toJson<String>(versionUid),
       'versionNumber': serializer.toJson<int>(versionNumber),
       'name': serializer.toJson<String>(name),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
@@ -4767,14 +4767,14 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
 
   FormTemplate copyWith(
           {String? id,
-          String? formVersion,
+          String? versionUid,
           int? versionNumber,
           String? name,
           Value<Map<String, dynamic>?> label = const Value.absent(),
           Value<String?> description = const Value.absent()}) =>
       FormTemplate(
         id: id ?? this.id,
-        formVersion: formVersion ?? this.formVersion,
+        versionUid: versionUid ?? this.versionUid,
         versionNumber: versionNumber ?? this.versionNumber,
         name: name ?? this.name,
         label: label.present ? label.value : this.label,
@@ -4783,8 +4783,8 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   FormTemplate copyWithCompanion(FormTemplatesCompanion data) {
     return FormTemplate(
       id: data.id.present ? data.id.value : this.id,
-      formVersion:
-          data.formVersion.present ? data.formVersion.value : this.formVersion,
+      versionUid:
+          data.versionUid.present ? data.versionUid.value : this.versionUid,
       versionNumber: data.versionNumber.present
           ? data.versionNumber.value
           : this.versionNumber,
@@ -4799,7 +4799,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   String toString() {
     return (StringBuffer('FormTemplate(')
           ..write('id: $id, ')
-          ..write('formVersion: $formVersion, ')
+          ..write('versionUid: $versionUid, ')
           ..write('versionNumber: $versionNumber, ')
           ..write('name: $name, ')
           ..write('label: $label, ')
@@ -4810,13 +4810,13 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
 
   @override
   int get hashCode =>
-      Object.hash(id, formVersion, versionNumber, name, label, description);
+      Object.hash(id, versionUid, versionNumber, name, label, description);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is FormTemplate &&
           other.id == this.id &&
-          other.formVersion == this.formVersion &&
+          other.versionUid == this.versionUid &&
           other.versionNumber == this.versionNumber &&
           other.name == this.name &&
           other.label == this.label &&
@@ -4825,7 +4825,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
 
 class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   final Value<String> id;
-  final Value<String> formVersion;
+  final Value<String> versionUid;
   final Value<int> versionNumber;
   final Value<String> name;
   final Value<Map<String, dynamic>?> label;
@@ -4833,7 +4833,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   final Value<int> rowid;
   const FormTemplatesCompanion({
     this.id = const Value.absent(),
-    this.formVersion = const Value.absent(),
+    this.versionUid = const Value.absent(),
     this.versionNumber = const Value.absent(),
     this.name = const Value.absent(),
     this.label = const Value.absent(),
@@ -4842,19 +4842,19 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   });
   FormTemplatesCompanion.insert({
     required String id,
-    required String formVersion,
+    required String versionUid,
     required int versionNumber,
     required String name,
     this.label = const Value.absent(),
     this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        formVersion = Value(formVersion),
+        versionUid = Value(versionUid),
         versionNumber = Value(versionNumber),
         name = Value(name);
   static Insertable<FormTemplate> custom({
     Expression<String>? id,
-    Expression<String>? formVersion,
+    Expression<String>? versionUid,
     Expression<int>? versionNumber,
     Expression<String>? name,
     Expression<String>? label,
@@ -4863,7 +4863,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (formVersion != null) 'form_version': formVersion,
+      if (versionUid != null) 'version_uid': versionUid,
       if (versionNumber != null) 'version_number': versionNumber,
       if (name != null) 'name': name,
       if (label != null) 'label': label,
@@ -4874,7 +4874,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
 
   FormTemplatesCompanion copyWith(
       {Value<String>? id,
-      Value<String>? formVersion,
+      Value<String>? versionUid,
       Value<int>? versionNumber,
       Value<String>? name,
       Value<Map<String, dynamic>?>? label,
@@ -4882,7 +4882,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
       Value<int>? rowid}) {
     return FormTemplatesCompanion(
       id: id ?? this.id,
-      formVersion: formVersion ?? this.formVersion,
+      versionUid: versionUid ?? this.versionUid,
       versionNumber: versionNumber ?? this.versionNumber,
       name: name ?? this.name,
       label: label ?? this.label,
@@ -4897,8 +4897,8 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (formVersion.present) {
-      map['form_version'] = Variable<String>(formVersion.value);
+    if (versionUid.present) {
+      map['version_uid'] = Variable<String>(versionUid.value);
     }
     if (versionNumber.present) {
       map['version_number'] = Variable<int>(versionNumber.value);
@@ -4923,7 +4923,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   String toString() {
     return (StringBuffer('FormTemplatesCompanion(')
           ..write('id: $id, ')
-          ..write('formVersion: $formVersion, ')
+          ..write('versionUid: $versionUid, ')
           ..write('versionNumber: $versionNumber, ')
           ..write('name: $name, ')
           ..write('label: $label, ')
@@ -5374,25 +5374,6 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
   late final GeneratedColumn<int> versionNumber = GeneratedColumn<int>(
       'version_number', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  @override
-  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
-      label = GeneratedColumn<String>('label', aliasedName, true,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              clientDefault: () => '{}')
-          .withConverter<Map<String, dynamic>?>(
-              $FormTemplateVersionsTable.$converterlabel);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
-  @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   late final GeneratedColumnWithTypeConverter<List<Template>, String> fields =
       GeneratedColumn<String>('fields', aliasedName, false,
@@ -5407,7 +5388,7 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
               $FormTemplateVersionsTable.$convertersections);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, template, versionNumber, name, label, description, fields, sections];
+      [id, template, versionNumber, fields, sections];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5438,18 +5419,6 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
     } else if (isInserting) {
       context.missing(_versionNumberMeta);
     }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('description')) {
-      context.handle(
-          _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
-    }
     return context;
   }
 
@@ -5465,13 +5434,6 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
           .read(DriftSqlType.string, data['${effectivePrefix}template'])!,
       versionNumber: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}version_number'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      label: $FormTemplateVersionsTable.$converterlabel.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}label'])),
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       fields: $FormTemplateVersionsTable.$converterfields.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.string, data['${effectivePrefix}fields'])!),
@@ -5486,8 +5448,6 @@ class $FormTemplateVersionsTable extends FormTemplateVersions
     return $FormTemplateVersionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Map<String, dynamic>?, String?> $converterlabel =
-      const NullAwareMapConverter();
   static TypeConverter<List<Template>, String> $converterfields =
       const TemplateListConverter();
   static TypeConverter<List<Template>, String> $convertersections =
@@ -5499,24 +5459,12 @@ class FormTemplateVersion extends DataClass
   final String id;
   final String template;
   final int versionNumber;
-
-  /// copied from parent template
-  final String name;
-
-  /// copied from parent template
-  final Map<String, dynamic>? label;
-
-  /// copied from parent template
-  final String? description;
   final List<Template> fields;
   final List<Template> sections;
   const FormTemplateVersion(
       {required this.id,
       required this.template,
       required this.versionNumber,
-      required this.name,
-      this.label,
-      this.description,
       required this.fields,
       required this.sections});
   @override
@@ -5525,14 +5473,6 @@ class FormTemplateVersion extends DataClass
     map['id'] = Variable<String>(id);
     map['template'] = Variable<String>(template);
     map['version_number'] = Variable<int>(versionNumber);
-    map['name'] = Variable<String>(name);
-    if (!nullToAbsent || label != null) {
-      map['label'] = Variable<String>(
-          $FormTemplateVersionsTable.$converterlabel.toSql(label));
-    }
-    if (!nullToAbsent || description != null) {
-      map['description'] = Variable<String>(description);
-    }
     {
       map['fields'] = Variable<String>(
           $FormTemplateVersionsTable.$converterfields.toSql(fields));
@@ -5549,12 +5489,6 @@ class FormTemplateVersion extends DataClass
       id: Value(id),
       template: Value(template),
       versionNumber: Value(versionNumber),
-      name: Value(name),
-      label:
-          label == null && nullToAbsent ? const Value.absent() : Value(label),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
       fields: Value(fields),
       sections: Value(sections),
     );
@@ -5567,9 +5501,6 @@ class FormTemplateVersion extends DataClass
       id: serializer.fromJson<String>(json['id']),
       template: serializer.fromJson<String>(json['template']),
       versionNumber: serializer.fromJson<int>(json['versionNumber']),
-      name: serializer.fromJson<String>(json['name']),
-      label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
-      description: serializer.fromJson<String?>(json['description']),
       fields: serializer.fromJson<List<Template>>(json['fields']),
       sections: serializer.fromJson<List<Template>>(json['sections']),
     );
@@ -5581,9 +5512,6 @@ class FormTemplateVersion extends DataClass
       'id': serializer.toJson<String>(id),
       'template': serializer.toJson<String>(template),
       'versionNumber': serializer.toJson<int>(versionNumber),
-      'name': serializer.toJson<String>(name),
-      'label': serializer.toJson<Map<String, dynamic>?>(label),
-      'description': serializer.toJson<String?>(description),
       'fields': serializer.toJson<List<Template>>(fields),
       'sections': serializer.toJson<List<Template>>(sections),
     };
@@ -5593,18 +5521,12 @@ class FormTemplateVersion extends DataClass
           {String? id,
           String? template,
           int? versionNumber,
-          String? name,
-          Value<Map<String, dynamic>?> label = const Value.absent(),
-          Value<String?> description = const Value.absent(),
           List<Template>? fields,
           List<Template>? sections}) =>
       FormTemplateVersion(
         id: id ?? this.id,
         template: template ?? this.template,
         versionNumber: versionNumber ?? this.versionNumber,
-        name: name ?? this.name,
-        label: label.present ? label.value : this.label,
-        description: description.present ? description.value : this.description,
         fields: fields ?? this.fields,
         sections: sections ?? this.sections,
       );
@@ -5615,10 +5537,6 @@ class FormTemplateVersion extends DataClass
       versionNumber: data.versionNumber.present
           ? data.versionNumber.value
           : this.versionNumber,
-      name: data.name.present ? data.name.value : this.name,
-      label: data.label.present ? data.label.value : this.label,
-      description:
-          data.description.present ? data.description.value : this.description,
       fields: data.fields.present ? data.fields.value : this.fields,
       sections: data.sections.present ? data.sections.value : this.sections,
     );
@@ -5630,9 +5548,6 @@ class FormTemplateVersion extends DataClass
           ..write('id: $id, ')
           ..write('template: $template, ')
           ..write('versionNumber: $versionNumber, ')
-          ..write('name: $name, ')
-          ..write('label: $label, ')
-          ..write('description: $description, ')
           ..write('fields: $fields, ')
           ..write('sections: $sections')
           ..write(')'))
@@ -5640,8 +5555,8 @@ class FormTemplateVersion extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, template, versionNumber, name, label, description, fields, sections);
+  int get hashCode =>
+      Object.hash(id, template, versionNumber, fields, sections);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5649,9 +5564,6 @@ class FormTemplateVersion extends DataClass
           other.id == this.id &&
           other.template == this.template &&
           other.versionNumber == this.versionNumber &&
-          other.name == this.name &&
-          other.label == this.label &&
-          other.description == this.description &&
           other.fields == this.fields &&
           other.sections == this.sections);
 }
@@ -5661,9 +5573,6 @@ class FormTemplateVersionsCompanion
   final Value<String> id;
   final Value<String> template;
   final Value<int> versionNumber;
-  final Value<String> name;
-  final Value<Map<String, dynamic>?> label;
-  final Value<String?> description;
   final Value<List<Template>> fields;
   final Value<List<Template>> sections;
   final Value<int> rowid;
@@ -5671,9 +5580,6 @@ class FormTemplateVersionsCompanion
     this.id = const Value.absent(),
     this.template = const Value.absent(),
     this.versionNumber = const Value.absent(),
-    this.name = const Value.absent(),
-    this.label = const Value.absent(),
-    this.description = const Value.absent(),
     this.fields = const Value.absent(),
     this.sections = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -5682,25 +5588,18 @@ class FormTemplateVersionsCompanion
     required String id,
     required String template,
     required int versionNumber,
-    required String name,
-    this.label = const Value.absent(),
-    this.description = const Value.absent(),
     required List<Template> fields,
     required List<Template> sections,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         template = Value(template),
         versionNumber = Value(versionNumber),
-        name = Value(name),
         fields = Value(fields),
         sections = Value(sections);
   static Insertable<FormTemplateVersion> custom({
     Expression<String>? id,
     Expression<String>? template,
     Expression<int>? versionNumber,
-    Expression<String>? name,
-    Expression<String>? label,
-    Expression<String>? description,
     Expression<String>? fields,
     Expression<String>? sections,
     Expression<int>? rowid,
@@ -5709,9 +5608,6 @@ class FormTemplateVersionsCompanion
       if (id != null) 'id': id,
       if (template != null) 'template': template,
       if (versionNumber != null) 'version_number': versionNumber,
-      if (name != null) 'name': name,
-      if (label != null) 'label': label,
-      if (description != null) 'description': description,
       if (fields != null) 'fields': fields,
       if (sections != null) 'sections': sections,
       if (rowid != null) 'rowid': rowid,
@@ -5722,9 +5618,6 @@ class FormTemplateVersionsCompanion
       {Value<String>? id,
       Value<String>? template,
       Value<int>? versionNumber,
-      Value<String>? name,
-      Value<Map<String, dynamic>?>? label,
-      Value<String?>? description,
       Value<List<Template>>? fields,
       Value<List<Template>>? sections,
       Value<int>? rowid}) {
@@ -5732,9 +5625,6 @@ class FormTemplateVersionsCompanion
       id: id ?? this.id,
       template: template ?? this.template,
       versionNumber: versionNumber ?? this.versionNumber,
-      name: name ?? this.name,
-      label: label ?? this.label,
-      description: description ?? this.description,
       fields: fields ?? this.fields,
       sections: sections ?? this.sections,
       rowid: rowid ?? this.rowid,
@@ -5752,16 +5642,6 @@ class FormTemplateVersionsCompanion
     }
     if (versionNumber.present) {
       map['version_number'] = Variable<int>(versionNumber.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(
-          $FormTemplateVersionsTable.$converterlabel.toSql(label.value));
-    }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
     }
     if (fields.present) {
       map['fields'] = Variable<String>(
@@ -5783,9 +5663,6 @@ class FormTemplateVersionsCompanion
           ..write('id: $id, ')
           ..write('template: $template, ')
           ..write('versionNumber: $versionNumber, ')
-          ..write('name: $name, ')
-          ..write('label: $label, ')
-          ..write('description: $description, ')
           ..write('fields: $fields, ')
           ..write('sections: $sections, ')
           ..write('rowid: $rowid')
@@ -10412,6 +10289,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index templateVersionNumberIdx = Index(
       'template_version_number_idx',
       'CREATE INDEX template_version_number_idx ON form_template_versions (version_number)');
+  late final Index templateVersionTemplateIdx = Index(
+      'template_version_template_idx',
+      'CREATE INDEX template_version_template_idx ON form_template_versions (template)');
   late final Index repeatTemplatePathIdx = Index('repeat_template_path_idx',
       'CREATE INDEX repeat_template_path_idx ON repeat_instances (template_path)');
   late final Index dataElementNameIdx = Index('data_element_name_idx',
@@ -10483,6 +10363,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         managedTeamCodIdx,
         assignmentStatusIdx,
         templateVersionNumberIdx,
+        templateVersionTemplateIdx,
         repeatTemplatePathIdx,
         dataElementNameIdx,
         optionSetNameIdx,
@@ -14299,7 +14180,7 @@ typedef $$AssignmentsTableProcessedTableManager = ProcessedTableManager<
 typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
     Function({
   required String id,
-  required String formVersion,
+  required String versionUid,
   required int versionNumber,
   required String name,
   Value<Map<String, dynamic>?> label,
@@ -14309,7 +14190,7 @@ typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
 typedef $$FormTemplatesTableUpdateCompanionBuilder = FormTemplatesCompanion
     Function({
   Value<String> id,
-  Value<String> formVersion,
+  Value<String> versionUid,
   Value<int> versionNumber,
   Value<String> name,
   Value<Map<String, dynamic>?> label,
@@ -14402,8 +14283,8 @@ class $$FormTemplatesTableFilterComposer
   ColumnFilters<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get formVersion => $composableBuilder(
-      column: $table.formVersion, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get versionUid => $composableBuilder(
+      column: $table.versionUid, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get versionNumber => $composableBuilder(
       column: $table.versionNumber, builder: (column) => ColumnFilters(column));
@@ -14518,8 +14399,8 @@ class $$FormTemplatesTableOrderingComposer
   ColumnOrderings<String> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get formVersion => $composableBuilder(
-      column: $table.formVersion, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get versionUid => $composableBuilder(
+      column: $table.versionUid, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get versionNumber => $composableBuilder(
       column: $table.versionNumber,
@@ -14547,8 +14428,8 @@ class $$FormTemplatesTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get formVersion => $composableBuilder(
-      column: $table.formVersion, builder: (column) => column);
+  GeneratedColumn<String> get versionUid => $composableBuilder(
+      column: $table.versionUid, builder: (column) => column);
 
   GeneratedColumn<int> get versionNumber => $composableBuilder(
       column: $table.versionNumber, builder: (column) => column);
@@ -14679,7 +14560,7 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
               $$FormTemplatesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<String> formVersion = const Value.absent(),
+            Value<String> versionUid = const Value.absent(),
             Value<int> versionNumber = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -14688,7 +14569,7 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
           }) =>
               FormTemplatesCompanion(
             id: id,
-            formVersion: formVersion,
+            versionUid: versionUid,
             versionNumber: versionNumber,
             name: name,
             label: label,
@@ -14697,7 +14578,7 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
-            required String formVersion,
+            required String versionUid,
             required int versionNumber,
             required String name,
             Value<Map<String, dynamic>?> label = const Value.absent(),
@@ -14706,7 +14587,7 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
           }) =>
               FormTemplatesCompanion.insert(
             id: id,
-            formVersion: formVersion,
+            versionUid: versionUid,
             versionNumber: versionNumber,
             name: name,
             label: label,
@@ -15192,9 +15073,6 @@ typedef $$FormTemplateVersionsTableCreateCompanionBuilder
   required String id,
   required String template,
   required int versionNumber,
-  required String name,
-  Value<Map<String, dynamic>?> label,
-  Value<String?> description,
   required List<Template> fields,
   required List<Template> sections,
   Value<int> rowid,
@@ -15204,9 +15082,6 @@ typedef $$FormTemplateVersionsTableUpdateCompanionBuilder
   Value<String> id,
   Value<String> template,
   Value<int> versionNumber,
-  Value<String> name,
-  Value<Map<String, dynamic>?> label,
-  Value<String?> description,
   Value<List<Template>> fields,
   Value<List<Template>> sections,
   Value<int> rowid,
@@ -15264,18 +15139,6 @@ class $$FormTemplateVersionsTableFilterComposer
 
   ColumnFilters<int> get versionNumber => $composableBuilder(
       column: $table.versionNumber, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
-          String>
-      get label => $composableBuilder(
-          column: $table.label,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<List<Template>, List<Template>, String>
       get fields => $composableBuilder(
@@ -15345,15 +15208,6 @@ class $$FormTemplateVersionsTableOrderingComposer
       column: $table.versionNumber,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get label => $composableBuilder(
-      column: $table.label, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get fields => $composableBuilder(
       column: $table.fields, builder: (column) => ColumnOrderings(column));
 
@@ -15395,15 +15249,6 @@ class $$FormTemplateVersionsTableAnnotationComposer
 
   GeneratedColumn<int> get versionNumber => $composableBuilder(
       column: $table.versionNumber, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get label =>
-      $composableBuilder(column: $table.label, builder: (column) => column);
-
-  GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<List<Template>, String> get fields =>
       $composableBuilder(column: $table.fields, builder: (column) => column);
@@ -15482,9 +15327,6 @@ class $$FormTemplateVersionsTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> template = const Value.absent(),
             Value<int> versionNumber = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<String?> description = const Value.absent(),
             Value<List<Template>> fields = const Value.absent(),
             Value<List<Template>> sections = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -15493,9 +15335,6 @@ class $$FormTemplateVersionsTableTableManager extends RootTableManager<
             id: id,
             template: template,
             versionNumber: versionNumber,
-            name: name,
-            label: label,
-            description: description,
             fields: fields,
             sections: sections,
             rowid: rowid,
@@ -15504,9 +15343,6 @@ class $$FormTemplateVersionsTableTableManager extends RootTableManager<
             required String id,
             required String template,
             required int versionNumber,
-            required String name,
-            Value<Map<String, dynamic>?> label = const Value.absent(),
-            Value<String?> description = const Value.absent(),
             required List<Template> fields,
             required List<Template> sections,
             Value<int> rowid = const Value.absent(),
@@ -15515,9 +15351,6 @@ class $$FormTemplateVersionsTableTableManager extends RootTableManager<
             id: id,
             template: template,
             versionNumber: versionNumber,
-            name: name,
-            label: label,
-            description: description,
             fields: fields,
             sections: sections,
             rowid: rowid,

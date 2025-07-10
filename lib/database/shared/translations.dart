@@ -28,7 +28,7 @@ class Translation with EquatableMixin {
   }
 
   static JsonTypeConverter2<Translation, String, Object?> converter =
-      TypeConverter.json(
+      TypeConverter.json2(
     fromJson: (json) => Translation.fromJson(json as Map<String, Object?>),
     toJson: (translation) => translation.toJson(),
   );

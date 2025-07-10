@@ -52,7 +52,7 @@ class FormTemplatesDao extends DatabaseAccessor<AppDatabase>
     }
 
     // Execute and map results
-    final JoinedSelectStatement<HasResultSet, dynamic> rows = query;
+    // final JoinedSelectStatement<HasResultSet, dynamic> rows = query;
     return query.map((row) {
       final tmpl = row.readTable(formTemplates);
       final ver = row.readTable(ftv);

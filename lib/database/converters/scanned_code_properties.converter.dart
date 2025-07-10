@@ -13,8 +13,9 @@ class ScannedCodePropertiesConverter
 
   @override
   ScannedCodeProperties? fromSql(String? fromDb) {
+
     if (fromDb == null) return null;
-    return fromJson(json.decode(fromDb) as Map<String, dynamic>);
+    return fromJson(Map<String, dynamic>.of(json.decode(fromDb)));
   }
 
   @override
@@ -30,7 +31,7 @@ class ScannedCodePropertiesConverter
   }
 
   @override
-  Map<String, Object?>? toJson(ScannedCodeProperties? value) {
+  Map<String, dynamic>? toJson(ScannedCodeProperties? value) {
     return value?.toJson();
   }
 }

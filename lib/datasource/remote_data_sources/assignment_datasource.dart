@@ -31,7 +31,7 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
 
     final assignmentModels = dataItems
         .map((item) =>
-            _AssignmentWithAccess.fromJson(item as Map<String, dynamic>))
+            _AssignmentWithAccess.fromJson(item))
         .toList();
 
     final assignments = assignmentModels
@@ -76,7 +76,7 @@ class _AssignmentWithAccess {
   final String activity;
   final String team;
   final String orgUnit;
-  final String assignmentType;
+  // final String? assignmentType;
   final AssignmentStatus progressStatus;
   final List<AssignmentForm> accessibleForms;
 
@@ -86,7 +86,7 @@ class _AssignmentWithAccess {
       required this.team,
       required this.orgUnit,
       required this.progressStatus,
-      required this.assignmentType,
+      // this.assignmentType,
       required this.accessibleForms});
 
   factory _AssignmentWithAccess.fromJson(Map<String, dynamic> map) {
@@ -95,7 +95,7 @@ class _AssignmentWithAccess {
               {
                 ...access,
                 'form': access['form'],
-                'assignment': map['assignment'],
+                'assignment': access['assignment'],
               },
               serializer: CustomSerializer(),
             ))
@@ -105,12 +105,12 @@ class _AssignmentWithAccess {
         AssignmentStatus.getType(map['progressStatus'] as String?) ??
             AssignmentStatus.PLANNED;
     return _AssignmentWithAccess(
-      assignment: map['assignment'],
+      assignment: map['id'],
       activity: map['activity'] as String,
       team: map['team'] as String,
       orgUnit: map['orgUnit'] as String,
       progressStatus: progressStatus,
-      assignmentType: map['assignmentType']['uid'],
+      // assignmentType: map['assignmentType']?['uid'],
       accessibleForms: accessibleForms,
     );
   }

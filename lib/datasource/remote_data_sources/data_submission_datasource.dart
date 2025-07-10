@@ -22,7 +22,7 @@ class DataInstanceDatasource
   String get pathPostfix => '/objects${super.pathPostfix}';
 
   @override
-  String get resourceName => 'dataInstance';
+  String get resourceName => 'dataSubmission';
 
   @override
   DataInstance fromApiJson(Map<String, dynamic> data,
