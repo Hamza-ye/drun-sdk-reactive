@@ -40,10 +40,6 @@ extension UpdateTitle on DatabaseConnectionUser {
         return idColumn.equals(id);
       });
 
-    final Future<List<Row>> rowss = stmt.writeReturning(RawValuesInsertable({
-      'title': Variable<String>(newTitle),
-    }));
-
     final rows = await stmt.writeReturning(RawValuesInsertable({
       'title': Variable<String>(newTitle),
     }));

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:d_sdk/core/exception/database_exceptions.dart';
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/app_database.dart';
@@ -28,7 +27,6 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
 
   AppDatabase get db {
     final instance = _dbManager.db;
-    if (instance == null) throw NoActiveDatabaseInstance();
     return instance;
   }
 

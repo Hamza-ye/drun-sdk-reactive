@@ -100,7 +100,7 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
     final a = alias(assignments, 'a');
     final ous = alias(orgUnits, 'ou');
     final act = alias(activities, 'act');
-    final f = alias(db.assignmentForms, 'f');
+    // final f = alias(db.assignmentForms, 'f');
     final formsCount = db.assignmentForms.assignment.equalsExp(a.id).count();
     // Base join query
     final JoinedSelectStatement<HasResultSet, dynamic> query =
