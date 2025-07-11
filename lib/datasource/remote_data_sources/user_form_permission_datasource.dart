@@ -1,4 +1,3 @@
-import 'package:d_sdk/database/converters/custom_serializer.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
 import 'package:d_sdk/user_session/session_context.dart';
@@ -17,23 +16,7 @@ class UserFormAccessesDatasource
   @override
   String get resourceName => 'formPermissions';
 
-  // @override
-  // String get apiVersionPath => AppEnvironment.apiV1Path;
-
-  @override
-  Future<List<UserFormPermission>> getOnline() async {
-    final response =
-        await apiClient.request(resourceName: resourceName, method: 'get');
-
-    final raw = response.data;
-
-    /// expecting paged list ({ apiResourceName: [...] }),
-    List dataItems = raw?[resourceName]?.toList() ?? [];
-
-    return dataItems.map((item) {
-      return fromApiJson(item, serializer: CustomSerializer());
-    }).toList();
-  }
+  String get resourcePath => resourceName;
 
   @override
   UserFormPermission fromApiJson(Map<String, dynamic> data,

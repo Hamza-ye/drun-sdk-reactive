@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:d_sdk/core/logging/new_app_logging.dart';
-import 'package:d_sdk/core/sync/sync_summary.dart';
+import 'package:d_sdk/core/sync/sync_summary_model.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/datasource/datasource.dart';
@@ -19,10 +19,11 @@ class DataInstanceDatasource
       {required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.dataInstances);
 
-  String get pathPostfix => '/objects${super.pathPostfix}';
-
   @override
   String get resourceName => 'dataSubmission';
+
+  @override
+  String get resourcePath => '$resourceName/objects?paged=false';
 
   @override
   DataInstance fromApiJson(Map<String, dynamic> data,
@@ -48,8 +49,8 @@ class DataInstanceDatasource
 
   Future<List<DataInstance>> upload(List<String> uids) async {
     List<DataInstance> submissions = await db.managers.dataInstances
-        .filter((f) => f.syncState
-            .isIn([InstanceSyncStatus.finalized, InstanceSyncStatus.syncFailed]))
+        .filter((f) => f.syncState.isIn(
+            [InstanceSyncStatus.finalized, InstanceSyncStatus.syncFailed]))
         .get();
 
     List<String> syncableEntityIds = [];
@@ -80,7 +81,7 @@ class DataInstanceDatasource
     final response = await apiClient.request(
         resourceName: resource, data: uploadPayload, method: 'post');
 
-    SyncSummary summary = SyncSummary.fromJson(response.data);
+    SyncSummaryModel summary = SyncSummaryModel.fromJson(response.data);
     logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});
 
     final List<DataInstance> queue = [];

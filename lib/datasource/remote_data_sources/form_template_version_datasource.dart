@@ -1,11 +1,9 @@
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
-import 'package:injectable/injectable.dart';
 
-@Order(DSOrder.formTemplateVersion)
-@Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+// @Order(DSOrder.formTemplateVersion)
+// @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class FormTemplateVersionDatasource
     extends BaseDataSource<$FormTemplateVersionsTable, FormTemplateVersion>
     implements MetaDataSource<FormTemplateVersion> {
@@ -15,22 +13,6 @@ class FormTemplateVersionDatasource
 
   @override
   String get resourceName => 'formTemplateVersions';
-
-  // Future<List<FormTemplateVersion>> syncWithRemote(
-  //     {SyncConfig? options, ProgressCallback? progressCallback}) async {
-  //   final List<FormTemplateVersion> remoteData = await getOnline();
-  //
-  //   progressCallback?.call(60);
-  //   if (remoteData.isNotEmpty) {
-  //     db.transaction(() async {
-  //       await db.batch((b) {
-  //         b.insertAllOnConflictUpdate(table, remoteData);
-  //       });
-  //     });
-  //   }
-  //   progressCallback?.call(100);
-  //   return remoteData;
-  // }
 
   @override
   FormTemplateVersion fromApiJson(Map<String, dynamic> data,

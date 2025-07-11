@@ -1,8 +1,6 @@
-import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/database.dart';
-import 'package:d_sdk/database/shared/assignment_status.dart';
-import 'package:d_sdk/database/shared/submission_status.dart';
+import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/datasource/datasource.dart';
 import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
@@ -16,58 +14,74 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
       : super(dbManager: dbManager, table: dbManager.db.assignments);
 
   @override
-  String get resourceName => 'assignments/forms';
+  String get resourceName => 'assignments';
 
-  Future<List<Assignment>> syncWithRemote(
-      {SyncConfig? options, ProgressCallback? progressCallback}) async {
-    final resourcePath = '$resourceName$pathPostfix';
+  /// Fetch the secondary “forms” and wrap them into CompanionInsert
+  @override
+  Future<List<CompanionInsert>> extractExtraEntities(
+      List<Map<String, dynamic>> raw) async {
+    // first let the base hook map your Assignment list, but you still need
+    // all AssignmentForms—pull them here:
+    final List<AssignmentForm> forms = await _getExtraAssignmentForms();
+    return forms.map((f) => CompanionInsert(db.assignmentForms, f)).toList();
+  }
+
+  @override
+  Assignment mapRemoteItem(Map<String, dynamic> data) {
+    final bool disabled = data['disabled'] == true;
+
+    final activity = data['activity']['uid'] as String;
+    final orgUnit = data['orgUnit']['uid'] as String;
+    final team = data['team']['uid'] as String;
+
+    final base = super.mapRemoteItem({
+      ...data,
+      'activity': activity,
+      'orgUnit': orgUnit,
+      'team': team,
+      'status': data['status'] ?? AssignmentStatus.PLANNED.name,
+      'syncState': InstanceSyncStatus.synced.name,
+      'disabled': disabled
+    });
+
+    return base;
+  }
+
+  @override
+  Future<void> disableStale(List<Object> liveIds) async {
+    await (db.update(table)
+          ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
+        .write(RawValuesInsertable({
+      'disabled': Variable<bool>(true),
+    }));
+  }
+
+  @override
+  Assignment fromApiJson(
+    Map<String, dynamic> data, {
+    ValueSerializer? serializer,
+  }) {
+    return Assignment.fromJson(data, serializer: serializer);
+  }
+
+  Future<List<AssignmentForm>> _getExtraAssignmentForms() async {
+    final extraResourceName = 'assignments/forms';
+
+    final versionResourcePath = '$extraResourceName?paged=false';
     final response =
-        await apiClient.request(resourceName: resourcePath, method: 'get');
+        await apiClient.request(resourceName: versionResourcePath, method: 'get');
 
     final raw = response.data;
 
     /// expecting paged list ({ apiResourceName: [...] }),
     List dataItems = raw?['assignments']?.toList() ?? [];
 
-    final assignmentModels = dataItems
-        .map((item) =>
-            _AssignmentWithAccess.fromJson(item))
-        .toList();
-
-    final assignments = assignmentModels
-        .map((t) => Assignment(
-            id: t.assignment,
-            activity: t.activity,
-            team: t.team,
-            orgUnit: t.orgUnit,
-            syncState: InstanceSyncStatus.synced))
-        .toList();
+    final assignmentModels =
+        dataItems.map((item) => _AssignmentWithAccess.fromJson(item)).toList();
 
     final assignmentForms =
         assignmentModels.expand((t) => t.accessibleForms).toList();
-
-    progressCallback?.call(60);
-
-    if (assignments.isNotEmpty) {
-      db.transaction(() async {
-        await db.batch((b) {
-          b.insertAllOnConflictUpdate(table, assignments);
-        });
-        if (assignmentForms.isNotEmpty) {
-          await db.batch((b) {
-            b.insertAllOnConflictUpdate(db.assignmentForms, assignmentForms);
-          });
-        }
-      });
-    }
-    progressCallback?.call(100);
-    return assignments;
-  }
-
-  @override
-  Assignment fromApiJson(Map<String, dynamic> data,
-      {ValueSerializer? serializer}) {
-    return Assignment.fromJson(data, serializer: serializer);
+    return assignmentForms;
   }
 }
 
@@ -76,7 +90,7 @@ class _AssignmentWithAccess {
   final String activity;
   final String team;
   final String orgUnit;
-  // final String? assignmentType;
+
   final AssignmentStatus progressStatus;
   final List<AssignmentForm> accessibleForms;
 
@@ -86,7 +100,6 @@ class _AssignmentWithAccess {
       required this.team,
       required this.orgUnit,
       required this.progressStatus,
-      // this.assignmentType,
       required this.accessibleForms});
 
   factory _AssignmentWithAccess.fromJson(Map<String, dynamic> map) {
@@ -110,7 +123,6 @@ class _AssignmentWithAccess {
       team: map['team'] as String,
       orgUnit: map['orgUnit'] as String,
       progressStatus: progressStatus,
-      // assignmentType: map['assignmentType']?['uid'],
       accessibleForms: accessibleForms,
     );
   }

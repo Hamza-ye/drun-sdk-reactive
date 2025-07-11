@@ -8,13 +8,20 @@ import 'package:injectable/injectable.dart';
 @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
     implements MetaDataSource<Activity> {
-  ActivityDatasource(
-      {required super.apiClient,
-      required DbManager dbManager})
+  ActivityDatasource({required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.activities);
 
   @override
   String get resourceName => 'activities';
+
+  @override
+  Future<void> disableStale(List<Object> liveIds) async {
+    await (db.update(table)
+      ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
+        .write(RawValuesInsertable({
+      'disabled': Variable<bool>(true),
+    }));
+  }
 
   @override
   Activity fromApiJson(Map<String, dynamic> data,

@@ -31,8 +31,8 @@ class AuthAuthenticatedState extends AuthState {
 
   const AuthAuthenticatedState(this.session) : super._();
 
-@override
-List<Object> get props => [session];
+  @override
+  List<Object> get props => [session];
 }
 
 class AuthErrorState extends AuthState {

@@ -21,8 +21,7 @@ class DataInstances extends Table with BaseTableMixin {
 
   /// analogous to enrollment
   @ReferenceName("assignmentDataInstances")
-  TextColumn get assignment =>
-      text().references(Assignments, #id).nullable()();
+  TextColumn get assignment => text().references(Assignments, #id).nullable()();
 
   /// who
   @ReferenceName("teamDataInstances")
@@ -52,7 +51,6 @@ class DataInstances extends Table with BaseTableMixin {
 
   /// is already synced to server
   BoolColumn get isToUpdate => boolean()();
-
 
 //</editor-fold>
 }

@@ -1,5 +1,3 @@
-
-
 // @Injectable(scope: SessionContext.activeSessionScope)
 class LogoutHandlerFactory {
   // LogoutHandlerFactory({

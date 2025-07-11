@@ -42,24 +42,30 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
   Selectable<ActivityModel> selectActivities({
     List<String> ids = const [],
     String ouSearchFilter = '',
+    // bool includeDisabled = false,
     int page = 1,
     int pageSize = 20,
   }) {
     final offset = (page - 1) * pageSize;
 
     final act = alias(activities, 'act');
-    final a = alias(db.assignments, 'a');
-    final mt = alias(db.managedTeams, 't');
-    final t = alias(db.teams, 't');
+    // final a = alias(db.assignments, 'a');
+    // final mt = alias(db.managedTeams, 't');
+    // final t = alias(db.teams, 't');
 
-    final assignedAssignmentsCount = a.activity.equalsExp(act.id).count();
+    final assignedAssignmentsCount =
+        db.assignments.activity.equalsExp(act.id).count();
 
     final JoinedSelectStatement<HasResultSet, dynamic> query =
         select(act).addColumns([assignedAssignmentsCount]).join([
-      innerJoin(a, a.activity.equalsExp(act.id), useColumns: false),
-      innerJoin(mt, mt.activity.equalsExp(act.id), useColumns: false),
-      innerJoin(t, t.activity.equalsExp(t.activity), useColumns: false),
+      // innerJoin(a, a.activity.equalsExp(act.id), useColumns: false),
+      // innerJoin(mt, mt.activity.equalsExp(act.id), useColumns: false),
+      // innerJoin(t, t.activity.equalsExp(t.activity), useColumns: false),
     ]);
+
+    // if (!includeDisabled) {
+      query.where(act.disabled.isNotValue(true));
+    // }
 
     if (ids.isNotEmpty) {
       query.where(act.id.isIn(ids));

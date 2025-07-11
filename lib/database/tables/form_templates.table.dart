@@ -21,4 +21,6 @@ class FormTemplates extends Table {
 
   @override
   Set<Column<Object>> get primaryKey => {id};
+
+  BoolColumn get disabled => boolean().nullable()();
 }

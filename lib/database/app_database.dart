@@ -28,7 +28,8 @@ part 'app_database.g.dart';
   DataOptions,
   DataInstances,
   FormTemplateVersions,
-  UserFormPermissions
+  UserFormPermissions,
+  SyncSummaries
 ], daos: [
   ActivitiesDao,
   AssignmentsDao,
@@ -43,6 +44,7 @@ part 'app_database.g.dart';
   RepeatInstancesDao,
   TeamsDao,
   UsersDao,
+  SyncSummariesDao
 ])
 class AppDatabase extends _$AppDatabase {
   // AppDatabase(super.e, {String? databaseName});

@@ -1,4 +1,3 @@
-
 // @JsonEnum(fieldRename: FieldRename.none)
 enum FormPermission {
   /**

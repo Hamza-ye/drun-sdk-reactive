@@ -6,5 +6,5 @@ class Projects extends Table with BaseTableMixin, IdentifiableMixin {
 
   TextColumn get code => text().nullable()();
 
-  BoolColumn get disabled => boolean().clientDefault(() => false)();
+  BoolColumn get disabled => boolean().nullable()();
 }

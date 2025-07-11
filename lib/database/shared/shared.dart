@@ -1,4 +1,4 @@
-//GENERATED BARREL FILE 
+//GENERATED BARREL FILE
 export 'activity_model.dart';
 export 'allowed_action.dart';
 export 'assignment_model.dart';
@@ -24,4 +24,3 @@ export 'translations.dart';
 export 'user_form_access.dart';
 export 'validation_strategy.dart';
 export 'value_type.dart';
-

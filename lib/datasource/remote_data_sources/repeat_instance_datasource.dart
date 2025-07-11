@@ -9,8 +9,7 @@ class RepeatInstanceDatasource
     extends BaseDataSource<$RepeatInstancesTable, RepeatInstance>
     implements MetaDataSource<RepeatInstance> {
   RepeatInstanceDatasource(
-      {required super.apiClient,
-      required DbManager dbManager})
+      {required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.repeatInstances);
 
   @override

@@ -1,4 +1,4 @@
-import 'package:d_sdk/database/converters/custom_serializer.dart';
+import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
 import 'package:d_sdk/user_session/session_context.dart';
@@ -16,23 +16,14 @@ class UserDatasource extends BaseDataSource<$UsersTable, User>
   String get resourceName => 'myDetails';
 
   @override
-  Future<List<User>> getOnline() async {
+  Future<List<Map<String, dynamic>>> getOnlineRaw({
+    SyncConfig? options,
+  }) async {
     final response =
         await apiClient.request(resourceName: resourceName, method: 'get');
 
-    final raw = response.data;
-
-    List dataItems = raw != null ? [raw] : [];
-
-    return dataItems.map((item) {
-      item['dirty'] = false;
-      item['synced'] = true;
-
-      return fromApiJson({
-        ...item,
-        'id': item['uid']!,
-      }, serializer: CustomSerializer());
-    }).toList();
+    final raw = response.data != null ? [response.data] : [];
+    return raw.cast<Map<String, dynamic>>();
   }
 
   @override

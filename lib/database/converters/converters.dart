@@ -1,4 +1,4 @@
-//GENERATED BARREL FILE 
+//GENERATED BARREL FILE
 export 'allocated_resources.converter.dart';
 export 'custom_serializer.dart';
 export 'form_option_list.converter.dart';
@@ -13,4 +13,3 @@ export 'team_form_permission.converter.dart';
 export 'team_users.converter.dart';
 export 'template_list.converter.dart';
 export 'translation.converter.dart';
-

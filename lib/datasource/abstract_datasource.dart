@@ -12,10 +12,16 @@ abstract class AbstractDatasource<D> {
 
   String get resourceName;
 
-  String get pathPostfix => '?paged=false';
+  String get resourcePath => '$resourceName?paged=false';
 
   @protected
-  Future<List<D>> getOnline();
+  D mapRemoteItem(Map<String, dynamic> json);
+
+  @protected
+  dynamic extractId(Map<String, dynamic> json) => json['uid'];
+
+  @protected
+  Future<List<Map<String, dynamic>>> getOnlineRaw({SyncConfig? options});
 
   D fromApiJson(Map<String, dynamic> data, {ValueSerializer? serializer});
 }

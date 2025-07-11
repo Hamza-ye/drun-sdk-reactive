@@ -8,9 +8,7 @@ import 'package:injectable/injectable.dart';
 @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class ProjectDatasource extends BaseDataSource<$ProjectsTable, Project>
     implements MetaDataSource<Project> {
-  ProjectDatasource(
-      {required super.apiClient,
-      required DbManager dbManager})
+  ProjectDatasource({required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.projects);
 
   @override

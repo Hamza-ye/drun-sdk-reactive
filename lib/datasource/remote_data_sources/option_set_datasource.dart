@@ -1,4 +1,3 @@
-import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/core/utilities/list_extensions.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
 import 'package:d_sdk/database/database.dart';
@@ -18,59 +17,86 @@ class OptionSetDatasource
   @override
   String get resourceName => 'optionSets';
 
+  /// pull out Options companions
   @override
-  Future<List<DataOptionSet>> syncWithRemote(
-      {SyncConfig? options, ProgressCallback? progressCallback}) async {
-    final resourcePath = '$resourceName$pathPostfix';
-    final response =
-        await apiClient.request(resourceName: resourcePath, method: 'get');
+  Future<List<CompanionInsert>> extractExtraEntities(
+      List<Map<String, dynamic>> raw) async {
+    final inserts = <CompanionInsert>[];
 
-    final raw = response.data;
+    for (final item in raw) {
+      final extraItemsJson = item['options'] as List? ?? [];
+      if (!extraItemsJson.isNullOrEmpty) {
+        final extraItems = extraItemsJson.asMap().entries.map((t) {
+          final json = {
+            ...t.value as Map<String, dynamic>,
+            'optionSet': item['uid']!,
+            'order': t.key + 1,
+          };
+          return DataOption.fromJson(json, serializer: CustomSerializer());
+        });
 
-    /// expecting paged list ({ apiResourceName: [...] }),
-    List dataItems = raw?[resourceName]?.toList() ?? [];
-
-    List<DataOption> options = [];
-    for (final item in dataItems) {
-      final optionsJson = item['options'] as List?;
-      if (!options.isNullOrEmpty) {
-        options.addAll(optionsJson!
-            .asMap()
-            .entries
-            .map<DataOption>((t) => DataOption.fromJson(
-                {...t.value, 'optionSet': item['uid']!, 'order': t.key + 1}))
-            .toList());
+        for (var m in extraItems) {
+          inserts.add(CompanionInsert(db.managedTeams, m));
+        }
       }
     }
-
-    final optionSets = dataItems.map((item) {
-      return fromApiJson({
-        ...item,
-        'id': item['uid']!,
-        'translations': (item['translations'] as List?) ?? [],
-      }, serializer: CustomSerializer());
-    }).toList();
-
-    progressCallback?.call(60);
-
-    if (optionSets.isNotEmpty) {
-      db.transaction(() async {
-        await db.batch((b) {
-          b.insertAllOnConflictUpdate(table, optionSets);
-        });
-        if (options.isNotEmpty) {
-          await db.batch((b) {
-            b.insertAllOnConflictUpdate(db.managedTeams, options);
-          });
-        }
-      });
-    }
-    progressCallback?.call(100);
-    return optionSets;
+    return inserts;
   }
+
 
   @override
   DataOptionSet fromApiJson(Map<String, dynamic> data,
           {ValueSerializer? serializer}) =>
       DataOptionSet.fromJson(data, serializer: serializer);
+
+// @override
+// Future<List<DataOptionSet>> syncWithRemote(
+//     {SyncConfig? options, ProgressCallback? progressCallback}) async {
+//   final resourcePath = '$resourceName$pathPostfix';
+//   final response =
+//       await apiClient.request(resourceName: resourcePath, method: 'get');
+//
+//   final raw = response.data;
+//
+//   /// expecting paged list ({ apiResourceName: [...] }),
+//   List dataItems = raw?[resourceName]?.toList() ?? [];
+//
+//   List<DataOption> options = [];
+//   for (final item in dataItems) {
+//     final optionsJson = item['options'] as List?;
+//     if (!options.isNullOrEmpty) {
+//       options.addAll(optionsJson!
+//           .asMap()
+//           .entries
+//           .map<DataOption>((t) => DataOption.fromJson(
+//               {...t.value, 'optionSet': item['uid']!, 'order': t.key + 1}))
+//           .toList());
+//     }
+//   }
+//
+//   final optionSets = dataItems.map((item) {
+//     return fromApiJson({
+//       ...item,
+//       'id': item['uid']!,
+//       'translations': (item['translations'] as List?) ?? [],
+//     }, serializer: CustomSerializer());
+//   }).toList();
+//
+//   progressCallback?.call(60);
+//
+//   if (optionSets.isNotEmpty) {
+//     db.transaction(() async {
+//       await db.batch((b) {
+//         b.insertAllOnConflictUpdate(table, optionSets);
+//       });
+//       if (options.isNotEmpty) {
+//         await db.batch((b) {
+//           b.insertAllOnConflictUpdate(db.managedTeams, options);
+//         });
+//       }
+//     });
+//   }
+//   progressCallback?.call(100);
+//   return optionSets;
+// }
 }

@@ -1,9 +1,6 @@
-import 'package:d_sdk/core/exception/sync_exceptions.dart';
-import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/datasource/remote_data_sources/form_template_version_datasource.dart';
 import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
@@ -14,66 +11,35 @@ class DataFormTemplateDatasource
     extends BaseDataSource<$FormTemplatesTable, FormTemplate>
     implements MetaDataSource<FormTemplate> {
   DataFormTemplateDatasource(
-      {required super.apiClient,
-      required DbManager dbManager,
-      required this.versionDatasource})
+      {required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.formTemplates);
-
-  final FormTemplateVersionDatasource versionDatasource;
 
   @override
   String get resourceName => 'formTemplates';
 
-  Future<List<FormTemplate>> syncWithRemote(
-      {SyncConfig? options, ProgressCallback? progressCallback}) async {
-    // fetch templates
-    final remoteData = await getOnline();
+  /// fetch versions async and emit as CompanionInsert
+  @override
+  Future<List<CompanionInsert>> extractExtraEntities(
+      List<Map<String, dynamic>> raw) async {
+    final items = await _getFormVersions();
+    return items
+        .map((v) => CompanionInsert(db.formTemplateVersions, v))
+        .toList();
+  }
 
-    // fetch versions
-    final List<FormTemplateVersion> formVersions = await _getFormVersions();
-    final versionsFormUIDs = formVersions.map((v) => v.template);
-
-    final Map<String, List<FormTemplateVersion>> templateVersionMap = {};
-    final Map<String, FormTemplate> templateMap = {
-      for (var template in remoteData) template.id: template
-    };
-
-    for (var templateVersion in formVersions) {
-      templateVersionMap
-          .putIfAbsent(templateVersion.template, () => [])
-          .add(templateVersion);
-    }
-
-    final formTemplatesWithoutVersion =
-        remoteData.where((template) => !versionsFormUIDs.contains(template.id));
-    if (formTemplatesWithoutVersion.isNotEmpty) {
-      throw DSyncException(
-          message:
-              'could not fetch versions for templates: $formTemplatesWithoutVersion');
-    }
-
-    progressCallback?.call(60);
-
-    if (remoteData.isNotEmpty && formVersions.isNotEmpty) {
-      db.transaction(() async {
-        await db.batch((b) {
-          b.insertAllOnConflictUpdate(table, remoteData);
-        });
-
-        await db.batch((b) {
-          b.insertAllOnConflictUpdate(db.formTemplateVersions, formVersions);
-        });
-      });
-    }
-
-    progressCallback?.call(100);
-    return remoteData;
+  @override
+  FormTemplate mapRemoteItem(Map<String, dynamic> json) {
+    final base = super.mapRemoteItem(json);
+    final bool disabled = json['disabled'] == true;
+    return base.copyWith(
+      disabled: Value(disabled),
+    );
   }
 
   Future<List<FormTemplateVersion>> _getFormVersions() async {
     final formVersionResourceName = 'formTemplateVersions';
 
-    final resourcePath = '$formVersionResourceName$pathPostfix';
+    final resourcePath = '$formVersionResourceName?paged=false';
     final response =
         await apiClient.request(resourceName: resourcePath, method: 'get');
 
@@ -91,8 +57,21 @@ class DataFormTemplateDatasource
   }
 
   @override
+  Future<void> disableStale(List<Object> liveIds) async {
+    await (db.update(table)
+          ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
+        .write(RawValuesInsertable({
+      'disabled': Variable<bool>(true),
+    }));
+  }
+
+  @override
   FormTemplate fromApiJson(Map<String, dynamic> data,
       {ValueSerializer? serializer}) {
-    return FormTemplate.fromJson(data, serializer: serializer);
+    final bool disabled = data['disabled'] == true;
+    return FormTemplate.fromJson({
+      ...data,
+      'disabled': disabled,
+    }, serializer: serializer);
   }
 }

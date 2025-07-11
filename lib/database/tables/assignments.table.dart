@@ -24,4 +24,6 @@ class Assignments extends Table with BaseTableMixin {
   DateTimeColumn get completedDate => dateTime().nullable()();
 
   DateTimeColumn get updatedAtClient => dateTime().nullable()();
+
+  BoolColumn get disabled => boolean().nullable()();
 }

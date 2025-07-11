@@ -17,8 +17,7 @@ class DataOptionSetsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<List<DataOptionSet>> getByIds(List<String> ids) {
-    return (select(dataOptionSets)..where((tbl) => tbl.id.isIn(ids)))
-        .get();
+    return (select(dataOptionSets)..where((tbl) => tbl.id.isIn(ids))).get();
   }
 
   Future<int> insertItem(Insertable<DataOptionSet> entry) {

@@ -10,8 +10,7 @@ class MetadataSubmissionDatasource
     extends BaseDataSource<$MetadataSubmissionsTable, MetadataSubmission>
     implements MetaDataSource<MetadataSubmission> {
   MetadataSubmissionDatasource(
-      {required super.apiClient,
-      required DbManager dbManager})
+      {required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.metadataSubmissions);
 
   @override

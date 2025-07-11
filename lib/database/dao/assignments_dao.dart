@@ -37,6 +37,58 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
     return deleteById(assignment.id);
   }
 
+  Future<List<AssignmentModel>> allAssignments(
+      {String? activityId, String ouSearchFilter = ''}) async {
+    var assignmentWithRefs = db.managers.assignments;
+    // .filter((f) => f.disabled.not(true));
+
+    if (activityId != null) {
+      assignmentWithRefs = assignmentWithRefs
+        ..filter((f) => f.activity.id(activityId));
+    }
+
+    if (ouSearchFilter.isNotEmpty) {
+      assignmentWithRefs = assignmentWithRefs..filter((f) => f.orgUnit.name.contains(ouSearchFilter));
+    }
+
+    final result = assignmentWithRefs
+        .withReferences((prefetch) =>
+            prefetch(forms: true, team: true, activity: true, orgUnit: true))
+        .orderBy((o) => o.instanceDate.asc(nulls: NullsOrder.last))
+        .map((assignmentsWithRefs) {
+      final a = assignmentsWithRefs.$1;
+      final forms = assignmentsWithRefs.$2.forms.prefetchedData?.length ?? 0;
+      final activity =
+          assignmentsWithRefs.$2.activity.prefetchedData!.firstOrNull;
+      final ou = assignmentsWithRefs.$2.orgUnit.prefetchedData!.firstOrNull;
+      final team = assignmentsWithRefs.$2.team.prefetchedData!.firstOrNull;
+      return AssignmentModel(
+          id: a.id,
+          activity: activity != null
+              ? IdentifiableModel(
+                  id: activity.id, code: activity.code, name: activity.name)
+              : null,
+          orgUnit: IdentifiableModel(
+            id: ou!.id,
+            code: ou.code,
+            name: ou.name,
+          ),
+          team: IdentifiableModel(
+            id: team!.id,
+            code: team.code,
+            name: team.code ?? '',
+          ),
+          // startDay: a.startDay,
+          startDate: a.instanceDate,
+          dueDate: null,
+          formCount: forms
+          // status: a.assignmentStatus ?? AssignmentStatus.PLANNED,
+          );
+    }).get();
+
+    return result;
+  }
+
   Selectable<AssignmentModel> selectAssignments({
     String? activityId,
     String ouSearchFilter = '',
@@ -45,17 +97,18 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
   }) {
     final offset = (page - 1) * pageSize;
 
+    final a = alias(assignments, 'a');
     final ous = alias(orgUnits, 'ou');
     final act = alias(activities, 'act');
-    final forms = alias(db.assignmentForms, 'f');
-    final formsCount = forms.assignment.equalsExp(assignments.id).count();
+    final f = alias(db.assignmentForms, 'f');
+    final formsCount = db.assignmentForms.assignment.equalsExp(a.id).count();
     // Base join query
     final JoinedSelectStatement<HasResultSet, dynamic> query =
-        select(assignments).addColumns([formsCount]).join([
-      innerJoin(teams, teams.id.equalsExp(assignments.team)),
-      innerJoin(act, act.id.equalsExp(assignments.activity)),
-      innerJoin(ous, ous.id.equalsExp(assignments.orgUnit)),
-      innerJoin(forms, forms.assignment.equalsExp(assignments.id)),
+        select(a).addColumns([formsCount]).join([
+      innerJoin(teams, teams.id.equalsExp(a.team)),
+      innerJoin(act, act.id.equalsExp(a.activity)),
+      innerJoin(ous, ous.id.equalsExp(a.orgUnit)),
+      // innerJoin(forms, forms.assignment.equalsExp(a.id)),
     ]);
 
     // Apply activity filter if provided

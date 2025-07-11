@@ -1,4 +1,3 @@
-
 import 'network_request_body.dart';
 
 enum NetworkRequestType { GET, POST, PUT, PATCH, DELETE }

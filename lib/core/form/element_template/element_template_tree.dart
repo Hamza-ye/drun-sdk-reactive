@@ -55,7 +55,7 @@ List<ElementTemplate> buildTree({
   for (var s in sections) {
     lookup[s['id']] = SectionElementTemplate(
       id: s['id'],
-      parentId: s['parent'],      // might be null
+      parentId: s['parent'], // might be null
       order: s['order'],
       name: s['name'],
       path: s['path'],
@@ -65,7 +65,7 @@ List<ElementTemplate> buildTree({
   for (var f in fields) {
     lookup[f['id']] = FieldElementTemplate(
       id: f['id'],
-      parentId: f['parent'],      // might be null
+      parentId: f['parent'], // might be null
       order: f['order'],
       name: f['name'],
       path: f['path'],
@@ -91,6 +91,7 @@ List<ElementTemplate> buildTree({
       if (n.children.isNotEmpty) sortRecursively(n.children);
     }
   }
+
   sortRecursively(roots);
 
   return roots;

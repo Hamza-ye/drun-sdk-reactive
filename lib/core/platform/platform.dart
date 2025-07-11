@@ -10,7 +10,6 @@ class Platform {
   /// ```dart
   /// final database = MyDatabase(Platform.createDatabaseConnection('sample'));
   /// ```
-  static QueryExecutor createDatabaseConnection(
-          String databaseName) =>
+  static QueryExecutor createDatabaseConnection(String databaseName) =>
       PlatformInterface.createDatabaseConnection(databaseName);
 }

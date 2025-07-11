@@ -7,9 +7,7 @@ import 'package:drift/drift.dart';
 // @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
     implements MetaDataSource<DataOption> {
-  OptionDatasource(
-      {required super.apiClient,
-      required DbManager dbManager})
+  OptionDatasource({required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.dataOptions);
 
   @override

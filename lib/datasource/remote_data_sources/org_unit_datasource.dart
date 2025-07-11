@@ -8,9 +8,7 @@ import 'package:injectable/injectable.dart';
 @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class OrgUnitDatasource extends BaseDataSource<$OrgUnitsTable, OrgUnit>
     implements MetaDataSource<OrgUnit> {
-  OrgUnitDatasource(
-      {required super.apiClient,
-      required DbManager dbManager})
+  OrgUnitDatasource({required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.orgUnits);
 
   @override

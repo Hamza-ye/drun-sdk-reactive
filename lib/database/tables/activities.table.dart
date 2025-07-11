@@ -9,7 +9,7 @@ class Activities extends Table with BaseTableMixin, IdentifiableMixin {
 
   TextColumn get project => text().references(Projects, #id)();
 
-  BoolColumn get disabled => boolean().clientDefault(() => false)();
+  BoolColumn get disabled => boolean().nullable()();
 
   DateTimeColumn get startDate => dateTime().nullable()();
 

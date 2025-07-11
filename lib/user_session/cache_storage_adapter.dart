@@ -1,4 +1,3 @@
-
 abstract class CacheStorageAdapter {
   Future<dynamic> fetch(String key);
 

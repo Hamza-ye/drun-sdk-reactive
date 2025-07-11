@@ -1,4 +1,4 @@
-//GENERATED BARREL FILE 
+//GENERATED BARREL FILE
 export 'activities.table.dart';
 export 'assignment_forms.table.dart';
 export 'assignments.table.dart';
@@ -17,6 +17,7 @@ export 'org_units.table.dart';
 export 'ou_levels.table.dart';
 export 'projects.table.dart';
 export 'repeat_instances.table.dart';
+export 'sync_summaries.dart';
 export 'teams.table.dart';
 export 'user_form_permissions.dart';
 export 'users.table.dart';

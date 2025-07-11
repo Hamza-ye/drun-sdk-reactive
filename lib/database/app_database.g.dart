@@ -2133,12 +2133,11 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       const VerificationMeta('disabled');
   @override
   late final GeneratedColumn<bool> disabled = GeneratedColumn<bool>(
-      'disabled', aliasedName, false,
+      'disabled', aliasedName, true,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("disabled" IN (0, 1))'),
-      clientDefault: () => false);
+          GeneratedColumn.constraintIsAlways('CHECK ("disabled" IN (0, 1))'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2225,7 +2224,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code']),
       disabled: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}disabled'])!,
+          .read(DriftSqlType.bool, data['${effectivePrefix}disabled']),
     );
   }
 
@@ -2249,7 +2248,7 @@ class Project extends DataClass implements Insertable<Project> {
   final List<Translation> translations;
   final String name;
   final String? code;
-  final bool disabled;
+  final bool? disabled;
   const Project(
       {required this.id,
       this.lastModifiedDate,
@@ -2259,7 +2258,7 @@ class Project extends DataClass implements Insertable<Project> {
       required this.translations,
       required this.name,
       this.code,
-      required this.disabled});
+      this.disabled});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2285,7 +2284,9 @@ class Project extends DataClass implements Insertable<Project> {
     if (!nullToAbsent || code != null) {
       map['code'] = Variable<String>(code);
     }
-    map['disabled'] = Variable<bool>(disabled);
+    if (!nullToAbsent || disabled != null) {
+      map['disabled'] = Variable<bool>(disabled);
+    }
     return map;
   }
 
@@ -2306,7 +2307,9 @@ class Project extends DataClass implements Insertable<Project> {
       translations: Value(translations),
       name: Value(name),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
-      disabled: Value(disabled),
+      disabled: disabled == null && nullToAbsent
+          ? const Value.absent()
+          : Value(disabled),
     );
   }
 
@@ -2324,7 +2327,7 @@ class Project extends DataClass implements Insertable<Project> {
           serializer.fromJson<List<Translation>>(json['translations']),
       name: serializer.fromJson<String>(json['name']),
       code: serializer.fromJson<String?>(json['code']),
-      disabled: serializer.fromJson<bool>(json['disabled']),
+      disabled: serializer.fromJson<bool?>(json['disabled']),
     );
   }
   @override
@@ -2339,7 +2342,7 @@ class Project extends DataClass implements Insertable<Project> {
       'translations': serializer.toJson<List<Translation>>(translations),
       'name': serializer.toJson<String>(name),
       'code': serializer.toJson<String?>(code),
-      'disabled': serializer.toJson<bool>(disabled),
+      'disabled': serializer.toJson<bool?>(disabled),
     };
   }
 
@@ -2352,7 +2355,7 @@ class Project extends DataClass implements Insertable<Project> {
           List<Translation>? translations,
           String? name,
           Value<String?> code = const Value.absent(),
-          bool? disabled}) =>
+          Value<bool?> disabled = const Value.absent()}) =>
       Project(
         id: id ?? this.id,
         lastModifiedDate: lastModifiedDate.present
@@ -2364,7 +2367,7 @@ class Project extends DataClass implements Insertable<Project> {
         translations: translations ?? this.translations,
         name: name ?? this.name,
         code: code.present ? code.value : this.code,
-        disabled: disabled ?? this.disabled,
+        disabled: disabled.present ? disabled.value : this.disabled,
       );
   Project copyWithCompanion(ProjectsCompanion data) {
     return Project(
@@ -2429,7 +2432,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<List<Translation>> translations;
   final Value<String> name;
   final Value<String?> code;
-  final Value<bool> disabled;
+  final Value<bool?> disabled;
   final Value<int> rowid;
   const ProjectsCompanion({
     this.id = const Value.absent(),
@@ -2491,7 +2494,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       Value<List<Translation>>? translations,
       Value<String>? name,
       Value<String?>? code,
-      Value<bool>? disabled,
+      Value<bool?>? disabled,
       Value<int>? rowid}) {
     return ProjectsCompanion(
       id: id ?? this.id,
@@ -2635,12 +2638,11 @@ class $ActivitiesTable extends Activities
       const VerificationMeta('disabled');
   @override
   late final GeneratedColumn<bool> disabled = GeneratedColumn<bool>(
-      'disabled', aliasedName, false,
+      'disabled', aliasedName, true,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("disabled" IN (0, 1))'),
-      clientDefault: () => false);
+          GeneratedColumn.constraintIsAlways('CHECK ("disabled" IN (0, 1))'));
   static const VerificationMeta _startDateMeta =
       const VerificationMeta('startDate');
   @override
@@ -2772,7 +2774,7 @@ class $ActivitiesTable extends Activities
       project: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}project'])!,
       disabled: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}disabled'])!,
+          .read(DriftSqlType.bool, data['${effectivePrefix}disabled']),
       startDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}start_date']),
       endDate: attachedDatabase.typeMapping
@@ -2803,7 +2805,7 @@ class Activity extends DataClass implements Insertable<Activity> {
   final String name;
   final String? code;
   final String project;
-  final bool disabled;
+  final bool? disabled;
   final DateTime? startDate;
   final DateTime? endDate;
   final String? description;
@@ -2817,7 +2819,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       required this.name,
       this.code,
       required this.project,
-      required this.disabled,
+      this.disabled,
       this.startDate,
       this.endDate,
       this.description});
@@ -2847,7 +2849,9 @@ class Activity extends DataClass implements Insertable<Activity> {
       map['code'] = Variable<String>(code);
     }
     map['project'] = Variable<String>(project);
-    map['disabled'] = Variable<bool>(disabled);
+    if (!nullToAbsent || disabled != null) {
+      map['disabled'] = Variable<bool>(disabled);
+    }
     if (!nullToAbsent || startDate != null) {
       map['start_date'] = Variable<DateTime>(startDate);
     }
@@ -2878,7 +2882,9 @@ class Activity extends DataClass implements Insertable<Activity> {
       name: Value(name),
       code: code == null && nullToAbsent ? const Value.absent() : Value(code),
       project: Value(project),
-      disabled: Value(disabled),
+      disabled: disabled == null && nullToAbsent
+          ? const Value.absent()
+          : Value(disabled),
       startDate: startDate == null && nullToAbsent
           ? const Value.absent()
           : Value(startDate),
@@ -2906,7 +2912,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       name: serializer.fromJson<String>(json['name']),
       code: serializer.fromJson<String?>(json['code']),
       project: serializer.fromJson<String>(json['project']),
-      disabled: serializer.fromJson<bool>(json['disabled']),
+      disabled: serializer.fromJson<bool?>(json['disabled']),
       startDate: serializer.fromJson<DateTime?>(json['startDate']),
       endDate: serializer.fromJson<DateTime?>(json['endDate']),
       description: serializer.fromJson<String?>(json['description']),
@@ -2925,7 +2931,7 @@ class Activity extends DataClass implements Insertable<Activity> {
       'name': serializer.toJson<String>(name),
       'code': serializer.toJson<String?>(code),
       'project': serializer.toJson<String>(project),
-      'disabled': serializer.toJson<bool>(disabled),
+      'disabled': serializer.toJson<bool?>(disabled),
       'startDate': serializer.toJson<DateTime?>(startDate),
       'endDate': serializer.toJson<DateTime?>(endDate),
       'description': serializer.toJson<String?>(description),
@@ -2942,7 +2948,7 @@ class Activity extends DataClass implements Insertable<Activity> {
           String? name,
           Value<String?> code = const Value.absent(),
           String? project,
-          bool? disabled,
+          Value<bool?> disabled = const Value.absent(),
           Value<DateTime?> startDate = const Value.absent(),
           Value<DateTime?> endDate = const Value.absent(),
           Value<String?> description = const Value.absent()}) =>
@@ -2958,7 +2964,7 @@ class Activity extends DataClass implements Insertable<Activity> {
         name: name ?? this.name,
         code: code.present ? code.value : this.code,
         project: project ?? this.project,
-        disabled: disabled ?? this.disabled,
+        disabled: disabled.present ? disabled.value : this.disabled,
         startDate: startDate.present ? startDate.value : this.startDate,
         endDate: endDate.present ? endDate.value : this.endDate,
         description: description.present ? description.value : this.description,
@@ -3052,7 +3058,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
   final Value<String> name;
   final Value<String?> code;
   final Value<String> project;
-  final Value<bool> disabled;
+  final Value<bool?> disabled;
   final Value<DateTime?> startDate;
   final Value<DateTime?> endDate;
   final Value<String?> description;
@@ -3135,7 +3141,7 @@ class ActivitiesCompanion extends UpdateCompanion<Activity> {
       Value<String>? name,
       Value<String?>? code,
       Value<String>? project,
-      Value<bool>? disabled,
+      Value<bool?>? disabled,
       Value<DateTime?>? startDate,
       Value<DateTime?>? endDate,
       Value<String?>? description,
@@ -4047,6 +4053,15 @@ class $AssignmentsTable extends Assignments
   late final GeneratedColumn<DateTime> updatedAtClient =
       GeneratedColumn<DateTime>('updated_at_client', aliasedName, true,
           type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _disabledMeta =
+      const VerificationMeta('disabled');
+  @override
+  late final GeneratedColumn<bool> disabled = GeneratedColumn<bool>(
+      'disabled', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("disabled" IN (0, 1))'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -4059,7 +4074,8 @@ class $AssignmentsTable extends Assignments
         syncState,
         status,
         completedDate,
-        updatedAtClient
+        updatedAtClient,
+        disabled
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4124,6 +4140,10 @@ class $AssignmentsTable extends Assignments
           updatedAtClient.isAcceptableOrUnknown(
               data['updated_at_client']!, _updatedAtClientMeta));
     }
+    if (data.containsKey('disabled')) {
+      context.handle(_disabledMeta,
+          disabled.isAcceptableOrUnknown(data['disabled']!, _disabledMeta));
+    }
     return context;
   }
 
@@ -4157,6 +4177,8 @@ class $AssignmentsTable extends Assignments
           DriftSqlType.dateTime, data['${effectivePrefix}completed_date']),
       updatedAtClient: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}updated_at_client']),
+      disabled: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}disabled']),
     );
   }
 
@@ -4185,6 +4207,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
   final AssignmentStatus? status;
   final DateTime? completedDate;
   final DateTime? updatedAtClient;
+  final bool? disabled;
   const Assignment(
       {required this.id,
       this.lastModifiedDate,
@@ -4196,7 +4219,8 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       required this.syncState,
       this.status,
       this.completedDate,
-      this.updatedAtClient});
+      this.updatedAtClient,
+      this.disabled});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4227,6 +4251,9 @@ class Assignment extends DataClass implements Insertable<Assignment> {
     if (!nullToAbsent || updatedAtClient != null) {
       map['updated_at_client'] = Variable<DateTime>(updatedAtClient);
     }
+    if (!nullToAbsent || disabled != null) {
+      map['disabled'] = Variable<bool>(disabled);
+    }
     return map;
   }
 
@@ -4254,6 +4281,9 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       updatedAtClient: updatedAtClient == null && nullToAbsent
           ? const Value.absent()
           : Value(updatedAtClient),
+      disabled: disabled == null && nullToAbsent
+          ? const Value.absent()
+          : Value(disabled),
     );
   }
 
@@ -4275,6 +4305,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           .fromJson(serializer.fromJson<String?>(json['status'])),
       completedDate: serializer.fromJson<DateTime?>(json['completedDate']),
       updatedAtClient: serializer.fromJson<DateTime?>(json['updatedAtClient']),
+      disabled: serializer.fromJson<bool?>(json['disabled']),
     );
   }
   @override
@@ -4294,6 +4325,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           .toJson<String?>($AssignmentsTable.$converterstatusn.toJson(status)),
       'completedDate': serializer.toJson<DateTime?>(completedDate),
       'updatedAtClient': serializer.toJson<DateTime?>(updatedAtClient),
+      'disabled': serializer.toJson<bool?>(disabled),
     };
   }
 
@@ -4308,7 +4340,8 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           InstanceSyncStatus? syncState,
           Value<AssignmentStatus?> status = const Value.absent(),
           Value<DateTime?> completedDate = const Value.absent(),
-          Value<DateTime?> updatedAtClient = const Value.absent()}) =>
+          Value<DateTime?> updatedAtClient = const Value.absent(),
+          Value<bool?> disabled = const Value.absent()}) =>
       Assignment(
         id: id ?? this.id,
         lastModifiedDate: lastModifiedDate.present
@@ -4327,6 +4360,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
         updatedAtClient: updatedAtClient.present
             ? updatedAtClient.value
             : this.updatedAtClient,
+        disabled: disabled.present ? disabled.value : this.disabled,
       );
   Assignment copyWithCompanion(AssignmentsCompanion data) {
     return Assignment(
@@ -4350,6 +4384,7 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       updatedAtClient: data.updatedAtClient.present
           ? data.updatedAtClient.value
           : this.updatedAtClient,
+      disabled: data.disabled.present ? data.disabled.value : this.disabled,
     );
   }
 
@@ -4366,7 +4401,8 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           ..write('syncState: $syncState, ')
           ..write('status: $status, ')
           ..write('completedDate: $completedDate, ')
-          ..write('updatedAtClient: $updatedAtClient')
+          ..write('updatedAtClient: $updatedAtClient, ')
+          ..write('disabled: $disabled')
           ..write(')'))
         .toString();
   }
@@ -4383,7 +4419,8 @@ class Assignment extends DataClass implements Insertable<Assignment> {
       syncState,
       status,
       completedDate,
-      updatedAtClient);
+      updatedAtClient,
+      disabled);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4398,7 +4435,8 @@ class Assignment extends DataClass implements Insertable<Assignment> {
           other.syncState == this.syncState &&
           other.status == this.status &&
           other.completedDate == this.completedDate &&
-          other.updatedAtClient == this.updatedAtClient);
+          other.updatedAtClient == this.updatedAtClient &&
+          other.disabled == this.disabled);
 }
 
 class AssignmentsCompanion extends UpdateCompanion<Assignment> {
@@ -4413,6 +4451,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
   final Value<AssignmentStatus?> status;
   final Value<DateTime?> completedDate;
   final Value<DateTime?> updatedAtClient;
+  final Value<bool?> disabled;
   final Value<int> rowid;
   const AssignmentsCompanion({
     this.id = const Value.absent(),
@@ -4426,6 +4465,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     this.status = const Value.absent(),
     this.completedDate = const Value.absent(),
     this.updatedAtClient = const Value.absent(),
+    this.disabled = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AssignmentsCompanion.insert({
@@ -4440,6 +4480,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     this.status = const Value.absent(),
     this.completedDate = const Value.absent(),
     this.updatedAtClient = const Value.absent(),
+    this.disabled = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         activity = Value(activity),
@@ -4458,6 +4499,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     Expression<String>? status,
     Expression<DateTime>? completedDate,
     Expression<DateTime>? updatedAtClient,
+    Expression<bool>? disabled,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4472,6 +4514,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       if (status != null) 'status': status,
       if (completedDate != null) 'completed_date': completedDate,
       if (updatedAtClient != null) 'updated_at_client': updatedAtClient,
+      if (disabled != null) 'disabled': disabled,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4488,6 +4531,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       Value<AssignmentStatus?>? status,
       Value<DateTime?>? completedDate,
       Value<DateTime?>? updatedAtClient,
+      Value<bool?>? disabled,
       Value<int>? rowid}) {
     return AssignmentsCompanion(
       id: id ?? this.id,
@@ -4501,6 +4545,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
       status: status ?? this.status,
       completedDate: completedDate ?? this.completedDate,
       updatedAtClient: updatedAtClient ?? this.updatedAtClient,
+      disabled: disabled ?? this.disabled,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4543,6 +4588,9 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
     if (updatedAtClient.present) {
       map['updated_at_client'] = Variable<DateTime>(updatedAtClient.value);
     }
+    if (disabled.present) {
+      map['disabled'] = Variable<bool>(disabled.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4563,6 +4611,7 @@ class AssignmentsCompanion extends UpdateCompanion<Assignment> {
           ..write('status: $status, ')
           ..write('completedDate: $completedDate, ')
           ..write('updatedAtClient: $updatedAtClient, ')
+          ..write('disabled: $disabled, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4611,9 +4660,18 @@ class $FormTemplatesTable extends FormTemplates
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _disabledMeta =
+      const VerificationMeta('disabled');
+  @override
+  late final GeneratedColumn<bool> disabled = GeneratedColumn<bool>(
+      'disabled', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("disabled" IN (0, 1))'));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, versionUid, versionNumber, name, label, description];
+      [id, versionUid, versionNumber, name, label, description, disabled];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4657,6 +4715,10 @@ class $FormTemplatesTable extends FormTemplates
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
     }
+    if (data.containsKey('disabled')) {
+      context.handle(_disabledMeta,
+          disabled.isAcceptableOrUnknown(data['disabled']!, _disabledMeta));
+    }
     return context;
   }
 
@@ -4679,6 +4741,8 @@ class $FormTemplatesTable extends FormTemplates
           .read(DriftSqlType.string, data['${effectivePrefix}label'])),
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      disabled: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}disabled']),
     );
   }
 
@@ -4702,13 +4766,15 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
   final String name;
   final Map<String, dynamic>? label;
   final String? description;
+  final bool? disabled;
   const FormTemplate(
       {required this.id,
       required this.versionUid,
       required this.versionNumber,
       required this.name,
       this.label,
-      this.description});
+      this.description,
+      this.disabled});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4722,6 +4788,9 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
     }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || disabled != null) {
+      map['disabled'] = Variable<bool>(disabled);
     }
     return map;
   }
@@ -4737,6 +4806,9 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
+      disabled: disabled == null && nullToAbsent
+          ? const Value.absent()
+          : Value(disabled),
     );
   }
 
@@ -4750,6 +4822,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
       name: serializer.fromJson<String>(json['name']),
       label: serializer.fromJson<Map<String, dynamic>?>(json['label']),
       description: serializer.fromJson<String?>(json['description']),
+      disabled: serializer.fromJson<bool?>(json['disabled']),
     );
   }
   @override
@@ -4762,6 +4835,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
       'name': serializer.toJson<String>(name),
       'label': serializer.toJson<Map<String, dynamic>?>(label),
       'description': serializer.toJson<String?>(description),
+      'disabled': serializer.toJson<bool?>(disabled),
     };
   }
 
@@ -4771,7 +4845,8 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
           int? versionNumber,
           String? name,
           Value<Map<String, dynamic>?> label = const Value.absent(),
-          Value<String?> description = const Value.absent()}) =>
+          Value<String?> description = const Value.absent(),
+          Value<bool?> disabled = const Value.absent()}) =>
       FormTemplate(
         id: id ?? this.id,
         versionUid: versionUid ?? this.versionUid,
@@ -4779,6 +4854,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
         name: name ?? this.name,
         label: label.present ? label.value : this.label,
         description: description.present ? description.value : this.description,
+        disabled: disabled.present ? disabled.value : this.disabled,
       );
   FormTemplate copyWithCompanion(FormTemplatesCompanion data) {
     return FormTemplate(
@@ -4792,6 +4868,7 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
       label: data.label.present ? data.label.value : this.label,
       description:
           data.description.present ? data.description.value : this.description,
+      disabled: data.disabled.present ? data.disabled.value : this.disabled,
     );
   }
 
@@ -4803,14 +4880,15 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
           ..write('versionNumber: $versionNumber, ')
           ..write('name: $name, ')
           ..write('label: $label, ')
-          ..write('description: $description')
+          ..write('description: $description, ')
+          ..write('disabled: $disabled')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, versionUid, versionNumber, name, label, description);
+  int get hashCode => Object.hash(
+      id, versionUid, versionNumber, name, label, description, disabled);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4820,7 +4898,8 @@ class FormTemplate extends DataClass implements Insertable<FormTemplate> {
           other.versionNumber == this.versionNumber &&
           other.name == this.name &&
           other.label == this.label &&
-          other.description == this.description);
+          other.description == this.description &&
+          other.disabled == this.disabled);
 }
 
 class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
@@ -4830,6 +4909,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
   final Value<String> name;
   final Value<Map<String, dynamic>?> label;
   final Value<String?> description;
+  final Value<bool?> disabled;
   final Value<int> rowid;
   const FormTemplatesCompanion({
     this.id = const Value.absent(),
@@ -4838,6 +4918,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     this.name = const Value.absent(),
     this.label = const Value.absent(),
     this.description = const Value.absent(),
+    this.disabled = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FormTemplatesCompanion.insert({
@@ -4847,6 +4928,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     required String name,
     this.label = const Value.absent(),
     this.description = const Value.absent(),
+    this.disabled = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         versionUid = Value(versionUid),
@@ -4859,6 +4941,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     Expression<String>? name,
     Expression<String>? label,
     Expression<String>? description,
+    Expression<bool>? disabled,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4868,6 +4951,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
       if (name != null) 'name': name,
       if (label != null) 'label': label,
       if (description != null) 'description': description,
+      if (disabled != null) 'disabled': disabled,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4879,6 +4963,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
       Value<String>? name,
       Value<Map<String, dynamic>?>? label,
       Value<String?>? description,
+      Value<bool?>? disabled,
       Value<int>? rowid}) {
     return FormTemplatesCompanion(
       id: id ?? this.id,
@@ -4887,6 +4972,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
       name: name ?? this.name,
       label: label ?? this.label,
       description: description ?? this.description,
+      disabled: disabled ?? this.disabled,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4913,6 +4999,9 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (disabled.present) {
+      map['disabled'] = Variable<bool>(disabled.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4928,6 +5017,7 @@ class FormTemplatesCompanion extends UpdateCompanion<FormTemplate> {
           ..write('name: $name, ')
           ..write('label: $label, ')
           ..write('description: $description, ')
+          ..write('disabled: $disabled, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10241,6 +10331,329 @@ class UserFormPermissionsCompanion extends UpdateCompanion<UserFormPermission> {
   }
 }
 
+class $SyncSummariesTable extends SyncSummaries
+    with TableInfo<$SyncSummariesTable, SyncSummary> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncSummariesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entityMeta = const VerificationMeta('entity');
+  @override
+  late final GeneratedColumn<String> entity = GeneratedColumn<String>(
+      'entity', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _lastSyncMeta =
+      const VerificationMeta('lastSync');
+  @override
+  late final GeneratedColumn<DateTime> lastSync = GeneratedColumn<DateTime>(
+      'last_sync', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _successCountMeta =
+      const VerificationMeta('successCount');
+  @override
+  late final GeneratedColumn<int> successCount = GeneratedColumn<int>(
+      'success_count', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _failureCountMeta =
+      const VerificationMeta('failureCount');
+  @override
+  late final GeneratedColumn<int> failureCount = GeneratedColumn<int>(
+      'failure_count', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _errorsJsonMeta =
+      const VerificationMeta('errorsJson');
+  @override
+  late final GeneratedColumn<String> errorsJson = GeneratedColumn<String>(
+      'errors_json', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [entity, lastSync, successCount, failureCount, errorsJson];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_summaries';
+  @override
+  VerificationContext validateIntegrity(Insertable<SyncSummary> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entity')) {
+      context.handle(_entityMeta,
+          entity.isAcceptableOrUnknown(data['entity']!, _entityMeta));
+    } else if (isInserting) {
+      context.missing(_entityMeta);
+    }
+    if (data.containsKey('last_sync')) {
+      context.handle(_lastSyncMeta,
+          lastSync.isAcceptableOrUnknown(data['last_sync']!, _lastSyncMeta));
+    }
+    if (data.containsKey('success_count')) {
+      context.handle(
+          _successCountMeta,
+          successCount.isAcceptableOrUnknown(
+              data['success_count']!, _successCountMeta));
+    }
+    if (data.containsKey('failure_count')) {
+      context.handle(
+          _failureCountMeta,
+          failureCount.isAcceptableOrUnknown(
+              data['failure_count']!, _failureCountMeta));
+    }
+    if (data.containsKey('errors_json')) {
+      context.handle(
+          _errorsJsonMeta,
+          errorsJson.isAcceptableOrUnknown(
+              data['errors_json']!, _errorsJsonMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entity};
+  @override
+  SyncSummary map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SyncSummary(
+      entity: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}entity'])!,
+      lastSync: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}last_sync'])!,
+      successCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}success_count'])!,
+      failureCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}failure_count'])!,
+      errorsJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}errors_json']),
+    );
+  }
+
+  @override
+  $SyncSummariesTable createAlias(String alias) {
+    return $SyncSummariesTable(attachedDatabase, alias);
+  }
+}
+
+class SyncSummary extends DataClass implements Insertable<SyncSummary> {
+  /// e.g. "activities", "teams"
+  final String entity;
+  final DateTime lastSync;
+  final int successCount;
+  final int failureCount;
+
+  /// JSON‑encoded list of error messages
+  final String? errorsJson;
+  const SyncSummary(
+      {required this.entity,
+      required this.lastSync,
+      required this.successCount,
+      required this.failureCount,
+      this.errorsJson});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entity'] = Variable<String>(entity);
+    map['last_sync'] = Variable<DateTime>(lastSync);
+    map['success_count'] = Variable<int>(successCount);
+    map['failure_count'] = Variable<int>(failureCount);
+    if (!nullToAbsent || errorsJson != null) {
+      map['errors_json'] = Variable<String>(errorsJson);
+    }
+    return map;
+  }
+
+  SyncSummariesCompanion toCompanion(bool nullToAbsent) {
+    return SyncSummariesCompanion(
+      entity: Value(entity),
+      lastSync: Value(lastSync),
+      successCount: Value(successCount),
+      failureCount: Value(failureCount),
+      errorsJson: errorsJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(errorsJson),
+    );
+  }
+
+  factory SyncSummary.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SyncSummary(
+      entity: serializer.fromJson<String>(json['entity']),
+      lastSync: serializer.fromJson<DateTime>(json['lastSync']),
+      successCount: serializer.fromJson<int>(json['successCount']),
+      failureCount: serializer.fromJson<int>(json['failureCount']),
+      errorsJson: serializer.fromJson<String?>(json['errorsJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entity': serializer.toJson<String>(entity),
+      'lastSync': serializer.toJson<DateTime>(lastSync),
+      'successCount': serializer.toJson<int>(successCount),
+      'failureCount': serializer.toJson<int>(failureCount),
+      'errorsJson': serializer.toJson<String?>(errorsJson),
+    };
+  }
+
+  SyncSummary copyWith(
+          {String? entity,
+          DateTime? lastSync,
+          int? successCount,
+          int? failureCount,
+          Value<String?> errorsJson = const Value.absent()}) =>
+      SyncSummary(
+        entity: entity ?? this.entity,
+        lastSync: lastSync ?? this.lastSync,
+        successCount: successCount ?? this.successCount,
+        failureCount: failureCount ?? this.failureCount,
+        errorsJson: errorsJson.present ? errorsJson.value : this.errorsJson,
+      );
+  SyncSummary copyWithCompanion(SyncSummariesCompanion data) {
+    return SyncSummary(
+      entity: data.entity.present ? data.entity.value : this.entity,
+      lastSync: data.lastSync.present ? data.lastSync.value : this.lastSync,
+      successCount: data.successCount.present
+          ? data.successCount.value
+          : this.successCount,
+      failureCount: data.failureCount.present
+          ? data.failureCount.value
+          : this.failureCount,
+      errorsJson:
+          data.errorsJson.present ? data.errorsJson.value : this.errorsJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncSummary(')
+          ..write('entity: $entity, ')
+          ..write('lastSync: $lastSync, ')
+          ..write('successCount: $successCount, ')
+          ..write('failureCount: $failureCount, ')
+          ..write('errorsJson: $errorsJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(entity, lastSync, successCount, failureCount, errorsJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SyncSummary &&
+          other.entity == this.entity &&
+          other.lastSync == this.lastSync &&
+          other.successCount == this.successCount &&
+          other.failureCount == this.failureCount &&
+          other.errorsJson == this.errorsJson);
+}
+
+class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
+  final Value<String> entity;
+  final Value<DateTime> lastSync;
+  final Value<int> successCount;
+  final Value<int> failureCount;
+  final Value<String?> errorsJson;
+  final Value<int> rowid;
+  const SyncSummariesCompanion({
+    this.entity = const Value.absent(),
+    this.lastSync = const Value.absent(),
+    this.successCount = const Value.absent(),
+    this.failureCount = const Value.absent(),
+    this.errorsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncSummariesCompanion.insert({
+    required String entity,
+    this.lastSync = const Value.absent(),
+    this.successCount = const Value.absent(),
+    this.failureCount = const Value.absent(),
+    this.errorsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : entity = Value(entity);
+  static Insertable<SyncSummary> custom({
+    Expression<String>? entity,
+    Expression<DateTime>? lastSync,
+    Expression<int>? successCount,
+    Expression<int>? failureCount,
+    Expression<String>? errorsJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (entity != null) 'entity': entity,
+      if (lastSync != null) 'last_sync': lastSync,
+      if (successCount != null) 'success_count': successCount,
+      if (failureCount != null) 'failure_count': failureCount,
+      if (errorsJson != null) 'errors_json': errorsJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncSummariesCompanion copyWith(
+      {Value<String>? entity,
+      Value<DateTime>? lastSync,
+      Value<int>? successCount,
+      Value<int>? failureCount,
+      Value<String?>? errorsJson,
+      Value<int>? rowid}) {
+    return SyncSummariesCompanion(
+      entity: entity ?? this.entity,
+      lastSync: lastSync ?? this.lastSync,
+      successCount: successCount ?? this.successCount,
+      failureCount: failureCount ?? this.failureCount,
+      errorsJson: errorsJson ?? this.errorsJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entity.present) {
+      map['entity'] = Variable<String>(entity.value);
+    }
+    if (lastSync.present) {
+      map['last_sync'] = Variable<DateTime>(lastSync.value);
+    }
+    if (successCount.present) {
+      map['success_count'] = Variable<int>(successCount.value);
+    }
+    if (failureCount.present) {
+      map['failure_count'] = Variable<int>(failureCount.value);
+    }
+    if (errorsJson.present) {
+      map['errors_json'] = Variable<String>(errorsJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncSummariesCompanion(')
+          ..write('entity: $entity, ')
+          ..write('lastSync: $lastSync, ')
+          ..write('successCount: $successCount, ')
+          ..write('failureCount: $failureCount, ')
+          ..write('errorsJson: $errorsJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10268,6 +10681,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DataOptionsTable dataOptions = $DataOptionsTable(this);
   late final $UserFormPermissionsTable userFormPermissions =
       $UserFormPermissionsTable(this);
+  late final $SyncSummariesTable syncSummaries = $SyncSummariesTable(this);
   late final Index orgNameIdx =
       Index('org_name_idx', 'CREATE INDEX org_name_idx ON org_units (name)');
   late final Index orgCodeIdx = Index(
@@ -10282,6 +10696,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE INDEX activity_disabled_idx ON activities (disabled)');
   late final Index teamCodIdx =
       Index('team_cod_idx', 'CREATE INDEX team_cod_idx ON teams (code)');
+  late final Index teamDisabledIdx = Index('team_disabled_idx',
+      'CREATE INDEX team_disabled_idx ON teams (disabled)');
   late final Index managedTeamCodIdx = Index('managed_team_cod_idx',
       'CREATE INDEX managed_team_cod_idx ON managed_teams (code)');
   late final Index assignmentStatusIdx = Index('assignment_status_idx',
@@ -10329,6 +10745,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       RepeatInstancesDao(this as AppDatabase);
   late final TeamsDao teamsDao = TeamsDao(this as AppDatabase);
   late final UsersDao usersDao = UsersDao(this as AppDatabase);
+  late final SyncSummariesDao syncSummariesDao =
+      SyncSummariesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10353,6 +10771,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         dataValues,
         dataOptions,
         userFormPermissions,
+        syncSummaries,
         orgNameIdx,
         orgCodeIdx,
         orgPathIdx,
@@ -10360,6 +10779,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         levelNameIdx,
         activityDisabledIdx,
         teamCodIdx,
+        teamDisabledIdx,
         managedTeamCodIdx,
         assignmentStatusIdx,
         templateVersionNumberIdx,
@@ -11599,7 +12019,7 @@ typedef $$ProjectsTableCreateCompanionBuilder = ProjectsCompanion Function({
   Value<List<Translation>> translations,
   required String name,
   Value<String?> code,
-  Value<bool> disabled,
+  Value<bool?> disabled,
   Value<int> rowid,
 });
 typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
@@ -11611,7 +12031,7 @@ typedef $$ProjectsTableUpdateCompanionBuilder = ProjectsCompanion Function({
   Value<List<Translation>> translations,
   Value<String> name,
   Value<String?> code,
-  Value<bool> disabled,
+  Value<bool?> disabled,
   Value<int> rowid,
 });
 
@@ -11828,7 +12248,7 @@ class $$ProjectsTableTableManager extends RootTableManager<
             Value<List<Translation>> translations = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String?> code = const Value.absent(),
-            Value<bool> disabled = const Value.absent(),
+            Value<bool?> disabled = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ProjectsCompanion(
@@ -11852,7 +12272,7 @@ class $$ProjectsTableTableManager extends RootTableManager<
             Value<List<Translation>> translations = const Value.absent(),
             required String name,
             Value<String?> code = const Value.absent(),
-            Value<bool> disabled = const Value.absent(),
+            Value<bool?> disabled = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ProjectsCompanion.insert(
@@ -11920,7 +12340,7 @@ typedef $$ActivitiesTableCreateCompanionBuilder = ActivitiesCompanion Function({
   required String name,
   Value<String?> code,
   required String project,
-  Value<bool> disabled,
+  Value<bool?> disabled,
   Value<DateTime?> startDate,
   Value<DateTime?> endDate,
   Value<String?> description,
@@ -11936,7 +12356,7 @@ typedef $$ActivitiesTableUpdateCompanionBuilder = ActivitiesCompanion Function({
   Value<String> name,
   Value<String?> code,
   Value<String> project,
-  Value<bool> disabled,
+  Value<bool?> disabled,
   Value<DateTime?> startDate,
   Value<DateTime?> endDate,
   Value<String?> description,
@@ -12377,7 +12797,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String?> code = const Value.absent(),
             Value<String> project = const Value.absent(),
-            Value<bool> disabled = const Value.absent(),
+            Value<bool?> disabled = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
             Value<DateTime?> endDate = const Value.absent(),
             Value<String?> description = const Value.absent(),
@@ -12409,7 +12829,7 @@ class $$ActivitiesTableTableManager extends RootTableManager<
             required String name,
             Value<String?> code = const Value.absent(),
             required String project,
-            Value<bool> disabled = const Value.absent(),
+            Value<bool?> disabled = const Value.absent(),
             Value<DateTime?> startDate = const Value.absent(),
             Value<DateTime?> endDate = const Value.absent(),
             Value<String?> description = const Value.absent(),
@@ -13504,6 +13924,7 @@ typedef $$AssignmentsTableCreateCompanionBuilder = AssignmentsCompanion
   Value<AssignmentStatus?> status,
   Value<DateTime?> completedDate,
   Value<DateTime?> updatedAtClient,
+  Value<bool?> disabled,
   Value<int> rowid,
 });
 typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
@@ -13519,6 +13940,7 @@ typedef $$AssignmentsTableUpdateCompanionBuilder = AssignmentsCompanion
   Value<AssignmentStatus?> status,
   Value<DateTime?> completedDate,
   Value<DateTime?> updatedAtClient,
+  Value<bool?> disabled,
   Value<int> rowid,
 });
 
@@ -13641,6 +14063,9 @@ class $$AssignmentsTableFilterComposer
   ColumnFilters<DateTime> get updatedAtClient => $composableBuilder(
       column: $table.updatedAtClient,
       builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get disabled => $composableBuilder(
+      column: $table.disabled, builder: (column) => ColumnFilters(column));
 
   $$ActivitiesTableFilterComposer get activity {
     final $$ActivitiesTableFilterComposer composer = $composerBuilder(
@@ -13782,6 +14207,9 @@ class $$AssignmentsTableOrderingComposer
       column: $table.updatedAtClient,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get disabled => $composableBuilder(
+      column: $table.disabled, builder: (column) => ColumnOrderings(column));
+
   $$ActivitiesTableOrderingComposer get activity {
     final $$ActivitiesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -13875,6 +14303,9 @@ class $$AssignmentsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAtClient => $composableBuilder(
       column: $table.updatedAtClient, builder: (column) => column);
+
+  GeneratedColumn<bool> get disabled =>
+      $composableBuilder(column: $table.disabled, builder: (column) => column);
 
   $$ActivitiesTableAnnotationComposer get activity {
     final $$ActivitiesTableAnnotationComposer composer = $composerBuilder(
@@ -14018,6 +14449,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             Value<AssignmentStatus?> status = const Value.absent(),
             Value<DateTime?> completedDate = const Value.absent(),
             Value<DateTime?> updatedAtClient = const Value.absent(),
+            Value<bool?> disabled = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AssignmentsCompanion(
@@ -14032,6 +14464,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             status: status,
             completedDate: completedDate,
             updatedAtClient: updatedAtClient,
+            disabled: disabled,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -14046,6 +14479,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             Value<AssignmentStatus?> status = const Value.absent(),
             Value<DateTime?> completedDate = const Value.absent(),
             Value<DateTime?> updatedAtClient = const Value.absent(),
+            Value<bool?> disabled = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AssignmentsCompanion.insert(
@@ -14060,6 +14494,7 @@ class $$AssignmentsTableTableManager extends RootTableManager<
             status: status,
             completedDate: completedDate,
             updatedAtClient: updatedAtClient,
+            disabled: disabled,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -14185,6 +14620,7 @@ typedef $$FormTemplatesTableCreateCompanionBuilder = FormTemplatesCompanion
   required String name,
   Value<Map<String, dynamic>?> label,
   Value<String?> description,
+  Value<bool?> disabled,
   Value<int> rowid,
 });
 typedef $$FormTemplatesTableUpdateCompanionBuilder = FormTemplatesCompanion
@@ -14195,6 +14631,7 @@ typedef $$FormTemplatesTableUpdateCompanionBuilder = FormTemplatesCompanion
   Value<String> name,
   Value<Map<String, dynamic>?> label,
   Value<String?> description,
+  Value<bool?> disabled,
   Value<int> rowid,
 });
 
@@ -14300,6 +14737,9 @@ class $$FormTemplatesTableFilterComposer
 
   ColumnFilters<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get disabled => $composableBuilder(
+      column: $table.disabled, builder: (column) => ColumnFilters(column));
 
   Expression<bool> assignments(
       Expression<bool> Function($$AssignmentFormsTableFilterComposer f) f) {
@@ -14414,6 +14854,9 @@ class $$FormTemplatesTableOrderingComposer
 
   ColumnOrderings<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get disabled => $composableBuilder(
+      column: $table.disabled, builder: (column) => ColumnOrderings(column));
 }
 
 class $$FormTemplatesTableAnnotationComposer
@@ -14442,6 +14885,9 @@ class $$FormTemplatesTableAnnotationComposer
 
   GeneratedColumn<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<bool> get disabled =>
+      $composableBuilder(column: $table.disabled, builder: (column) => column);
 
   Expression<T> assignments<T extends Object>(
       Expression<T> Function($$AssignmentFormsTableAnnotationComposer a) f) {
@@ -14565,6 +15011,7 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<Map<String, dynamic>?> label = const Value.absent(),
             Value<String?> description = const Value.absent(),
+            Value<bool?> disabled = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               FormTemplatesCompanion(
@@ -14574,6 +15021,7 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
             name: name,
             label: label,
             description: description,
+            disabled: disabled,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -14583,6 +15031,7 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
             required String name,
             Value<Map<String, dynamic>?> label = const Value.absent(),
             Value<String?> description = const Value.absent(),
+            Value<bool?> disabled = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               FormTemplatesCompanion.insert(
@@ -14592,6 +15041,7 @@ class $$FormTemplatesTableTableManager extends RootTableManager<
             name: name,
             label: label,
             description: description,
+            disabled: disabled,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -19098,6 +19548,181 @@ typedef $$UserFormPermissionsTableProcessedTableManager = ProcessedTableManager<
     (UserFormPermission, $$UserFormPermissionsTableReferences),
     UserFormPermission,
     PrefetchHooks Function({bool team, bool form})>;
+typedef $$SyncSummariesTableCreateCompanionBuilder = SyncSummariesCompanion
+    Function({
+  required String entity,
+  Value<DateTime> lastSync,
+  Value<int> successCount,
+  Value<int> failureCount,
+  Value<String?> errorsJson,
+  Value<int> rowid,
+});
+typedef $$SyncSummariesTableUpdateCompanionBuilder = SyncSummariesCompanion
+    Function({
+  Value<String> entity,
+  Value<DateTime> lastSync,
+  Value<int> successCount,
+  Value<int> failureCount,
+  Value<String?> errorsJson,
+  Value<int> rowid,
+});
+
+class $$SyncSummariesTableFilterComposer
+    extends Composer<_$AppDatabase, $SyncSummariesTable> {
+  $$SyncSummariesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get entity => $composableBuilder(
+      column: $table.entity, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastSync => $composableBuilder(
+      column: $table.lastSync, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get successCount => $composableBuilder(
+      column: $table.successCount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get failureCount => $composableBuilder(
+      column: $table.failureCount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get errorsJson => $composableBuilder(
+      column: $table.errorsJson, builder: (column) => ColumnFilters(column));
+}
+
+class $$SyncSummariesTableOrderingComposer
+    extends Composer<_$AppDatabase, $SyncSummariesTable> {
+  $$SyncSummariesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get entity => $composableBuilder(
+      column: $table.entity, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastSync => $composableBuilder(
+      column: $table.lastSync, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get successCount => $composableBuilder(
+      column: $table.successCount,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get failureCount => $composableBuilder(
+      column: $table.failureCount,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get errorsJson => $composableBuilder(
+      column: $table.errorsJson, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SyncSummariesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SyncSummariesTable> {
+  $$SyncSummariesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get entity =>
+      $composableBuilder(column: $table.entity, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSync =>
+      $composableBuilder(column: $table.lastSync, builder: (column) => column);
+
+  GeneratedColumn<int> get successCount => $composableBuilder(
+      column: $table.successCount, builder: (column) => column);
+
+  GeneratedColumn<int> get failureCount => $composableBuilder(
+      column: $table.failureCount, builder: (column) => column);
+
+  GeneratedColumn<String> get errorsJson => $composableBuilder(
+      column: $table.errorsJson, builder: (column) => column);
+}
+
+class $$SyncSummariesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SyncSummariesTable,
+    SyncSummary,
+    $$SyncSummariesTableFilterComposer,
+    $$SyncSummariesTableOrderingComposer,
+    $$SyncSummariesTableAnnotationComposer,
+    $$SyncSummariesTableCreateCompanionBuilder,
+    $$SyncSummariesTableUpdateCompanionBuilder,
+    (
+      SyncSummary,
+      BaseReferences<_$AppDatabase, $SyncSummariesTable, SyncSummary>
+    ),
+    SyncSummary,
+    PrefetchHooks Function()> {
+  $$SyncSummariesTableTableManager(_$AppDatabase db, $SyncSummariesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncSummariesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncSummariesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncSummariesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> entity = const Value.absent(),
+            Value<DateTime> lastSync = const Value.absent(),
+            Value<int> successCount = const Value.absent(),
+            Value<int> failureCount = const Value.absent(),
+            Value<String?> errorsJson = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SyncSummariesCompanion(
+            entity: entity,
+            lastSync: lastSync,
+            successCount: successCount,
+            failureCount: failureCount,
+            errorsJson: errorsJson,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String entity,
+            Value<DateTime> lastSync = const Value.absent(),
+            Value<int> successCount = const Value.absent(),
+            Value<int> failureCount = const Value.absent(),
+            Value<String?> errorsJson = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SyncSummariesCompanion.insert(
+            entity: entity,
+            lastSync: lastSync,
+            successCount: successCount,
+            failureCount: failureCount,
+            errorsJson: errorsJson,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SyncSummariesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SyncSummariesTable,
+    SyncSummary,
+    $$SyncSummariesTableFilterComposer,
+    $$SyncSummariesTableOrderingComposer,
+    $$SyncSummariesTableAnnotationComposer,
+    $$SyncSummariesTableCreateCompanionBuilder,
+    $$SyncSummariesTableUpdateCompanionBuilder,
+    (
+      SyncSummary,
+      BaseReferences<_$AppDatabase, $SyncSummariesTable, SyncSummary>
+    ),
+    SyncSummary,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -19140,4 +19765,6 @@ class $AppDatabaseManager {
       $$DataOptionsTableTableManager(_db, _db.dataOptions);
   $$UserFormPermissionsTableTableManager get userFormPermissions =>
       $$UserFormPermissionsTableTableManager(_db, _db.userFormPermissions);
+  $$SyncSummariesTableTableManager get syncSummaries =>
+      $$SyncSummariesTableTableManager(_db, _db.syncSummaries);
 }

@@ -4,15 +4,15 @@ import 'package:flutter/cupertino.dart';
 
 @immutable
 class IdentifiableModel extends DRunBaseModel {
-  IdentifiableModel(
-      {required this.id,
-      this.code,
-      required this.name,
-      this.description,
-        Map<String, dynamic>? label,
-        Map<String, dynamic>? properties,
-      })
-      : this.label = label ?? {}, this.properties = properties ?? {};
+  IdentifiableModel({
+    required this.id,
+    this.code,
+    required this.name,
+    this.description,
+    Map<String, dynamic>? label,
+    Map<String, dynamic>? properties,
+  })  : this.label = label ?? {},
+        this.properties = properties ?? {};
 
   final String id;
   final String? code;
@@ -38,7 +38,6 @@ class IdentifiableModel extends DRunBaseModel {
       properties: label ?? this.properties,
     );
   }
-
 
   @override
   List<Object?> get props => super.props + [code, name, description];

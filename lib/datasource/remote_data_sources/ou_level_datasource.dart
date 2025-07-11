@@ -8,9 +8,7 @@ import 'package:injectable/injectable.dart';
 @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
 class OuLevelDatasource extends BaseDataSource<$OuLevelsTable, OuLevel>
     implements MetaDataSource<OuLevel> {
-  OuLevelDatasource(
-      {required super.apiClient,
-      required DbManager dbManager})
+  OuLevelDatasource({required super.apiClient, required DbManager dbManager})
       : super(dbManager: dbManager, table: dbManager.db.ouLevels);
 
   @override

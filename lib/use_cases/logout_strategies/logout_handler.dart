@@ -1,4 +1,3 @@
-
 // @Injectable()
 abstract class LogoutHandler {
   Future<void> handle();

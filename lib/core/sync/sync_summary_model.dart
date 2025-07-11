@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-class SyncSummary {
+class SyncSummaryModel {
   final List<String> created;
   final List<String> updated;
   final Map<String, dynamic> failed;
 
-  SyncSummary(
+  SyncSummaryModel(
       {required this.created, required this.updated, required this.failed});
 
-  factory SyncSummary.fromJson(Map<String, dynamic> json) {
+  factory SyncSummaryModel.fromJson(Map<String, dynamic> json) {
     final created = json['created'] != null
         ? json['created'].runtimeType == String
             ? jsonDecode(json['created']).cast<String>()
@@ -26,6 +26,6 @@ class SyncSummary {
             ? jsonDecode(json['failed'])
             : json['failed']
         : null;
-    return SyncSummary(created: created, updated: updated, failed: failed);
+    return SyncSummaryModel(created: created, updated: updated, failed: failed);
   }
 }
