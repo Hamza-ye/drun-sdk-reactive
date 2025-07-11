@@ -9,6 +9,12 @@ class DataOptionsDao extends DatabaseAccessor<AppDatabase>
     with _$DataOptionsDaoMixin {
   DataOptionsDao(AppDatabase db) : super(db);
 
+  Future<List<DataOption>> searchOptions(String setId, String filter) {
+    final query = select(dataOptions)
+      ..where((tbl) => tbl.name.like('%$filter%'));
+    return query.get();
+  }
+
   Selectable<DataOption> selectOptions(
       {String? optionSetUid,
       String textToSearch = '',
