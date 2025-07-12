@@ -31,18 +31,21 @@ class OptionSetDatasource
             ...t.value as Map<String, dynamic>,
             'optionSet': item['uid']!,
             'order': t.key + 1,
+            'dirty': false,
+            'isToUpdate': true,
+            'label': t.value['label'] ?? <String, dynamic>{},
+            'translations': (t.value['translations'] as List?) ?? [],
           };
           return DataOption.fromJson(json, serializer: CustomSerializer());
         });
 
         for (var m in extraItems) {
-          inserts.add(CompanionInsert(db.managedTeams, m));
+          inserts.add(CompanionInsert(db.dataOptions, m));
         }
       }
     }
     return inserts;
   }
-
 
   @override
   DataOptionSet fromApiJson(Map<String, dynamic> data,

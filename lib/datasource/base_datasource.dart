@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:d_sdk/core/http/http_client.dart';
+import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
@@ -49,6 +50,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       errors.add('Fetch error: ${e.message}');
       rawJson = []; // proceed with empty payload (or rethrow if you prefer)
     } catch (e) {
+      logError('Unexpected fetch error: `$resourcePath`', source: e);
       errors.add('Unexpected fetch error: $e');
       rawJson = [];
     }
@@ -60,6 +62,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
       // A hook, let subclass extract any “auxiliary” entities
       extra = await extractExtraEntities(rawJson);
     } catch (e) {
+      logError('Extract extra entities error: `$resourcePath`', source: e);
       errors.add('Extract extra entities error: $e');
       extra = [];
     }
@@ -75,6 +78,8 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
         mapped.add(entity);
         liveIds.add(extractId(item) as String);
       } catch (e) {
+        logError('Mapping error: `$resourcePath`, for uid=`${item['uid']}`',
+            source: e);
         errors.add('Mapping error for uid=${item['uid']}: $e');
       }
     }
@@ -100,13 +105,14 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
         await disableStale(liveIds);
       });
     } catch (e) {
+      logError('Database write error: `$resourcePath`', source: e);
       errors.add('Database write error: $e');
     }
     progressCallback?.call(90);
 
-    await _summariesDao.clearAll();
-
     // 5) Record summary
+    logDebug('saving sync summary: `$resourceName`',
+        data: {'mapped': mapped.length, 'errors': errors.length});
     await _summariesDao.upsertSummary(SyncSummary(
       entity: resourceName,
       lastSync: DateTime.now(),

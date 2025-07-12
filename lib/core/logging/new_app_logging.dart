@@ -7,6 +7,7 @@ typedef LogWriterCallback = void Function(String message,
     {bool isError,
     required LogLevel level,
     Map<String, dynamic>? data,
+    StackTrace? stackTrace,
     Object? source});
 
 enum LogLevel { debug, info, error, warning }
@@ -16,34 +17,55 @@ abstract class LoggerInterface {
   bool isLogEnabled = kDebugMode;
   LogWriterCallback logWriter = defaultLogWriterCallback;
 
-  void logDebug(String message, {Map<String, dynamic>? data, Object? source}) {
-    _log(message, level: LogLevel.debug, data: data, source: source);
-  }
-
-  void logInfo(String message, {Map<String, dynamic>? data, Object? source}) {
-    _log(message, level: LogLevel.info, data: data, source: source);
-  }
-
-  void logError(String message, {Map<String, dynamic>? data, Object? source}) {
+  void logDebug(String message,
+      {Map<String, dynamic>? data, Object? source, StackTrace? stackTrace}) {
     _log(message,
-        level: LogLevel.error, isError: true, data: data, source: source);
+        level: LogLevel.debug,
+        data: data,
+        source: source,
+        stackTrace: stackTrace);
+  }
+
+  void logInfo(String message,
+      {Map<String, dynamic>? data, Object? source, StackTrace? stackTrace}) {
+    _log(message,
+        level: LogLevel.info,
+        data: data,
+        source: source,
+        stackTrace: stackTrace);
+  }
+
+  void logError(String message,
+      {Map<String, dynamic>? data, Object? source, StackTrace? stackTrace}) {
+    _log(message,
+        level: LogLevel.error,
+        isError: true,
+        data: data,
+        source: source,
+        stackTrace: stackTrace);
   }
 
   void logWarning(String message,
-      {Map<String, dynamic>? data, Object? source}) {
-    _log(message, level: LogLevel.warning, data: data, source: source);
+      {Map<String, dynamic>? data, Object? source, StackTrace? stackTrace}) {
+    _log(message,
+        level: LogLevel.warning,
+        data: data,
+        source: source,
+        stackTrace: stackTrace);
   }
 
   void _log(String message,
       {bool isError = false,
       required LogLevel level,
       Map<String, dynamic>? data,
+      StackTrace? stackTrace,
       Object? source}) {
     if (isLogEnabled || level == LogLevel.error) {
       logWriter(message,
           isError: isError,
           level: level,
           data: data,
+          stackTrace: stackTrace,
           source: source); // Pass structured data if available
     }
   }
@@ -60,6 +82,7 @@ void defaultLogWriterCallback(String message,
     {bool isError = false,
     required LogLevel level,
     Map<String, dynamic>? data,
+    StackTrace? stackTrace,
     Object? source}) {
   final logMessage = StringBuffer()
     ..write(source != null ? ' | Source: ${source.runtimeType}' : '')
@@ -68,7 +91,8 @@ void defaultLogWriterCallback(String message,
 
   developer.log(logMessage.toString(),
       level: _mapLogLevelToDeveloperLevel(level),
-      error: isError ? 'Error' : null);
+      stackTrace: isError ? stackTrace : null,
+      error: isError ? source : null);
 }
 
 /// Maps custom LogLevel to `developer.log` levels
@@ -86,23 +110,33 @@ int _mapLogLevelToDeveloperLevel(LogLevel level) {
 }
 
 /// Convenience methods for logging
-void logDebug(String message, {Map<String, dynamic>? data, Object? source}) {
-  logger.logDebug(message, data: data, source: source);
+void logDebug(String message,
+    {Map<String, dynamic>? data, Object? source, StackTrace? stackTrace}) {
+  logger.logDebug(message, data: data, source: source, stackTrace: stackTrace);
 }
 
-void logInfo(String message, {Map<String, dynamic>? data, Object? source}) {
-  logger.logInfo(message, data: data, source: source);
+void logInfo(String message,
+    {Map<String, dynamic>? data, Object? source, StackTrace? stackTrace}) {
+  logger.logInfo(message, data: data, source: source, stackTrace: stackTrace);
 }
 
-void logError(String message, {Map<String, dynamic>? data, Object? source}) {
-  logger.logError(message, data: data, source: source);
+void logError(String message,
+    {Map<String, dynamic>? data, Object? source, StackTrace? stackTrace}) {
+  logger.logError(message, data: data, source: source, stackTrace: stackTrace);
 }
 
-void logWarning(String message, {Map<String, dynamic>? data, Object? source}) {
-  logger.logWarning(message, data: data, source: source);
+void logWarning(String message,
+    {Map<String, dynamic>? data, Object? source, StackTrace? stackTrace}) {
+  logger.logWarning(message,
+      data: data, source: source, stackTrace: stackTrace);
 }
 
-void logException(DException exception, {Object? source}) {
-  logger.logError('Exception: ${exception.message}',
-      data: {'error': exception.cause}, source: source);
+void logException(DException exception,
+    {Object? source, StackTrace? stackTrace}) {
+  logger.logError(
+    'Exception: ${exception.message}',
+    data: {'error': exception.cause},
+    source: source,
+    stackTrace: stackTrace,
+  );
 }

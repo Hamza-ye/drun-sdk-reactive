@@ -18,6 +18,10 @@ class UserFormAccessesDatasource
 
   String get resourcePath => resourceName;
 
+  /// no op, userFormPermission's id ={team, form}, this will be ignored
+  @override
+  dynamic extractId(Map<String, dynamic> json) => '';
+
   @override
   UserFormPermission fromApiJson(Map<String, dynamic> data,
       {ValueSerializer? serializer}) {

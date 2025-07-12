@@ -1,14 +1,26 @@
+import 'package:d_sdk/core/exception/exception.dart';
+import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/user_session/session_context.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton(scope: SessionContext.activeSessionScope)
 class DbManager {
-  DbManager({required this.context})
-      : db = AppDatabase(databaseName: context.dbName);
+  DbManager(this.context) : db = AppDatabase(databaseName: context.dbName);
+  late final AppDatabase db;
+  late final SessionContext context;
 
-  final AppDatabase db;
-  final SessionContext context;
+  @preResolve
+  Future<DbManager> initDb(SessionContext? authContext) async {
+    // valid non null auth context
+    throwIf(authContext != null, NoCachedAuthenticatedUser());
+    logDebug('initializing DbManager for: ${authContext!.username}');
+    context = authContext;
+
+    // opening db
+    return DbManager(authContext);
+  }
 
   /// Returns a stream of AuthUserData from the local database.
   Stream<User?> watchAuthUserData(String userId) {

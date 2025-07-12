@@ -75,7 +75,7 @@ Future<_i174.GetIt> initActiveSessionContextScope(
         preResolve: true,
       );
       gh.singleton<_i312.DbManager>(
-        () => _i312.DbManager(context: gh<_i368.SessionContext>()),
+        () => _i312.DbManager(gh<_i368.SessionContext>()),
         dispose: (i) => i.closeDatabase(),
       );
       gh.factory<_i822.UserDatasource>(() => _i822.UserDatasource(
