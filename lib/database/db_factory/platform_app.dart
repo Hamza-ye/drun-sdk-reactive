@@ -5,17 +5,17 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 
 class PlatformInterface {
-  static QueryExecutor createDatabaseConnection(String databaseName) {
+  static QueryExecutor createDatabaseConnection(String userId) {
     return LazyDatabase(() async {
       final currentDir = Directory.current.path;
-
+      // rSdkLocator<UserFileManager>().getUserFile(userId);
       final customDir = Directory(currentDir);
       if (!await customDir.exists()) {
         await customDir.create(recursive: true);
       }
       final dbPath = p.join(
         currentDir,
-        '$databaseName.enc.sqlite',
+        'db_user_$userId.db',
       );
       final file = File(dbPath);
       return NativeDatabase(file);
