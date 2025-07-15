@@ -17,7 +17,7 @@ class UserFileManager {
   Future<Directory> _getBaseUserDirectory() async {
     try {
       // final baseDir = await getApplicationDocumentsDirectory();
-      final baseDir = await getApplicationCacheDirectory();
+      final baseDir = await getApplicationSupportDirectory();
       final userDataDir = Directory(p.join(baseDir.path, 'user_data'));
 
       if (!await userDataDir.exists()) {
