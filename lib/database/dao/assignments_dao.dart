@@ -90,17 +90,17 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<AssignmentModel>> allAssignments(
       {String? activityId, String ouSearchFilter = ''}) async {
-    var assignmentWithRefs = db.managers.assignments;
-    // .filter((f) => f.disabled.not(true));
+    var assignmentWithRefs = attachedDatabase.managers.assignments
+        .filter((f) => f.disabled.not(true));
 
     if (activityId != null) {
-      assignmentWithRefs = assignmentWithRefs
-        ..filter((f) => f.activity.id(activityId));
+      assignmentWithRefs =
+          assignmentWithRefs.filter((f) => f.activity.id(activityId));
     }
 
     if (ouSearchFilter.isNotEmpty) {
       assignmentWithRefs = assignmentWithRefs
-        ..filter((f) => f.orgUnit.name.contains(ouSearchFilter));
+          .filter((f) => f.orgUnit.name.contains(ouSearchFilter));
     }
 
     final result = assignmentWithRefs
