@@ -33,5 +33,6 @@ enum DRunErrorCode {
   // Other potential categories can be added
   validationError, // Form validation error
   syncError, // Form validation error
+  systemFileError, // Form validation error
   apiError, // Error during API interaction
 }

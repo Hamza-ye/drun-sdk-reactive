@@ -1,4 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/dao/base_extension.dart';
 import 'package:d_sdk/database/tables/org_units.table.dart';
 import 'package:drift/drift.dart';
 
@@ -6,25 +7,20 @@ part 'org_units_dao.g.dart';
 
 @DriftAccessor(tables: [OrgUnits])
 class OrgUnitsDao extends DatabaseAccessor<AppDatabase>
-    with _$OrgUnitsDaoMixin {
+    with _$OrgUnitsDaoMixin, BaseExtension<OrgUnit> {
   OrgUnitsDao(AppDatabase db) : super(db);
 
-  Future<List<OrgUnit>> getAllItems() => select(orgUnits).get();
+  @override
+  String get resourceName => 'orgUnits';
 
-  Future<OrgUnit?> getItemById(String id) {
-    return (select(orgUnits)..where((tbl) => tbl.id.equals(id)))
-        .getSingleOrNull();
+  @override
+  OrgUnit fromApiJson(Map<String, dynamic> data,
+      {ValueSerializer? serializer}) {
+    final parent = data['parent']?['uid'] ?? data['parent']?['id']?.toString();
+    return OrgUnit.fromJson({...data, 'parent': parent},
+        serializer: serializer);
   }
 
-  Future<int> insertItem(Insertable<OrgUnit> entry) {
-    return into(orgUnits).insert(entry);
-  }
-
-  Future<bool> updateItem(OrgUnit item) {
-    return update(orgUnits).replace(item);
-  }
-
-  Future<int> deleteItem(String id) {
-    return (delete(orgUnits)..where((tbl) => tbl.id.equals(id))).go();
-  }
+  @override
+  TableInfo<TableInfo<Table, OrgUnit>, OrgUnit> get table => orgUnits;
 }

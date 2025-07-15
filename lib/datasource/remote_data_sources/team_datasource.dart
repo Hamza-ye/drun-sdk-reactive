@@ -1,17 +1,14 @@
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(DSOrder.team)
-@Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+@Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class TeamDatasource extends BaseDataSource<$TeamsTable, Team>
     implements MetaDataSource<Team> {
-  TeamDatasource({required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.teams);
-
   @override
   String get resourceName => 'teams';
 
@@ -65,6 +62,9 @@ class TeamDatasource extends BaseDataSource<$TeamsTable, Team>
       'disabled': disabled,
     }, serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, Team>, Team> get table => db.teams;
 }
 // @override
 // String get resourceName => 'teams';

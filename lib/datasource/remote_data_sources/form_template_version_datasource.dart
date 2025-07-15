@@ -3,14 +3,10 @@ import 'package:d_sdk/datasource/datasource.dart';
 import 'package:drift/drift.dart';
 
 // @Order(DSOrder.formTemplateVersion)
-// @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+// @Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class FormTemplateVersionDatasource
     extends BaseDataSource<$FormTemplateVersionsTable, FormTemplateVersion>
     implements MetaDataSource<FormTemplateVersion> {
-  FormTemplateVersionDatasource(
-      {required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.formTemplateVersions);
-
   @override
   String get resourceName => 'formTemplateVersions';
 
@@ -22,4 +18,8 @@ class FormTemplateVersionDatasource
       'template': data['templateUid'],
     }, serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, FormTemplateVersion>, FormTemplateVersion>
+      get table => db.formTemplateVersions;
 }

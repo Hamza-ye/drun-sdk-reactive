@@ -1,18 +1,14 @@
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(DSOrder.userFormAccess)
-@Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+@Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class UserFormAccessesDatasource
     extends BaseDataSource<$UserFormPermissionsTable, UserFormPermission>
     implements MetaDataSource<UserFormPermission> {
-  UserFormAccessesDatasource(
-      {required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.userFormPermissions);
-
   @override
   String get resourceName => 'formPermissions';
 
@@ -29,4 +25,8 @@ class UserFormAccessesDatasource
       ...data,
     }, serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, UserFormPermission>, UserFormPermission>
+      get table => db.userFormPermissions;
 }

@@ -1,28 +1,43 @@
+import 'package:d_sdk/core/sync/model/sync_config.dart';
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/dao/base_extension.dart';
 import 'package:d_sdk/database/tables/users.table.dart';
 import 'package:drift/drift.dart';
 
 part 'users_dao.g.dart';
 
 @DriftAccessor(tables: [Users])
-class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
+class UsersDao extends DatabaseAccessor<AppDatabase>
+    with _$UsersDaoMixin, BaseExtension<User> {
   UsersDao(AppDatabase db) : super(db);
 
-  Future<List<User>> getAllItems() => select(users).get();
+  @override
+  String get resourceName => 'myDetails';
 
-  Future<User?> getItemById(String id) {
-    return (select(users)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+  @override
+  Future<List<Map<String, dynamic>>> getOnlineRaw({
+    SyncConfig? options,
+  }) async {
+    final response =
+        await apiClient.request(resourceName: resourceName, method: 'get');
+
+    final raw = response.data != null ? [response.data] : [];
+    return raw.cast<Map<String, dynamic>>();
   }
 
-  Future<int> insertItem(Insertable<User> entry) {
-    return into(users).insert(entry);
+  @override
+  User fromApiJson(Map<String, dynamic> data, {ValueSerializer? serializer}) {
+    final authorities = (data['authorities'] as List<dynamic>)
+        .map<String>((e) => e['authority'] as String)
+        .toList();
+
+    return User.fromJson({
+      ...data,
+      'username': data['login'],
+      'authorities': authorities,
+    }, serializer: serializer);
   }
 
-  Future<bool> updateItem(User item) {
-    return update(users).replace(item);
-  }
-
-  Future<int> deleteItem(String id) {
-    return (delete(users)..where((tbl) => tbl.id.equals(id))).go();
-  }
+  @override
+  TableInfo<TableInfo<Table, User>, User> get table => users;
 }

@@ -1,26 +1,30 @@
-import 'package:d_sdk/core/exception/exception.dart';
-import 'package:d_sdk/core/logging/new_app_logging.dart';
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/user_session/session_context.dart';
-import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
+import 'package:d_sdk/di/injection.dart';
 
-@Singleton(scope: SessionContext.activeSessionScope)
+// @LazySingleton(scope: UserSession.activeSessionScope)
 class DbManager {
-  DbManager(this.context) : db = AppDatabase(databaseName: context.dbName);
-  late final AppDatabase db;
-  late final SessionContext context;
+  UserSession? get _currentUserSession => rSdkLocator<UserSession>();
 
-  @preResolve
-  Future<DbManager> initDb(SessionContext? authContext) async {
-    // valid non null auth context
-    throwIf(authContext != null, NoCachedAuthenticatedUser());
-    logDebug('initializing DbManager for: ${authContext!.username}');
-    context = authContext;
+  String? get userId => _currentUserSession?.username;
 
-    // opening db
-    return DbManager(authContext);
-  }
+  final AppDatabase? _currentUserDb;
+
+  DbManager({required AppDatabase db}) : _currentUserDb = db;
+
+  AppDatabase get db => _currentUserDb!;
+
+  // @preResolve
+  // static Future<DbManager> initDbForUser(
+  //     {required String userId, required DatabaseFactory factory}) async {
+  //   // valid non null auth context
+  //   logDebug(
+  //       'initializing DbManager: $userId, scope: ${rSdkLocator.currentScopeName}');
+  //
+  //   final executor = await factory.openForUser(userId);
+  //   return DbManager._(
+  //       db: AppDatabase(executor: executor), databaseFactory: factory);
+  // }
 
   /// Returns a stream of AuthUserData from the local database.
   Stream<User?> watchAuthUserData(String userId) {
@@ -30,9 +34,8 @@ class DbManager {
 
   /// called only after authentication success and
   /// registering the AuthenticatedUser
-  Future<User?> loadAuthUserData() {
-    return (db.select(db.users)
-          ..where((t) => t.username.equals(context.username)))
+  Future<User?> loadAuthUserData(String userId) async {
+    return (db.select(db.users)..where((t) => t.username.equals(userId)))
         .getSingleOrNull();
   }
 
@@ -40,7 +43,7 @@ class DbManager {
     await (db.into(db.users).insertOnConflictUpdate(authUserData));
   }
 
-  Future<void> deleteData() async {
+  Future<void> deleteDataForUser(String userId) async {
     await db.customStatement('PRAGMA foreign_keys = OFF');
     try {
       db.transaction(() async {
@@ -53,8 +56,13 @@ class DbManager {
     }
   }
 
-  @disposeMethod
-  Future<void> closeDatabase() async {
-    await db.close();
-  }
+// Future<void> closeForUser(String userId) {
+//   return databaseFactory.closeForUser(userId);
+// }
+
+// @disposeMethod
+// Future<void> dispose() async {
+//   logDebug('Closing all database connections', source: this);
+//   databaseFactory.close();
+// }
 }

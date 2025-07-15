@@ -8,6 +8,7 @@ import 'package:d_sdk/database/converters/custom_serializer.dart';
 import 'package:d_sdk/database/dao/sync_summaries_dao.dart';
 import 'package:d_sdk/database/dbManager.dart';
 import 'package:d_sdk/datasource/abstract_datasource.dart';
+import 'package:d_sdk/di/injection.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
@@ -16,18 +17,13 @@ typedef ProgressCallback = void Function(double progress);
 
 abstract class BaseDataSource<T extends TableInfo<T, D>,
     D extends Insertable<D>> extends AbstractDatasource<D> {
-  final HttpClient apiClient;
-  final DbManager _dbManager;
-  final TableInfo<T, D> table;
+  HttpClient get apiClient => rSdkLocator<HttpClient<dynamic>>();
 
-  BaseDataSource({
-    required this.apiClient,
-    required DbManager dbManager,
-    required this.table,
-  }) : _dbManager = dbManager;
+  TableInfo<TableInfo<Table, D>, D> get table;
 
   AppDatabase get db {
-    final instance = _dbManager.db;
+    // final instance = _dbManager.db;
+    final instance = rSdkLocator<DbManager>().db;
     return instance;
   }
 

@@ -1,19 +1,15 @@
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(DSOrder.formTemplate)
-@Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+@Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class DataFormTemplateDatasource
     extends BaseDataSource<$FormTemplatesTable, FormTemplate>
     implements MetaDataSource<FormTemplate> {
-  DataFormTemplateDatasource(
-      {required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.formTemplates);
-
   @override
   String get resourceName => 'formTemplates';
 
@@ -74,4 +70,8 @@ class DataFormTemplateDatasource
       'disabled': disabled,
     }, serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, FormTemplate>, FormTemplate> get table =>
+      db.formTemplates;
 }

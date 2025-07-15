@@ -4,12 +4,9 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:drift/drift.dart';
 
 // @Order(DSOrder.dataValue)
-// @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+// @Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class DataValueDatasource extends BaseDataSource<$DataValuesTable, DataValue>
     implements MetaDataSource<DataValue> {
-  DataValueDatasource({required super.apiClient, required DbManager dbManager})
-      : super(table: dbManager.db.dataValues, dbManager: dbManager);
-
   @override
   String get resourceName => 'dataValues';
 
@@ -29,4 +26,7 @@ class DataValueDatasource extends BaseDataSource<$DataValuesTable, DataValue>
       'dataElement': dataElement,
     }, serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, DataValue>, DataValue> get table => db.dataValues;
 }

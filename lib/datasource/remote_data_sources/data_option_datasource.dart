@@ -4,12 +4,9 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:drift/drift.dart';
 
 // @Order(DSOrder.Option)
-// @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+// @Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
     implements MetaDataSource<DataOption> {
-  OptionDatasource({required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.dataOptions);
-
   @override
   String get resourceName => 'options';
 
@@ -21,4 +18,8 @@ class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
     return DataOption.fromJson({...data, 'optionSet': optionSet},
         serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, DataOption>, DataOption> get table =>
+      db.dataOptions;
 }

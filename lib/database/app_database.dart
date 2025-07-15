@@ -1,5 +1,4 @@
 import 'package:d_sdk/core/form/element_template/element_template.dart';
-import 'package:d_sdk/core/platform/platform.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/dao/dao.dart';
 import 'package:d_sdk/database/shared/shared.dart';
@@ -31,46 +30,30 @@ part 'app_database.g.dart';
   UserFormPermissions,
   SyncSummaries
 ], daos: [
+  UsersDao,
+  OrgUnitsDao,
   ActivitiesDao,
+  TeamsDao,
   AssignmentsDao,
+  FormTemplatesDao,
   DataElementsDao,
+  FormTemplateVersionsDao,
   DataOptionSetsDao,
   DataOptionsDao,
   DataInstancesDao,
   DataValuesDao,
-  FormTemplateVersionsDao,
-  FormTemplatesDao,
-  OrgUnitsDao,
   RepeatInstancesDao,
-  TeamsDao,
-  UsersDao,
-  SyncSummariesDao
+  SyncSummariesDao,
+  MetadataSubmissionsDao,
+  OuLevelsDao,
+  ProjectsDao,
+  UserFormPermissionsDao
 ])
 class AppDatabase extends _$AppDatabase {
-  // AppDatabase(super.e, {String? databaseName});
-  AppDatabase({QueryExecutor? executor, String? databaseName})
-      : super(executor ?? Platform.createDatabaseConnection(databaseName!)
+  String userId;
 
-            /* /// no encryption, called if QueryExecutor is null
-              driftDatabase(
-                name: databaseName ?? 'drun-db',
-                native: const DriftNativeOptions(
-                  databaseDirectory: getApplicationSupportDirectory,
-                ),
-                web: DriftWebOptions(
-                  sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-                  driftWorker: Uri.parse('drift_worker.js'),
-                  onResult: (result) {
-                    if (result.missingFeatures.isNotEmpty) {
-                      logDebug(
-                        'Using ${result.chosenImplementation} due to unsupported '
-                        'browser features: ${result.missingFeatures}',
-                      );
-                    }
-                  },
-                ),
-              ),*/
-            );
+  AppDatabase({required QueryExecutor executor, required this.userId})
+      : super(executor);
 
   @override
   int get schemaVersion => 1;

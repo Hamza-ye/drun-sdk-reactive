@@ -1,4 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/dao/base_extension.dart';
 import 'package:d_sdk/database/tables/repeat_instances.table.dart';
 import 'package:drift/drift.dart';
 
@@ -6,25 +7,24 @@ part 'repeat_instances_dao.g.dart';
 
 @DriftAccessor(tables: [RepeatInstances])
 class RepeatInstancesDao extends DatabaseAccessor<AppDatabase>
-    with _$RepeatInstancesDaoMixin {
+    with _$RepeatInstancesDaoMixin, BaseExtension<RepeatInstance> {
   RepeatInstancesDao(AppDatabase db) : super(db);
 
-  Future<List<RepeatInstance>> getAllItems() => select(repeatInstances).get();
+  @override
+  String get resourceName => 'repeatInstances';
 
-  Future<RepeatInstance?> getItemById(String id) {
-    return (select(repeatInstances)..where((tbl) => tbl.id.equals(id)))
-        .getSingleOrNull();
+  @override
+  RepeatInstance fromApiJson(Map<String, dynamic> data,
+      {ValueSerializer? serializer}) {
+    final submission =
+        data['submission']['uid'] ?? data['submission']['id']?.toString();
+    final parent = data['parent']?['uid'] ?? data['parent']?['id']?.toString();
+    return RepeatInstance.fromJson(
+        {...data, 'submission': submission, 'parent': parent},
+        serializer: serializer);
   }
 
-  Future<int> insertItem(Insertable<RepeatInstance> entry) {
-    return into(repeatInstances).insert(entry);
-  }
-
-  Future<bool> updateItem(RepeatInstance item) {
-    return update(repeatInstances).replace(item);
-  }
-
-  Future<int> deleteItem(String id) {
-    return (delete(repeatInstances)..where((tbl) => tbl.id.equals(id))).go();
-  }
+  @override
+  TableInfo<TableInfo<Table, RepeatInstance>, RepeatInstance> get table =>
+      repeatInstances;
 }

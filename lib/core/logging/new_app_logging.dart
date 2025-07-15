@@ -85,13 +85,14 @@ void defaultLogWriterCallback(String message,
     StackTrace? stackTrace,
     Object? source}) {
   final logMessage = StringBuffer()
-    ..write(source != null ? ' | Source: ${source.runtimeType}' : '')
     ..write(message)
-    ..write(data != null ? ' | Data: ${data.toString()}' : '');
+    ..write(data != null ? ' | Data: ${data.toString()}' : '')
+    ..write(source != null ? ' | Source: ${source.runtimeType}' : '');
 
   developer.log(logMessage.toString(),
       level: _mapLogLevelToDeveloperLevel(level),
-      stackTrace: isError ? stackTrace : null,
+      name: 'Datarun',
+      stackTrace: stackTrace,
       error: isError ? source : null);
 }
 

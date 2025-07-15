@@ -2,23 +2,19 @@ import 'dart:convert';
 
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary_model.dart';
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/database.dart';
+import 'package:d_sdk/database/extensions/data_submission.extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/use_cases/upload_submissions/data_submission.extension.dart';
-import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(DSOrder.dataInstance)
-@Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+@Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class DataInstanceDatasource
     extends BaseDataSource<$DataInstancesTable, DataInstance>
     implements MetaDataSource<DataInstance> {
-  DataInstanceDatasource(
-      {required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.dataInstances);
-
   @override
   String get resourceName => 'dataSubmission';
 
@@ -118,4 +114,8 @@ class DataInstanceDatasource
 
     return queue;
   }
+
+  @override
+  TableInfo<TableInfo<Table, DataInstance>, DataInstance> get table =>
+      db.dataInstances;
 }

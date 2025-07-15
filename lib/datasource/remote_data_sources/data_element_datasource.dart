@@ -1,18 +1,14 @@
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(DSOrder.dataElement)
-@Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+@Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class DataElementDatasource
     extends BaseDataSource<$DataElementsTable, DataElement>
     implements MetaDataSource<DataElement> {
-  DataElementDatasource(
-      {required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.dataElements);
-
   @override
   String get resourceName => 'dataElements';
 
@@ -26,4 +22,8 @@ class DataElementDatasource
       'optionSet': optionSet,
     }, serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, DataElement>, DataElement> get table =>
+      db.dataElements;
 }

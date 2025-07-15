@@ -1,4 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/dao/base_extension.dart';
 import 'package:d_sdk/database/shared/activity_model.dart';
 import 'package:d_sdk/database/tables/activities.table.dart';
 import 'package:drift/drift.dart';
@@ -7,9 +8,32 @@ part 'activities_dao.g.dart';
 
 @DriftAccessor(tables: [Activities])
 class ActivitiesDao extends DatabaseAccessor<AppDatabase>
-    with _$ActivitiesDaoMixin {
+    with _$ActivitiesDaoMixin, BaseExtension<Activity> {
   ActivitiesDao(AppDatabase db) : super(db);
 
+  @override
+  TableInfo<TableInfo<Table, Activity>, Activity> get table => activities;
+
+  @override
+  String get resourceName => 'activities';
+
+  @override
+  Future<void> disableStale(List<Object> liveIds) async {
+    await (db.update(table)
+      ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
+        .write(RawValuesInsertable({
+      'disabled': Variable<bool>(true),
+    }));
+  }
+
+  @override
+  Activity fromApiJson(Map<String, dynamic> data,
+      {ValueSerializer? serializer}) {
+    final project =
+        data['project']?['uid'] ?? data['project']?['id']?.toString();
+    return Activity.fromJson({...data, 'project': project as String},
+        serializer: serializer);
+  }
   /// watch the status of submission belonging to an
   /// item (i.e, the aggregation level) (e.g. Assignment, Form,..)
   /// by passing the item id and the item level

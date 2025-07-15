@@ -1,17 +1,14 @@
 import 'package:d_sdk/core/sync/model/sync_config.dart';
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(DSOrder.user)
-@Injectable(scope: SessionContext.activeSessionScope)
+@Injectable(scope: UserSession.activeSessionScope)
 class UserDatasource extends BaseDataSource<$UsersTable, User>
     implements MetaDataSource<User> {
-  UserDatasource({required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.users);
-
   @override
   String get resourceName => 'myDetails';
 
@@ -38,6 +35,9 @@ class UserDatasource extends BaseDataSource<$UsersTable, User>
       'authorities': authorities,
     }, serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, User>, User> get table => db.users;
 
 // Future<List<User>> syncWithRemote(
 //     {SyncConfig? options, ProgressCallback? progressCallback}) async {

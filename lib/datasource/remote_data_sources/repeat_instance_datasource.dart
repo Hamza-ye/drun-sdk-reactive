@@ -4,14 +4,10 @@ import 'package:d_sdk/datasource/metadata_datasource.dart';
 import 'package:drift/drift.dart';
 
 // @Order(DSOrder.repeatInstance)
-// @Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+// @Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class RepeatInstanceDatasource
     extends BaseDataSource<$RepeatInstancesTable, RepeatInstance>
     implements MetaDataSource<RepeatInstance> {
-  RepeatInstanceDatasource(
-      {required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.repeatInstances);
-
   @override
   String get resourceName => 'repeatInstances';
 
@@ -25,4 +21,8 @@ class RepeatInstanceDatasource
         {...data, 'submission': submission, 'parent': parent},
         serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, RepeatInstance>, RepeatInstance> get table =>
+      db.repeatInstances;
 }

@@ -1,9 +1,11 @@
+import 'package:d_sdk/core/auth/token_storage.dart';
 import 'package:d_sdk/core/http/http_client.dart';
+import 'package:d_sdk/core/secure_storage/storage_service.dart';
 import 'package:d_sdk/database/dbManager.dart';
-import 'package:d_sdk/user_session/session_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'injection.config.dart';
 
@@ -13,10 +15,12 @@ GetIt rSdkLocator = GetIt.instance;
     initializerName: r'$initSdkGetIt',
     asExtension: false,
     ignoreUnregisteredTypes: [
-      SessionRepository,
       Dio,
       DbManager,
       HttpClient,
+      SharedPreferences,
+      StorageService,
+      TokenStorage
     ])
 GetIt setupSdkLocator() {
   // rSdkLocator.enableRegisteringMultipleInstancesOfOneType();

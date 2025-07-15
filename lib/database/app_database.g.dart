@@ -10724,11 +10724,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE INDEX data_instance_status_idx ON data_instances (sync_state)');
   late final Index formPermissionFormIdx = Index('form_permission_form_idx',
       'CREATE INDEX form_permission_form_idx ON user_form_permissions (team, form)');
+  late final UsersDao usersDao = UsersDao(this as AppDatabase);
+  late final OrgUnitsDao orgUnitsDao = OrgUnitsDao(this as AppDatabase);
   late final ActivitiesDao activitiesDao = ActivitiesDao(this as AppDatabase);
+  late final TeamsDao teamsDao = TeamsDao(this as AppDatabase);
   late final AssignmentsDao assignmentsDao =
       AssignmentsDao(this as AppDatabase);
+  late final FormTemplatesDao formTemplatesDao =
+      FormTemplatesDao(this as AppDatabase);
   late final DataElementsDao dataElementsDao =
       DataElementsDao(this as AppDatabase);
+  late final FormTemplateVersionsDao formTemplateVersionsDao =
+      FormTemplateVersionsDao(this as AppDatabase);
   late final DataOptionSetsDao dataOptionSetsDao =
       DataOptionSetsDao(this as AppDatabase);
   late final DataOptionsDao dataOptionsDao =
@@ -10736,17 +10743,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final DataInstancesDao dataInstancesDao =
       DataInstancesDao(this as AppDatabase);
   late final DataValuesDao dataValuesDao = DataValuesDao(this as AppDatabase);
-  late final FormTemplateVersionsDao formTemplateVersionsDao =
-      FormTemplateVersionsDao(this as AppDatabase);
-  late final FormTemplatesDao formTemplatesDao =
-      FormTemplatesDao(this as AppDatabase);
-  late final OrgUnitsDao orgUnitsDao = OrgUnitsDao(this as AppDatabase);
   late final RepeatInstancesDao repeatInstancesDao =
       RepeatInstancesDao(this as AppDatabase);
-  late final TeamsDao teamsDao = TeamsDao(this as AppDatabase);
-  late final UsersDao usersDao = UsersDao(this as AppDatabase);
   late final SyncSummariesDao syncSummariesDao =
       SyncSummariesDao(this as AppDatabase);
+  late final MetadataSubmissionsDao metadataSubmissionsDao =
+      MetadataSubmissionsDao(this as AppDatabase);
+  late final OuLevelsDao ouLevelsDao = OuLevelsDao(this as AppDatabase);
+  late final ProjectsDao projectsDao = ProjectsDao(this as AppDatabase);
+  late final UserFormPermissionsDao userFormPermissionsDao =
+      UserFormPermissionsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

@@ -1,41 +1,92 @@
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/converters/custom_serializer.dart';
+import 'package:d_sdk/database/dao/base_extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
+import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:drift/drift.dart';
 
 part 'assignments_dao.g.dart';
 
 @DriftAccessor(tables: [Assignments])
 class AssignmentsDao extends DatabaseAccessor<AppDatabase>
-    with _$AssignmentsDaoMixin {
+    with _$AssignmentsDaoMixin, BaseExtension<Assignment> {
   AssignmentsDao(AppDatabase db) : super(db);
 
-  Future<List<Assignment>> getAll() => select(assignments).get();
+  @override
+  String get resourceName => 'assignments';
 
-  Future<List<Assignment>> getByIds(Iterable<String> ids) {
-    return (select(assignments)..where((tbl) => tbl.id.isIn(ids))).get();
+  /// Fetch the secondary “forms” and wrap them into CompanionInsert
+  @override
+  Future<List<CompanionInsert>> extractExtraEntities(
+      List<Map<String, dynamic>> raw) async {
+    // first let the base hook map your Assignment list, but you still need
+    // all AssignmentForms—pull them here:
+    final List<AssignmentForm> forms = await _getExtraAssignmentForms();
+    return forms.map((f) => CompanionInsert(db.assignmentForms, f)).toList();
   }
 
-  Future<Assignment?> getById(String id) {
-    return (select(assignments)..where((tbl) => tbl.id.equals(id)))
-        .getSingleOrNull();
+  @override
+  Assignment mapRemoteItem(Map<String, dynamic> data) {
+    final bool disabled = data['disabled'] == true;
+
+    final activity = data['activity']['uid'] as String;
+    final orgUnit = data['orgUnit']['uid'] as String;
+    final team = data['team']['uid'] as String;
+
+    final base = super.mapRemoteItem({
+      ...data,
+      'activity': activity,
+      'orgUnit': orgUnit,
+      'team': team,
+      'status': data['status'] ?? AssignmentStatus.PLANNED.name,
+      'syncState': InstanceSyncStatus.synced.name,
+      'disabled': disabled
+    });
+
+    return base;
   }
 
-  Future<int> insert(Insertable<Assignment> entry) {
-    return into(assignments).insert(entry);
+  @override
+  Future<void> disableStale(List<Object> liveIds) async {
+    await (db.update(table)
+          ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
+        .write(RawValuesInsertable({
+      'disabled': Variable<bool>(true),
+    }));
   }
 
-  Future<bool> updateObject(Assignment item) {
-    return update(assignments).replace(item);
+  @override
+  Assignment fromApiJson(
+    Map<String, dynamic> data, {
+    ValueSerializer? serializer,
+  }) {
+    return Assignment.fromJson(data, serializer: serializer);
   }
 
-  Future<int> deleteById(String id) {
-    return (delete(assignments)..where((tbl) => tbl.id.equals(id))).go();
+  Future<List<AssignmentForm>> _getExtraAssignmentForms() async {
+    final extraResourceName = 'assignments/forms';
+
+    final versionResourcePath = '$extraResourceName?paged=false';
+    final response = await apiClient.request(
+        resourceName: versionResourcePath, method: 'get');
+
+    final raw = response.data;
+
+    /// expecting paged list ({ apiResourceName: [...] }),
+    List dataItems = raw?['assignments']?.toList() ?? [];
+
+    final assignmentModels =
+        dataItems.map((item) => _AssignmentWithAccess.fromJson(item)).toList();
+
+    final assignmentForms =
+        assignmentModels.expand((t) => t.accessibleForms).toList();
+    return assignmentForms;
   }
 
-  Future<int> deleteObject(Assignment assignment) {
-    return deleteById(assignment.id);
-  }
+  @override
+  TableInfo<TableInfo<Assignments, Assignment>, Assignment> get table =>
+      assignments;
 
   Future<List<AssignmentModel>> allAssignments(
       {String? activityId, String ouSearchFilter = ''}) async {
@@ -48,7 +99,8 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
     }
 
     if (ouSearchFilter.isNotEmpty) {
-      assignmentWithRefs = assignmentWithRefs..filter((f) => f.orgUnit.name.contains(ouSearchFilter));
+      assignmentWithRefs = assignmentWithRefs
+        ..filter((f) => f.orgUnit.name.contains(ouSearchFilter));
     }
 
     final result = assignmentWithRefs
@@ -92,7 +144,7 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
   Selectable<AssignmentModel> selectAssignments({
     String? activityId,
     String ouSearchFilter = '',
-    int page = 1, // 1-based page index
+    int page = 1,
     int pageSize = 20,
   }) {
     final offset = (page - 1) * pageSize;
@@ -162,42 +214,47 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
           );
     });
   }
-//
-// // AssignmentCardProjection is a simple class to hold flat query results
-// // map List<AssignmentCardProjection> to List<AssignmentCardViewModel>
-//   Selectable<AssignmentModel> watchAssignmentCardsForActivity2(
-//       String activityId,
-//       {int page = 1,
-//       int pageSize = 20}) {
-//     // final offset = (page - 1) * pageSize;
-//     final JoinedSelectStatement<HasResultSet, dynamic> query =
-//         (select(db.assignments)..where((a) => a.activity.equals(activityId)))
-//             .join([
-//       innerJoin(db.teams, db.teams.id.equalsExp(db.assignments.team)),
-//       innerJoin(
-//           db.activities, db.activities.id.equalsExp(db.assignments.activity)),
-//       innerJoin(db.orgUnits, db.orgUnits.id.equalsExp(db.assignments.orgUnit)),
-//     ]);
-//
-//     final result = query.map((row) {
-//       final activity = row.readTable(activities);
-//       final team = row.readTable(teams);
-//       final orgUnit = row.readTable(orgUnits);
-//       return AssignmentModel(
-//         id: row.readTable(assignments).id,
-//         activity: IdentifiableModel(
-//             id: activityId, code: activity.code, name: activity.name),
-//         orgUnit: IdentifiableModel(
-//             id: orgUnit.id, code: orgUnit.code, name: orgUnit.name),
-//         team: IdentifiableModel(id: team.id, code: team.code, name: team.code),
-//         startDay: row.readTable(assignments).startDay,
-//         startDate: row.readTable(assignments).startDate,
-//         dueDate: null,
-//         // reportedResources: {},
-//         status: row.readTable(assignments).progressStatus ??
-//             AssignmentStatus.NOT_STARTED,
-//       );
-//     });
-//     return result;
-//   }
+}
+
+class _AssignmentWithAccess {
+  final String assignment;
+  final String activity;
+  final String team;
+  final String orgUnit;
+
+  final AssignmentStatus progressStatus;
+  final List<AssignmentForm> accessibleForms;
+
+  _AssignmentWithAccess(
+      {required this.assignment,
+      required this.activity,
+      required this.team,
+      required this.orgUnit,
+      required this.progressStatus,
+      required this.accessibleForms});
+
+  factory _AssignmentWithAccess.fromJson(Map<String, dynamic> map) {
+    final accessibleForms = (map['accessibleForms'] as List? ?? [])
+        .map<AssignmentForm>((access) => AssignmentForm.fromJson(
+              {
+                ...access,
+                'form': access['form'],
+                'assignment': access['assignment'],
+              },
+              serializer: CustomSerializer(),
+            ))
+        .toList();
+
+    final progressStatus =
+        AssignmentStatus.getType(map['progressStatus'] as String?) ??
+            AssignmentStatus.PLANNED;
+    return _AssignmentWithAccess(
+      assignment: map['id'],
+      activity: map['activity'] as String,
+      team: map['team'] as String,
+      orgUnit: map['orgUnit'] as String,
+      progressStatus: progressStatus,
+      accessibleForms: accessibleForms,
+    );
+  }
 }

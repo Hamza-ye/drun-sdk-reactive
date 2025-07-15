@@ -1,4 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/dao/base_extension.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
@@ -6,8 +7,20 @@ part 'data_options_dao.g.dart';
 
 @DriftAccessor(tables: [DataOptions])
 class DataOptionsDao extends DatabaseAccessor<AppDatabase>
-    with _$DataOptionsDaoMixin {
+    with _$DataOptionsDaoMixin, BaseExtension<DataOption> {
   DataOptionsDao(AppDatabase db) : super(db);
+
+  @override
+  String get resourceName => 'options';
+
+  @override
+  DataOption fromApiJson(Map<String, dynamic> data,
+      {ValueSerializer? serializer}) {
+    final optionSet =
+        data['optionSet']['uid'] ?? data['optionSet']['id'].toString();
+    return DataOption.fromJson({...data, 'optionSet': optionSet},
+        serializer: serializer);
+  }
 
   Future<List<DataOption>> searchOptions(String setId, String filter) {
     final query = select(dataOptions)
@@ -49,4 +62,7 @@ class DataOptionsDao extends DatabaseAccessor<AppDatabase>
       return row.readTable(dataOptions);
     });
   }
+
+  @override
+  TableInfo<TableInfo<Table, DataOption>, DataOption> get table => dataOptions;
 }

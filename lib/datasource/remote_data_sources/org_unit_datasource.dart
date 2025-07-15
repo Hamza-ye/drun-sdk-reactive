@@ -1,16 +1,13 @@
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/user_session/session_context.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 @Order(DSOrder.orgUnit)
-@Injectable(as: AbstractDatasource, scope: SessionContext.activeSessionScope)
+@Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class OrgUnitDatasource extends BaseDataSource<$OrgUnitsTable, OrgUnit>
     implements MetaDataSource<OrgUnit> {
-  OrgUnitDatasource({required super.apiClient, required DbManager dbManager})
-      : super(dbManager: dbManager, table: dbManager.db.orgUnits);
-
   @override
   String get resourceName => 'orgUnits';
 
@@ -21,4 +18,7 @@ class OrgUnitDatasource extends BaseDataSource<$OrgUnitsTable, OrgUnit>
     return OrgUnit.fromJson({...data, 'parent': parent},
         serializer: serializer);
   }
+
+  @override
+  TableInfo<TableInfo<Table, OrgUnit>, OrgUnit> get table => db.orgUnits;
 }

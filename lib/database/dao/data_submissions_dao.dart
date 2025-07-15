@@ -1,4 +1,10 @@
+import 'dart:convert';
+
+import 'package:d_sdk/core/logging/new_app_logging.dart';
+import 'package:d_sdk/core/sync/sync_summary_model.dart';
 import 'package:d_sdk/database/app_database.dart';
+import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/extensions/data_submission.extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/data_submissions.table.dart';
 import 'package:drift/drift.dart';
@@ -7,10 +13,108 @@ part 'data_submissions_dao.g.dart';
 
 @DriftAccessor(tables: [DataInstances])
 class DataInstancesDao extends DatabaseAccessor<AppDatabase>
-    with _$DataInstancesDaoMixin {
+    with _$DataInstancesDaoMixin, BaseExtension<DataInstance> {
   DataInstancesDao(AppDatabase db) : super(db);
 
-  Future<List<DataInstance>> getAll() => select(dataInstances).get();
+  @override
+  String get resourceName => 'dataSubmission';
+
+  @override
+  String get resourcePath => '$resourceName/objects?paged=false';
+
+  @override
+  DataInstance fromApiJson(Map<String, dynamic> data,
+      {ValueSerializer? serializer}) {
+    final form = data['form'];
+    final version = data['version'];
+    final String formId = form != null && version != null
+        ? '${form}_$version'
+        : data['formVersion'];
+    final assignment = data['assignment'];
+    final orgUnit = data['orgUnit'];
+    final team = data['team'];
+    return DataInstance.fromJson({
+      ...data,
+      'status': InstanceSyncStatus.synced.name,
+      'progressStatus': data['status'],
+      'form': formId,
+      'assignment': assignment,
+      'orgUnit': orgUnit,
+      'team': team,
+    }, serializer: serializer);
+  }
+
+  Future<List<DataInstance>> upload(List<String> uids) async {
+    List<DataInstance> submissions = await db.managers.dataInstances
+        .filter((f) => f.syncState.isIn(
+            [InstanceSyncStatus.finalized, InstanceSyncStatus.syncFailed]))
+        .get();
+
+    List<String> syncableEntityIds = [];
+    List<String> syncableTeamIds = [];
+    List<String> syncableAssignments = [];
+
+    submissions.forEach((submission) {
+      syncableEntityIds.add(submission.id);
+
+      syncableAssignments.removeWhere((id) => id == submission.assignment);
+      if (submission.assignment != null) {
+        syncableAssignments.add(submission.assignment!);
+      }
+
+      syncableTeamIds.removeWhere((id) => id == submission.team);
+      if (submission.team != null) {
+        syncableTeamIds.add(submission.team!);
+      }
+    });
+
+    final uploadPayload = submissions.map((submission) {
+      return submission.toUpload();
+    }).toList();
+
+    // final resourcePath = '/${apiVersionPath}/$resourceName/bulk';
+    final resource = '$resourceName/bulk';
+
+    final response = await apiClient.request(
+        resourceName: resource, data: uploadPayload, method: 'post');
+
+    SyncSummaryModel summary = SyncSummaryModel.fromJson(response.data);
+    logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});
+
+    final List<DataInstance> queue = [];
+
+    for (var submission in submissions) {
+      final syncFailed = summary.failed.containsKey(submission.id);
+      final syncCreated = summary.created.contains(submission.id);
+      final syncUpdated = summary.updated.contains(submission.id);
+      DataInstance newEntity = submission;
+      if (syncCreated || syncUpdated) {
+        newEntity = submission.copyWith(
+            syncState: InstanceSyncStatus.synced,
+            lastSyncMessage: Value(null),
+            lastSyncDate: Value(DateTime.now().toUtc()));
+        // availableItemCount++;
+      } else if (syncFailed) {
+        newEntity = submission.copyWith(
+            syncState: InstanceSyncStatus.syncFailed,
+            lastSyncMessage: Value(summary.failed[submission.id]));
+
+        // availableItemCount++;
+      }
+
+      queue.add(newEntity);
+    }
+
+    if (queue.isNotEmpty) {
+      db.transaction(() async {
+        await db.batch((b) {
+          b.insertAllOnConflictUpdate(table, queue);
+        });
+      });
+    }
+
+    return queue;
+  }
 
   Future<DataInstance?> getById(String id) {
     return (select(dataInstances)..where((tbl) => tbl.id.equals(id)))
@@ -182,4 +286,8 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       );
     });
   }
+
+  @override
+  TableInfo<TableInfo<Table, DataInstance>, DataInstance> get table =>
+      dataInstances;
 }

@@ -1,28 +1,44 @@
 import 'dart:io';
 
+import 'package:d_sdk/core/utilities/user_file_manager.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:path/path.dart' as p;
 
 class PlatformInterface {
   static QueryExecutor createDatabaseConnection(String userId) {
     return LazyDatabase(() async {
-      final currentDir = Directory.current.path;
-      // rSdkLocator<UserFileManager>().getUserFile(userId);
-      final customDir = Directory(currentDir);
-      if (!await customDir.exists()) {
-        await customDir.create(recursive: true);
-      }
-      final dbPath = p.join(
-        currentDir,
-        'db_user_$userId.db',
-      );
-      final file = File(dbPath);
-      return NativeDatabase(file);
+      // final currentDir = Directory.current.path;
+      // final customDir = Directory(currentDir);
+      // if (!await customDir.exists()) {
+      //   await customDir.create(recursive: true);
+      // }
+      // final dbPath = p.join(
+      //   currentDir,
+      //   'datarun_$userId.db',
+      // );
+      // final file = File(dbPath);
+
+      final File file =
+          await UserFileManager(userId).getUserFile('datarun_$userId.db');
+
+      // return NativeDatabase(file);
+
+      // This is the key change: open the NativeDatabase in a background isolate.
+      // return NativeDatabase.createInBackground(file);
+      return NativeDatabase.createBackgroundConnection(file);
     });
   }
 }
 
+// class PlatformInterface {
+//   static QueryExecutor createDatabaseConnection(String userId) {
+//     return LazyDatabase(() async {
+//       final file = await rSdkLocator<UserFileManager>(param1: userId)
+//           .getUserFile('db_user_$userId.db');
+//       return NativeDatabase(file);
+//     });
+//   }
+// }
 //   static QueryExecutor _openDatabase(String databaseName) {
 //     return LazyDatabase(() async {
 //       final appDir = await getApplicationDocumentsDirectory();
