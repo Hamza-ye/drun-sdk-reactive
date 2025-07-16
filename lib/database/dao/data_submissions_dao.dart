@@ -7,9 +7,6 @@ import 'package:d_sdk/database/dao/base_extension.dart';
 import 'package:d_sdk/database/extensions/data_submission.extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/data_submissions.table.dart';
-import 'package:d_sdk/di/app_environment.dart';
-import 'package:d_sdk/di/injection.dart';
-import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 
 part 'data_submissions_dao.g.dart';

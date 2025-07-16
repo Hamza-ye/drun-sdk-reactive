@@ -1,10 +1,5 @@
-import 'dart:convert';
-
-import 'package:d_sdk/core/logging/new_app_logging.dart';
-import 'package:d_sdk/core/sync/sync_summary_model.dart';
 import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/database.dart';
-import 'package:d_sdk/database/extensions/data_submission.extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/datasource/datasource.dart';
 import 'package:drift/drift.dart';
