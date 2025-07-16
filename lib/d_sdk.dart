@@ -11,9 +11,6 @@ class DSdk {
 
   static AppDatabase get db => dbManager.db;
 
-  static DataInstanceDatasource get dataInstanceSource =>
-      rSdkLocator<DataInstanceDatasource>();
-
   // db DAOs:
   static ActivitiesDao get activity => db.activitiesDao;
 

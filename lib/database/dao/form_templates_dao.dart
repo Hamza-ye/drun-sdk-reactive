@@ -74,8 +74,7 @@ class FormTemplatesDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, FormTemplate>, FormTemplate> get table =>
-      formTemplates;
+  $FormTemplatesTable get table => formTemplates;
 
   Selectable<(FormTemplate, FormTemplateVersion)> selectFormTemplatesWithRefs(
       {String? assignmentId}) {

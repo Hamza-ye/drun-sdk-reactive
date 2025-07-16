@@ -25,6 +25,6 @@ class DataElementsDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, DataElement>, DataElement> get table =>
+  $DataElementsTable get table =>
       dataElements;
 }

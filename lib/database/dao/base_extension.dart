@@ -15,6 +15,8 @@ import 'package:flutter/foundation.dart';
 mixin BaseExtension<D extends Insertable> on DatabaseAccessor<AppDatabase> {
   HttpClient get apiClient => rSdkLocator<HttpClient<dynamic>>();
 
+  SimpleSelectStatement<TableInfo<Table, D>, D> get engine => select(table);
+
   TableInfo<TableInfo<Table, D>, D> get table;
 
   String get resourceName;

@@ -19,5 +19,5 @@ class ProjectsDao extends DatabaseAccessor<AppDatabase>
       Project.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, Project>, Project> get table => projects;
+  $ProjectsTable get table => projects;
 }

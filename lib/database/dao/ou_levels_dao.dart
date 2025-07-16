@@ -19,5 +19,5 @@ class OuLevelsDao extends DatabaseAccessor<AppDatabase>
       OuLevel.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, OuLevel>, OuLevel> get table => ouLevels;
+  $OuLevelsTable get table => ouLevels;
 }

@@ -18,7 +18,8 @@ enum AssignmentStatus {
   }
 
   bool isPlanned() {
-    return this == AssignmentStatus.PLANNED;
+    return this == AssignmentStatus.PLANNED ||
+        this == AssignmentStatus.NOT_STARTED;
   }
 
   // @Deprecated("use isPlanned instead")

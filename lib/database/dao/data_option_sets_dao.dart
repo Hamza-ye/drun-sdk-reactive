@@ -52,6 +52,6 @@ class DataOptionSetsDao extends DatabaseAccessor<AppDatabase>
       DataOptionSet.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, DataOptionSet>, DataOptionSet> get table =>
+  $DataOptionSetsTable get table =>
       dataOptionSets;
 }

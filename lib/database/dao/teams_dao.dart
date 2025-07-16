@@ -67,5 +67,9 @@ class TeamsDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, Team>, Team> get table => teams;
+  SimpleSelectStatement<$TeamsTable, Team> get engine =>
+      select(table)..where((u) => u.disabled.isNotValue(true));
+
+  @override
+  $TeamsTable get table => teams;
 }

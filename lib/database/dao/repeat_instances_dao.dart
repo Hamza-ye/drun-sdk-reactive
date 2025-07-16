@@ -25,6 +25,6 @@ class RepeatInstancesDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, RepeatInstance>, RepeatInstance> get table =>
+  $RepeatInstancesTable get table =>
       repeatInstances;
 }

@@ -7,6 +7,9 @@ import 'package:d_sdk/database/dao/base_extension.dart';
 import 'package:d_sdk/database/extensions/data_submission.extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/data_submissions.table.dart';
+import 'package:d_sdk/di/app_environment.dart';
+import 'package:d_sdk/di/injection.dart';
+import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 
 part 'data_submissions_dao.g.dart';
@@ -45,38 +48,54 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<List<DataInstance>> upload(List<String> uids) async {
-    List<DataInstance> submissions = await db.managers.dataInstances
-        .filter((f) => f.syncState.isIn(
-            [InstanceSyncStatus.finalized, InstanceSyncStatus.syncFailed]))
+    List<DataInstance> submissions = await (select(dataInstances)
+          ..where((f) =>
+              f.id.isIn(uids) &
+              f.syncState.isIn([
+                InstanceSyncStatus.finalized.name,
+                InstanceSyncStatus.syncFailed.name
+              ])))
         .get();
 
-    List<String> syncableEntityIds = [];
-    List<String> syncableTeamIds = [];
-    List<String> syncableAssignments = [];
+    // List<String> syncableEntityIds = [];
+    // List<String> syncableTeamIds = [];
+    // List<String> syncableAssignments = [];
 
-    submissions.forEach((submission) {
-      syncableEntityIds.add(submission.id);
-
-      syncableAssignments.removeWhere((id) => id == submission.assignment);
-      if (submission.assignment != null) {
-        syncableAssignments.add(submission.assignment!);
-      }
-
-      syncableTeamIds.removeWhere((id) => id == submission.team);
-      if (submission.team != null) {
-        syncableTeamIds.add(submission.team!);
-      }
-    });
+    // submissions.forEach((submission) {
+    //   syncableEntityIds.add(submission.id);
+    //
+    //   syncableAssignments.removeWhere((id) => id == submission.assignment);
+    //   if (submission.assignment != null) {
+    //     syncableAssignments.add(submission.assignment!);
+    //   }
+    //
+    //   syncableTeamIds.removeWhere((id) => id == submission.team);
+    //   if (submission.team != null) {
+    //     syncableTeamIds.add(submission.team!);
+    //   }
+    // });
 
     final uploadPayload = submissions.map((submission) {
       return submission.toUpload();
     }).toList();
 
-    // final resourcePath = '/${apiVersionPath}/$resourceName/bulk';
+
+    // final Dio dioClient = rSdkLocator<Dio>();
+    // String apiVersionPath = '/${AppEnvironment.apiV1Path}';
+    // final options = BaseOptions(
+    //   baseUrl: '${dioClient.options.baseUrl}${apiVersionPath}',
+    //   headers: {'Content-Type': 'application/json'},
+    // );
+
+    // final resource = '${apiVersionPath}/$resourceName/bulk';
     final resource = '$resourceName/bulk';
 
     final response = await apiClient.request(
         resourceName: resource, data: uploadPayload, method: 'post');
+    // final response = await dioClient.post(
+    //   resource,
+    //   data: uploadPayload,
+    // );
 
     SyncSummaryModel summary = SyncSummaryModel.fromJson(response.data);
     logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});
@@ -91,6 +110,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       if (syncCreated || syncUpdated) {
         newEntity = submission.copyWith(
             syncState: InstanceSyncStatus.synced,
+            isToUpdate: true,
             lastSyncMessage: Value(null),
             lastSyncDate: Value(DateTime.now().toUtc()));
         // availableItemCount++;
@@ -106,8 +126,8 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     }
 
     if (queue.isNotEmpty) {
-      db.transaction(() async {
-        await db.batch((b) {
+      transaction(() async {
+        await batch((b) {
           b.insertAllOnConflictUpdate(table, queue);
         });
       });
@@ -177,7 +197,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
 
   /// still local and not yet in server
   bool isToPost(DataInstance submission) {
-    return submission.isToUpdate;
+    return !submission.isToUpdate;
   }
 
   /// watch the status of submission belonging to an
@@ -220,14 +240,13 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     final f = alias(db.formTemplates, 'f');
     final fv = alias(db.formTemplateVersions, 'fv');
 
-    final JoinedSelectStatement<HasResultSet, dynamic> query =
-        select(sub).join([
+    JoinedSelectStatement<HasResultSet, dynamic> query = select(sub).join([
       innerJoin(a, a.id.equalsExp(sub.assignment)),
       innerJoin(ou, a.orgUnit.equalsExp(ou.id)),
       innerJoin(fv, fv.id.equalsExp(sub.templateVersion)),
       innerJoin(f, f.id.equalsExp(fv.template)),
     ])
-          ..where(sub.formTemplate.equals(form));
+      ..where(sub.formTemplate.equals(form));
 
     if (filter != null) {
       if (filter.assignment != null) {
@@ -243,7 +262,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
 
       if (filter.searchTerm.isNotEmpty) {
         final pattern = '%${filter.searchTerm.toLowerCase()}%';
-        query..where(ou.name.like(pattern) | ou.code.like(pattern));
+        query.where(ou.name.like(pattern) | ou.code.like(pattern));
       }
     }
 
@@ -251,7 +270,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       query.where(sub.deleted.equals(false));
     }
 
-    query
+    final JoinedSelectStatement<HasResultSet, dynamic> orderedQuery = query
       ..limit(pageSize, offset: offset)
       ..orderBy([
         OrderingTerm(expression: sub.lastModifiedDate, mode: OrderingMode.desc),
@@ -259,7 +278,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       ]);
 
     // Map rows to model
-    return query.map((row) {
+    return orderedQuery.map((row) {
       final submission = row.readTable(sub);
       final orgUnit = row.readTable(ou);
       final form = row.readTable(f);
@@ -288,6 +307,5 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, DataInstance>, DataInstance> get table =>
-      dataInstances;
+  $DataInstancesTable get table => dataInstances;
 }

@@ -39,5 +39,5 @@ class UsersDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, User>, User> get table => users;
+  $UsersTable get table => users;
 }

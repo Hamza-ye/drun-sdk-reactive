@@ -22,5 +22,5 @@ class OrgUnitsDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, OrgUnit>, OrgUnit> get table => orgUnits;
+  $OrgUnitsTable get table => orgUnits;
 }

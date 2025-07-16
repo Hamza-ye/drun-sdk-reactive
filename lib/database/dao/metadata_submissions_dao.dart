@@ -19,6 +19,5 @@ class MetadataSubmissionsDao extends DatabaseAccessor<AppDatabase>
       MetadataSubmission.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, MetadataSubmission>, MetadataSubmission>
-      get table => metadataSubmissions;
+  $MetadataSubmissionsTable get table => metadataSubmissions;
 }

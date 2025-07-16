@@ -31,5 +31,5 @@ class DataValuesDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, DataValue>, DataValue> get table => dataValues;
+  $DataValuesTable get table => dataValues;
 }

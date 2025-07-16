@@ -64,5 +64,5 @@ class DataOptionsDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, DataOption>, DataOption> get table => dataOptions;
+  $DataOptionsTable get table => dataOptions;
 }
