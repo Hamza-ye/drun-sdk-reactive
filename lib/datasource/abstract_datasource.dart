@@ -7,8 +7,11 @@ import 'datasource.dart';
 typedef FromJsonCallback<D> = D Function(Map<String, dynamic> data);
 
 abstract class AbstractDatasource<D> {
-  Future<List<Insertable<D>>> syncWithRemote(
-      {SyncConfig? options, ProgressCallback? progressCallback});
+  Future<List<Insertable<D>>> syncWithRemote({
+    SyncConfig? options,
+    ProgressCallback? progressCallback,
+    Map<String, dynamic>? params,
+  });
 
   String get resourceName;
 

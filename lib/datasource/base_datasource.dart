@@ -34,6 +34,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
   Future<List<D>> syncWithRemote({
     SyncConfig? options,
     ProgressCallback? progressCallback,
+    Map<String, dynamic>? params,
   }) async {
     final errors = <String>[];
     List<Map<String, dynamic>> rawJson;

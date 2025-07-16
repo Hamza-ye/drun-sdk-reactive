@@ -31,7 +31,7 @@
 //   }
 //
 //   Future<List<D>> syncWithRemote(
-//       {SyncConfig? options, ProgressCallback? progressCallback}) async {
+//       {SyncConfig? options, ProgressCallback? progressCallback, Map<String, dynamic>? params}) async {
 //     final List<D> remoteData = await getOnline();
 //     progressCallback?.call(60);
 //     if (remoteData.isNotEmpty) {

@@ -36,6 +36,7 @@ mixin BaseExtension<D extends Insertable> on DatabaseAccessor<AppDatabase> {
   Future<List<D>> syncWithRemote({
     SyncConfig? options,
     ProgressCallback? progressCallback,
+    Map<String, dynamic>? params,
   }) async {
     final errors = <String>[];
     List<Map<String, dynamic>> rawJson;

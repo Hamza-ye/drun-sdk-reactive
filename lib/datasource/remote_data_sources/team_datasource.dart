@@ -71,7 +71,7 @@ class TeamDatasource extends BaseDataSource<$TeamsTable, Team>
 //
 // @override
 // Future<List<Team>> syncWithRemote(
-//     {SyncConfig? options, ProgressCallback? progressCallback}) async {
+//     {SyncConfig? options, ProgressCallback? progressCallback, Map<String, dynamic>? params,}) async {
 //   final resourcePath = '$resourceName$pathPostfix';
 //   final response =
 //       await apiClient.request(resourceName: resourcePath, method: 'get');
