@@ -50,12 +50,11 @@ class OptionSetDatasource
       DataOptionSet.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, DataOptionSet>, DataOptionSet> get table =>
-      db.dataOptionSets;
+  $DataOptionSetsTable get table => db.dataOptionSets;
 
 // @override
 // Future<List<DataOptionSet>> syncWithRemote(
-//     {SyncConfig? options, ProgressCallback? progressCallback, Map<String, dynamic>? params}) async {
+//     {SyncConfig? options, ProgressCallback? progressCallback}) async {
 //   final resourcePath = '$resourceName$pathPostfix';
 //   final response =
 //       await apiClient.request(resourceName: resourcePath, method: 'get');

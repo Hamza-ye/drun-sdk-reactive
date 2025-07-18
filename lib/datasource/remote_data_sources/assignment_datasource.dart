@@ -1,8 +1,8 @@
+import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:d_sdk/database/converters/converters.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/datasource/datasource.dart';
-import 'package:d_sdk/core/user_session/user_session.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
@@ -10,7 +10,6 @@ import 'package:injectable/injectable.dart';
 @Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
     implements MetaDataSource<Assignment> {
-
   @override
   String get resourceName => 'assignments';
 
@@ -48,14 +47,15 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
   @override
   Future<void> disableStale(List<Object> liveIds) async {
     await (db.update(table)
-      ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
+          ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
         .write(RawValuesInsertable({
       'disabled': Variable<bool>(true),
     }));
   }
 
   @override
-  Assignment fromApiJson(Map<String, dynamic> data, {
+  Assignment fromApiJson(
+    Map<String, dynamic> data, {
     ValueSerializer? serializer,
   }) {
     return Assignment.fromJson(data, serializer: serializer);
@@ -65,8 +65,8 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
     final extraResourceName = 'assignments/forms';
 
     final versionResourcePath = '$extraResourceName?paged=false';
-    final response =
-    await apiClient.request(resourceName: versionResourcePath, method: 'get');
+    final response = await apiClient.request(
+        resourceName: versionResourcePath, method: 'get');
 
     final raw = response.data;
 
@@ -74,16 +74,15 @@ class AssignmentDatasource extends BaseDataSource<$AssignmentsTable, Assignment>
     List dataItems = raw?['assignments']?.toList() ?? [];
 
     final assignmentModels =
-    dataItems.map((item) => _AssignmentWithAccess.fromJson(item)).toList();
+        dataItems.map((item) => _AssignmentWithAccess.fromJson(item)).toList();
 
     final assignmentForms =
-    assignmentModels.expand((t) => t.accessibleForms).toList();
+        assignmentModels.expand((t) => t.accessibleForms).toList();
     return assignmentForms;
   }
 
   @override
-  TableInfo<TableInfo<Table, Assignment>, Assignment> get table =>
-      db.assignments;
+  $AssignmentsTable get table => db.assignments;
 }
 
 class _AssignmentWithAccess {
@@ -95,24 +94,24 @@ class _AssignmentWithAccess {
   final AssignmentStatus progressStatus;
   final List<AssignmentForm> accessibleForms;
 
-  _AssignmentWithAccess({required this.assignment,
-    required this.activity,
-    required this.team,
-    required this.orgUnit,
-    required this.progressStatus,
-    required this.accessibleForms});
+  _AssignmentWithAccess(
+      {required this.assignment,
+      required this.activity,
+      required this.team,
+      required this.orgUnit,
+      required this.progressStatus,
+      required this.accessibleForms});
 
   factory _AssignmentWithAccess.fromJson(Map<String, dynamic> map) {
     final accessibleForms = (map['accessibleForms'] as List? ?? [])
-        .map<AssignmentForm>((access) =>
-        AssignmentForm.fromJson(
-          {
-            ...access,
-            'form': access['form'],
-            'assignment': access['assignment'],
-          },
-          serializer: CustomSerializer(),
-        ))
+        .map<AssignmentForm>((access) => AssignmentForm.fromJson(
+              {
+                ...access,
+                'form': access['form'],
+                'assignment': access['assignment'],
+              },
+              serializer: CustomSerializer(),
+            ))
         .toList();
 
     final progressStatus =

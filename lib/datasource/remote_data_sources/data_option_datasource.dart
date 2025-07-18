@@ -20,6 +20,5 @@ class OptionDatasource extends BaseDataSource<$DataOptionsTable, DataOption>
   }
 
   @override
-  TableInfo<TableInfo<Table, DataOption>, DataOption> get table =>
-      db.dataOptions;
+  $DataOptionsTable get table => db.dataOptions;
 }

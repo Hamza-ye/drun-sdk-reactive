@@ -28,5 +28,5 @@ class DataValueDatasource extends BaseDataSource<$DataValuesTable, DataValue>
   }
 
   @override
-  TableInfo<TableInfo<Table, DataValue>, DataValue> get table => db.dataValues;
+  $DataValuesTable get table => db.dataValues;
 }

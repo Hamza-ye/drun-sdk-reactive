@@ -1,3 +1,4 @@
+import 'package:d_sdk/database/converters/sync_error_list.converter.dart';
 import 'package:drift/drift.dart';
 
 class SyncSummaries extends Table {
@@ -10,8 +11,9 @@ class SyncSummaries extends Table {
 
   IntColumn get failureCount => integer().withDefault(const Constant(0))();
 
-  /// JSON‑encoded list of error messages
-  TextColumn get errorsJson => text().nullable()();
+  /// JSON‑encoded list of errors
+  TextColumn get errors => text().map(const SyncErrorListConverter())
+      .nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {entity};

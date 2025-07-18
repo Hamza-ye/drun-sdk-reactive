@@ -5,6 +5,7 @@ export 'data_element_datasource.dart';
 export 'data_option_datasource.dart';
 export 'data_submission_datasource.dart';
 export 'data_value_datasource.dart';
+export 'form_template_datasource.dart';
 export 'form_template_version_datasource.dart';
 export 'metadata_submission_datasource.dart';
 export 'option_set_datasource.dart';

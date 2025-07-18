@@ -111,6 +111,5 @@ class DataInstanceDatasource
   // }
 
   @override
-  TableInfo<TableInfo<Table, DataInstance>, DataInstance> get table =>
-      db.dataInstances;
+  $DataInstancesTable get table => db.dataInstances;
 }

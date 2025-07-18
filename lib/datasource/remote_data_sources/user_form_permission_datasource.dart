@@ -27,6 +27,5 @@ class UserFormAccessesDatasource
   }
 
   @override
-  TableInfo<TableInfo<Table, UserFormPermission>, UserFormPermission>
-      get table => db.userFormPermissions;
+  $UserFormPermissionsTable get table => db.userFormPermissions;
 }

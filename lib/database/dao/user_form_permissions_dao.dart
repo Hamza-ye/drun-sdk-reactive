@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/user_form_permissions.dart';
 import 'package:drift/drift.dart';
 
@@ -7,7 +7,7 @@ part 'user_form_permissions_dao.g.dart';
 
 @DriftAccessor(tables: [UserFormPermissions])
 class UserFormPermissionsDao extends DatabaseAccessor<AppDatabase>
-    with _$UserFormPermissionsDaoMixin, BaseExtension<UserFormPermission> {
+    with _$UserFormPermissionsDaoMixin, BaseDaoMixin<UserFormPermission> {
   UserFormPermissionsDao(AppDatabase db) : super(db);
 
   @override

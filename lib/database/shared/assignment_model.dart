@@ -1,5 +1,4 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/shared/collections.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';

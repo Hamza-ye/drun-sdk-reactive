@@ -1,6 +1,6 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/teams.table.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:drift/drift.dart';
@@ -9,7 +9,7 @@ part 'teams_dao.g.dart';
 
 @DriftAccessor(tables: [Teams])
 class TeamsDao extends DatabaseAccessor<AppDatabase>
-    with _$TeamsDaoMixin, BaseExtension<Team> {
+    with _$TeamsDaoMixin, BaseDaoMixin<Team> {
   TeamsDao(AppDatabase db) : super(db);
 
   @override

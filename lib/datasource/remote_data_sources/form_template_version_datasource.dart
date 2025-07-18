@@ -20,6 +20,6 @@ class FormTemplateVersionDatasource
   }
 
   @override
-  TableInfo<TableInfo<Table, FormTemplateVersion>, FormTemplateVersion>
-      get table => db.formTemplateVersions;
+  $FormTemplateVersionsTable get table =>
+      db.formTemplateVersions;
 }

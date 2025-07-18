@@ -18,6 +18,6 @@ class MetadataSubmissionDatasource
       MetadataSubmission.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, MetadataSubmission>, MetadataSubmission>
-      get table => db.metadataSubmissions;
+  $MetadataSubmissionsTable get table =>
+      db.metadataSubmissions;
 }

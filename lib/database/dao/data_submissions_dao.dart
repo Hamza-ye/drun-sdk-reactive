@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary_model.dart';
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/extensions/data_submission.extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/data_submissions.table.dart';
@@ -13,7 +13,7 @@ part 'data_submissions_dao.g.dart';
 
 @DriftAccessor(tables: [DataInstances])
 class DataInstancesDao extends DatabaseAccessor<AppDatabase>
-    with _$DataInstancesDaoMixin, BaseExtension<DataInstance> {
+    with _$DataInstancesDaoMixin, BaseDaoMixin<DataInstance> {
   DataInstancesDao(AppDatabase db) : super(db);
 
   @override

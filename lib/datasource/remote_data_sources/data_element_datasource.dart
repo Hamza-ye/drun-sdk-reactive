@@ -24,6 +24,5 @@ class DataElementDatasource
   }
 
   @override
-  TableInfo<TableInfo<Table, DataElement>, DataElement> get table =>
-      db.dataElements;
+  $DataElementsTable get table => db.dataElements;
 }

@@ -1,6 +1,6 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
@@ -10,7 +10,7 @@ part 'assignments_dao.g.dart';
 
 @DriftAccessor(tables: [Assignments])
 class AssignmentsDao extends DatabaseAccessor<AppDatabase>
-    with _$AssignmentsDaoMixin, BaseExtension<Assignment> {
+    with _$AssignmentsDaoMixin, BaseDaoMixin<Assignment> {
   AssignmentsDao(AppDatabase db) : super(db);
 
   //<editor-fold desc="Remote">

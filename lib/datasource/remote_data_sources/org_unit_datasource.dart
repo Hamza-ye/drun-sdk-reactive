@@ -20,5 +20,5 @@ class OrgUnitDatasource extends BaseDataSource<$OrgUnitsTable, OrgUnit>
   }
 
   @override
-  TableInfo<TableInfo<Table, OrgUnit>, OrgUnit> get table => db.orgUnits;
+  $OrgUnitsTable get table => db.orgUnits;
 }

@@ -1,6 +1,6 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:drift/drift.dart';
@@ -9,7 +9,7 @@ part 'form_templates_dao.g.dart';
 
 @DriftAccessor(tables: [FormTemplates])
 class FormTemplatesDao extends DatabaseAccessor<AppDatabase>
-    with _$FormTemplatesDaoMixin, BaseExtension<FormTemplate> {
+    with _$FormTemplatesDaoMixin, BaseDaoMixin<FormTemplate> {
   FormTemplatesDao(AppDatabase db) : super(db);
 
   @override

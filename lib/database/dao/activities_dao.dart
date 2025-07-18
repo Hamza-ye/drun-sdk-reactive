@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/shared/activity_model.dart';
 import 'package:d_sdk/database/tables/activities.table.dart';
 import 'package:drift/drift.dart';
@@ -8,7 +8,7 @@ part 'activities_dao.g.dart';
 
 @DriftAccessor(tables: [Activities])
 class ActivitiesDao extends DatabaseAccessor<AppDatabase>
-    with _$ActivitiesDaoMixin, BaseExtension<Activity> {
+    with _$ActivitiesDaoMixin, BaseDaoMixin<Activity> {
   ActivitiesDao(AppDatabase db) : super(db);
   @override
   String get resourceName => 'activities';
