@@ -1,7 +1,6 @@
 enum InstanceSyncStatus {
   draft, // Newly created or edited submissions; not yet final
   finalized, // Marked final and ready to send
-  // syncing, // Currently in the process of being sent
   synced, // Successfully sent to the server
   syncFailed; // Tried to sync but failed
 
