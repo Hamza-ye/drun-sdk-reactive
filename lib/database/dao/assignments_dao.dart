@@ -21,8 +21,6 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
   @override
   Future<List<CompanionInsert>> extractExtraEntities(
       List<Map<String, dynamic>> raw) async {
-    // first let the base hook map your Assignment list, but you still need
-    // all AssignmentForms—pull them here:
     final List<AssignmentForm> forms = await _getExtraAssignmentForms();
     return forms.map((f) => CompanionInsert(db.assignmentForms, f)).toList();
   }
