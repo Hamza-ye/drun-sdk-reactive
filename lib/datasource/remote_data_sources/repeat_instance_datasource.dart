@@ -23,6 +23,6 @@ class RepeatInstanceDatasource
   }
 
   @override
-  TableInfo<TableInfo<Table, RepeatInstance>, RepeatInstance> get table =>
+  $RepeatInstancesTable get table =>
       db.repeatInstances;
 }

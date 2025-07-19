@@ -17,5 +17,5 @@ class OuLevelDatasource extends BaseDataSource<$OuLevelsTable, OuLevel>
       OuLevel.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, OuLevel>, OuLevel> get table => db.ouLevels;
+  $OuLevelsTable get table => db.ouLevels;
 }

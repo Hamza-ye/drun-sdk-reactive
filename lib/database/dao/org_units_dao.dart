@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/org_units.table.dart';
 import 'package:drift/drift.dart';
 
@@ -7,7 +7,7 @@ part 'org_units_dao.g.dart';
 
 @DriftAccessor(tables: [OrgUnits])
 class OrgUnitsDao extends DatabaseAccessor<AppDatabase>
-    with _$OrgUnitsDaoMixin, BaseExtension<OrgUnit> {
+    with _$OrgUnitsDaoMixin, BaseDaoMixin<OrgUnit> {
   OrgUnitsDao(AppDatabase db) : super(db);
 
   @override
@@ -22,5 +22,5 @@ class OrgUnitsDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, OrgUnit>, OrgUnit> get table => orgUnits;
+  $OrgUnitsTable get table => orgUnits;
 }

@@ -5,7 +5,7 @@ abstract interface class CacheKeys {
   //
   static const String accessTokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
-  static const String expiryDateKey = 'expiry_date_';
+  static const String expiryDateKey = 'expiry_date';
 
   static String getActiveSessionKey(String userId) {
     return '${activeUserKey}_$userId';

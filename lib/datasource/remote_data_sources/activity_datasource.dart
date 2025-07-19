@@ -8,7 +8,6 @@ import 'package:injectable/injectable.dart';
 @Injectable(as: AbstractDatasource, scope: UserSession.activeSessionScope)
 class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
     implements MetaDataSource<Activity> {
-
   @override
   String get resourceName => 'activities';
 
@@ -31,5 +30,5 @@ class ActivityDatasource extends BaseDataSource<$ActivitiesTable, Activity>
   }
 
   @override
-  TableInfo<TableInfo<Table, Activity>, Activity> get table => db.activities;
+  $ActivitiesTable get table => db.activities;
 }

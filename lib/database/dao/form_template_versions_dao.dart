@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
@@ -7,7 +7,7 @@ part 'form_template_versions_dao.g.dart';
 
 @DriftAccessor(tables: [FormTemplateVersions])
 class FormTemplateVersionsDao extends DatabaseAccessor<AppDatabase>
-    with _$FormTemplateVersionsDaoMixin, BaseExtension<FormTemplateVersion> {
+    with _$FormTemplateVersionsDaoMixin, BaseDaoMixin<FormTemplateVersion> {
   FormTemplateVersionsDao(AppDatabase db) : super(db);
 
   @override
@@ -23,7 +23,7 @@ class FormTemplateVersionsDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, FormTemplateVersion>, FormTemplateVersion>
+  $FormTemplateVersionsTable
       get table => formTemplateVersions;
 
   Selectable<(FormTemplate, FormTemplateVersion)> selectFormTemplatesWithRefs(

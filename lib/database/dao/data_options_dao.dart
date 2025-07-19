@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:drift/drift.dart';
 
@@ -7,7 +7,7 @@ part 'data_options_dao.g.dart';
 
 @DriftAccessor(tables: [DataOptions])
 class DataOptionsDao extends DatabaseAccessor<AppDatabase>
-    with _$DataOptionsDaoMixin, BaseExtension<DataOption> {
+    with _$DataOptionsDaoMixin, BaseDaoMixin<DataOption> {
   DataOptionsDao(AppDatabase db) : super(db);
 
   @override
@@ -64,5 +64,5 @@ class DataOptionsDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, DataOption>, DataOption> get table => dataOptions;
+  $DataOptionsTable get table => dataOptions;
 }

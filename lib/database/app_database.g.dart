@@ -10366,15 +10366,15 @@ class $SyncSummariesTable extends SyncSummaries
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _errorsJsonMeta =
-      const VerificationMeta('errorsJson');
   @override
-  late final GeneratedColumn<String> errorsJson = GeneratedColumn<String>(
-      'errors_json', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+  late final GeneratedColumnWithTypeConverter<List<SyncError>?, String> errors =
+      GeneratedColumn<String>('errors', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<List<SyncError>?>(
+              $SyncSummariesTable.$convertererrorsn);
   @override
   List<GeneratedColumn> get $columns =>
-      [entity, lastSync, successCount, failureCount, errorsJson];
+      [entity, lastSync, successCount, failureCount, errors];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -10407,12 +10407,6 @@ class $SyncSummariesTable extends SyncSummaries
           failureCount.isAcceptableOrUnknown(
               data['failure_count']!, _failureCountMeta));
     }
-    if (data.containsKey('errors_json')) {
-      context.handle(
-          _errorsJsonMeta,
-          errorsJson.isAcceptableOrUnknown(
-              data['errors_json']!, _errorsJsonMeta));
-    }
     return context;
   }
 
@@ -10430,8 +10424,9 @@ class $SyncSummariesTable extends SyncSummaries
           .read(DriftSqlType.int, data['${effectivePrefix}success_count'])!,
       failureCount: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}failure_count'])!,
-      errorsJson: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}errors_json']),
+      errors: $SyncSummariesTable.$convertererrorsn.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}errors'])),
     );
   }
 
@@ -10439,6 +10434,11 @@ class $SyncSummariesTable extends SyncSummaries
   $SyncSummariesTable createAlias(String alias) {
     return $SyncSummariesTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<List<SyncError>, String> $convertererrors =
+      const SyncErrorListConverter();
+  static TypeConverter<List<SyncError>?, String?> $convertererrorsn =
+      NullAwareTypeConverter.wrap($convertererrors);
 }
 
 class SyncSummary extends DataClass implements Insertable<SyncSummary> {
@@ -10447,15 +10447,13 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
   final DateTime lastSync;
   final int successCount;
   final int failureCount;
-
-  /// JSON‑encoded list of error messages
-  final String? errorsJson;
+  final List<SyncError>? errors;
   const SyncSummary(
       {required this.entity,
       required this.lastSync,
       required this.successCount,
       required this.failureCount,
-      this.errorsJson});
+      this.errors});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -10463,8 +10461,9 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
     map['last_sync'] = Variable<DateTime>(lastSync);
     map['success_count'] = Variable<int>(successCount);
     map['failure_count'] = Variable<int>(failureCount);
-    if (!nullToAbsent || errorsJson != null) {
-      map['errors_json'] = Variable<String>(errorsJson);
+    if (!nullToAbsent || errors != null) {
+      map['errors'] =
+          Variable<String>($SyncSummariesTable.$convertererrorsn.toSql(errors));
     }
     return map;
   }
@@ -10475,9 +10474,8 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
       lastSync: Value(lastSync),
       successCount: Value(successCount),
       failureCount: Value(failureCount),
-      errorsJson: errorsJson == null && nullToAbsent
-          ? const Value.absent()
-          : Value(errorsJson),
+      errors:
+          errors == null && nullToAbsent ? const Value.absent() : Value(errors),
     );
   }
 
@@ -10489,7 +10487,7 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
       lastSync: serializer.fromJson<DateTime>(json['lastSync']),
       successCount: serializer.fromJson<int>(json['successCount']),
       failureCount: serializer.fromJson<int>(json['failureCount']),
-      errorsJson: serializer.fromJson<String?>(json['errorsJson']),
+      errors: serializer.fromJson<List<SyncError>?>(json['errors']),
     );
   }
   @override
@@ -10500,7 +10498,7 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
       'lastSync': serializer.toJson<DateTime>(lastSync),
       'successCount': serializer.toJson<int>(successCount),
       'failureCount': serializer.toJson<int>(failureCount),
-      'errorsJson': serializer.toJson<String?>(errorsJson),
+      'errors': serializer.toJson<List<SyncError>?>(errors),
     };
   }
 
@@ -10509,13 +10507,13 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
           DateTime? lastSync,
           int? successCount,
           int? failureCount,
-          Value<String?> errorsJson = const Value.absent()}) =>
+          Value<List<SyncError>?> errors = const Value.absent()}) =>
       SyncSummary(
         entity: entity ?? this.entity,
         lastSync: lastSync ?? this.lastSync,
         successCount: successCount ?? this.successCount,
         failureCount: failureCount ?? this.failureCount,
-        errorsJson: errorsJson.present ? errorsJson.value : this.errorsJson,
+        errors: errors.present ? errors.value : this.errors,
       );
   SyncSummary copyWithCompanion(SyncSummariesCompanion data) {
     return SyncSummary(
@@ -10527,8 +10525,7 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
       failureCount: data.failureCount.present
           ? data.failureCount.value
           : this.failureCount,
-      errorsJson:
-          data.errorsJson.present ? data.errorsJson.value : this.errorsJson,
+      errors: data.errors.present ? data.errors.value : this.errors,
     );
   }
 
@@ -10539,14 +10536,14 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
           ..write('lastSync: $lastSync, ')
           ..write('successCount: $successCount, ')
           ..write('failureCount: $failureCount, ')
-          ..write('errorsJson: $errorsJson')
+          ..write('errors: $errors')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(entity, lastSync, successCount, failureCount, errorsJson);
+      Object.hash(entity, lastSync, successCount, failureCount, errors);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -10555,7 +10552,7 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
           other.lastSync == this.lastSync &&
           other.successCount == this.successCount &&
           other.failureCount == this.failureCount &&
-          other.errorsJson == this.errorsJson);
+          other.errors == this.errors);
 }
 
 class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
@@ -10563,14 +10560,14 @@ class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
   final Value<DateTime> lastSync;
   final Value<int> successCount;
   final Value<int> failureCount;
-  final Value<String?> errorsJson;
+  final Value<List<SyncError>?> errors;
   final Value<int> rowid;
   const SyncSummariesCompanion({
     this.entity = const Value.absent(),
     this.lastSync = const Value.absent(),
     this.successCount = const Value.absent(),
     this.failureCount = const Value.absent(),
-    this.errorsJson = const Value.absent(),
+    this.errors = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SyncSummariesCompanion.insert({
@@ -10578,7 +10575,7 @@ class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
     this.lastSync = const Value.absent(),
     this.successCount = const Value.absent(),
     this.failureCount = const Value.absent(),
-    this.errorsJson = const Value.absent(),
+    this.errors = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : entity = Value(entity);
   static Insertable<SyncSummary> custom({
@@ -10586,7 +10583,7 @@ class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
     Expression<DateTime>? lastSync,
     Expression<int>? successCount,
     Expression<int>? failureCount,
-    Expression<String>? errorsJson,
+    Expression<String>? errors,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -10594,7 +10591,7 @@ class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
       if (lastSync != null) 'last_sync': lastSync,
       if (successCount != null) 'success_count': successCount,
       if (failureCount != null) 'failure_count': failureCount,
-      if (errorsJson != null) 'errors_json': errorsJson,
+      if (errors != null) 'errors': errors,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -10604,14 +10601,14 @@ class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
       Value<DateTime>? lastSync,
       Value<int>? successCount,
       Value<int>? failureCount,
-      Value<String?>? errorsJson,
+      Value<List<SyncError>?>? errors,
       Value<int>? rowid}) {
     return SyncSummariesCompanion(
       entity: entity ?? this.entity,
       lastSync: lastSync ?? this.lastSync,
       successCount: successCount ?? this.successCount,
       failureCount: failureCount ?? this.failureCount,
-      errorsJson: errorsJson ?? this.errorsJson,
+      errors: errors ?? this.errors,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -10631,8 +10628,9 @@ class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
     if (failureCount.present) {
       map['failure_count'] = Variable<int>(failureCount.value);
     }
-    if (errorsJson.present) {
-      map['errors_json'] = Variable<String>(errorsJson.value);
+    if (errors.present) {
+      map['errors'] = Variable<String>(
+          $SyncSummariesTable.$convertererrorsn.toSql(errors.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -10647,7 +10645,7 @@ class SyncSummariesCompanion extends UpdateCompanion<SyncSummary> {
           ..write('lastSync: $lastSync, ')
           ..write('successCount: $successCount, ')
           ..write('failureCount: $failureCount, ')
-          ..write('errorsJson: $errorsJson, ')
+          ..write('errors: $errors, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -19560,7 +19558,7 @@ typedef $$SyncSummariesTableCreateCompanionBuilder = SyncSummariesCompanion
   Value<DateTime> lastSync,
   Value<int> successCount,
   Value<int> failureCount,
-  Value<String?> errorsJson,
+  Value<List<SyncError>?> errors,
   Value<int> rowid,
 });
 typedef $$SyncSummariesTableUpdateCompanionBuilder = SyncSummariesCompanion
@@ -19569,7 +19567,7 @@ typedef $$SyncSummariesTableUpdateCompanionBuilder = SyncSummariesCompanion
   Value<DateTime> lastSync,
   Value<int> successCount,
   Value<int> failureCount,
-  Value<String?> errorsJson,
+  Value<List<SyncError>?> errors,
   Value<int> rowid,
 });
 
@@ -19594,8 +19592,10 @@ class $$SyncSummariesTableFilterComposer
   ColumnFilters<int> get failureCount => $composableBuilder(
       column: $table.failureCount, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get errorsJson => $composableBuilder(
-      column: $table.errorsJson, builder: (column) => ColumnFilters(column));
+  ColumnWithTypeConverterFilters<List<SyncError>?, List<SyncError>, String>
+      get errors => $composableBuilder(
+          column: $table.errors,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$SyncSummariesTableOrderingComposer
@@ -19621,8 +19621,8 @@ class $$SyncSummariesTableOrderingComposer
       column: $table.failureCount,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get errorsJson => $composableBuilder(
-      column: $table.errorsJson, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get errors => $composableBuilder(
+      column: $table.errors, builder: (column) => ColumnOrderings(column));
 }
 
 class $$SyncSummariesTableAnnotationComposer
@@ -19646,8 +19646,8 @@ class $$SyncSummariesTableAnnotationComposer
   GeneratedColumn<int> get failureCount => $composableBuilder(
       column: $table.failureCount, builder: (column) => column);
 
-  GeneratedColumn<String> get errorsJson => $composableBuilder(
-      column: $table.errorsJson, builder: (column) => column);
+  GeneratedColumnWithTypeConverter<List<SyncError>?, String> get errors =>
+      $composableBuilder(column: $table.errors, builder: (column) => column);
 }
 
 class $$SyncSummariesTableTableManager extends RootTableManager<
@@ -19680,7 +19680,7 @@ class $$SyncSummariesTableTableManager extends RootTableManager<
             Value<DateTime> lastSync = const Value.absent(),
             Value<int> successCount = const Value.absent(),
             Value<int> failureCount = const Value.absent(),
-            Value<String?> errorsJson = const Value.absent(),
+            Value<List<SyncError>?> errors = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               SyncSummariesCompanion(
@@ -19688,7 +19688,7 @@ class $$SyncSummariesTableTableManager extends RootTableManager<
             lastSync: lastSync,
             successCount: successCount,
             failureCount: failureCount,
-            errorsJson: errorsJson,
+            errors: errors,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -19696,7 +19696,7 @@ class $$SyncSummariesTableTableManager extends RootTableManager<
             Value<DateTime> lastSync = const Value.absent(),
             Value<int> successCount = const Value.absent(),
             Value<int> failureCount = const Value.absent(),
-            Value<String?> errorsJson = const Value.absent(),
+            Value<List<SyncError>?> errors = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               SyncSummariesCompanion.insert(
@@ -19704,7 +19704,7 @@ class $$SyncSummariesTableTableManager extends RootTableManager<
             lastSync: lastSync,
             successCount: successCount,
             failureCount: failureCount,
-            errorsJson: errorsJson,
+            errors: errors,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/shared/activity_model.dart';
 import 'package:d_sdk/database/tables/activities.table.dart';
 import 'package:drift/drift.dart';
@@ -8,19 +8,15 @@ part 'activities_dao.g.dart';
 
 @DriftAccessor(tables: [Activities])
 class ActivitiesDao extends DatabaseAccessor<AppDatabase>
-    with _$ActivitiesDaoMixin, BaseExtension<Activity> {
+    with _$ActivitiesDaoMixin, BaseDaoMixin<Activity> {
   ActivitiesDao(AppDatabase db) : super(db);
-
-  @override
-  TableInfo<TableInfo<Table, Activity>, Activity> get table => activities;
-
   @override
   String get resourceName => 'activities';
 
   @override
   Future<void> disableStale(List<Object> liveIds) async {
     await (db.update(table)
-      ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
+          ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
         .write(RawValuesInsertable({
       'disabled': Variable<bool>(true),
     }));
@@ -34,6 +30,7 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
     return Activity.fromJson({...data, 'project': project as String},
         serializer: serializer);
   }
+
   /// watch the status of submission belonging to an
   /// item (i.e, the aggregation level) (e.g. Assignment, Form,..)
   /// by passing the item id and the item level
@@ -80,16 +77,13 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
     final assignedAssignmentsCount =
         db.assignments.activity.equalsExp(act.id).count();
 
-    final JoinedSelectStatement<HasResultSet, dynamic> query =
+    JoinedSelectStatement<HasResultSet, dynamic> query =
         select(act).addColumns([assignedAssignmentsCount]).join([
       // innerJoin(a, a.activity.equalsExp(act.id), useColumns: false),
       // innerJoin(mt, mt.activity.equalsExp(act.id), useColumns: false),
       // innerJoin(t, t.activity.equalsExp(t.activity), useColumns: false),
-    ]);
-
-    // if (!includeDisabled) {
-      query.where(act.disabled.isNotValue(true));
-    // }
+    ])
+          ..where(act.disabled.isNotValue(true));
 
     if (ids.isNotEmpty) {
       query.where(act.id.isIn(ids));
@@ -97,10 +91,10 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
 
     if (ouSearchFilter.isNotEmpty) {
       final pattern = '%${ouSearchFilter.toLowerCase()}%';
-      query..where(act.name.like(pattern) | act.code.like(pattern));
+      query.where(act.name.like(pattern) | act.code.like(pattern));
     }
 
-    query
+    final orderedQuery = query
       ..limit(pageSize, offset: offset)
       ..orderBy([
         OrderingTerm(expression: act.startDate, mode: OrderingMode.desc),
@@ -108,12 +102,22 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
       ]);
 
     // Map rows to model
-    return query.map((row) {
+    return orderedQuery.map((row) {
       final ac = row.readTable(act);
       final assignedAssignments = row.read(assignedAssignmentsCount)!;
 
       return ActivityModel(
-          id: ac.id, assignedAssignments: assignedAssignments, name: ac.name);
+        id: ac.id,
+        assignedAssignments: assignedAssignments,
+        name: ac.name,
+      );
     });
   }
+
+  @override
+  SimpleSelectStatement<$ActivitiesTable, Activity> get engine =>
+      select(activities)..where((u) => u.disabled.isNotValue(true));
+
+  @override
+  $ActivitiesTable get table =>activities;
 }

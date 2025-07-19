@@ -1,3 +1,5 @@
+import 'package:d_sdk/datasource/remote_data_sources/remote_data_sources.dart';
+
 class DSOrder {
   static const int user = 100;
   static const int project = 200;
@@ -9,7 +11,6 @@ class DSOrder {
   // static const int option = 700;
   static const int dataElement = 800;
   static const int formTemplateVersion = 900;
-
   static const int formTemplate = 1000;
   static const int team = 1100;
   static const int managedTeam = 1200;
@@ -23,24 +24,24 @@ class DSOrder {
   static const int dataValue = 1700;
   static const int metadataSubmission = 1800;
 
-// static const orderedRemoteDatasource = <int, Type>{
-//   user: UserDatasource,
-//   project: ProjectDatasource,
-//   activity: ActivityDatasource,
-//   ouLevel: OuLevelDatasource,
-//   orgUnit: OrgUnitDatasource,
-//   optionSet: OptionSetDatasource,
-//   // option: OptionDatasource,
-//   dataElement: DataElementDatasource,
-//   formTemplate: FormTemplateVersionDatasource,
-//   // formVersion: FormVersionDatasource,
-//   team: TeamDatasource,
-//   managedTeam: ManagedTeamDatasource,
-//   userFormAccess: UserFormAccessesDatasource,
-//   assignment: AssignmentDatasource,
-//   dataSubmission: DataSubmissionDatasource,
-//   // repeatInstance: RepeatInstanceDatasource,
-//   dataValue: DataValueDatasource,
-//   metadataSubmission: MetadataSubmissionDatasource,
-// };
+  static const orderedRemoteDatasource = <int, Type>{
+    user: UserDatasource,
+    project: ProjectDatasource,
+    activity: ActivityDatasource,
+    ouLevel: OuLevelDatasource,
+    orgUnit: OrgUnitDatasource,
+    optionSet: OptionSetDatasource,
+    // option: OptionDatasource,
+    dataElement: DataElementDatasource,
+    formTemplate: DataFormTemplateDatasource,
+    // formVersion: FormVersionDatasource,
+    team: TeamDatasource,
+    // managedTeam: ManagedTeamDatasource,
+    userFormAccess: UserFormAccessesDatasource,
+    assignment: AssignmentDatasource,
+    dataInstance: DataInstanceDatasource,
+    // repeatInstance: RepeatInstanceDatasource,
+    dataValue: DataValueDatasource,
+    metadataSubmission: MetadataSubmissionDatasource,
+  };
 }

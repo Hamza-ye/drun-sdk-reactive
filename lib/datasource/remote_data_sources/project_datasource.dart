@@ -17,5 +17,5 @@ class ProjectDatasource extends BaseDataSource<$ProjectsTable, Project>
       Project.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, Project>, Project> get table => db.projects;
+  $ProjectsTable get table => db.projects;
 }

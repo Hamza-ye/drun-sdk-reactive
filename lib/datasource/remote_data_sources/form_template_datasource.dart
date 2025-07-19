@@ -72,6 +72,5 @@ class DataFormTemplateDatasource
   }
 
   @override
-  TableInfo<TableInfo<Table, FormTemplate>, FormTemplate> get table =>
-      db.formTemplates;
+  $FormTemplatesTable get table => db.formTemplates;
 }

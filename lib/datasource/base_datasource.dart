@@ -1,28 +1,27 @@
-import 'dart:convert';
-
 import 'package:d_sdk/core/http/http_client.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/model/sync_config.dart';
+import 'package:d_sdk/core/sync/model/sync_progress_event.dart';
+import 'package:d_sdk/core/sync/sync_logger.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
+import 'package:d_sdk/database/dao/dao.dart';
 import 'package:d_sdk/database/dao/sync_summaries_dao.dart';
 import 'package:d_sdk/database/dbManager.dart';
+import 'package:d_sdk/database/shared/sync_error.dart';
 import 'package:d_sdk/datasource/abstract_datasource.dart';
 import 'package:d_sdk/di/injection.dart';
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' hide ProgressCallback;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
-
-typedef ProgressCallback = void Function(double progress);
 
 abstract class BaseDataSource<T extends TableInfo<T, D>,
     D extends Insertable<D>> extends AbstractDatasource<D> {
   HttpClient get apiClient => rSdkLocator<HttpClient<dynamic>>();
 
-  TableInfo<TableInfo<Table, D>, D> get table;
+  T get table;
 
   AppDatabase get db {
-    // final instance = _dbManager.db;
     final instance = rSdkLocator<DbManager>().db;
     return instance;
   }
@@ -35,34 +34,55 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
     SyncConfig? options,
     ProgressCallback? progressCallback,
   }) async {
-    final errors = <String>[];
-    List<Map<String, dynamic>> rawJson;
-
+    final SyncLogger logger = SyncLogger(
+        progressCallback: progressCallback, resourceName: resourceName);
+    final syncErrors = <SyncError>[];
+    List<Map<String, dynamic>> rawJson = [];
     // 1) Fetch
     try {
       // Fetch raw JSON
       rawJson = await getOnlineRaw(options: options);
+      logger(percentage: 20, message: 'fetched ${rawJson.length} items');
     } on DioException catch (e) {
-      errors.add('Fetch error: ${e.message}');
+      syncErrors.add(SyncError(
+          type: SyncStage.fetch, message: 'Fetch error: ${e.message}'));
+      logger(
+          syncProgressState: SyncProgressState.FAILED,
+          message: 'Fetch error: ${e.message}');
       rawJson = []; // proceed with empty payload (or rethrow if you prefer)
     } catch (e) {
       logError('Unexpected fetch error: `$resourcePath`', source: e);
-      errors.add('Unexpected fetch error: $e');
+      syncErrors.add(SyncError(
+          type: SyncStage.unexpected,
+          message: 'Unexpected during fetch error: $e'));
+      logger(
+          syncProgressState: SyncProgressState.FAILED,
+          message: 'Unexpected error during fetch: $e');
       rawJson = [];
     }
-    progressCallback?.call(10);
+
+    logger(message: 'fetching extra');
 
     // 2) Extract extras
-    List<CompanionInsert> extra;
-    try {
-      // A hook, let subclass extract any “auxiliary” entities
-      extra = await extractExtraEntities(rawJson);
-    } catch (e) {
-      logError('Extract extra entities error: `$resourcePath`', source: e);
-      errors.add('Extract extra entities error: $e');
-      extra = [];
+    List<CompanionInsert> extra = [];
+    if (rawJson.isNotEmpty) {
+      try {
+        // A hook, let subclass extract any “auxiliary” entities
+        extra = await extractExtraEntities(rawJson);
+        logger(percentage: 40, message: extra.length.toString());
+      } catch (e) {
+        logError('Extract extra entities error: `$resourcePath`', source: e);
+        syncErrors.add(SyncError(
+            type: SyncStage.fetchExtra,
+            message: 'Extract extra entities error: $e'));
+        logger(
+            syncProgressState: SyncProgressState.FAILED,
+            message: 'Extract extra entities error: $e');
+        extra = [];
+      }
     }
-    progressCallback?.call(30);
+
+    logger(message: 'identifiers');
 
     // 3) Map & collect IDs
     // Map JSON → your D objects, and collect the server’s “live” IDs
@@ -73,23 +93,31 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
         final entity = mapRemoteItem(item);
         mapped.add(entity);
         liveIds.add(extractId(item) as String);
+        logger(percentage: 60, message: liveIds.length.toString());
       } catch (e) {
         logError('Mapping error: `$resourcePath`, for uid=`${item['uid']}`',
             source: e);
-        errors.add('Mapping error for uid=${item['uid']}: $e');
+        syncErrors.add(SyncError(
+            type: SyncStage.fetchExtra,
+            message: 'Mapping error for uid=${item['uid']}: $e',
+            extra: {'uid': item['uid']}));
+        logger(
+            syncProgressState: SyncProgressState.FAILED,
+            message: 'Mapping error for uid=${item['uid']}: $e');
       }
     }
-    progressCallback?.call(60);
 
     // Transaction (upserts + disable)
     try {
       await db.transaction(() async {
         if (mapped.isNotEmpty) {
+          logger(message: 'persisting $resourceName');
           await db.batch((b) => b.insertAllOnConflictUpdate(table, mapped));
         }
 
         // let subclass write any extra tables it needs
         if (extra.isNotEmpty) {
+          logger(message: 'persisting extra');
           await db.batch((b) {
             for (var ci in extra) {
               b.insertAllOnConflictUpdate(ci.table, [ci.entity]);
@@ -97,26 +125,45 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
           });
         }
 
-        // disable anything not in liveIds
-        await disableStale(liveIds);
+        logger(percentage: 80, message: rawJson.length.toString());
+
+        // to not disable all in case of fetch error empty list
+        if (liveIds.isNotEmpty &&
+            syncErrors.where((e) => e.type == SyncStage.fetch).isEmpty) {
+          logger(message: 'disable ${liveIds} Stale items');
+
+          // disable anything not in liveIds only if no errors
+          await disableStale(liveIds);
+        }
       });
+
+      logger(
+          percentage: 100,
+          message: 'Saved ${rawJson.length}',
+          resources: rawJson.length,
+          syncProgressState: SyncProgressState.SUCCEEDED);
     } catch (e) {
       logError('Database write error: `$resourcePath`', source: e);
-      errors.add('Database write error: $e');
+      syncErrors.add(SyncError(
+        type: SyncStage.databaseWrite,
+        message: 'Database write error: $e',
+      ));
+      logger(
+          syncProgressState: SyncProgressState.FAILED,
+          message: 'Database write error: $e');
     }
-    progressCallback?.call(90);
 
-    // 5) Record summary
-    logDebug('saving sync summary: `$resourceName`',
-        data: {'mapped': mapped.length, 'errors': errors.length});
+    // logger(
+    //     message:
+    //         'mapped ${mapped.length}, errors: ${syncErrors.length}');
+
     await _summariesDao.upsertSummary(SyncSummary(
       entity: resourceName,
       lastSync: DateTime.now(),
       successCount: mapped.length,
-      failureCount: errors.length,
-      errorsJson: errors.isEmpty ? null : jsonEncode(errors),
+      failureCount: syncErrors.length,
+      errors: syncErrors,
     ));
-    progressCallback?.call(100);
 
     return mapped;
   }
@@ -125,6 +172,7 @@ abstract class BaseDataSource<T extends TableInfo<T, D>,
   @protected
   Future<List<Map<String, dynamic>>> getOnlineRaw({
     SyncConfig? options,
+    Map<String, dynamic>? params,
   }) async {
     final response = await apiClient.request(
       resourceName: resourcePath,

@@ -6,12 +6,14 @@ enum ConflictStrategy {
 }
 
 class SyncConfig {
-  final ConflictStrategy conflictStrategy;
+  final ConflictStrategy? conflictStrategy;
   final bool deltaOnly;
   final DateTime? lastSync;
+  final Map<String, dynamic>? params;
 
   SyncConfig(
-      {required this.conflictStrategy,
+      {this.conflictStrategy,
       this.deltaOnly = false,
-      required this.lastSync});
+      this.lastSync,
+      this.params});
 }

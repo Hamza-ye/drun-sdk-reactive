@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/repeat_instances.table.dart';
 import 'package:drift/drift.dart';
 
@@ -7,7 +7,7 @@ part 'repeat_instances_dao.g.dart';
 
 @DriftAccessor(tables: [RepeatInstances])
 class RepeatInstancesDao extends DatabaseAccessor<AppDatabase>
-    with _$RepeatInstancesDaoMixin, BaseExtension<RepeatInstance> {
+    with _$RepeatInstancesDaoMixin, BaseDaoMixin<RepeatInstance> {
   RepeatInstancesDao(AppDatabase db) : super(db);
 
   @override
@@ -25,6 +25,6 @@ class RepeatInstancesDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, RepeatInstance>, RepeatInstance> get table =>
+  $RepeatInstancesTable get table =>
       repeatInstances;
 }

@@ -50,8 +50,7 @@ class OptionSetDatasource
       DataOptionSet.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, DataOptionSet>, DataOptionSet> get table =>
-      db.dataOptionSets;
+  $DataOptionSetsTable get table => db.dataOptionSets;
 
 // @override
 // Future<List<DataOptionSet>> syncWithRemote(

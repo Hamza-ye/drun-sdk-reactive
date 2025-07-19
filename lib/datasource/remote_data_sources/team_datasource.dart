@@ -45,7 +45,7 @@ class TeamDatasource extends BaseDataSource<$TeamsTable, Team>
   @override
   Future<void> disableStale(List<Object> liveIds) async {
     await (db.update(table)
-      ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
+          ..where((t) => t.columnsByName['id']!.isNotIn(liveIds)))
         .write(RawValuesInsertable({
       'disabled': Variable<bool>(true),
     }));
@@ -64,14 +64,14 @@ class TeamDatasource extends BaseDataSource<$TeamsTable, Team>
   }
 
   @override
-  TableInfo<TableInfo<Table, Team>, Team> get table => db.teams;
+  $TeamsTable get table => db.teams;
 }
 // @override
 // String get resourceName => 'teams';
 //
 // @override
 // Future<List<Team>> syncWithRemote(
-//     {SyncConfig? options, ProgressCallback? progressCallback}) async {
+//     {SyncConfig? options, ProgressCallback? progressCallback,}) async {
 //   final resourcePath = '$resourceName$pathPostfix';
 //   final response =
 //       await apiClient.request(resourceName: resourcePath, method: 'get');

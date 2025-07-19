@@ -1,7 +1,7 @@
 //GENERATED BARREL FILE
 export 'activities_dao.dart';
 export 'assignments_dao.dart';
-export 'base_extension.dart';
+export 'base_dao_extension.dart';
 export 'data_elements_dao.dart';
 export 'data_option_sets_dao.dart';
 export 'data_options_dao.dart';

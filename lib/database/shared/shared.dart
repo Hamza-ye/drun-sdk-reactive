@@ -3,6 +3,7 @@ export 'activity_model.dart';
 export 'allowed_action.dart';
 export 'assignment_model.dart';
 export 'assignment_status.dart';
+export 'collections.dart';
 export 'd_identifiable_model.dart';
 export 'd_run_base.model.dart';
 export 'data_element_value.dart';
@@ -19,8 +20,10 @@ export 'submission_card_summary.dart';
 export 'submission_status.dart';
 export 'submission_sync_status_model.dart';
 export 'submissions_filter.dart';
+export 'sync_error.dart';
 export 'team_form_permission.dart';
 export 'translations.dart';
 export 'user_form_access.dart';
 export 'validation_strategy.dart';
 export 'value_type.dart';
+

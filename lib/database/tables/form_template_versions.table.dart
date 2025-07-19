@@ -13,18 +13,6 @@ class FormTemplateVersions extends Table {
 
   IntColumn get versionNumber => integer()();
 
-  // /// copied from parent template
-  // TextColumn get name => text().nullable()();
-  //
-  // /// copied from parent template
-  // TextColumn get label => text()
-  //     .map(const NullAwareMapConverter())
-  //     .nullable()
-  //     .clientDefault(() => '{}')();
-  //
-  // /// copied from parent template
-  // TextColumn get description => text().nullable()();
-
   TextColumn get fields => text().map(const TemplateListConverter())();
 
   TextColumn get sections => text().map(const TemplateListConverter())();

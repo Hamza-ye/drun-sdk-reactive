@@ -1,5 +1,5 @@
 import 'package:d_sdk/database/app_database.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/data_values.table.dart';
 import 'package:drift/drift.dart';
 
@@ -7,7 +7,7 @@ part 'data_values_dao.g.dart';
 
 @DriftAccessor(tables: [DataValues])
 class DataValuesDao extends DatabaseAccessor<AppDatabase>
-    with _$DataValuesDaoMixin, BaseExtension<DataValue> {
+    with _$DataValuesDaoMixin, BaseDaoMixin<DataValue> {
   DataValuesDao(AppDatabase db) : super(db);
 
   @override
@@ -31,5 +31,5 @@ class DataValuesDao extends DatabaseAccessor<AppDatabase>
   }
 
   @override
-  TableInfo<TableInfo<Table, DataValue>, DataValue> get table => dataValues;
+  $DataValuesTable get table => dataValues;
 }

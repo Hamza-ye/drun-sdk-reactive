@@ -1,7 +1,6 @@
 library d_sdk;
 
 import 'package:d_sdk/database/database.dart';
-import 'package:d_sdk/datasource/remote_data_sources/data_submission_datasource.dart';
 import 'package:d_sdk/di/injection.dart';
 
 import 'database/dao/dao.dart';
@@ -10,9 +9,6 @@ class DSdk {
   static DbManager get dbManager => rSdkLocator<DbManager>();
 
   static AppDatabase get db => dbManager.db;
-
-  static DataInstanceDatasource get dataInstanceSource =>
-      rSdkLocator<DataInstanceDatasource>();
 
   // db DAOs:
   static ActivitiesDao get activity => db.activitiesDao;

@@ -9,7 +9,9 @@ export 'null_aware_list.converter.dart';
 export 'null_aware_map.converter.dart';
 export 'option_set_list.converter.dart';
 export 'scanned_code_properties.converter.dart';
+export 'sync_error_list.converter.dart';
 export 'team_form_permission.converter.dart';
 export 'team_users.converter.dart';
 export 'template_list.converter.dart';
 export 'translation.converter.dart';
+

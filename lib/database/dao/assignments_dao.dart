@@ -1,6 +1,6 @@
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
@@ -10,9 +10,10 @@ part 'assignments_dao.g.dart';
 
 @DriftAccessor(tables: [Assignments])
 class AssignmentsDao extends DatabaseAccessor<AppDatabase>
-    with _$AssignmentsDaoMixin, BaseExtension<Assignment> {
+    with _$AssignmentsDaoMixin, BaseDaoMixin<Assignment> {
   AssignmentsDao(AppDatabase db) : super(db);
 
+  //<editor-fold desc="Remote">
   @override
   String get resourceName => 'assignments';
 
@@ -84,9 +85,15 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
     return assignmentForms;
   }
 
+  //</editor-fold>
+
+  //<editor-fold desc="Db Query">
   @override
-  TableInfo<TableInfo<Assignments, Assignment>, Assignment> get table =>
-      assignments;
+  SimpleSelectStatement<$AssignmentsTable, Assignment> get engine =>
+      select(assignments)..where((u) => u.disabled.isNotValue(true));
+
+  @override
+  $AssignmentsTable get table => assignments;
 
   Future<List<AssignmentModel>> allAssignments(
       {String? activityId, String ouSearchFilter = ''}) async {
@@ -112,8 +119,8 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
       final forms = assignmentsWithRefs.$2.forms.prefetchedData?.length ?? 0;
       final activity =
           assignmentsWithRefs.$2.activity.prefetchedData!.firstOrNull;
-      final ou = assignmentsWithRefs.$2.orgUnit.prefetchedData!.firstOrNull;
-      final team = assignmentsWithRefs.$2.team.prefetchedData!.firstOrNull;
+      final ou = assignmentsWithRefs.$2.orgUnit.prefetchedData!.first;
+      final team = assignmentsWithRefs.$2.team.prefetchedData!.first;
       return AssignmentModel(
           id: a.id,
           activity: activity != null
@@ -121,12 +128,12 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
                   id: activity.id, code: activity.code, name: activity.name)
               : null,
           orgUnit: IdentifiableModel(
-            id: ou!.id,
+            id: ou.id,
             code: ou.code,
             name: ou.name,
           ),
           team: IdentifiableModel(
-            id: team!.id,
+            id: team.id,
             code: team.code,
             name: team.code ?? '',
           ),
@@ -214,6 +221,7 @@ class AssignmentsDao extends DatabaseAccessor<AppDatabase>
           );
     });
   }
+//</editor-fold>
 }
 
 class _AssignmentWithAccess {

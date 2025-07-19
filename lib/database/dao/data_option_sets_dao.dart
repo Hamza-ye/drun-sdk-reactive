@@ -1,7 +1,7 @@
 import 'package:d_sdk/core/utilities/list_extensions.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
-import 'package:d_sdk/database/dao/base_extension.dart';
+import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/tables/option_sets.table.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:drift/drift.dart';
@@ -10,7 +10,7 @@ part 'data_option_sets_dao.g.dart';
 
 @DriftAccessor(tables: [DataOptionSets])
 class DataOptionSetsDao extends DatabaseAccessor<AppDatabase>
-    with _$DataOptionSetsDaoMixin, BaseExtension<DataOptionSet> {
+    with _$DataOptionSetsDaoMixin, BaseDaoMixin<DataOptionSet> {
   DataOptionSetsDao(AppDatabase db) : super(db);
 
   @override
@@ -52,6 +52,6 @@ class DataOptionSetsDao extends DatabaseAccessor<AppDatabase>
       DataOptionSet.fromJson(data, serializer: serializer);
 
   @override
-  TableInfo<TableInfo<Table, DataOptionSet>, DataOptionSet> get table =>
+  $DataOptionSetsTable get table =>
       dataOptionSets;
 }

@@ -83,7 +83,7 @@ _i174.GetIt initActiveSessionContextScope(
           () => _i790.OuLevelDatasource());
       gh.factory<_i277.AbstractDatasource<_i210.OrgUnit>>(
           () => _i185.OrgUnitDatasource());
-      gh.factory<_i277.AbstractDatasource<_i210.DataOptionSet>>(
+      gh.factory<_i277.AbstractDatasource<dynamic>>(
           () => _i756.OptionSetDatasource());
       gh.factory<_i277.AbstractDatasource<_i210.DataElement>>(
           () => _i827.DataElementDatasource());

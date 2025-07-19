@@ -15,6 +15,7 @@ class UserDatasource extends BaseDataSource<$UsersTable, User>
   @override
   Future<List<Map<String, dynamic>>> getOnlineRaw({
     SyncConfig? options,
+    Map<String, dynamic>? params,
   }) async {
     final response =
         await apiClient.request(resourceName: resourceName, method: 'get');
@@ -37,10 +38,10 @@ class UserDatasource extends BaseDataSource<$UsersTable, User>
   }
 
   @override
-  TableInfo<TableInfo<Table, User>, User> get table => db.users;
+  $UsersTable get table => db.users;
 
 // Future<List<User>> syncWithRemote(
-//     {SyncConfig? options, ProgressCallback? progressCallback}) async {
+//     {SyncConfig? options, ProgressCallback? progressCallback,}) async {
 //   final response =
 //   await apiClient.request(resourceName: resourceName, method: 'get');
 //
