@@ -1,6 +1,5 @@
 //GENERATED BARREL FILE
 export 'activity_model.dart';
-export 'allowed_action.dart';
 export 'assignment_model.dart';
 export 'assignment_status.dart';
 export 'collections.dart';
