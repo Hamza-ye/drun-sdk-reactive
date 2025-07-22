@@ -10447,6 +10447,8 @@ class SyncSummary extends DataClass implements Insertable<SyncSummary> {
   final DateTime lastSync;
   final int successCount;
   final int failureCount;
+
+  /// JSON‑encoded list of errors
   final List<SyncError>? errors;
   const SyncSummary(
       {required this.entity,
