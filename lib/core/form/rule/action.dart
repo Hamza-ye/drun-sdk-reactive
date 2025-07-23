@@ -88,9 +88,6 @@ class RuleAction
 
   @override
   bool evaluate([Map<String, dynamic>? context]) {
-    // final initialContext = {
-    //   for (var dependency in dependencies) dependency: context?[dependency]
-    // };
     try {
       final result = evaluator.eval(getExpression(), context!);
       return result;

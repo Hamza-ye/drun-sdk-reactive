@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:d_sdk/core/form/attribute_type.dart';
 import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
+import 'package:d_sdk/core/form/rule/validation_rule.dart';
 import 'package:d_sdk/core/form/value_type_rendering_type.dart';
 import 'package:d_sdk/core/utilities/parsing_helpers.dart';
 import 'package:d_sdk/database/shared/shared.dart';
@@ -33,6 +34,7 @@ class FieldTemplate extends Template {
   final IMap<String, dynamic>? properties;
 
   final IList<Rule> rules;
+  final ValidationRule? validationRule;
   final IList<FormOption> options;
 
   final String? constraint;
@@ -76,6 +78,7 @@ class FieldTemplate extends Template {
     this.defaultValue,
     this.attributeType,
     this.gs1Enabled = false,
+    this.validationRule,
     Iterable<Rule>? rules,
     Iterable<FormOption>? options,
     Iterable<String>? appearance,
@@ -137,11 +140,10 @@ class FieldTemplate extends Template {
             json['label'] is String ? jsonDecode(json['label']) : json['label'])
         : <String, String?>{};
 
-    final constraintMessage = json['constraintMessage'] != null
-        ? Map<String, String>.from(json['constraintMessage'] is String
-            ? jsonDecode(json['constraintMessage'])
-            : json['constraintMessage'])
-        : <String, String>{};
+    final validation = json['validationRule'];
+    final validationRule = json['validationRule'] != null
+        ? ValidationRule.fromJson({...validation, 'field': json['name']})
+        : null;
 
     final properties = json['properties'] != null
         ? Map<String, dynamic>.from(json['properties'] is String
@@ -185,6 +187,7 @@ class FieldTemplate extends Template {
       choiceFilter: json['choiceFilter'],
       calculation: json['calculation'],
       rules: rules,
+      validationRule: validationRule,
       label: label.lock,
       properties: properties.lock,
       parent: json['parent'],
@@ -197,7 +200,6 @@ class FieldTemplate extends Template {
               : json['defaultValue'] as String
           : null,
       constraint: json['constraint'],
-      constraintMessage: constraintMessage.lock,
       scannedCodeProperties: json['scannedCodeProperties'],
       appearance: appearance,
     );
@@ -225,9 +227,10 @@ class FieldTemplate extends Template {
       'valueTypeRendering': valueTypeRendering.name,
       'resourceMetadataSchema': resourceMetadataSchema,
       'rules': rules.unlockView.map((rule) => rule.toJson()).toList(),
+      'validationRule': validationRule?.toJson(),
       'label': label.unlockView,
-      'constraint': constraint,
-      'constraintMessage': constraintMessage!.unlockView,
+      // 'constraint': constraint,
+      // 'constraintMessage': constraintMessage!.unlockView,
       'properties': properties?.unlockView,
       'parent': parent,
       'appearance': appearance.unlockView,
