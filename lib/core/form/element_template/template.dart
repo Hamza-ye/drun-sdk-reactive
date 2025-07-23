@@ -25,6 +25,7 @@ abstract class Template with EquatableMixin, TreeElement {
   IMap<String, dynamic> get label;
 
   bool get readOnly;
+  bool get mandatory => false;
 
   IList<Rule>? get rules;
 
