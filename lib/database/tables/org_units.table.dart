@@ -10,6 +10,7 @@ class OrgUnits extends Table with BaseTableMixin, IdentifiableMixin {
 
   TextColumn get code => text().nullable()();
 
+  /// a comma separated ids for ancestor starting from root to this orgUnit
   TextColumn get path => text()();
 
   IntColumn get level => integer()();

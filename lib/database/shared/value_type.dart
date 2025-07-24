@@ -105,7 +105,7 @@ enum ValueType {
         Percentage
       ];
 
-  static List<ValueType> get DATE_TYPES => <ValueType>[Date, DateTime];
+  static List<ValueType> get DATE_TYPES => <ValueType>[Date, DateTime, Time];
 
   static List<ValueType> get FILE_TYPES => <ValueType>[Image, FileResource];
 
