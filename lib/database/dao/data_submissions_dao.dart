@@ -76,7 +76,6 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       return submission.toUpload();
     }).toList();
 
-
     // final Dio dioClient = rSdkLocator<Dio>();
     // String apiVersionPath = '/${AppEnvironment.apiV1Path}';
     // final options = BaseOptions(
@@ -201,7 +200,9 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
   /// item (i.e, the aggregation level) (e.g. Assignment, Form,..)
   /// by passing the item id and the item level
   Selectable<SubmissionSyncStatusModel> selectStatusByLevel(
-      String id, StatusAggregationLevel aggregationLevel) {
+      {required String id,
+      required StatusAggregationLevel aggregationLevel,
+      String? assignmentId}) {
     late final Expression<bool> byLevel = switch (aggregationLevel) {
       StatusAggregationLevel.assignment => dataInstances.assignment.equals(id),
       StatusAggregationLevel.form => dataInstances.formTemplate.equals(id),
@@ -210,10 +211,13 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     final syncState = dataInstances.syncState;
     final count = dataInstances.id.count();
 
-    final query = selectOnly(dataInstances)
+    var query = selectOnly(dataInstances)
       ..addColumns([syncState, count])
-      ..where(byLevel)
-      ..groupBy([dataInstances.syncState]);
+      ..where(byLevel);
+    if (assignmentId != null) {
+      query = query..where(dataInstances.assignment.equals(assignmentId));
+    }
+    query = query..groupBy([dataInstances.syncState]);
 
     return query.map((row) {
       final syncState = row.read(dataInstances.syncState)!;
