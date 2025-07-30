@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary_model.dart';
 import 'package:d_sdk/database/app_database.dart';
@@ -7,7 +8,10 @@ import 'package:d_sdk/database/dao/base_dao_extension.dart';
 import 'package:d_sdk/database/extensions/data_submission.extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/data_submissions.table.dart';
+import 'package:d_sdk/datasource/util/submission_aggregator.dart';
+import 'package:d_sdk/di/injection.dart';
 import 'package:drift/drift.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 part 'data_submissions_dao.g.dart';
 
@@ -54,44 +58,14 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
               ])))
         .get();
 
-    // List<String> syncableEntityIds = [];
-    // List<String> syncableTeamIds = [];
-    // List<String> syncableAssignments = [];
-
-    // submissions.forEach((submission) {
-    //   syncableEntityIds.add(submission.id);
-    //
-    //   syncableAssignments.removeWhere((id) => id == submission.assignment);
-    //   if (submission.assignment != null) {
-    //     syncableAssignments.add(submission.assignment!);
-    //   }
-    //
-    //   syncableTeamIds.removeWhere((id) => id == submission.team);
-    //   if (submission.team != null) {
-    //     syncableTeamIds.add(submission.team!);
-    //   }
-    // });
-
     final uploadPayload = submissions.map((submission) {
       return submission.toUpload();
     }).toList();
 
-    // final Dio dioClient = rSdkLocator<Dio>();
-    // String apiVersionPath = '/${AppEnvironment.apiV1Path}';
-    // final options = BaseOptions(
-    //   baseUrl: '${dioClient.options.baseUrl}${apiVersionPath}',
-    //   headers: {'Content-Type': 'application/json'},
-    // );
-
-    // final resource = '${apiVersionPath}/$resourceName/bulk';
     final resource = '$resourceName/bulk';
 
     final response = await apiClient.request(
         resourceName: resource, data: uploadPayload, method: 'post');
-    // final response = await dioClient.post(
-    //   resource,
-    //   data: uploadPayload,
-    // );
 
     SyncSummaryModel summary = SyncSummaryModel.fromJson(response.data);
     logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});
@@ -283,27 +257,36 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       final submission = row.readTable(sub);
       final orgUnit = row.readTable(ou);
       final form = row.readTable(f);
-      final formVersion = row.readTable(fv);
+      final FormTemplateVersion formVersion = row.readTable(fv);
 
       return SubmissionSummary(
-        id: submission.id,
-        form: IdentifiableModel(
-          id: form.id,
-          name: form.name,
-          label: form.label,
-        ),
-        versionNumber: form.versionNumber,
-        orgUnit: IdentifiableModel(
-          id: orgUnit.id,
-          code: orgUnit.code,
-          name: orgUnit.name,
-          label: orgUnit.label,
-        ),
-        // progress: submission.assignmentStatus,
-        submittedAt: submission.createdDate,
-        syncStatus: submission.syncState,
-        formVersionId: formVersion.id,
-      );
+          id: submission.id,
+          assignment: submission.assignment,
+          form: IdentifiableModel(
+            id: form.id,
+            name: form.name,
+            label: form.label,
+          ),
+          versionNumber: form.versionNumber,
+          orgUnit: IdentifiableModel(
+            id: orgUnit.id,
+            code: orgUnit.code,
+            name: orgUnit.name,
+            label: orgUnit.label,
+          ),
+          submittedAt: submission.createdDate,
+          syncStatus: submission.syncState,
+          formVersionId: formVersion.id,
+          createdDate: submission.createdDate,
+          lastModifiedDate: submission.lastModifiedDate,
+          formData: rSdkLocator<SubmissionAggregator>()
+              .extractValues(
+                  submission.formData ?? {},
+                  Template.buildTree(fieldsAndSections: [
+                    ...formVersion.fields,
+                    ...formVersion.sections
+                  ]))
+              .lock);
     });
   }
 

@@ -31,7 +31,7 @@ class DateHelper {
   }
 
   static DateFormat uiDateFormatNoSeconds() {
-    return DateFormat(DATABASE_FORMAT_EXPRESSION_NO_SECONDS, 'en_US');
+    return DateFormat(DATE_TIME_FORMAT_EXPRESSION, 'en_US');
   }
 
   static DateFormat timeFormat() {
@@ -59,11 +59,16 @@ class DateHelper {
       {bool includeTime = false, bool onlyTime = false}) {
     final DateTime localDate = dateTime.toLocal();
 
-    final DateFormat formatter = onlyTime
-        ? timeFormat()
-        : includeTime
-            ? uiDateFormatNoSeconds()
-            : uiDateFormat();
+    DateFormat formatter = uiDateFormat();
+
+    if (includeTime) {
+      formatter = uiDateFormatNoSeconds();
+    }
+
+    if (onlyTime) {
+      formatter = timeFormat();
+    }
+
     return formatter.format(localDate);
   }
 

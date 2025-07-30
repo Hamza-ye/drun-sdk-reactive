@@ -19,7 +19,7 @@ class SectionTemplate extends Template {
   final List<Template> children;
   final IMap<String, dynamic> label;
 
-  final IMap<String, dynamic>? properties;
+  final IMap<String, dynamic> properties;
 
   final IList<Rule> rules;
 
@@ -45,7 +45,7 @@ class SectionTemplate extends Template {
     Iterable<Rule>? rules,
     Iterable<Template>? children,
     this.label = const IMap.empty(),
-    this.properties,
+    this.properties = const IMapConst({}),
   })  : this.children = children?.toList() ?? [],
         this.rules = IList.orNull(rules) ?? const IList<Rule>.empty();
 
@@ -118,7 +118,7 @@ class SectionTemplate extends Template {
           children.map((field) => Template.toJsonFactory(field)).toList(),
       'rules': rules.unlockView.map((rule) => rule.toJson()).toList(),
       'label': label.unlockView,
-      'properties': properties?.unlockView,
+      'properties': properties.unlockView,
     };
   }
 }

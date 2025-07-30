@@ -29,7 +29,7 @@ abstract class Template with EquatableMixin, TreeElement {
 
   IList<Rule>? get rules;
 
-  IMap<String, dynamic>? get properties;
+  IMap<String, dynamic> get properties;
 
   ValueTypeRenderingType get valueTypeRendering =>
       ValueTypeRenderingType.DEFAULT;
@@ -73,5 +73,36 @@ abstract class Template with EquatableMixin, TreeElement {
       null => (template as SectionTemplate).toJson(),
       _ => (template as FieldTemplate).toJson(),
     };
+  }
+
+  static List<Template> buildTree(
+      {required Iterable<Template> fieldsAndSections}) {
+    // a lookup of all nodes by their id:
+    final IMap<String, Template> lookup = IMap.fromIterable(fieldsAndSections,
+        keyMapper: (template) => template.id,
+        valueMapper: (template) => template);
+
+    // Link children into parents:
+    final List<Template> roots = [];
+    lookup.forEach((id, node) {
+      if (node.parent == null || !lookup.containsKey(node.parent)) {
+        // no parent in our data ⇒ this is a root
+        roots.add(node);
+      } else {
+        lookup[node.parent!]!.children.add(node);
+      }
+    });
+
+    // 3) Optional: sort each node’s children by the `order` property:
+    void sortRecursively(List<Template> list) {
+      list.sort((a, b) => a.order.compareTo(b.order));
+      for (var n in list) {
+        if (n.children.isNotEmpty) sortRecursively(n.children);
+      }
+    }
+
+    sortRecursively(roots);
+
+    return roots;
   }
 }

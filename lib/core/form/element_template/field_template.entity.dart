@@ -31,7 +31,7 @@ class FieldTemplate extends Template {
 
   final IMap<String, dynamic> label;
 
-  final IMap<String, dynamic>? properties;
+  final IMap<String, dynamic> properties;
 
   final IList<Rule> rules;
   final ValidationRule? validationRule;
@@ -84,7 +84,7 @@ class FieldTemplate extends Template {
     Iterable<String>? appearance,
     Iterable<String>? displayAttributes,
     this.label = const IMap.empty(),
-    this.properties,
+    this.properties = const IMapConst({}),
     this.scannedCodeProperties,
     this.constraint,
     this.constraintMessage,
@@ -231,7 +231,7 @@ class FieldTemplate extends Template {
       'label': label.unlockView,
       // 'constraint': constraint,
       // 'constraintMessage': constraintMessage!.unlockView,
-      'properties': properties?.unlockView,
+      'properties': properties.unlockView,
       'parent': parent,
       'appearance': appearance.unlockView,
       'scannedCodeProperties': scannedCodeProperties?.toJson(),
