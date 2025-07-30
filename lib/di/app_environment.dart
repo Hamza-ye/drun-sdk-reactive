@@ -8,6 +8,8 @@ abstract class AppEnvironment {
   static const defaultLocale =
       String.fromEnvironment('default_locale', defaultValue: 'en');
 
+  static const isDev = envLabel == 'dev';
+
   // if not present it defaults to false
   static const secureCache =
       bool.fromEnvironment('secure_cache', defaultValue: true);
