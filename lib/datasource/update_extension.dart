@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 extension FindById<Table extends HasResultSet, Row>
 on ResultSetImplementation<Table, Row> {
-  Selectable<Row> findById(int id) {
+  Selectable<Row> findById(String id) {
     return select()
       ..where((row) {
         final idColumn = columnsByName['id'];

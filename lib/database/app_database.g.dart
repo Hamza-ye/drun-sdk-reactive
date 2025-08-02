@@ -1176,6 +1176,8 @@ class OrgUnit extends DataClass implements Insertable<OrgUnit> {
   final List<Translation> translations;
   final String name;
   final String? code;
+
+  /// a comma separated ids for ancestor starting from root to this orgUnit
   final String path;
   final int level;
   final String? parent;
@@ -6431,23 +6433,6 @@ class $DataInstancesTable extends DataInstances
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES assignments (id)'));
-  static const VerificationMeta _teamMeta = const VerificationMeta('team');
-  @override
-  late final GeneratedColumn<String> team = GeneratedColumn<String>(
-      'team', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES teams (id)'));
-  static const VerificationMeta _orgUnitMeta =
-      const VerificationMeta('orgUnit');
-  @override
-  late final GeneratedColumn<String> orgUnit = GeneratedColumn<String>(
-      'org_unit', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES org_units (id)'));
   static const VerificationMeta _startEntryTimeMeta =
       const VerificationMeta('startEntryTime');
   @override
@@ -6511,8 +6496,6 @@ class $DataInstancesTable extends DataInstances
         formTemplate,
         templateVersion,
         assignment,
-        team,
-        orgUnit,
         startEntryTime,
         finishedEntryTime,
         formData,
@@ -6579,14 +6562,6 @@ class $DataInstancesTable extends DataInstances
           assignment.isAcceptableOrUnknown(
               data['assignment']!, _assignmentMeta));
     }
-    if (data.containsKey('team')) {
-      context.handle(
-          _teamMeta, team.isAcceptableOrUnknown(data['team']!, _teamMeta));
-    }
-    if (data.containsKey('org_unit')) {
-      context.handle(_orgUnitMeta,
-          orgUnit.isAcceptableOrUnknown(data['org_unit']!, _orgUnitMeta));
-    }
     if (data.containsKey('start_entry_time')) {
       context.handle(
           _startEntryTimeMeta,
@@ -6650,10 +6625,6 @@ class $DataInstancesTable extends DataInstances
           DriftSqlType.string, data['${effectivePrefix}template_version'])!,
       assignment: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}assignment']),
-      team: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}team']),
-      orgUnit: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}org_unit']),
       startEntryTime: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}start_entry_time'])!,
       finishedEntryTime: attachedDatabase.typeMapping.read(
@@ -6699,12 +6670,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
 
   /// analogous to enrollment
   final String? assignment;
-
-  /// who
-  final String? team;
-
-  /// where
-  final String? orgUnit;
   final DateTime startEntryTime;
   final DateTime? finishedEntryTime;
   final Map<String, dynamic>? formData;
@@ -6724,8 +6689,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
       required this.formTemplate,
       required this.templateVersion,
       this.assignment,
-      this.team,
-      this.orgUnit,
       required this.startEntryTime,
       this.finishedEntryTime,
       this.formData,
@@ -6752,12 +6715,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
     map['template_version'] = Variable<String>(templateVersion);
     if (!nullToAbsent || assignment != null) {
       map['assignment'] = Variable<String>(assignment);
-    }
-    if (!nullToAbsent || team != null) {
-      map['team'] = Variable<String>(team);
-    }
-    if (!nullToAbsent || orgUnit != null) {
-      map['org_unit'] = Variable<String>(orgUnit);
     }
     map['start_entry_time'] = Variable<DateTime>(startEntryTime);
     if (!nullToAbsent || finishedEntryTime != null) {
@@ -6802,10 +6759,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
       assignment: assignment == null && nullToAbsent
           ? const Value.absent()
           : Value(assignment),
-      team: team == null && nullToAbsent ? const Value.absent() : Value(team),
-      orgUnit: orgUnit == null && nullToAbsent
-          ? const Value.absent()
-          : Value(orgUnit),
       startEntryTime: Value(startEntryTime),
       finishedEntryTime: finishedEntryTime == null && nullToAbsent
           ? const Value.absent()
@@ -6840,8 +6793,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
       formTemplate: serializer.fromJson<String>(json['formTemplate']),
       templateVersion: serializer.fromJson<String>(json['templateVersion']),
       assignment: serializer.fromJson<String?>(json['assignment']),
-      team: serializer.fromJson<String?>(json['team']),
-      orgUnit: serializer.fromJson<String?>(json['orgUnit']),
       startEntryTime: serializer.fromJson<DateTime>(json['startEntryTime']),
       finishedEntryTime:
           serializer.fromJson<DateTime?>(json['finishedEntryTime']),
@@ -6866,8 +6817,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
       'formTemplate': serializer.toJson<String>(formTemplate),
       'templateVersion': serializer.toJson<String>(templateVersion),
       'assignment': serializer.toJson<String?>(assignment),
-      'team': serializer.toJson<String?>(team),
-      'orgUnit': serializer.toJson<String?>(orgUnit),
       'startEntryTime': serializer.toJson<DateTime>(startEntryTime),
       'finishedEntryTime': serializer.toJson<DateTime?>(finishedEntryTime),
       'formData': serializer.toJson<Map<String, dynamic>?>(formData),
@@ -6889,8 +6838,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
           String? formTemplate,
           String? templateVersion,
           Value<String?> assignment = const Value.absent(),
-          Value<String?> team = const Value.absent(),
-          Value<String?> orgUnit = const Value.absent(),
           DateTime? startEntryTime,
           Value<DateTime?> finishedEntryTime = const Value.absent(),
           Value<Map<String, dynamic>?> formData = const Value.absent(),
@@ -6910,8 +6857,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
         formTemplate: formTemplate ?? this.formTemplate,
         templateVersion: templateVersion ?? this.templateVersion,
         assignment: assignment.present ? assignment.value : this.assignment,
-        team: team.present ? team.value : this.team,
-        orgUnit: orgUnit.present ? orgUnit.value : this.orgUnit,
         startEntryTime: startEntryTime ?? this.startEntryTime,
         finishedEntryTime: finishedEntryTime.present
             ? finishedEntryTime.value
@@ -6946,8 +6891,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
           : this.templateVersion,
       assignment:
           data.assignment.present ? data.assignment.value : this.assignment,
-      team: data.team.present ? data.team.value : this.team,
-      orgUnit: data.orgUnit.present ? data.orgUnit.value : this.orgUnit,
       startEntryTime: data.startEntryTime.present
           ? data.startEntryTime.value
           : this.startEntryTime,
@@ -6981,8 +6924,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
           ..write('formTemplate: $formTemplate, ')
           ..write('templateVersion: $templateVersion, ')
           ..write('assignment: $assignment, ')
-          ..write('team: $team, ')
-          ..write('orgUnit: $orgUnit, ')
           ..write('startEntryTime: $startEntryTime, ')
           ..write('finishedEntryTime: $finishedEntryTime, ')
           ..write('formData: $formData, ')
@@ -7005,8 +6946,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
       formTemplate,
       templateVersion,
       assignment,
-      team,
-      orgUnit,
       startEntryTime,
       finishedEntryTime,
       formData,
@@ -7027,8 +6966,6 @@ class DataInstance extends DataClass implements Insertable<DataInstance> {
           other.formTemplate == this.formTemplate &&
           other.templateVersion == this.templateVersion &&
           other.assignment == this.assignment &&
-          other.team == this.team &&
-          other.orgUnit == this.orgUnit &&
           other.startEntryTime == this.startEntryTime &&
           other.finishedEntryTime == this.finishedEntryTime &&
           other.formData == this.formData &&
@@ -7048,8 +6985,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
   final Value<String> formTemplate;
   final Value<String> templateVersion;
   final Value<String?> assignment;
-  final Value<String?> team;
-  final Value<String?> orgUnit;
   final Value<DateTime> startEntryTime;
   final Value<DateTime?> finishedEntryTime;
   final Value<Map<String, dynamic>?> formData;
@@ -7068,8 +7003,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
     this.formTemplate = const Value.absent(),
     this.templateVersion = const Value.absent(),
     this.assignment = const Value.absent(),
-    this.team = const Value.absent(),
-    this.orgUnit = const Value.absent(),
     this.startEntryTime = const Value.absent(),
     this.finishedEntryTime = const Value.absent(),
     this.formData = const Value.absent(),
@@ -7089,8 +7022,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
     required String formTemplate,
     required String templateVersion,
     this.assignment = const Value.absent(),
-    this.team = const Value.absent(),
-    this.orgUnit = const Value.absent(),
     this.startEntryTime = const Value.absent(),
     this.finishedEntryTime = const Value.absent(),
     this.formData = const Value.absent(),
@@ -7114,8 +7045,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
     Expression<String>? formTemplate,
     Expression<String>? templateVersion,
     Expression<String>? assignment,
-    Expression<String>? team,
-    Expression<String>? orgUnit,
     Expression<DateTime>? startEntryTime,
     Expression<DateTime>? finishedEntryTime,
     Expression<String>? formData,
@@ -7135,8 +7064,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
       if (formTemplate != null) 'form_template': formTemplate,
       if (templateVersion != null) 'template_version': templateVersion,
       if (assignment != null) 'assignment': assignment,
-      if (team != null) 'team': team,
-      if (orgUnit != null) 'org_unit': orgUnit,
       if (startEntryTime != null) 'start_entry_time': startEntryTime,
       if (finishedEntryTime != null) 'finished_entry_time': finishedEntryTime,
       if (formData != null) 'form_data': formData,
@@ -7158,8 +7085,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
       Value<String>? formTemplate,
       Value<String>? templateVersion,
       Value<String?>? assignment,
-      Value<String?>? team,
-      Value<String?>? orgUnit,
       Value<DateTime>? startEntryTime,
       Value<DateTime?>? finishedEntryTime,
       Value<Map<String, dynamic>?>? formData,
@@ -7178,8 +7103,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
       formTemplate: formTemplate ?? this.formTemplate,
       templateVersion: templateVersion ?? this.templateVersion,
       assignment: assignment ?? this.assignment,
-      team: team ?? this.team,
-      orgUnit: orgUnit ?? this.orgUnit,
       startEntryTime: startEntryTime ?? this.startEntryTime,
       finishedEntryTime: finishedEntryTime ?? this.finishedEntryTime,
       formData: formData ?? this.formData,
@@ -7218,12 +7141,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
     }
     if (assignment.present) {
       map['assignment'] = Variable<String>(assignment.value);
-    }
-    if (team.present) {
-      map['team'] = Variable<String>(team.value);
-    }
-    if (orgUnit.present) {
-      map['org_unit'] = Variable<String>(orgUnit.value);
     }
     if (startEntryTime.present) {
       map['start_entry_time'] = Variable<DateTime>(startEntryTime.value);
@@ -7268,8 +7185,6 @@ class DataInstancesCompanion extends UpdateCompanion<DataInstance> {
           ..write('formTemplate: $formTemplate, ')
           ..write('templateVersion: $templateVersion, ')
           ..write('assignment: $assignment, ')
-          ..write('team: $team, ')
-          ..write('orgUnit: $orgUnit, ')
           ..write('startEntryTime: $startEntryTime, ')
           ..write('finishedEntryTime: $finishedEntryTime, ')
           ..write('formData: $formData, ')
@@ -11310,21 +11225,6 @@ final class $$OrgUnitsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
-
-  static MultiTypedResultKey<$DataInstancesTable, List<DataInstance>>
-      _ouDataInstancesTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.dataInstances,
-          aliasName:
-              $_aliasNameGenerator(db.orgUnits.id, db.dataInstances.orgUnit));
-
-  $$DataInstancesTableProcessedTableManager get ouDataInstances {
-    final manager = $$DataInstancesTableTableManager($_db, $_db.dataInstances)
-        .filter((f) => f.orgUnit.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_ouDataInstancesTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
 }
 
 class $$OrgUnitsTableFilterComposer
@@ -11405,27 +11305,6 @@ class $$OrgUnitsTableFilterComposer
             $$AssignmentsTableFilterComposer(
               $db: $db,
               $table: $db.assignments,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> ouDataInstances(
-      Expression<bool> Function($$DataInstancesTableFilterComposer f) f) {
-    final $$DataInstancesTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataInstances,
-        getReferencedColumn: (t) => t.orgUnit,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$DataInstancesTableFilterComposer(
-              $db: $db,
-              $table: $db.dataInstances,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -11577,27 +11456,6 @@ class $$OrgUnitsTableAnnotationComposer
             ));
     return f(composer);
   }
-
-  Expression<T> ouDataInstances<T extends Object>(
-      Expression<T> Function($$DataInstancesTableAnnotationComposer a) f) {
-    final $$DataInstancesTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataInstances,
-        getReferencedColumn: (t) => t.orgUnit,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$DataInstancesTableAnnotationComposer(
-              $db: $db,
-              $table: $db.dataInstances,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
 }
 
 class $$OrgUnitsTableTableManager extends RootTableManager<
@@ -11611,8 +11469,7 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
     $$OrgUnitsTableUpdateCompanionBuilder,
     (OrgUnit, $$OrgUnitsTableReferences),
     OrgUnit,
-    PrefetchHooks Function(
-        {bool parent, bool ouAssignments, bool ouDataInstances})> {
+    PrefetchHooks Function({bool parent, bool ouAssignments})> {
   $$OrgUnitsTableTableManager(_$AppDatabase db, $OrgUnitsTable table)
       : super(TableManagerState(
           db: db,
@@ -11683,16 +11540,10 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
               .map((e) =>
                   (e.readTable(table), $$OrgUnitsTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: (
-              {parent = false,
-              ouAssignments = false,
-              ouDataInstances = false}) {
+          prefetchHooksCallback: ({parent = false, ouAssignments = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [
-                if (ouAssignments) db.assignments,
-                if (ouDataInstances) db.dataInstances
-              ],
+              explicitlyWatchedTables: [if (ouAssignments) db.assignments],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -11732,19 +11583,6 @@ class $$OrgUnitsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.orgUnit == item.id),
-                        typedResults: items),
-                  if (ouDataInstances)
-                    await $_getPrefetchedData<OrgUnit, $OrgUnitsTable,
-                            DataInstance>(
-                        currentTable: table,
-                        referencedTable:
-                            $$OrgUnitsTableReferences._ouDataInstancesTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$OrgUnitsTableReferences(db, table, p0)
-                                .ouDataInstances,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.orgUnit == item.id),
                         typedResults: items)
                 ];
               },
@@ -11764,8 +11602,7 @@ typedef $$OrgUnitsTableProcessedTableManager = ProcessedTableManager<
     $$OrgUnitsTableUpdateCompanionBuilder,
     (OrgUnit, $$OrgUnitsTableReferences),
     OrgUnit,
-    PrefetchHooks Function(
-        {bool parent, bool ouAssignments, bool ouDataInstances})>;
+    PrefetchHooks Function({bool parent, bool ouAssignments})>;
 typedef $$OuLevelsTableCreateCompanionBuilder = OuLevelsCompanion Function({
   required String id,
   Value<DateTime?> lastModifiedDate,
@@ -13030,21 +12867,6 @@ final class $$TeamsTableReferences
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$DataInstancesTable, List<DataInstance>>
-      _teamDataInstancesTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.dataInstances,
-              aliasName:
-                  $_aliasNameGenerator(db.teams.id, db.dataInstances.team));
-
-  $$DataInstancesTableProcessedTableManager get teamDataInstances {
-    final manager = $$DataInstancesTableTableManager($_db, $_db.dataInstances)
-        .filter((f) => f.team.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_teamDataInstancesTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
   static MultiTypedResultKey<$UserFormPermissionsTable,
       List<UserFormPermission>> _teamFormPermissionsTable(
           _$AppDatabase db) =>
@@ -13142,27 +12964,6 @@ class $$TeamsTableFilterComposer extends Composer<_$AppDatabase, $TeamsTable> {
             $$AssignmentsTableFilterComposer(
               $db: $db,
               $table: $db.assignments,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> teamDataInstances(
-      Expression<bool> Function($$DataInstancesTableFilterComposer f) f) {
-    final $$DataInstancesTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataInstances,
-        getReferencedColumn: (t) => t.team,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$DataInstancesTableFilterComposer(
-              $db: $db,
-              $table: $db.dataInstances,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13325,27 +13126,6 @@ class $$TeamsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> teamDataInstances<T extends Object>(
-      Expression<T> Function($$DataInstancesTableAnnotationComposer a) f) {
-    final $$DataInstancesTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.dataInstances,
-        getReferencedColumn: (t) => t.team,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$DataInstancesTableAnnotationComposer(
-              $db: $db,
-              $table: $db.dataInstances,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
   Expression<T> teamFormPermissions<T extends Object>(
       Expression<T> Function($$UserFormPermissionsTableAnnotationComposer a)
           f) {
@@ -13385,7 +13165,6 @@ class $$TeamsTableTableManager extends RootTableManager<
         {bool activity,
         bool managedTeams,
         bool teamAssignments,
-        bool teamDataInstances,
         bool teamFormPermissions})> {
   $$TeamsTableTableManager(_$AppDatabase db, $TeamsTable table)
       : super(TableManagerState(
@@ -13441,14 +13220,12 @@ class $$TeamsTableTableManager extends RootTableManager<
               {activity = false,
               managedTeams = false,
               teamAssignments = false,
-              teamDataInstances = false,
               teamFormPermissions = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (managedTeams) db.managedTeams,
                 if (teamAssignments) db.assignments,
-                if (teamDataInstances) db.dataInstances,
                 if (teamFormPermissions) db.userFormPermissions
               ],
               addJoins: <
@@ -13501,18 +13278,6 @@ class $$TeamsTableTableManager extends RootTableManager<
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.team == item.id),
                         typedResults: items),
-                  if (teamDataInstances)
-                    await $_getPrefetchedData<Team, $TeamsTable, DataInstance>(
-                        currentTable: table,
-                        referencedTable:
-                            $$TeamsTableReferences._teamDataInstancesTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$TeamsTableReferences(db, table, p0)
-                                .teamDataInstances,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.team == item.id),
-                        typedResults: items),
                   if (teamFormPermissions)
                     await $_getPrefetchedData<Team, $TeamsTable,
                             UserFormPermission>(
@@ -13548,7 +13313,6 @@ typedef $$TeamsTableProcessedTableManager = ProcessedTableManager<
         {bool activity,
         bool managedTeams,
         bool teamAssignments,
-        bool teamDataInstances,
         bool teamFormPermissions})>;
 typedef $$ManagedTeamsTableCreateCompanionBuilder = ManagedTeamsCompanion
     Function({
@@ -16180,8 +15944,6 @@ typedef $$DataInstancesTableCreateCompanionBuilder = DataInstancesCompanion
   required String formTemplate,
   required String templateVersion,
   Value<String?> assignment,
-  Value<String?> team,
-  Value<String?> orgUnit,
   Value<DateTime> startEntryTime,
   Value<DateTime?> finishedEntryTime,
   Value<Map<String, dynamic>?> formData,
@@ -16202,8 +15964,6 @@ typedef $$DataInstancesTableUpdateCompanionBuilder = DataInstancesCompanion
   Value<String> formTemplate,
   Value<String> templateVersion,
   Value<String?> assignment,
-  Value<String?> team,
-  Value<String?> orgUnit,
   Value<DateTime> startEntryTime,
   Value<DateTime?> finishedEntryTime,
   Value<Map<String, dynamic>?> formData,
@@ -16261,35 +16021,6 @@ final class $$DataInstancesTableReferences
     final manager = $$AssignmentsTableTableManager($_db, $_db.assignments)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_assignmentTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static $TeamsTable _teamTable(_$AppDatabase db) => db.teams
-      .createAlias($_aliasNameGenerator(db.dataInstances.team, db.teams.id));
-
-  $$TeamsTableProcessedTableManager? get team {
-    final $_column = $_itemColumn<String>('team');
-    if ($_column == null) return null;
-    final manager = $$TeamsTableTableManager($_db, $_db.teams)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_teamTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static $OrgUnitsTable _orgUnitTable(_$AppDatabase db) =>
-      db.orgUnits.createAlias(
-          $_aliasNameGenerator(db.dataInstances.orgUnit, db.orgUnits.id));
-
-  $$OrgUnitsTableProcessedTableManager? get orgUnit {
-    final $_column = $_itemColumn<String>('org_unit');
-    if ($_column == null) return null;
-    final manager = $$OrgUnitsTableTableManager($_db, $_db.orgUnits)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_orgUnitTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -16438,46 +16169,6 @@ class $$DataInstancesTableFilterComposer
             $$AssignmentsTableFilterComposer(
               $db: $db,
               $table: $db.assignments,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$TeamsTableFilterComposer get team {
-    final $$TeamsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.team,
-        referencedTable: $db.teams,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TeamsTableFilterComposer(
-              $db: $db,
-              $table: $db.teams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$OrgUnitsTableFilterComposer get orgUnit {
-    final $$OrgUnitsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.orgUnit,
-        referencedTable: $db.orgUnits,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$OrgUnitsTableFilterComposer(
-              $db: $db,
-              $table: $db.orgUnits,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -16643,46 +16334,6 @@ class $$DataInstancesTableOrderingComposer
             ));
     return composer;
   }
-
-  $$TeamsTableOrderingComposer get team {
-    final $$TeamsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.team,
-        referencedTable: $db.teams,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TeamsTableOrderingComposer(
-              $db: $db,
-              $table: $db.teams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$OrgUnitsTableOrderingComposer get orgUnit {
-    final $$OrgUnitsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.orgUnit,
-        referencedTable: $db.orgUnits,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$OrgUnitsTableOrderingComposer(
-              $db: $db,
-              $table: $db.orgUnits,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
 }
 
 class $$DataInstancesTableAnnotationComposer
@@ -16795,46 +16446,6 @@ class $$DataInstancesTableAnnotationComposer
     return composer;
   }
 
-  $$TeamsTableAnnotationComposer get team {
-    final $$TeamsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.team,
-        referencedTable: $db.teams,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TeamsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.teams,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$OrgUnitsTableAnnotationComposer get orgUnit {
-    final $$OrgUnitsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.orgUnit,
-        referencedTable: $db.orgUnits,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$OrgUnitsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.orgUnits,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
   Expression<T> repeatInstancesRefs<T extends Object>(
       Expression<T> Function($$RepeatInstancesTableAnnotationComposer a) f) {
     final $$RepeatInstancesTableAnnotationComposer composer = $composerBuilder(
@@ -16893,8 +16504,6 @@ class $$DataInstancesTableTableManager extends RootTableManager<
         {bool formTemplate,
         bool templateVersion,
         bool assignment,
-        bool team,
-        bool orgUnit,
         bool repeatInstancesRefs,
         bool instanceValues})> {
   $$DataInstancesTableTableManager(_$AppDatabase db, $DataInstancesTable table)
@@ -16916,8 +16525,6 @@ class $$DataInstancesTableTableManager extends RootTableManager<
             Value<String> formTemplate = const Value.absent(),
             Value<String> templateVersion = const Value.absent(),
             Value<String?> assignment = const Value.absent(),
-            Value<String?> team = const Value.absent(),
-            Value<String?> orgUnit = const Value.absent(),
             Value<DateTime> startEntryTime = const Value.absent(),
             Value<DateTime?> finishedEntryTime = const Value.absent(),
             Value<Map<String, dynamic>?> formData = const Value.absent(),
@@ -16937,8 +16544,6 @@ class $$DataInstancesTableTableManager extends RootTableManager<
             formTemplate: formTemplate,
             templateVersion: templateVersion,
             assignment: assignment,
-            team: team,
-            orgUnit: orgUnit,
             startEntryTime: startEntryTime,
             finishedEntryTime: finishedEntryTime,
             formData: formData,
@@ -16958,8 +16563,6 @@ class $$DataInstancesTableTableManager extends RootTableManager<
             required String formTemplate,
             required String templateVersion,
             Value<String?> assignment = const Value.absent(),
-            Value<String?> team = const Value.absent(),
-            Value<String?> orgUnit = const Value.absent(),
             Value<DateTime> startEntryTime = const Value.absent(),
             Value<DateTime?> finishedEntryTime = const Value.absent(),
             Value<Map<String, dynamic>?> formData = const Value.absent(),
@@ -16979,8 +16582,6 @@ class $$DataInstancesTableTableManager extends RootTableManager<
             formTemplate: formTemplate,
             templateVersion: templateVersion,
             assignment: assignment,
-            team: team,
-            orgUnit: orgUnit,
             startEntryTime: startEntryTime,
             finishedEntryTime: finishedEntryTime,
             formData: formData,
@@ -17001,8 +16602,6 @@ class $$DataInstancesTableTableManager extends RootTableManager<
               {formTemplate = false,
               templateVersion = false,
               assignment = false,
-              team = false,
-              orgUnit = false,
               repeatInstancesRefs = false,
               instanceValues = false}) {
             return PrefetchHooks(
@@ -17054,26 +16653,6 @@ class $$DataInstancesTableTableManager extends RootTableManager<
                         $$DataInstancesTableReferences._assignmentTable(db),
                     referencedColumn:
                         $$DataInstancesTableReferences._assignmentTable(db).id,
-                  ) as T;
-                }
-                if (team) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.team,
-                    referencedTable:
-                        $$DataInstancesTableReferences._teamTable(db),
-                    referencedColumn:
-                        $$DataInstancesTableReferences._teamTable(db).id,
-                  ) as T;
-                }
-                if (orgUnit) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.orgUnit,
-                    referencedTable:
-                        $$DataInstancesTableReferences._orgUnitTable(db),
-                    referencedColumn:
-                        $$DataInstancesTableReferences._orgUnitTable(db).id,
                   ) as T;
                 }
 
@@ -17128,8 +16707,6 @@ typedef $$DataInstancesTableProcessedTableManager = ProcessedTableManager<
         {bool formTemplate,
         bool templateVersion,
         bool assignment,
-        bool team,
-        bool orgUnit,
         bool repeatInstancesRefs,
         bool instanceValues})>;
 typedef $$RepeatInstancesTableCreateCompanionBuilder = RepeatInstancesCompanion

@@ -20,7 +20,7 @@ GetIt rSdkLocator = GetIt.instance;
       HttpClient,
       StorageService,
       TokenStorage,
-      SubmissionAggregator,
+      SubmissionListAggregator,
     ])
 GetIt setupSdkLocator() {
   // rSdkLocator.enableRegisteringMultipleInstancesOfOneType();

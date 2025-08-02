@@ -1,6 +1,8 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
 import 'package:d_sdk/database/dao/base_dao_extension.dart';
+import 'package:d_sdk/database/shared/form_template_model.dart';
 import 'package:d_sdk/database/tables/tables.dart';
 import 'package:d_sdk/datasource/base_datasource.dart';
 import 'package:drift/drift.dart';
@@ -76,7 +78,7 @@ class FormTemplatesDao extends DatabaseAccessor<AppDatabase>
   @override
   $FormTemplatesTable get table => formTemplates;
 
-  Selectable<(FormTemplate, FormTemplateVersion)> selectFormTemplatesWithRefs(
+  Selectable<FormTemplateModel> selectFormTemplatesWithRefs(
       {String? assignmentId}) {
     // Alias the version table for the aggregation subquery
     final latestVersionsNumbers =
@@ -124,6 +126,18 @@ class FormTemplatesDao extends DatabaseAccessor<AppDatabase>
       final tmpl = row.readTable(formTemplates);
       final ver = row.readTable(ftv);
       return (tmpl, ver);
+    }).map((tuple) {
+      final (t, v) = tuple;
+      return FormTemplateModel(
+        id: t.id,
+        name: t.name,
+        versionUid: v.id,
+        label: t.label,
+        description: t.description,
+        versionNumber: v.versionNumber,
+        fields: v.fields.build(),
+        sections: v.sections.build(),
+      );
     });
   }
 }

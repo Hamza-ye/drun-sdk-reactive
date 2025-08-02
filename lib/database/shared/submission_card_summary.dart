@@ -17,8 +17,10 @@ class SubmissionSummary with EquatableMixin {
       this.createdDate,
       this.lastModifiedDate,
       this.isToUpdate = false,
+      IMap<String, dynamic>? dataMap,
       IMap<String, FieldValue>? formData})
-      : this.formData = formData ?? const IMapConst({});
+      : this.formData = formData ?? const IMapConst({}),
+        this.dataMap = dataMap ?? const IMapConst({});
 
   final String id;
   final String? assignment;
@@ -30,6 +32,7 @@ class SubmissionSummary with EquatableMixin {
   final InstanceSyncStatus syncStatus;
   final DateTime? submittedAt;
   final IMap<String, FieldValue> formData;
+  final IMap<String, dynamic> dataMap;
   final DateTime? createdDate;
   final DateTime? lastModifiedDate;
   final bool isToUpdate;
@@ -44,6 +47,7 @@ class SubmissionSummary with EquatableMixin {
     InstanceSyncStatus? syncStatus,
     DateTime? submittedAt,
     IMap<String, FieldValue>? formDate,
+    IMap<String, dynamic>? dataMap,
     DateTime? createdDate,
     DateTime? lastModifiedDate,
     bool? isToUpdate,
@@ -59,6 +63,7 @@ class SubmissionSummary with EquatableMixin {
       syncStatus: syncStatus ?? this.syncStatus,
       submittedAt: submittedAt ?? this.submittedAt,
       formData: formDate ?? this.formData,
+      dataMap: dataMap ?? this.dataMap,
       createdDate: createdDate ?? this.createdDate,
       lastModifiedDate: lastModifiedDate ?? this.lastModifiedDate,
       isToUpdate: isToUpdate ?? this.isToUpdate,
@@ -77,9 +82,10 @@ class SubmissionSummary with EquatableMixin {
         submittedAt,
         syncStatus,
         formData,
+        dataMap,
         createdDate,
         lastModifiedDate,
         isToUpdate,
-        assignment
+        assignment,
       ];
 }

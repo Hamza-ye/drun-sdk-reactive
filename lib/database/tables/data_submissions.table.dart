@@ -23,13 +23,13 @@ class DataInstances extends Table with BaseTableMixin {
   @ReferenceName("assignmentDataInstances")
   TextColumn get assignment => text().references(Assignments, #id).nullable()();
 
-  /// who
-  @ReferenceName("teamDataInstances")
-  TextColumn get team => text().references(Teams, #id).nullable()();
+  // /// who
+  // @ReferenceName("teamDataInstances")
+  // TextColumn get team => text().references(Teams, #id).nullable()();
 
-  /// where
-  @ReferenceName("ouDataInstances")
-  TextColumn get orgUnit => text().references(OrgUnits, #id).nullable()();
+  // /// where
+  // @ReferenceName("ouDataInstances")
+  // TextColumn get orgUnit => text().references(OrgUnits, #id).nullable()();
 
   DateTimeColumn get startEntryTime =>
       dateTime().clientDefault(() => DateTime.now().toUtc())();
@@ -38,6 +38,9 @@ class DataInstances extends Table with BaseTableMixin {
 
   TextColumn get formData =>
       text().map(const NullAwareMapConverter()).nullable()();
+
+  // DateTimeColumn get updatedAtClient =>
+  //     dateTime().withDefault(currentDateAndTime)();
 
   DateTimeColumn get updatedAtClient => dateTime().nullable()();
 

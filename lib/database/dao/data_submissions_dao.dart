@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:built_collection/built_collection.dart';
+import 'package:d_sdk/core/code_generator.dart';
 import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary_model.dart';
@@ -64,6 +66,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
 
     final resource = '$resourceName/bulk';
 
+    print('payload: $uploadPayload');
     final response = await apiClient.request(
         resourceName: resource, data: uploadPayload, method: 'post');
 
@@ -111,20 +114,80 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
         .getSingleOrNull();
   }
 
+  Future<DataInstance> createDraft({
+    String? assignmentId,
+    required String templateId,
+    String? templateVersionId,
+  }) async {
+    // final FormTemplateModel? templateModel = await attachedDatabase
+    //     .formTemplateVersionsDao
+    //     .selectFormTemplatesWithRefs(
+    //         assignmentId: assignmentId, versionId: templateVersionId)
+    //     .getSingleOrNull();
+
+    final templateModel = await getTemplateByVersionOrLatest(
+        templateId: templateId, versionId: templateVersionId);
+
+    final entry = DataInstancesCompanion.insert(
+      id: CodeGenerator.generateUid(),
+      formTemplate: templateModel.id,
+      templateVersion: templateModel.versionUid,
+      assignment: Value(assignmentId),
+      syncState: InstanceSyncStatus.draft,
+      isToUpdate: false,
+      startEntryTime: Value(DateTime.now().toUtc()),
+      updatedAtClient: Value(DateTime.now().toUtc()),
+      createdDate: Value(DateTime.now().toUtc()),
+      lastModifiedDate: Value(DateTime.now().toUtc()),
+    );
+
+    final row = await into(dataInstances).insertReturning(entry);
+
+    return row;
+  }
+
   Future<int> insert(Insertable<DataInstance> entry) {
     return into(dataInstances).insert(entry);
   }
 
-  Future<bool> updateObject(DataInstance item) {
-    final now = Value(DateTime.now());
+  Future<bool> updateObject(DataInstancesCompanion item) {
+    final now = Value(DateTime.now().toUtc());
     return update(dataInstances)
         .replace(item.copyWith(lastModifiedDate: now, updatedAtClient: now));
   }
 
-  Future<bool> markFinal(DataInstance item) {
-    return updateObject(item.copyWith(
-        syncState: InstanceSyncStatus.finalized,
-        finishedEntryTime: Value(DateTime.now())));
+  Future<void> updateData(String id, {Map<String, dynamic>? data}) async {
+    final now = Value(DateTime.now().toUtc());
+    await (update(dataInstances)..where((t) => t.id.equals(id))).write(
+      DataInstancesCompanion(
+          syncState: Value(InstanceSyncStatus.draft),
+          formData: Value.absentIfNull(data),
+          finishedEntryTime: now,
+          lastModifiedDate: now,
+          updatedAtClient: now),
+    );
+  }
+
+  Future<void> markFinal(String id) async {
+    final now = Value(DateTime.now().toUtc());
+    await (update(dataInstances)..where((t) => t.id.equals(id))).write(
+      DataInstancesCompanion(
+          syncState: Value(InstanceSyncStatus.finalized),
+          finishedEntryTime: now,
+          lastModifiedDate: now,
+          updatedAtClient: now),
+    );
+  }
+
+  Future<void> markDeleted(String id) async {
+    final now = Value(DateTime.now().toUtc());
+    await (update(dataInstances)..where((t) => t.id.equals(id))).write(
+      DataInstancesCompanion(
+          deleted: Value(true),
+          finishedEntryTime: now,
+          lastModifiedDate: now,
+          updatedAtClient: now),
+    );
   }
 
   /// softDelete
@@ -134,8 +197,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
 
   /// softDelete
   Future<int> deleteById(String id) async {
-    final submission = await getById(id);
-    return _softDelete(submission);
+    return _softDelete(id);
   }
 
   /// hard delete
@@ -148,12 +210,12 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     return _hardDeleteById(submission.id);
   }
 
-  Future<int> _softDelete(DataInstance? submission) async {
-    if (submission == null) return 0;
-    final submissionToDelete = await getById(submission.id);
+  Future<int> _softDelete(String? id) async {
+    if (id == null) return 0;
+    final submissionToDelete = await getById(id);
     if (submissionToDelete == null) return 0;
     if (isSoftDelete(submissionToDelete)) {
-      await updateObject(submissionToDelete.copyWith(deleted: true));
+      await markDeleted(id);
       return 1;
     } else {
       return await _hardDeleteObject(submissionToDelete);
@@ -201,14 +263,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
-  Selectable<SubmissionSummary> selectSubmissions(
-    String form, {
-    SubmissionsFilter? filter,
-    int page = 1,
-    int pageSize = 20,
-  }) {
-    final offset = (page - 1) * pageSize;
-
+  Selectable<SubmissionSummary> selectSubmissions(SubmissionsFilter filter) {
     final sub = alias(db.dataInstances, 's');
     final a = alias(db.assignments, 'a');
     final ou = alias(db.orgUnits, 'ou');
@@ -221,39 +276,42 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       innerJoin(fv, fv.id.equalsExp(sub.templateVersion)),
       innerJoin(f, f.id.equalsExp(fv.template)),
     ])
-      ..where(sub.formTemplate.equals(form));
+      ..where(sub.formTemplate.equals(filter.formId));
 
-    if (filter != null) {
-      if (filter.assignment != null) {
-        query.where(a.id.equals(filter.assignment!));
-      }
-
-      if (filter.team != null) {
-        query.where(sub.team.equals(filter.team!));
-      }
-      if (filter.syncState != null) {
-        query.where(sub.syncState.equals(filter.syncState!.name));
-      }
-
-      if (filter.searchTerm.isNotEmpty) {
-        final pattern = '%${filter.searchTerm.toLowerCase()}%';
-        query.where(ou.name.like(pattern) | ou.code.like(pattern));
-      }
+    if (filter.assignmentId != null) {
+      query.where(a.id.equals(filter.assignmentId!));
     }
 
-    if (!(filter?.includeDeleted ?? false)) {
+    if (filter.syncState != null) {
+      query.where(sub.syncState.equals(filter.syncState!.name));
+    }
+
+    if (filter.searchTerm.isNotEmpty) {
+      final pattern = '%${filter.searchTerm.toLowerCase()}%';
+      query.where(ou.name.like(pattern) | ou.code.like(pattern));
+    }
+
+    if (!filter.includeDeleted) {
       query.where(sub.deleted.equals(false));
     }
 
-    final JoinedSelectStatement<HasResultSet, dynamic> orderedQuery = query
-      ..limit(pageSize, offset: offset)
-      ..orderBy([
-        OrderingTerm(expression: sub.lastModifiedDate, mode: OrderingMode.desc),
-        OrderingTerm(expression: sub.id),
+    // Apply sorting based on the filter
+    if (filter.sortColumn != null) {
+      query.orderBy([
+        OrderingTerm(
+          expression: _getColumnExpression(filter.sortColumn!),
+          mode: filter.sortAscending ? OrderingMode.asc : OrderingMode.desc,
+        ),
       ]);
+    }
+
+    if (filter.paged) {
+      query = query
+        ..limit(filter.pageSize, offset: filter.page * filter.pageSize);
+    }
 
     // Map rows to model
-    return orderedQuery.map((row) {
+    return query.map((row) {
       final submission = row.readTable(sub);
       final orgUnit = row.readTable(ou);
       final form = row.readTable(f);
@@ -279,7 +337,8 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
           formVersionId: formVersion.id,
           createdDate: submission.createdDate,
           lastModifiedDate: submission.lastModifiedDate,
-          formData: rSdkLocator<SubmissionAggregator>()
+          dataMap: (submission.formData ?? {}).lock,
+          formData: rSdkLocator<SubmissionListAggregator>()
               .extractValues(
                   submission.formData ?? {},
                   Template.buildTree(fieldsAndSections: [
@@ -288,6 +347,95 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
                   ]))
               .lock);
     });
+  }
+
+  // Inside your DataInstancesDao
+  Selectable<int> countSubmissions(SubmissionsFilter filter) {
+    final sub = alias(db.dataInstances, 's');
+    final a = alias(db.assignments, 'a');
+    final ou = alias(db.orgUnits, 'ou');
+    final f = alias(db.formTemplates, 'f');
+    final fv = alias(db.formTemplateVersions, 'fv');
+
+    JoinedSelectStatement<HasResultSet, dynamic> countQuery = select(sub).join([
+      innerJoin(a, a.id.equalsExp(sub.assignment)),
+      innerJoin(ou, a.orgUnit.equalsExp(ou.id)),
+      innerJoin(fv, fv.id.equalsExp(sub.templateVersion)),
+      innerJoin(f, f.id.equalsExp(fv.template)),
+    ])
+      ..where(sub.formTemplate.equals(filter.formId));
+
+    // Apply the same filtering logic as in selectSubmissions
+    countQuery.where(sub.formTemplate.equals(filter.formId));
+
+    if (filter.assignmentId != null) {
+      countQuery.where(a.id.equals(filter.assignmentId!));
+    }
+
+    if (filter.syncState != null) {
+      countQuery.where(sub.syncState.equals(filter.syncState!.name));
+    }
+
+    if (filter.searchTerm.isNotEmpty) {
+      final pattern = '%${filter.searchTerm.toLowerCase()}%';
+      countQuery.where(ou.name.like(pattern) | ou.code.like(pattern));
+    }
+
+    if (!filter.includeDeleted) {
+      countQuery.where(sub.deleted.equals(false));
+    }
+
+    // Use countAll() to get the number of rows
+    countQuery.addColumns([countAll()]);
+
+    // Get the result and return the count
+    // final result = await countQuery.getSingle();
+    // return result.read(countAll());
+    return countQuery.map((row) => row.read(countAll()) ?? 0);
+  }
+
+  Future<FormTemplateModel> getTemplateByVersionOrLatest(
+      {String? templateId, String? versionId}) async {
+    assert(templateId != null || versionId != null);
+    var query = attachedDatabase.managers.formTemplateVersions
+        .withReferences((prefetch) => prefetch(template: true));
+
+    if (versionId != null) {
+      query = query.filter((f) => f.id(versionId));
+    } else {
+      query = query.filter((f) => f.template.id(templateId));
+    }
+
+    final List<(FormTemplateVersion, $$FormTemplateVersionsTableReferences)>
+        formTemplateWithRefs =
+        await query.orderBy((o) => o.versionNumber.desc()).limit(1).get();
+    final (templateVersion, refs) = formTemplateWithRefs.first;
+
+    final formTemplate = refs.template.prefetchedData!.first;
+
+    return FormTemplateModel(
+      id: formTemplate.id,
+      name: formTemplate.name,
+      versionUid: templateVersion.id,
+      label: formTemplate.label,
+      description: formTemplate.description,
+      versionNumber: templateVersion.versionNumber,
+      fields: templateVersion.fields.build(),
+      sections: templateVersion.sections.build(),
+    );
+  }
+
+  Expression<Object> _getColumnExpression(String sortColumnName) {
+    switch (sortColumnName) {
+      case 'syncStatus':
+        return dataInstances.syncState;
+      case 'createdDate':
+        return dataInstances.createdDate;
+      case 'lastModifiedDate':
+        return dataInstances.lastModifiedDate;
+      default:
+        return dataInstances.id; // Or some default column
+    }
   }
 
   @override

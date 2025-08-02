@@ -13,9 +13,9 @@ extension DataSubmissionUploadExt on DataInstance {
       "lastSyncDate": this.lastSyncDate?.toIso8601String(),
       "startEntryTime": this.startEntryTime.toIso8601String(),
       "finishedEntryTime": this.finishedEntryTime?.toIso8601String(),
-      "team": this.team,
+      // "team": this.team,
       "assignment": this.assignment,
-      "orgUnit": this.orgUnit,
+      // "orgUnit": this.orgUnit,
       'formData': formData,
     };
 
