@@ -1,6 +1,6 @@
 import 'package:d_sdk/core/form/element_template/element_template.dart';
 import 'package:d_sdk/database/shared/d_run_base.model.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class IdentifiableModel extends DRunBaseModel {

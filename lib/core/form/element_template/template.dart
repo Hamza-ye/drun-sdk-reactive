@@ -1,4 +1,5 @@
 import 'package:d_sdk/core/form/element_template/element_template.dart';
+import 'package:d_sdk/core/form/form_data_aggregator.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
 import 'package:d_sdk/core/form/tree/tree_element.dart';
 import 'package:d_sdk/core/form/value_type_rendering_type.dart';
@@ -22,9 +23,12 @@ abstract class Template with EquatableMixin, TreeElement {
 
   String? get code;
 
+  Aggregation? get aggregation => getDefaultAggregation(type);
+
   IMap<String, dynamic> get label;
 
   bool get readOnly;
+
   bool get mandatory => false;
 
   IList<Rule>? get rules;
@@ -42,11 +46,6 @@ abstract class Template with EquatableMixin, TreeElement {
   bool get mainField => false;
 
   ValueType? get type => null;
-
-  String? get constraint => null;
-
-  IMap<String, String>? get constraintMessage => const IMapConst({});
-
   //</editor-fold>
 
   //<editor-fold desc="Container/Group Template properties">
@@ -104,5 +103,19 @@ abstract class Template with EquatableMixin, TreeElement {
     sortRecursively(roots);
 
     return roots;
+  }
+
+  static Aggregation? getDefaultAggregation(ValueType? type) {
+    if (type?.isDate == true) {
+      return Aggregation.first;
+    }
+
+    if (type?.isNumeric == true) {
+      return Aggregation.sum;
+    }
+
+    if(type?.isText == true) return Aggregation.concat;
+
+    return null;
   }
 }

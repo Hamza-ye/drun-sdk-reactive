@@ -1,16 +1,19 @@
 import 'dart:convert';
 
-import 'package:built_collection/built_collection.dart';
 import 'package:d_sdk/core/code_generator.dart';
+import 'package:d_sdk/core/form/form_data_util.dart';
 import 'package:d_sdk/core/logging/new_app_logging.dart';
 import 'package:d_sdk/core/sync/sync_summary_model.dart';
+import 'package:d_sdk/core/utilities/string_extension.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/dao/base_dao_extension.dart';
+import 'package:d_sdk/database/dao/data_submissions_dao_expression_extension.dart';
 import 'package:d_sdk/database/domain/filter.dart';
 import 'package:d_sdk/database/extensions/data_submission.extension.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:d_sdk/database/tables/data_submissions.table.dart';
 import 'package:drift/drift.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 part 'data_submissions_dao.g.dart';
 
@@ -47,7 +50,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     }, serializer: serializer);
   }
 
-  Future<List<DataInstance>> upload(Iterable<String> uids) async {
+  Future<ImportSummaryModel> upload(Iterable<String> uids) async {
     List<DataInstance> submissions = await (select(dataInstances)
           ..where((f) =>
               f.id.isIn(uids) &
@@ -67,7 +70,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     final response = await apiClient.request(
         resourceName: resource, data: uploadPayload, method: 'post');
 
-    SyncSummaryModel summary = SyncSummaryModel.fromJson(response.data);
+    ImportSummaryModel summary = ImportSummaryModel.fromJson(response.data);
     logDebug(jsonEncode(uploadPayload.first), data: {"data": uploadPayload});
 
     final List<DataInstance> queue = [];
@@ -103,7 +106,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       });
     }
 
-    return queue;
+    return summary;
   }
 
   Future<DataInstance?> getById(String id) {
@@ -197,7 +200,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     return _softDelete(id);
   }
 
-  Future<int> deleteIds(Iterable<String> id) async {
+  Future<int> deleteAllIds(Iterable<String> id) async {
     final now = Value(DateTime.now().toUtc());
     // soft delete synced
     final softDeleted = await (update(dataInstances)
@@ -236,12 +239,6 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
 
     return hardDeleted;
   }
-
-  Expression<bool> get hardDeleteInstancesFilter =>
-      dataInstances.isToUpdate.isNotValue(true);
-
-  Expression<bool> get softDeleteInstancesFilter =>
-      dataInstances.isToUpdate.isNotValue(false);
 
   /// hard delete
   Future<int> _hardDeleteById(String id) {
@@ -335,15 +332,15 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       }
     }
 
-    final count =
-        dataInstances.id.count(filter: Expression.and(filterExpressions));
+    // final count =
+    //     dataInstances.id.count(filter: Expression.and(filterExpressions));
     // final a = alias(assignments, 'a');
     // final ou = alias(orgUnits, 'ou');
     // final f = alias(formTemplates, 'f');
     // final fv = alias(formTemplateVersions, 'fv');
 
     final JoinedSelectStatement<HasResultSet, dynamic> base =
-        select(dataInstances).addColumns([count]).join([
+        select(dataInstances).join([
       innerJoin(
           assignments, assignments.id.equalsExp(dataInstances.assignment)),
       innerJoin(orgUnits, assignments.orgUnit.equalsExp(orgUnits.id)),
@@ -351,16 +348,16 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
           formTemplateVersions.id.equalsExp(dataInstances.templateVersion)),
       innerJoin(formTemplates,
           formTemplates.id.equalsExp(formTemplateVersions.template)),
-    ])
-          ..where(Expression.and(filterExpressions));
+    ]);
 
+    // ..where(Expression.and(filterExpressions));
+    if (filterExpressions.isNotEmpty) {
+      base.where(Expression.and(filterExpressions));
+    }
     return base;
   }
 
-  ////////////////////////
-
   /// Returns a Selectable that, when run, gives you each TableItem
-  /// plus the *same* totalCount on every row.
   Selectable<SubmissionSummary> selectItems({
     Iterable<FilterCondition>? filters,
     String? sortColumn,
@@ -383,110 +380,88 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
 
     query.limit(pageSize, offset: page * pageSize);
 
+    // submissions for different formTemplates, not for particular on Template.
     return query.map(SubmissionSummary.fromDrift);
   }
 
   /// Returns a Selectable that, when run, gives you each TableItem
   /// plus the *same* totalCount on every row.
   Selectable<SubmissionSummary> selectSubmissions(
-      {required SubmissionsFilter filterModel,
-      SubmissionsSort? sortModel,
-      bool paged = true,
-      int page = 0,
-      int perPage = 20}) {
-    final filters = [
+    SubmissionsFilter filterModel, {
+    String? sortColumn,
+    bool sortAscending = true,
+    int page = 0,
+    int pageSize = 10,
+    Iterable<FilterCondition>? filters,
+  }) {
+    final effectiveFilters = [
       FilterCondition.equals(dataInstances.formTemplate, filterModel.formId),
       if (filterModel.assignmentId != null)
         FilterCondition.equals(
             dataInstances.assignment, filterModel.assignmentId!),
       if (filterModel.syncState != null)
-        FilterCondition.equals(dataInstances.syncState, filterModel.syncState!),
+        FilterCondition.equals(
+            dataInstances.syncState, filterModel.syncState!.name),
       if (!filterModel.includeDeleted)
         FilterCondition.equals(dataInstances.deleted, false),
       if (filterModel.dateFilterBand != null)
         FilterCondition.between(
             dataInstances.createdDate,
-            _getDateRangeFromBand(filterModel.dateFilterBand!).$1,
-            _getDateRangeFromBand(filterModel.dateFilterBand!).$2),
+            getDateRangeFromBand(filterModel.dateFilterBand!).$1,
+            getDateRangeFromBand(filterModel.dateFilterBand!).$2),
+      ...?filters
     ];
 
-    final query = getFilterQuery(filters: filters);
+    final query = getFilterQuery(filters: effectiveFilters);
 
     // Apply sorting (if provided)
-    if (sortModel?.sortColumn != null) {
+    if (sortColumn != null) {
       final col = table.$columns
           .cast<GeneratedColumn>()
-          .firstWhere((c) => c.$name == sortModel?.sortColumn!);
+          .firstWhere((c) => c.$name == sortColumn);
       query.orderBy([
         OrderingTerm(
           expression: col,
-          mode: (sortModel?.sortAscending ?? false)
-              ? OrderingMode.asc
-              : OrderingMode.desc,
+          mode: (sortAscending) ? OrderingMode.asc : OrderingMode.desc,
         )
       ]);
     }
 
-    query.limit(perPage, offset: page * perPage);
+    query.limit(pageSize, offset: page * pageSize);
 
     return query.map(SubmissionSummary.fromDrift);
   }
 
-  Selectable<int> countSubmissions(SubmissionsFilter filterModel) {
-    final filters = [
+  Selectable<int> countSubmissions(SubmissionsFilter filterModel,
+      {Iterable<FilterCondition>? filters}) {
+    final effectiveFilters = [
       FilterCondition.equals(dataInstances.formTemplate, filterModel.formId),
       if (filterModel.assignmentId != null)
         FilterCondition.equals(
             dataInstances.assignment, filterModel.assignmentId!),
       if (filterModel.syncState != null)
-        FilterCondition.equals(dataInstances.syncState, filterModel.syncState!),
+        FilterCondition.equals(
+            dataInstances.syncState, filterModel.syncState!.name),
       if (!filterModel.includeDeleted)
         FilterCondition.equals(dataInstances.deleted, false),
       if (filterModel.dateFilterBand != null)
         FilterCondition.between(
             dataInstances.createdDate,
-            _getDateRangeFromBand(filterModel.dateFilterBand!).$1,
-            _getDateRangeFromBand(filterModel.dateFilterBand!).$2),
+            getDateRangeFromBand(filterModel.dateFilterBand!).$1,
+            getDateRangeFromBand(filterModel.dateFilterBand!).$2),
+      ...?filters
     ];
-    var countQuery = getFilterQuery(filters: filters);
+    var countQuery = getFilterQuery(filters: effectiveFilters);
     countQuery = countQuery..addColumns([countAll()]);
 
     return countQuery.map((row) => row.read(countAll()) ?? 0);
   }
 
-  Future<FormTemplateModel> getTemplateByVersionOrLatest(
-      {String? templateId, String? versionId}) async {
-    assert(templateId != null || versionId != null);
-    var query = attachedDatabase.managers.formTemplateVersions
-        .withReferences((prefetch) => prefetch(template: true));
-
-    if (versionId != null) {
-      query = query.filter((f) => f.id(versionId));
-    } else {
-      query = query.filter((f) => f.template.id(templateId));
-    }
-
-    final List<(FormTemplateVersion, $$FormTemplateVersionsTableReferences)>
-        formTemplateWithRefs =
-        await query.orderBy((o) => o.versionNumber.desc()).limit(1).get();
-    final (templateVersion, refs) = formTemplateWithRefs.first;
-
-    final formTemplate = refs.template.prefetchedData!.first;
-
-    return FormTemplateModel(
-      id: formTemplate.id,
-      name: formTemplate.name,
-      versionUid: templateVersion.id,
-      label: formTemplate.label,
-      description: formTemplate.description,
-      versionNumber: templateVersion.versionNumber,
-      fields: templateVersion.fields.build(),
-      sections: templateVersion.sections.build(),
-    );
-  }
+  @override
+  $DataInstancesTable get table => dataInstances;
 
   // Helper method to calculate the date range based on the enum
-  (DateTime, DateTime) _getDateRangeFromBand(DateFilterBand band) {
+  (DateTime, DateTime) getDateRangeFromBand(DateFilterBand band) {
     final now = DateTime.now();
     DateTime startDate;
     DateTime endDate;
@@ -532,127 +507,123 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     return (startDate, endDate);
   }
 
-  @override
-  $DataInstancesTable get table => dataInstances;
+  Selectable<SubmissionSummary> selectable(
+    SubmissionsFilter? filterModel, {
+    String? sortColumn,
+    bool sortAscending = true,
+    int page = 0,
+    int pageSize = 10,
+    Iterable<FilterCondition>? filters,
+    bool paged = true,
+  }) {
+    // final sub = alias(dataInstances, 's');
+    final a = alias(assignments, 'a');
+    final ou = alias(orgUnits, 'ou');
+    final f = alias(formTemplates, 'f');
+    final fv = alias(formTemplateVersions, 'fv');
 
-// Selectable<SubmissionSummary> selectSubmissions(
-//     {SubmissionsFilter? filterModel,
-//     SubmissionsSort? sortModel,
-//     bool paged = true,
-//     int page = 0,
-//     int perPage = 10}) {
-//   // final sub = alias(dataInstances, 's');
-//   final a = alias(assignments, 'a');
-//   final ou = alias(orgUnits, 'ou');
-//   final f = alias(formTemplates, 'f');
-//   final fv = alias(formTemplateVersions, 'fv');
-//
-//   final JoinedSelectStatement<HasResultSet, dynamic> query =
-//       select(dataInstances).join([
-//     innerJoin(a, a.id.equalsExp(dataInstances.assignment)),
-//     innerJoin(ou, a.orgUnit.equalsExp(ou.id)),
-//     innerJoin(fv, fv.id.equalsExp(dataInstances.templateVersion)),
-//     innerJoin(f, f.id.equalsExp(fv.template)),
-//   ]);
-//   // ..where(sub.formTemplate.equals(paging.formId));
-//
-//   if (filterModel != null) {
-//     query.where(_buildFilter(filterModel));
-//     if (filterModel.searchTerm.isNotNullOrEmpty) {
-//       final pattern = '%${filterModel.searchTerm!.toLowerCase()}%';
-//       query.where(ou.name.like(pattern) | ou.code.like(pattern));
-//     }
-//   }
-//
-//   // Apply sorting based on the filter or default
-//   if (sortModel != null && sortModel.sortColumn != null) {
-//     query.orderBy([
-//       OrderingTerm(
-//         expression: _getColumnExpression(sortModel.sortColumn!),
-//         mode: sortModel.sortAscending ? OrderingMode.asc : OrderingMode.desc,
-//       ),
-//     ]);
-//   } else {
-//     query.orderBy([
-//       OrderingTerm(
-//           expression: db.dataInstances.createdDate, mode: OrderingMode.desc),
-//       OrderingTerm(expression: db.dataInstances.id)
-//     ]);
-//   }
-//
-//   if (paged) {
-//     query.limit(perPage, offset: page * perPage);
-//   }
-//
-//   return query.map((TypedResult row) {
-//     final submission = row.readTable(dataInstances);
-//     final orgUnit = row.readTable(ou);
-//     final form = row.readTable(f);
-//     final FormTemplateVersion formVersion = row.readTable(fv);
-//
-//     return SubmissionSummary(
-//         id: submission.id,
-//         assignment: submission.assignment,
-//         form: IdentifiableModel(
-//           id: form.id,
-//           name: form.name,
-//           label: form.label,
-//         ),
-//         versionNumber: form.versionNumber,
-//         orgUnit: IdentifiableModel(
-//           id: orgUnit.id,
-//           code: orgUnit.code,
-//           name: orgUnit.name,
-//           label: orgUnit.label,
-//         ),
-//         submittedAt: submission.createdDate,
-//         syncStatus: submission.syncState,
-//         formVersionId: formVersion.id,
-//         createdDate: submission.createdDate,
-//         lastModifiedDate: submission.lastModifiedDate,
-//         dataMap: (submission.formData ?? {}).lock,
-//         formData: rSdkLocator<SubmissionListAggregator>()
-//             .extractValues(
-//                 submission.formData ?? {},
-//                 Template.buildTree(fieldsAndSections: [
-//                   ...formVersion.fields,
-//                   ...formVersion.sections
-//                 ]))
-//             .lock);
-//   });
-// }
+    final JoinedSelectStatement<HasResultSet, dynamic> query =
+        select(dataInstances).join([
+      innerJoin(a, a.id.equalsExp(dataInstances.assignment)),
+      innerJoin(ou, a.orgUnit.equalsExp(ou.id)),
+      innerJoin(fv, fv.id.equalsExp(dataInstances.templateVersion)),
+      innerJoin(f, f.id.equalsExp(fv.template)),
+    ]);
+    // ..where(sub.formTemplate.equals(paging.formId));
 
-// Expression<bool> _buildFilter(SubmissionsFilter filterModel) {
-//   Expression<bool> filter =
-//       dataInstances.formTemplate.equals(filterModel.formId);
-//
-//   if (filterModel.assignmentId != null) {
-//     filter =
-//         filter & dataInstances.assignment.equals(filterModel.assignmentId!);
-//   }
-//
-//   if (filterModel.syncState != null) {
-//     filter =
-//         filter & dataInstances.syncState.equals(filterModel.syncState!.name);
-//   }
-//
-//   if (filterModel.dateFilterBand != null) {
-//     final (startDate, endDate) =
-//         _getDateRangeFromBand(filterModel.dateFilterBand!);
-//
-//     // NOTE: isBetween is inclusive of both the start and end dates.
-//     filter = filter &
-//         dataInstances.createdDate.isBetweenValues(startDate, endDate);
-//     // a combination of greater than and less than
-//     // query.where(sub.createdDate.isBiggerOrEqual(startDate) & sub.createdDate.isSmallerThan(endDate));
-//   }
-//
-//   if (!filterModel.includeDeleted) {
-//     filter = filter & dataInstances.deleted.equals(false);
-//   }
-//
-//   return filter;
-// }
+    if (filterModel != null) {
+      query.where(_buildFilter(filterModel));
+      if (filterModel.searchTerm.isNotNullOrEmpty) {
+        final pattern = '%${filterModel.searchTerm!.toLowerCase()}%';
+        query.where(ou.name.like(pattern) | ou.code.like(pattern));
+      }
+    }
+
+    // Apply sorting based on the filter or default
+    // if (sortModel != null && sortModel.sortColumn != null) {
+    //   query.orderBy([
+    //     OrderingTerm(
+    //       expression: getColumnExpression(sortModel.sortColumn!),
+    //       mode: sortModel.sortAscending ? OrderingMode.asc : OrderingMode.desc,
+    //     ),
+    //   ]);
+    // } else {
+    //   query.orderBy([
+    //     OrderingTerm(
+    //         expression: db.dataInstances.createdDate, mode: OrderingMode.desc),
+    //     OrderingTerm(expression: db.dataInstances.id)
+    //   ]);
+    // }
+
+    if (paged) {
+      query.limit(pageSize, offset: page * pageSize);
+    }
+
+    return query.map((TypedResult row) {
+      final submission = row.readTable(dataInstances);
+      final orgUnit = row.readTable(ou);
+      final form = row.readTable(f);
+      final FormTemplateVersion formVersion = row.readTable(fv);
+
+      return SubmissionSummary(
+          id: submission.id,
+          assignment: submission.assignment,
+          form: IdentifiableModel(
+            id: form.id,
+            name: form.name,
+            label: form.label,
+          ),
+          versionNumber: form.versionNumber,
+          orgUnit: IdentifiableModel(
+            id: orgUnit.id,
+            code: orgUnit.code,
+            name: orgUnit.name,
+            label: orgUnit.label,
+          ),
+          submittedAt: submission.createdDate,
+          syncStatus: submission.syncState,
+          formVersionId: formVersion.id,
+          createdDate: submission.createdDate,
+          lastModifiedDate: submission.lastModifiedDate,
+          dataMap: (submission.formData ?? {}).lock,
+          deleted: submission.deleted,
+          formData: FormDataUtil.extractTemplateValue(
+                  submission.formData ?? {}, formVersion.fields)
+              .lock);
+    });
+  }
+
+  Expression<bool> _buildFilter(SubmissionsFilter filterModel) {
+    Expression<bool> filter =
+        dataInstances.formTemplate.equals(filterModel.formId);
+
+    if (filterModel.assignmentId != null) {
+      filter =
+          filter & dataInstances.assignment.equals(filterModel.assignmentId!);
+    }
+
+    if (filterModel.syncState != null) {
+      filter =
+          filter & dataInstances.syncState.equals(filterModel.syncState!.name);
+    }
+
+    if (filterModel.dateFilterBand != null) {
+      final (startDate, endDate) =
+          getDateRangeFromBand(filterModel.dateFilterBand!);
+
+      // NOTE: isBetween is inclusive of both the start and end dates.
+      filter = filter &
+          dataInstances.createdDate.isBetweenValues(startDate, endDate);
+      // a combination of greater than and less than
+      // query.where(sub.createdDate.isBiggerOrEqual(startDate) & sub.createdDate.isSmallerThan(endDate));
+    }
+
+    if (!filterModel.includeDeleted) {
+      filter = filter & dataInstances.deleted.equals(false);
+    }
+
+    return filter;
+  }
 
 // Selectable<int> countSubmissions(SubmissionsFilter? filterModel) {
 //   // final sub = alias(dataInstances, 's');

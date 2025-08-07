@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:d_sdk/core/form/attribute_type.dart';
 import 'package:d_sdk/core/form/element_template/element_template.dart';
+import 'package:d_sdk/core/form/form_data_aggregator.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
 import 'package:d_sdk/core/form/rule/validation_rule.dart';
 import 'package:d_sdk/core/form/value_type_rendering_type.dart';
+import 'package:d_sdk/core/utilities/list_extensions.dart';
 import 'package:d_sdk/core/utilities/parsing_helpers.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
@@ -37,8 +39,6 @@ class FieldTemplate extends Template {
   final ValidationRule? validationRule;
   final IList<FormOption> options;
 
-  final String? constraint;
-  final IMap<String, String>? constraintMessage;
   final String? calculation;
 
   final AttributeType? attributeType;
@@ -50,6 +50,7 @@ class FieldTemplate extends Template {
   final MetadataResourceType? resourceType;
   final String? resourceMetadataSchema;
   final IList<String> displayAttributes;
+  final Aggregation? aggregation;
 
   @override
   bool get repeatable => false;
@@ -79,6 +80,7 @@ class FieldTemplate extends Template {
     this.attributeType,
     this.gs1Enabled = false,
     this.validationRule,
+    this.aggregation,
     Iterable<Rule>? rules,
     Iterable<FormOption>? options,
     Iterable<String>? appearance,
@@ -86,8 +88,6 @@ class FieldTemplate extends Template {
     this.label = const IMap.empty(),
     this.properties = const IMapConst({}),
     this.scannedCodeProperties,
-    this.constraint,
-    this.constraintMessage,
   })  : this.options = IList.orNull(options) ?? const IList<FormOption>.empty(),
         this.rules = IList.orNull(rules) ?? const IList<Rule>.empty(),
         this.appearance =
@@ -106,13 +106,22 @@ class FieldTemplate extends Template {
         resourceMetadataSchema,
         choiceFilter,
         defaultValue,
-        appearance
+        appearance,
+        aggregation
       ];
 
   factory FieldTemplate.fromJson(Map<String, dynamic> json) {
     final valueType = ValueType.getValueType(json['type']);
+    if (valueType == null) {
+      throw ArgumentError('Invalid value type: $valueType');
+    }
+
     final valueTypeRendering =
         ValueTypeRenderingType.valueOf(json['valueTypeRendering']);
+
+    final aggregation = Aggregation.values
+            .firstOrNullWhere((value) => value.name == json['aggregation']) ??
+        Template.getDefaultAggregation(valueType);
 
     final resourceType = json['resourceType'] != null
         ? MetadataResourceType.getType(json['resourceType'])
@@ -163,10 +172,6 @@ class FieldTemplate extends Template {
             : json['displayAttributes'].cast<String>()
         : null;
 
-    if (valueType == null) {
-      throw ArgumentError('Invalid value type: $valueType');
-    }
-
     return FieldTemplate(
       type: valueType,
       attributeType: AttributeType.getAttributeType(json['attributeType']),
@@ -199,9 +204,9 @@ class FieldTemplate extends Template {
               ? json['defaultValue']
               : json['defaultValue'] as String
           : null,
-      constraint: json['constraint'],
       scannedCodeProperties: json['scannedCodeProperties'],
       appearance: appearance,
+      aggregation: aggregation,
     );
   }
 
@@ -234,6 +239,7 @@ class FieldTemplate extends Template {
       'properties': properties.unlockView,
       'parent': parent,
       'appearance': appearance.unlockView,
+      'aggregation': aggregation?.name,
       'scannedCodeProperties': scannedCodeProperties?.toJson(),
     };
   }

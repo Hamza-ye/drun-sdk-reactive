@@ -1,65 +1,82 @@
 import 'package:d_sdk/database/shared/submission_status.dart';
 import 'package:equatable/equatable.dart';
 
+enum DateFilterBand {
+  today,
+  lastThreeDays,
+  thisWeek,
+  thisMonth,
+  lastThreeMonths,
+  thisYear
+}
+
 class SubmissionsFilter with EquatableMixin {
+  /// current sort column
   final String formId;
   final String? assignmentId;
-  final int page;
-  final int pageSize;
-  final bool paged;
-  final String? sortColumn;
-  final bool sortAscending;
-  final String searchTerm;
+
+  //
+  final String? searchTerm;
   final InstanceSyncStatus? syncState;
   final bool includeDeleted;
+  final DateFilterBand? dateFilterBand;
 
- const SubmissionsFilter({
+  const SubmissionsFilter({
     required this.formId,
     this.assignmentId,
-    this.page = 0,
-    this.pageSize = 10,
-    this.paged = true,
-    this.sortColumn,
-    this.sortAscending = true,
-    this.searchTerm = '',
+    this.searchTerm,
     this.includeDeleted = false,
+    this.dateFilterBand,
     this.syncState,
   });
+
+  SubmissionsFilter toggleSyncStatus(InstanceSyncStatus? status) {
+    return SubmissionsFilter(
+      formId: formId,
+      assignmentId: assignmentId,
+      searchTerm: searchTerm,
+      dateFilterBand: dateFilterBand,
+      includeDeleted: includeDeleted,
+      syncState: status,
+    );
+  }
+
+  SubmissionsFilter toggleDateBand(DateFilterBand? band) {
+    return SubmissionsFilter(
+      formId: formId,
+      assignmentId: assignmentId,
+      searchTerm: searchTerm,
+      syncState: syncState,
+      dateFilterBand: band,
+      includeDeleted: includeDeleted,
+    );
+  }
 
   SubmissionsFilter copyWith({
     String? formId,
     String? assignmentId,
-    int? page,
-    int? pageSize,
-    bool? paged,
-    String? sortColumn,
-    bool? sortAscending,
     String? searchTerm,
     InstanceSyncStatus? syncState,
+    DateFilterBand? dateFilterBand,
     bool? includeDeleted,
   }) {
     return SubmissionsFilter(
       formId: formId ?? this.formId,
       assignmentId: assignmentId ?? this.assignmentId,
-      page: page ?? this.page,
-      pageSize: pageSize ?? this.pageSize,
-      paged: paged ?? this.paged,
-      sortColumn: sortColumn ?? this.sortColumn,
-      sortAscending: sortAscending ?? this.sortAscending,
       searchTerm: searchTerm ?? this.searchTerm,
       syncState: syncState ?? this.syncState,
       includeDeleted: includeDeleted ?? this.includeDeleted,
+      dateFilterBand: dateFilterBand ?? this.dateFilterBand,
     );
   }
 
   @override
   List<Object?> get props => [
-        searchTerm,
+        formId,
         assignmentId,
+        searchTerm,
         syncState,
+        dateFilterBand,
         includeDeleted,
-        page,
-        pageSize,
-        paged
       ];
 }
