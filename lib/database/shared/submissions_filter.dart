@@ -52,6 +52,15 @@ class SubmissionsFilter with EquatableMixin {
     );
   }
 
+  int get filterCount {
+    final filters = [
+      syncState != null ? 1 : 0,
+      dateFilterBand != null ? 1 : 0,
+      includeDeleted ? 1 : 0,
+    ];
+    return filters.where((f) => f != 0).length;
+  }
+
   SubmissionsFilter copyWith({
     String? formId,
     String? assignmentId,

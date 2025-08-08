@@ -432,30 +432,30 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     return query.map(SubmissionSummary.fromDrift);
   }
 
-  Selectable<int> countSubmissions(SubmissionsFilter filterModel,
-      {Iterable<FilterCondition>? filters}) {
-    final effectiveFilters = [
-      FilterCondition.equals(dataInstances.formTemplate, filterModel.formId),
-      if (filterModel.assignmentId != null)
-        FilterCondition.equals(
-            dataInstances.assignment, filterModel.assignmentId!),
-      if (filterModel.syncState != null)
-        FilterCondition.equals(
-            dataInstances.syncState, filterModel.syncState!.name),
-      if (!filterModel.includeDeleted)
-        FilterCondition.equals(dataInstances.deleted, false),
-      if (filterModel.dateFilterBand != null)
-        FilterCondition.between(
-            dataInstances.createdDate,
-            getDateRangeFromBand(filterModel.dateFilterBand!).$1,
-            getDateRangeFromBand(filterModel.dateFilterBand!).$2),
-      ...?filters
-    ];
-    var countQuery = getFilterQuery(filters: effectiveFilters);
-    countQuery = countQuery..addColumns([countAll()]);
-
-    return countQuery.map((row) => row.read(countAll()) ?? 0);
-  }
+  // Selectable<int> countSubmissions(SubmissionsFilter filterModel,
+  //     {Iterable<FilterCondition>? filters}) {
+  //   final effectiveFilters = [
+  //     FilterCondition.equals(dataInstances.formTemplate, filterModel.formId),
+  //     if (filterModel.assignmentId != null)
+  //       FilterCondition.equals(
+  //           dataInstances.assignment, filterModel.assignmentId!),
+  //     if (filterModel.syncState != null)
+  //       FilterCondition.equals(
+  //           dataInstances.syncState, filterModel.syncState!.name),
+  //     if (!filterModel.includeDeleted)
+  //       FilterCondition.equals(dataInstances.deleted, false),
+  //     if (filterModel.dateFilterBand != null)
+  //       FilterCondition.between(
+  //           dataInstances.createdDate,
+  //           getDateRangeFromBand(filterModel.dateFilterBand!).$1,
+  //           getDateRangeFromBand(filterModel.dateFilterBand!).$2),
+  //     ...?filters
+  //   ];
+  //   var countQuery = getFilterQuery(filters: effectiveFilters);
+  //   countQuery = countQuery..addColumns([countAll()]);
+  //
+  //   return countQuery.map((row) => row.read(countAll()) ?? 0);
+  // }
 
   @override
   $DataInstancesTable get table => dataInstances;
@@ -625,34 +625,34 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
     return filter;
   }
 
-// Selectable<int> countSubmissions(SubmissionsFilter? filterModel) {
-//   // final sub = alias(dataInstances, 's');
-//   final a = alias(assignments, 'a');
-//   final ou = alias(orgUnits, 'ou');
-//   final f = alias(formTemplates, 'f');
-//   final fv = alias(formTemplateVersions, 'fv');
-//
-//   JoinedSelectStatement<HasResultSet, dynamic> countQuery =
-//       select(dataInstances).join([
-//     innerJoin(a, a.id.equalsExp(dataInstances.assignment)),
-//     innerJoin(ou, a.orgUnit.equalsExp(ou.id)),
-//     innerJoin(fv, fv.id.equalsExp(dataInstances.templateVersion)),
-//     innerJoin(f, f.id.equalsExp(fv.template)),
-//   ]);
-//   if (filterModel != null) {
-//     countQuery.where(_buildFilter(filterModel));
-//     if (filterModel.searchTerm.isNotNullOrEmpty) {
-//       final pattern = '%${filterModel.searchTerm!.toLowerCase()}%';
-//       countQuery = countQuery
-//         ..where(ou.name.like(pattern) | ou.code.like(pattern));
-//     }
-//   }
-//
-//   countQuery = countQuery..addColumns([countAll()]);
-//
-//   return countQuery.map((row) => row.read(countAll()) ?? 0);
-// }
-//
+  Selectable<int> countSubmissions(SubmissionsFilter? filterModel) {
+    // final sub = alias(dataInstances, 's');
+    final a = alias(assignments, 'a');
+    final ou = alias(orgUnits, 'ou');
+    final f = alias(formTemplates, 'f');
+    final fv = alias(formTemplateVersions, 'fv');
+
+    JoinedSelectStatement<HasResultSet, dynamic> countQuery =
+        select(dataInstances).join([
+      innerJoin(a, a.id.equalsExp(dataInstances.assignment)),
+      innerJoin(ou, a.orgUnit.equalsExp(ou.id)),
+      innerJoin(fv, fv.id.equalsExp(dataInstances.templateVersion)),
+      innerJoin(f, f.id.equalsExp(fv.template)),
+    ]);
+    if (filterModel != null) {
+      countQuery.where(_buildFilter(filterModel));
+      if (filterModel.searchTerm.isNotNullOrEmpty) {
+        final pattern = '%${filterModel.searchTerm!.toLowerCase()}%';
+        countQuery = countQuery
+          ..where(ou.name.like(pattern) | ou.code.like(pattern));
+      }
+    }
+
+    countQuery = countQuery..addColumns([countAll()]);
+
+    return countQuery.map((row) => row.read(countAll()) ?? 0);
+  }
+
 // Expression<bool> _buildFilter(SubmissionsFilter filterModel) {
 //   Expression<bool> filter =
 //       dataInstances.formTemplate.equals(filterModel.formId);
