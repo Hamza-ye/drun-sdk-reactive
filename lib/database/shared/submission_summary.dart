@@ -131,6 +131,7 @@ class SubmissionSummary with EquatableMixin {
         lastModifiedDate: submission.lastModifiedDate,
         dataMap: (submission.formData ?? {}).lock,
         deleted: submission.deleted,
+        lastSyncMessage: submission.lastSyncMessage,
         formData: FormDataUtil.extractTemplateValue(
                 submission.formData ?? {}, formVersion.fields)
             .lock);

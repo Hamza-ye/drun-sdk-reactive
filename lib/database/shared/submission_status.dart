@@ -26,7 +26,7 @@ enum InstanceSyncStatus {
       == 'finalized' => InstanceSyncStatus.finalized,
       // == 'syncing' => SubmissionStatus.syncing,
       == 'synced' => InstanceSyncStatus.synced,
-      == 'syncFailed' => InstanceSyncStatus.syncFailed,
+      == 'syncfailed' => InstanceSyncStatus.syncFailed,
       == 'uploading' => InstanceSyncStatus.uploading,
       // TODO: Handle this case.
       String() => throw UnimplementedError(),

@@ -149,8 +149,8 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
         }
       });
 
+      return ImportSummaryModel.empty();
       // optional: rethrow so caller knows the upload failed
-      rethrow;
     }
   }
 
@@ -643,6 +643,7 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
           formVersionId: formVersion.id,
           createdDate: submission.createdDate,
           lastModifiedDate: submission.lastModifiedDate,
+          lastSyncMessage: submission.lastSyncMessage,
           dataMap: (submission.formData ?? {}).lock,
           deleted: submission.deleted,
           formData: FormDataUtil.extractTemplateValue(
