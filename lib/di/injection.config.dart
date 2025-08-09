@@ -9,7 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:d_sdk/core/utilities/user_file_manager.dart' as _i77;
+import 'package:d_sdk/core/util/user_file_manager.dart' as _i629;
 import 'package:d_sdk/database/database.dart' as _i210;
 import 'package:d_sdk/database/db_factory/database_factory.dart' as _i320;
 import 'package:d_sdk/datasource/datasource.dart' as _i277;
@@ -57,11 +57,11 @@ _i174.GetIt $initSdkGetIt(
     () => _i320.DatabaseFactory(),
     dispose: (i) => i.close(),
   );
-  gh.factoryParam<_i77.UserFileManager, String, dynamic>((
+  gh.factoryParam<_i629.UserFileManager, String, dynamic>((
     userId,
     _,
   ) =>
-      _i77.UserFileManager(userId));
+      _i629.UserFileManager(userId));
   return getIt;
 }
 

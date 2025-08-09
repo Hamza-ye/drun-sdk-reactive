@@ -1,4 +1,4 @@
-import 'package:d_sdk/core/utilities/query_filter_condition.util.dart';
+import 'package:d_sdk/core/util/query_filter_condition.util.dart';
 
 class QueryFilter {
   String attribute;
@@ -7,6 +7,7 @@ class QueryFilter {
   String? filterCondition;
   String? key;
   String? keyValue;
+
   QueryFilter(
       {required this.attribute,
       required this.condition,

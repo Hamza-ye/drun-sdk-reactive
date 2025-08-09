@@ -1,4 +1,4 @@
-import 'package:d_sdk/core/utilities/list_extensions.dart';
+import 'package:d_sdk/core/util/list_extensions.dart';
 import 'package:d_sdk/database/app_database.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
 import 'package:d_sdk/database/dao/base_dao_extension.dart';

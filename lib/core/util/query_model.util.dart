@@ -1,4 +1,4 @@
-// import 'package:d_sdk/core/utilities/query_filter.util.dart';
+// import 'package:d_sdk/core/util/query_filter.util.dart';
 //
 // class QueryModel {
 //   String resourceName;

@@ -8,6 +8,10 @@ class ImportSummaryModel {
   ImportSummaryModel(
       {required this.created, required this.updated, required this.failed});
 
+  factory ImportSummaryModel.empty() {
+    return ImportSummaryModel(created: [], updated: [], failed: {});
+  }
+
   factory ImportSummaryModel.fromJson(Map<String, dynamic> json) {
     final created = json['created'] != null
         ? json['created'].runtimeType == String
@@ -26,6 +30,7 @@ class ImportSummaryModel {
             ? jsonDecode(json['failed'])
             : json['failed']
         : null;
-    return ImportSummaryModel(created: created, updated: updated, failed: failed);
+    return ImportSummaryModel(
+        created: created, updated: updated, failed: failed);
   }
 }

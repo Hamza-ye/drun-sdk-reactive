@@ -1,4 +1,4 @@
-import 'package:d_sdk/core/utilities/list_extensions.dart';
+import 'package:d_sdk/core/util/list_extensions.dart';
 
 enum SyncStage {
   fetch,

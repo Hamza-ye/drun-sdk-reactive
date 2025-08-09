@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:d_sdk/core/utilities/user_file_manager.dart';
+import 'package:d_sdk/core/util/user_file_manager.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 

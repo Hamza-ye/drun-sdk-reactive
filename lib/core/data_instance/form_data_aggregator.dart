@@ -1,4 +1,4 @@
-import 'package:d_sdk/core/utilities/strings_utils.dart';
+import 'package:d_sdk/core/util/strings_utils.dart';
 
 import 'form_data_util.dart';
 
@@ -11,7 +11,7 @@ enum Aggregation {
   max,
   first,
   last,
-  concat,
+  concat
 }
 
 class FormDataAggregator {

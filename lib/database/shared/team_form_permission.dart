@@ -1,4 +1,4 @@
-import 'package:d_sdk/core/utilities/parsing_helpers.dart';
+import 'package:d_sdk/core/util/parsing_helpers.dart';
 import 'package:d_sdk/database/shared/form_permission.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';

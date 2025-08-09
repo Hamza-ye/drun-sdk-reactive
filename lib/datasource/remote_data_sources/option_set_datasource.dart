@@ -1,5 +1,5 @@
 import 'package:d_sdk/core/user_session/user_session.dart';
-import 'package:d_sdk/core/utilities/list_extensions.dart';
+import 'package:d_sdk/core/util/list_extensions.dart';
 import 'package:d_sdk/database/converters/custom_serializer.dart';
 import 'package:d_sdk/database/database.dart';
 import 'package:d_sdk/datasource/datasource.dart';

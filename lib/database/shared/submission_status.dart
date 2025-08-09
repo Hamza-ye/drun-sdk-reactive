@@ -2,7 +2,8 @@ enum InstanceSyncStatus {
   draft, // Newly created or edited submissions; not yet final
   finalized, // Marked final and ready to send
   synced, // Successfully sent to the server
-  syncFailed; // Tried to sync but failed
+  syncFailed, // Tried to sync but failed
+  uploading;
 
   bool get isToSync => toSyncStatuses.contains(this);
 
@@ -26,7 +27,11 @@ enum InstanceSyncStatus {
       // == 'syncing' => SubmissionStatus.syncing,
       == 'synced' => InstanceSyncStatus.synced,
       == 'syncFailed' => InstanceSyncStatus.syncFailed,
-      _ => InstanceSyncStatus.draft,
+      == 'uploading' => InstanceSyncStatus.uploading,
+      // TODO: Handle this case.
+      String() => throw UnimplementedError(),
+      // TODO: Handle this case.
+      null => throw UnimplementedError(),
     };
   }
 }

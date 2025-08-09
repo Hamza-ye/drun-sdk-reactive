@@ -1,6 +1,6 @@
 // import 'dart:async';
 // import 'package:drun_annotations/drun_annotations.dart';
-// import 'package:d_sdk/core/utilities/list_extensions.dart';
+// import 'package:d_sdk/core/util/list_extensions.dart';
 // import 'package:build/build.dart';
 // import 'package:source_gen/source_gen.dart';
 // import 'package:analyzer/dart/element/element.dart';

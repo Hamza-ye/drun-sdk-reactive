@@ -1,7 +1,7 @@
 import 'package:d_sdk/core/form/element_template/element_template.dart';
-import 'package:d_sdk/core/form/form_data_aggregator.dart';
+import 'package:d_sdk/core/data_instance/form_data_aggregator.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
-import 'package:d_sdk/core/form/tree/tree_element.dart';
+import 'package:d_sdk/core/form/tree_element.dart';
 import 'package:d_sdk/core/form/value_type_rendering_type.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:equatable/equatable.dart';

@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:d_sdk/core/form/attribute_type.dart';
 import 'package:d_sdk/core/form/element_template/element_template.dart';
-import 'package:d_sdk/core/form/form_data_aggregator.dart';
+import 'package:d_sdk/core/data_instance/form_data_aggregator.dart';
 import 'package:d_sdk/core/form/rule/rule.dart';
 import 'package:d_sdk/core/form/rule/validation_rule.dart';
 import 'package:d_sdk/core/form/value_type_rendering_type.dart';
-import 'package:d_sdk/core/utilities/list_extensions.dart';
-import 'package:d_sdk/core/utilities/parsing_helpers.dart';
+import 'package:d_sdk/core/util/list_extensions.dart';
+import 'package:d_sdk/core/util/parsing_helpers.dart';
 import 'package:d_sdk/database/shared/shared.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
