@@ -587,7 +587,6 @@ class DataInstancesDao extends DatabaseAccessor<AppDatabase>
       innerJoin(fv, fv.id.equalsExp(dataInstances.templateVersion)),
       innerJoin(f, f.id.equalsExp(fv.template)),
     ]);
-    // ..where(sub.formTemplate.equals(paging.formId));
 
     if (filterModel != null) {
       query.where(_buildFilter(filterModel));
